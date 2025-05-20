@@ -14,17 +14,20 @@ const nextConfig: NextConfig = {
     },
     {
       protocol: "https",
-      hostname: "patarutera.pe",
+      hostname: "cms.patarutera.pe",
+      port:"",
       pathname: "/**"
     },
     {
       protocol: "https",
-      hostname: "patarutera.pe",
+      hostname: "cms.patarutera.pe",
+      port:"",
       pathname: "/**"
     },
     {
       protocol: "https",
-      hostname: "patarutera.com",
+      hostname: "cms.patarutera.com",
+      port:"",
       pathname: "/**"
     }
   ],
