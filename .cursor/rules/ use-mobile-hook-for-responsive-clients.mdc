@@ -1,0 +1,49 @@
+---
+description: Enforces the use of the useMobile hook for responsive design in client components.
+globs: 
+alwaysApply: false
+---
+# Use `useMobile` Hook for Responsive Client Components
+
+When implementing responsive design logic within React client components (identified by the `"use client";` directive), you **must** use the `useMobile` hook.
+
+## Hook Implementation
+
+The `useMobile` hook is located at `src/hooks/useMobile.tsx`. Its content is:
+
+```typescript
+// [CODE FROM src/hooks/useMobile.tsx WILL GO HERE]
+```
+
+## Usage Example
+
+Here's how to use the `useMobile` hook in a client component:
+
+```typescript
+"use client";
+
+import { useMobile } from "@/hooks/useMobile"; // Assuming alias resolves to src/hooks
+
+export default function MyResponsiveComponent() {
+  const isMobile = useMobile(); // Default breakpoint or pass a custom one
+
+  return (
+    <div>
+      {isMobile ? (
+        <p>This is the mobile view.</p>
+      ) : (
+        <p>This is the desktop view.</p>
+      )}
+    </div>
+  );
+}
+```
+
+## Rationale
+
+Using a consistent hook for responsive checks ensures:
+-   Standardized breakpoint logic.
+-   Easier maintenance and updates to responsive behavior.
+-   Reduced boilerplate code in components.
+
+Do not implement custom window resize listeners or media query checks directly within components for responsive behavior. Always defer to this hook.

@@ -1,0 +1,22 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Cursor Rules - Master Index
+
+This document serves as the central index for all active Cursor rules within this repository. These rules define processes, structures, and guidelines for development.
+
+## Meta & Development
+
+Rules related to the development process and tooling itself.
+
+
+| Rule File | Description |
+| :-------- | :---------- |
+| @cursor-rules.mdc | How to add or edit Cursor rules in our project |
+| @enforce-english.mdc | Ensures all code and documentation are written in English |
+| [context7.mdc](mdc:app/app/app/app/app/.cursor/rules/context7.mdc) |Guidelines for using the Context7 tool to search library and framework documentation effectively. |
+| @use-mobile-hook-for-responsive-clients.mdc |Enforces the use of the useMobile hook for responsive design in client components.|
+|[use-shadcdn-acertenity-libraries.mdc](mdc:.cursor/rules/use-shadcdn-acertenity-libraries.mdc) | Guides using shadcdn/ui and Acertenity UI for component creation. |
+

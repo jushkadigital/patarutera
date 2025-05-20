@@ -1,0 +1,43 @@
+---
+description: Guidelines for using the Context7 tool to search library and framework documentation effectively.
+globs: 
+alwaysApply: false
+---
+# Context7: Guide for Effective Documentation Search
+
+## What is Context7?
+
+Context7 is a specialized tool for performing semantic searches within the documentation of popular libraries, frameworks, and technologies known to the system. It provides relevant snippets directly from official sources.
+
+## When to use Context7?
+
+*   **Priority:** Use Context7 as the **first option** when you need specific information on how to use an API, function, component, or concept within a known library or framework (e.g., Payload CMS, Next.js, React, Lexical, etc.).
+*   **Preference over Web Search:** Prefer Context7 over a general web search (`web_search`) for these cases, as the results are usually more focused and directly extracted from the official documentation.
+*   **Up-to-date Information:** Useful for obtaining the most current information available in the documentation indexed by Context7.
+
+## How to use Context7?
+
+Follow these steps:
+
+1.  **Identify the Library/Framework:** Determine the name of the technology you need documentation for (e.g., "Payload CMS", "Lexical").
+2.  **Resolve the ID (If necessary):** If you are unsure of the exact ID Context7 uses for that library, first use the `mcp_context7_resolve_library_id` tool with the common name.
+    *   **Example:** `mcp_context7_resolve_library_id(libraryName='Payload CMS')`
+    *   Select the most relevant ID from the results (e.g., `/payloadcms/payload`).
+3.  **Perform the Documentation Search:** Once you have the correct `context7CompatibleLibraryID`, use the `mcp_context7_get_library_docs` tool.
+    *   **`topic` parameter:** Be as specific as possible in the `topic`. Include relevant keywords, function names, concepts, or the exact question you are trying to answer.
+        *   *Good Example:* `"lexical create custom node exportDOM icon attribute"`
+        *   *Less Good Example:* `"lexical lists"`
+    *   **`tokens` parameter:** Start with a value of `5000` tokens.
+        *   `mcp_context7_get_library_docs(context7CompatibleLibraryID='/payloadcms/payload', topic='...', tokens=5000)`
+    *   **Iteration (If necessary):** If the first search with 5000 tokens does not yield sufficiently relevant or complete results:
+        *   **Refine the `topic`:** Try rephrasing the search with different or more specific keywords.
+        *   **Increase `tokens`:** Perform a second search increasing tokens to `20000`.
+        *   `mcp_context7_get_library_docs(context7CompatibleLibraryID='/payloadcms/payload', topic='...', tokens=20000)`
+4.  **Attempt Limit:** Make a **maximum of 3 search attempts** with Context7 for a *specific topic*. If after refining the `topic` and increasing `tokens` you still haven't found the necessary information:
+5.  **Fallback to Web Search:** Resort to the `web_search` tool to search the general web.
+
+## Why use Context7?
+
+*   **Relevance:** Provides snippets directly from official documentation, increasing the likelihood of obtaining accurate and relevant information.
+*   **Efficiency:** Can be faster than manually navigating extensive documentation sites.
+*   **Context:** Results often include links to the original source for deeper exploration.

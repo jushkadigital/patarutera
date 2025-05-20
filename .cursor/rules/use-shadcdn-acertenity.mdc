@@ -1,0 +1,19 @@
+---
+description: Guides using shadcdn/ui and Acertenity UI for component creation.
+globs: 
+alwaysApply: false
+---
+# Guideline for UI Component Creation
+
+## Prioritize shadcdn/ui and Acertenity UI
+
+When a request involves creating or suggesting UI components, always consider and, where appropriate, prioritize using components from the **shadcdn/ui** and **Acertenity UI** libraries.
+
+### Rationale:
+These libraries are the preferred choice in this project for building user interfaces because they offer:
+*   A comprehensive set of pre-built and customizable components.
+*   Consistency in design and user experience.
+*   Improved development speed and efficiency.
+
+### Action:
+Before suggesting custom component solutions or other libraries, evaluate if the required functionality can be achieved using shadcdn/ui or Acertenity UI. If components from these libraries are suitable, they should be the primary recommendation.

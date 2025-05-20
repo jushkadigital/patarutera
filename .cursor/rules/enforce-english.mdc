@@ -1,0 +1,80 @@
+---
+description: Ensures all code and documentation are written in English.
+globs: 
+alwaysApply: false
+---
+# English Language Policy
+
+**Rule:** All code, comments, documentation, commit messages, and any other text contributed to this project **must** be written in English.
+
+## Rationale
+
+- **Consistency:** Maintains a uniform language across the entire codebase and documentation.
+- **Collaboration:** Enables effective communication and understanding among team members who may come from diverse linguistic backgrounds.
+- **Tooling:** Ensures compatibility with linters, documentation generators, and other development tools that often assume English.
+
+## Application
+
+This applies to:
+
+1.  **Code:** Variable names, function names, class names, interface names, etc.
+2.  **Comments:** All inline and block comments explaining the code.
+3.  **Documentation:** All content in `.md` and `.mdc` files (including rule files like this one).
+4.  **Commit Messages:** Git commit messages must be in English.
+5.  **Configuration Files:** Keys and string values in configuration files where applicable.
+
+## Examples
+
+```typescript
+// Good ✅
+
+/**
+ * Fetches user data based on the provided ID.
+ * @param userId - The unique identifier for the user.
+ * @returns The user object or null if not found.
+ */
+async function getUserById(userId: string): Promise<User | null> {
+  const userCacheKey = `user:${userId}`;
+  // Try fetching from cache first
+  let user = await cache.get<User>(userCacheKey);
+  if (!user) {
+    user = await db.fetchUser(userId);
+    if (user) {
+      await cache.set(userCacheKey, user, 3600); // Cache for 1 hour
+    }
+  }
+  return user;
+}
+
+// Bad ❌
+
+/**
+ * Obtiene datos del usuario según el ID proporcionado.
+ * @param usuarioId - El identificador único para el usuario.
+ * @returns El objeto usuario o null si no se encuentra.
+ */
+async function obtenerUsuarioPorId(usuarioId: string): Promise<Usuario | null> {
+  const llaveCacheUsuario = `usuario:${usuarioId}`;
+  // Intentar obtener de la caché primero
+  let usuario = await cache.get<Usuario>(llaveCacheUsuario);
+  if (!usuario) {
+    usuario = await db.fetchUser(usuarioId);
+    if (usuario) {
+      await cache.set(llaveCacheUsuario, usuario, 3600); // Guardar en caché por 1 hora
+    }
+  }
+  return usuario;
+}
+
+```
+
+```markdown
+<!-- Good ✅ -->
+# Project Setup
+
+Follow these steps to set up the development environment.
+
+<!-- Bad ❌ -->
+# Configuración del Proyecto
+
+Siga estos pasos para configurar el entorno de desarrollo. 
