@@ -14,6 +14,7 @@ interface CardTourProps {
 }
 
 export default function CardTour({unitData, mode='list'}: CardTourProps) {
+  console.log(unitData)
   if (mode === 'grid') {
     return (
       <div className="relative w-[338px] font-poppins">
