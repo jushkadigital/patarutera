@@ -11,7 +11,23 @@ const nextConfig: NextConfig = {
       hostname: "localhost",
       port: "3000",
       pathname: "/**"
-    }],
+    },
+    {
+      protocol: "https",
+      hostname: "patarutera.pe",
+      pathname: "/**"
+    },
+    {
+      protocol: "https",
+      hostname: "patarutera.pe",
+      pathname: "/**"
+    },
+    {
+      protocol: "https",
+      hostname: "patarutera.com",
+      pathname: "/**"
+    }
+  ],
   },
 };
 
