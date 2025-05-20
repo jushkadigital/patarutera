@@ -11,8 +11,8 @@ export async function CarouselDestinos(props: Props) {
   const dataMap = data.docs.map((doc: any) => ({
     title: doc.name,
     button: "Ver Destino",
-    src: BASEURL + doc.imageDestination.url,
-    bgImage: BASEURL + doc.backgroundDestination.url,
+    src:  doc.imageDestination.url,
+    bgImage:  doc.backgroundDestination.url,
   }))
   const slideData = [
     {
