@@ -41,9 +41,9 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
   }
 
   return (
-    <motion.div className="[perspective:1200px] [transform-style:preserve-3d]">
+    <motion.div className="[perspective:1200px] [transform-style:preserve-3d] flex-shrink-0">
       <motion.li
-        className="flex flex-1 flex-col items-center justify-end relative text-center text-white w-[70vmin] h-[70vmin] mx-[4vmin] z-10"
+        className="flex flex-col items-center justify-center relative text-center text-white w-[70vmin] h-[70vmin] mx-[2vmin] z-10"
         onClick={() => handleSlideClick(index)}
         variants={variants}
         animate={current === index ? "active" : "inactive"}
@@ -116,7 +116,7 @@ interface CarouselProps {
   slides: SlideData[]
 }
 
-export default function CarouselDestinosComponent({ slides }: CarouselProps) {
+export default function Carousel({ slides }: CarouselProps) {
   const [current, setCurrent] = useState(0)
   const id = useId()
 
@@ -166,68 +166,76 @@ export default function CarouselDestinosComponent({ slides }: CarouselProps) {
   }
 
   return (
-    <div
-      className="relative w-[70vmin] h-[70vmin] mx-auto"
-      aria-labelledby={`carousel-heading-${id}`}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-    >
-      {/* Full-screen background with image */}
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={current}
-          className="fixed inset-0 -z-10 w-[100vw]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.2 }}
-          style={{
-            backgroundImage: `url(${slides[current].bgImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="absolute inset-0 bg-black/50" />
-        </motion.div>
-      </AnimatePresence>
-
-      <motion.ul
-        className="absolute flex mx-[-4vmin]"
-        animate={{
-          x: `${-current * (100 / slides.length)}%`,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-        }}
+    <div className="w-full h-[90vmin] mx-auto relative">
+      {/* Carousel container with background */}
+      <div
+        className="w-full h-full rounded-3xl overflow-hidden relative"
+        aria-labelledby={`carousel-heading-${id}`}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
-        {slides.map((slide, index) => (
-          <Slide key={index} slide={slide} index={index} current={current} handleSlideClick={handleSlideClick} />
-        ))}
-      </motion.ul>
+        {/* Background image container */}
+        <div className="absolute inset-0 w-full h-full">
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={current}
+              className="absolute inset-0 w-full h-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.2 }}
+            >
+              <img src={slides[current].bgImage || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/50" />
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-      <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between w-full px-4 z-20">
-        <CarouselControl type="previous" title="Go to previous slide" handleClick={handlePreviousClick} />
-        <CarouselControl type="next" title="Go to next slide" handleClick={handleNextClick} />
-      </div>
-
-      {/* Slide indicators */}
-      <div className="absolute bottom-[-2rem] left-0 right-0 flex justify-center gap-2">
-        {slides.map((_, index) => (
-          <motion.button
-            key={index}
-            className="w-2 h-2 rounded-full bg-white focus:outline-none"
-            onClick={() => setCurrent(index)}
+        {/* Slides */}
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+          <motion.ul
+            className="flex items-center"
             animate={{
-              scale: current === index ? 1.5 : 1,
-              opacity: current === index ? 1 : 0.5,
+              x: `calc(50% - ${current * 74}vmin - 37vmin)`,
             }}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-          />
-        ))}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
+            }}
+            style={{
+              width: `${slides.length * 74}vmin`,
+            }}
+          >
+            {slides.map((slide, index) => (
+              <Slide key={index} slide={slide} index={index} current={current} handleSlideClick={handleSlideClick} />
+            ))}
+          </motion.ul>
+        </div>
+
+        {/* Navigation controls */}
+        <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between w-full px-4 z-20">
+          <CarouselControl type="previous" title="Go to previous slide" handleClick={handlePreviousClick} />
+          <CarouselControl type="next" title="Go to next slide" handleClick={handleNextClick} />
+        </div>
+
+        {/* Slide indicators */}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
+          {slides.map((_, index) => (
+            <motion.button
+              key={index}
+              className="w-2 h-2 rounded-full bg-white focus:outline-none"
+              onClick={() => setCurrent(index)}
+              animate={{
+                scale: current === index ? 1.5 : 1,
+                opacity: current === index ? 1 : 0.5,
+              }}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
