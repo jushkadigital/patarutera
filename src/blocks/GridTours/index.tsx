@@ -45,11 +45,12 @@ const paramsCat = new URLSearchParams()
     // throw error;
   }
 
+  const mode2= false
   // Clases condicionales basadas en la prop 'mode'
   const containerClasses = cn(
-    mode 
+    mode
       ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6'
-      : 'flex flex-col space-y-4 md:space-y-6'
+      : 'flex flex-col space-y-4 md:space-y-6 mx-auto w-[90%]'
   );
 
   if (fetchError) {
@@ -58,7 +59,7 @@ const paramsCat = new URLSearchParams()
 
   return (
     // No hay controles de modo aquí porque es un Server Component
-    <div className=" mx-auto py-8 bg bg-white">
+    <div className=" mx-auto py-4 bg bg-white w-[90%]">
       {/* Contenedor condicional */}
       <div className={containerClasses}>
         {tours.length > 0 ? (
