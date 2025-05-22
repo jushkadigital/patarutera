@@ -1,5 +1,6 @@
 import type { Destination, GridToursBlock as GridToursBlockType, Tour, TourCategory } from '@/cms-types';
 import CardTour, { CardTourData } from '@/components/CardTour';
+import { Subtitle } from '@/components/Subtitle';
 import { BASEURL } from '@/lib/config';
 import { cn } from '@/lib/utils';
 
@@ -10,7 +11,7 @@ interface Props extends GridToursBlockType {
 
 export async function GridTours(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
-  const { id, gridColumns, gridStyle:mode  ,destination,category} = props;
+  const { id, gridColumns, gridStyle:mode  ,destination,category,blockTitle} = props;
   console.log(mode)
   let tours: CardTourData[] = [];
   let fetchError = null;
@@ -61,6 +62,7 @@ const paramsCat = new URLSearchParams()
     // No hay controles de modo aquí porque es un Server Component
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
       {/* Contenedor condicional */}
+      <Subtitle className="" titleGroup={blockTitle}/>
       <div className={containerClasses}>
         {tours.length > 0 ? (
           tours.map((tour) => (

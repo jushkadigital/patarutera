@@ -5,8 +5,12 @@ type Props = CarouselDestinationBlock
 
 export async function CarouselDestinos(props: Props) {
 
+
+  const titleObj = props.title
+
   const response = await fetch(`${BASEURL}/api/destinations?limit=100&depth=1&sort=createdAt`)
   const data = await response.json()
+
 
   const dataMap = data.docs.map((doc: any) => ({
     title: doc.name,
@@ -45,6 +49,6 @@ export async function CarouselDestinos(props: Props) {
     },
   ]
   return <div className=" overflow-hidden w-full h-full py-20">
-    <CarouselDestinosComponent slides={dataMap} />
+    <CarouselDestinosComponent slides={dataMap} titleObj={titleObj}/>
   </div>
 } 

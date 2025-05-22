@@ -4,6 +4,8 @@ import type React from "react"
 
 import { useState, useId } from "react"
 import { motion, AnimatePresence } from "motion/react"
+import { Subtitle } from "./Subtitle"
+import { TitleGroup } from "@/cms-types"
 
 interface SlideData {
   title: string
@@ -114,9 +116,10 @@ const CarouselControl = ({ type, title, handleClick }: CarouselControlProps) => 
 
 interface CarouselProps {
   slides: SlideData[]
+  titleObj: TitleGroup
 }
 
-export default function Carousel({ slides }: CarouselProps) {
+export default function Carousel({ slides ,titleObj}: CarouselProps) {
   const [current, setCurrent] = useState(0)
   const id = useId()
 
@@ -166,7 +169,8 @@ export default function Carousel({ slides }: CarouselProps) {
   }
 
   return (
-    <div className="w-full h-[90vmin] mx-auto relative">
+    <div className="w-full h-screen mx-auto relative">
+      
       {/* Carousel container with background */}
       <div
         className="w-full h-full rounded-3xl overflow-hidden relative"
@@ -177,6 +181,7 @@ export default function Carousel({ slides }: CarouselProps) {
       >
         {/* Background image container */}
         <div className="absolute inset-0 w-full h-full">
+        <Subtitle className="" titleGroup={titleObj}/>
           <AnimatePresence initial={false}>
             <motion.div
               key={current}
