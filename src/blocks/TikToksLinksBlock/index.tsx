@@ -1,22 +1,25 @@
 import { TikTokLinksBlockType } from "@/cms-types";
 import OptimizedVideoPlayer from "@/components/OptimizedVideoPlayer";
+import { Subtitle } from "@/components/Subtitle";
+import TiktokEmbed from "@/components/TiktokEmbed";
 
 interface Props extends TikTokLinksBlockType{
 
 }
 
 export async function TikTokLinksBlock(props: Props) {
-    const {videoLinks} = props
+    const {videoLinks,blockTitle} = props
 
     return (
-        <div className="h-screen">
-            <div>HOLAA</div>
+        <div className="w-full ">    
+        <Subtitle titleGroup={blockTitle}/>
+        <div className="h-screen grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {
           videoLinks &&  videoLinks.map((ele)=>(
-                <OptimizedVideoPlayer videoUrl={ele.url}/>
+            <TiktokEmbed url={ele.url}/>
             ))
         }
-
             </div>
+        </div>
     )
 }
