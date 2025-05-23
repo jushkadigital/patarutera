@@ -251,6 +251,9 @@ export interface Page {
     | ReconocimientosBlockType
     | OfertasBlock
     | CarouselDestinationBlock
+    | TikTokLinksBlockType
+    | BeneficiosBlockType
+    | EstadisticasBlockType
   )[];
   publishedAt?: string | null;
   slug?: string | null;
@@ -527,6 +530,67 @@ export interface CarouselDestinationBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'carouselDestination';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TikTokLinksBlockType".
+ */
+export interface TikTokLinksBlockType {
+  blockTitle: TitleGroup;
+  videoLinks?:
+    | {
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tikTokLinks';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BeneficiosBlockType".
+ */
+export interface BeneficiosBlockType {
+  blockTitle: TitleGroup;
+  colorItem: string;
+  beneficios?:
+    | {
+        beneficioText: string;
+        beneficioImage?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'beneficios';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EstadisticasBlockType".
+ */
+export interface EstadisticasBlockType {
+  estadisticasImage?:
+    | {
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  estadisticasText?: {
+    title?: string | null;
+    description?: string | null;
+    colorBox?: string | null;
+    estadisticasBox?:
+      | {
+          numbers?: string | null;
+          description?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'estadisticas';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1179,6 +1243,9 @@ export interface PagesSelect<T extends boolean = true> {
         reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
         ofertas?: T | OfertasBlockSelect<T>;
         carouselDestination?: T | CarouselDestinationBlockSelect<T>;
+        tikTokLinks?: T | TikTokLinksBlockTypeSelect<T>;
+        beneficios?: T | BeneficiosBlockTypeSelect<T>;
+        estadisticas?: T | EstadisticasBlockTypeSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -1314,6 +1381,66 @@ export interface OfertasBlockSelect<T extends boolean = true> {
  */
 export interface CarouselDestinationBlockSelect<T extends boolean = true> {
   title?: T | TitleGroupSelect<T>;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TikTokLinksBlockType_select".
+ */
+export interface TikTokLinksBlockTypeSelect<T extends boolean = true> {
+  blockTitle?: T | TitleGroupSelect<T>;
+  videoLinks?:
+    | T
+    | {
+        url?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BeneficiosBlockType_select".
+ */
+export interface BeneficiosBlockTypeSelect<T extends boolean = true> {
+  blockTitle?: T | TitleGroupSelect<T>;
+  colorItem?: T;
+  beneficios?:
+    | T
+    | {
+        beneficioText?: T;
+        beneficioImage?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EstadisticasBlockType_select".
+ */
+export interface EstadisticasBlockTypeSelect<T extends boolean = true> {
+  estadisticasImage?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  estadisticasText?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        colorBox?: T;
+        estadisticasBox?:
+          | T
+          | {
+              numbers?: T;
+              description?: T;
+              id?: T;
+            };
+      };
   id?: T;
   blockName?: T;
 }
@@ -1700,3 +1827,4 @@ export interface TaskSchedulePublish {
 export interface Auth {
   [k: string]: unknown;
 }
+

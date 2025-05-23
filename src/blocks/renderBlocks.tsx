@@ -4,12 +4,14 @@ import { MediaBlock } from './MediaBlock'
 import { GridTours } from './GridTours'
 import { RowBlock } from './RowBlock'
 import { CarouselDestinos } from './CarouselDestinos'
+import { TikTokLinksBlock } from './TikToksLinksBlock'
 
 const blockComponents = {
   gridTours: GridTours,
   mediaBlock: MediaBlock,
   rowBlock: RowBlock,
   carouselDestination: CarouselDestinos,
+  tikTokLinks:TikTokLinksBlock,
   postRelationTour: null,
   reconocimientos: null,
   ofertas: null,
@@ -37,7 +39,6 @@ export const RenderBlocks: React.FC<{
             if (Block) {
               return (
                 <div className="" key={index}>
-                  {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
                 </div>
               )

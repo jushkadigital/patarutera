@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 
 // Añadir 'mode' a las Props
 interface Props extends GridToursBlockType {
-  mode?: 'grid' | 'list'; // Modo opcional, default 'grid'
 }
 
 export async function GridTours(props: Props) {
