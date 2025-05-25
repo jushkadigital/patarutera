@@ -49,7 +49,7 @@ export const Navbar: React.FC = () => {
           <NavigationMenuList>
             {/* Sección 2: Enlace 1 */}
             <NavigationMenuItem>
-              <Link href="/productos" legacyBehavior passHref>
+              <Link href="/productos" passHref>
                 <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : '')}>
                   Productos
                 </NavigationMenuLink>

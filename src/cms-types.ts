@@ -254,6 +254,8 @@ export interface Page {
     | TikTokLinksBlockType
     | BeneficiosBlockType
     | EstadisticasBlockType
+    | TextContentBlockType
+    | GridImagesBlockType
   )[];
   publishedAt?: string | null;
   slug?: string | null;
@@ -296,10 +298,24 @@ export interface RowBlock {
    */
   columns?:
     | {
+        columnWidth: number;
         /**
          * Añade los bloques de contenido que irán en esta columna.
          */
-        columnBlocks: GridToursBlock[];
+        columnBlocks: (
+          | GridToursBlock
+          | MediaBlock
+          | PostRelationTourBlockType
+          | SociosBlockType
+          | ReconocimientosBlockType
+          | OfertasBlock
+          | CarouselDestinationBlock
+          | TikTokLinksBlockType
+          | BeneficiosBlockType
+          | EstadisticasBlockType
+          | TextContentBlockType
+          | GridImagesBlockType
+        )[];
         id?: string | null;
       }[]
     | null;
@@ -570,15 +586,23 @@ export interface BeneficiosBlockType {
  * via the `definition` "EstadisticasBlockType".
  */
 export interface EstadisticasBlockType {
-  estadisticasImage?:
-    | {
-        image?: (number | null) | Media;
-        id?: string | null;
-      }[]
-    | null;
-  estadisticasText?: {
+  estadisticasText: {
     title?: string | null;
-    description?: string | null;
+    description: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
     colorBox?: string | null;
     estadisticasBox?:
       | {
@@ -591,6 +615,51 @@ export interface EstadisticasBlockType {
   id?: string | null;
   blockName?: string | null;
   blockType: 'estadisticas';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TextContentBlockType".
+ */
+export interface TextContentBlockType {
+  blockTitle: TitleGroup;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Controls the text alignment of the description content.
+   */
+  descriptionAlignment?: ('left' | 'center' | 'right') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textContent';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gridImagesBlockType".
+ */
+export interface GridImagesBlockType {
+  typeGrid: 'mason' | 'regular';
+  Image?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gridImages';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1246,6 +1315,8 @@ export interface PagesSelect<T extends boolean = true> {
         tikTokLinks?: T | TikTokLinksBlockTypeSelect<T>;
         beneficios?: T | BeneficiosBlockTypeSelect<T>;
         estadisticas?: T | EstadisticasBlockTypeSelect<T>;
+        textContent?: T | TextContentBlockTypeSelect<T>;
+        gridImages?: T | GridImagesBlockTypeSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -1281,10 +1352,22 @@ export interface RowBlockSelect<T extends boolean = true> {
   columns?:
     | T
     | {
+        columnWidth?: T;
         columnBlocks?:
           | T
           | {
               gridTours?: T | GridToursBlockSelect<T>;
+              mediaBlock?: T | MediaBlockSelect<T>;
+              postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
+              socios?: T | SociosBlockTypeSelect<T>;
+              reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+              ofertas?: T | OfertasBlockSelect<T>;
+              carouselDestination?: T | CarouselDestinationBlockSelect<T>;
+              tikTokLinks?: T | TikTokLinksBlockTypeSelect<T>;
+              beneficios?: T | BeneficiosBlockTypeSelect<T>;
+              estadisticas?: T | EstadisticasBlockTypeSelect<T>;
+              textContent?: T | TextContentBlockTypeSelect<T>;
+              gridImages?: T | GridImagesBlockTypeSelect<T>;
             };
         id?: T;
       };
@@ -1421,12 +1504,6 @@ export interface BeneficiosBlockTypeSelect<T extends boolean = true> {
  * via the `definition` "EstadisticasBlockType_select".
  */
 export interface EstadisticasBlockTypeSelect<T extends boolean = true> {
-  estadisticasImage?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
   estadisticasText?:
     | T
     | {
@@ -1440,6 +1517,32 @@ export interface EstadisticasBlockTypeSelect<T extends boolean = true> {
               description?: T;
               id?: T;
             };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TextContentBlockType_select".
+ */
+export interface TextContentBlockTypeSelect<T extends boolean = true> {
+  blockTitle?: T | TitleGroupSelect<T>;
+  description?: T;
+  descriptionAlignment?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gridImagesBlockType_select".
+ */
+export interface GridImagesBlockTypeSelect<T extends boolean = true> {
+  typeGrid?: T;
+  Image?:
+    | T
+    | {
+        image?: T;
+        id?: T;
       };
   id?: T;
   blockName?: T;

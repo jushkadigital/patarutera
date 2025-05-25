@@ -16,7 +16,7 @@ export async function TikTokLinksBlock(props: Props) {
         <div className="h-screen grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {
           videoLinks &&  videoLinks.map((ele)=>(
-            <TiktokEmbed url={ele.url}/>
+            <TiktokEmbed key={ele.id} url={ele.url}/>
             ))
         }
             </div>

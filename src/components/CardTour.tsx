@@ -47,9 +47,9 @@ export default function CardTour({unitData, mode='list'}: CardTourProps) {
           {unitData.title}
           </h2>
         {/* miniDescription */}
-        <p className="text-[#6a6a6a] text-[12px] mb-3">
+        <div className="text-[#6a6a6a] text-[12px] mb-3">
           { <RichText data={unitData.miniDescription} enableGutter={false} />}
-        </p>
+        </div>
 
         <div className="flex flex-wrap justify-between items-end mb-0 px-10">
           <div>
@@ -143,9 +143,9 @@ export default function CardTour({unitData, mode='list'}: CardTourProps) {
             <h2 className="text-[#2970b7] text-3xl font-bold mb-3">
               {unitData.title}
               </h2>
-            <p className="text-[#6a6a6a]">
+            <div className="text-[#6a6a6a]">
           { <RichText data={unitData.miniDescription} enableGutter={false} />}
-            </p>
+            </div>
           </div>
 
           {/* Section 3: Price, Icons and Button (Right) */}

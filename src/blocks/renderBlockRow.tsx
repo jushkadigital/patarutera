@@ -13,7 +13,6 @@ import { GridImages } from './GridImages'
 const blockComponents = {
   gridTours: GridTours,
   mediaBlock: MediaBlock,
-  rowBlock: RowBlock,
   carouselDestination: CarouselDestinos,
   tikTokLinks:TikTokLinksBlock,
   postRelationTour: null,
@@ -28,7 +27,7 @@ const blockComponents = {
 
 
 
-export const RenderBlocks: React.FC<{
+export const RenderBlocksRow: React.FC<{
   blocks: Page['layout'][0][]
 }> = (props) => {
   const { blocks } = props
@@ -46,8 +45,7 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="" key={index}>
-   {/* @ts-expect-error there may be some mismatch between the expected types here */}
+                <div className="w-full h-full" key={index}>
                   <Block {...block} disableInnerContainer />
                 </div>
               )

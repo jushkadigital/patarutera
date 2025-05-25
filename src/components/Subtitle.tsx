@@ -9,7 +9,7 @@ interface SubtitleProps {
 export const Subtitle = ({ titleGroup, className = "" }:SubtitleProps)=>{
 
     const textSize = {'small': 'text-sm','medium': 'text-base','large':'text-xl','xlarge':'text-2xl'}
-    const classesSubrayado = cn('mt-2','h-1','w-16',`bg-[${titleGroup.underlineColor}]`)
+    const classesSubrayado = cn('mt-2','h-1','w-16',`bg-[${titleGroup.underlineColor?.toLocaleLowerCase()}]`)
     const classesText = cn('text-center','text-2xl','font-semibold','md:text-3xl',`text-[${titleGroup.textColor?.toLocaleLowerCase()}]`,textSize[titleGroup.size],className)
     const Tag:any = (titleGroup.tag.toLowerCase()) 
     return (
