@@ -17,7 +17,7 @@ export const Subtitle = ({ titleGroup, className = "" }:SubtitleProps)=>{
     const classesText = cn('text-center','text-2xl','font-semibold','md:text-3xl',`text-[var(--text-color)]`,textSize[titleGroup.size],className)
     const Tag:any = (titleGroup.tag.toLowerCase()) 
     return (
-    <div className="w-full py-6 z-50 relative">
+    <div className="w-full py-6 z-50 relative" style={dynamicStyles}>
       <div className="flex flex-col items-center justify-center">
         <Tag className={classesText}>{titleGroup.titleText}</Tag>
         <div className={classesSubrayado} aria-hidden="true" />
