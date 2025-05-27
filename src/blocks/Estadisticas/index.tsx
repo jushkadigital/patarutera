@@ -8,7 +8,12 @@ interface Props extends EstadisticasBlockType {
 
 export async function EstadisticasBlock(props:Props){
     const {estadisticasText} = props
-    const classessBox = cn('text-white','p-2','rounded-lg','text-center',`bg-[${estadisticasText.colorBox?.toLocaleLowerCase()}]`)
+
+    const dynamicStyles = {
+    "--text-bgcolor": estadisticasText.colorBox?.toLocaleLowerCase() || 'currentColor', // 'currentColor' es un buen fallback
+  } as React.CSSProperties;
+
+    const classessBox = cn('text-white','p-2','rounded-lg','text-center',`bg-[var(--text-bgcolor)]`)
     console.log(estadisticasText.colorBox)
 
     return (
@@ -23,7 +28,7 @@ export async function EstadisticasBlock(props:Props){
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4" style={dynamicStyles}>
         {
         estadisticasText.estadisticasBox &&  estadisticasText.estadisticasBox.map(ele=>(
         <div key={ele.id} className={classessBox}>
