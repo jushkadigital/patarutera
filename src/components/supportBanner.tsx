@@ -8,9 +8,14 @@ colorBanner?: string
 }
 export default function SupportBannerBlock({text,colorBanner}:Props) {
 
-    const classessLine = cn('w-1','h-12',`bg-[${colorBanner}]`,'rounded-full')
+  const dynamicStyles = {
+    "--bg-color": colorBanner || 'currentColor', // 'currentColor' es un buen fallback
+  } as React.CSSProperties;
+
+
+    const classessLine = cn('w-1','h-12',`bg-[var(--bg-color)]`,'rounded-full')
   return (
-    <div className="flex items-center justify-center  bg-gray-50 p-4">
+    <div className="flex items-center justify-center  bg-gray-50 p-4" style={dynamicStyles}>
       <div className="bg-[#ffffff] rounded-3xl shadow-lg border border-[#e2e2e2] p-6 w-full max-w-md">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">

@@ -10,10 +10,10 @@ export async function EstadisticasBlock(props:Props){
     const {estadisticasText} = props
 
     const dynamicStyles = {
-    "--text-bgcolor": estadisticasText.colorBox?.toLocaleLowerCase() || 'currentColor', // 'currentColor' es un buen fallback
+    "--bg-color": estadisticasText.colorBox?.toLocaleLowerCase() || 'currentColor', // 'currentColor' es un buen fallback
   } as React.CSSProperties;
 
-    const classessBox = cn('text-white','p-2','rounded-lg','text-center',`bg-[var(--text-bgcolor)]`)
+    const classessBox = cn('text-white','p-2','rounded-lg','text-center',`bg-[var(--bg-color)]`)
     console.log(estadisticasText.colorBox)
 
     return (
@@ -35,10 +35,8 @@ export async function EstadisticasBlock(props:Props){
           <div className="text-3xl font-bold mb-2">{ele.numbers}</div>
           <div className="text-sm">{ele.description}</div>
         </div>
-
             ))
         }
-        
               </div>
     </div>
     </div>
