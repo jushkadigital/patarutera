@@ -17,7 +17,7 @@ interface CardTourProps {
 }
 
 export default function CardTour({unitData, mode='list'}: CardTourProps) {
-  console.log(unitData)
+  console.log('render card')
   if (mode === 'grid') {
     return (
         <Card className="max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[680px]">

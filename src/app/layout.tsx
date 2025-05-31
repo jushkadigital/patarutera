@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Header } from "@/components/Header";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { BASEURL } from "@/lib/config";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -16,11 +17,15 @@ export const metadata: Metadata = {
   description: "Discover amazing tours, insightful blog posts, and information about our travel agency.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const response = await fetch(`${BASEURL}/api/destinations?limit=100&depth=1&sort=createdAt`)
+  const data = await response.json()
+
   return (
     <html lang="en" className={cn(poppins.variable, "font-poppins")}>
       <head>
@@ -28,7 +33,7 @@ export default function RootLayout({
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body className="min-h-screen flex flex-col">
-        <Header />
+        <Header destinations={data.docs}/>
         <main className="flex-grow">
           <NuqsAdapter>
             {children}

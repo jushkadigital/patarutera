@@ -16,7 +16,7 @@ export const Carousel: React.FC<CarouselProps> = ({ children, className = '' }) 
     <ShadCarousel className={`w-full ${className}`}>
       <CarouselContent>
         {React.Children.map(children, (child, idx) => (
-          <CarouselItem key={idx} className="w-full">
+          <CarouselItem key={idx} className="w-full flex flex-row justify-center items-center">
             {child}
           </CarouselItem>
         ))}

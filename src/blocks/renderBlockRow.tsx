@@ -9,6 +9,7 @@ import { TextContentBlock } from './TextContent'
 import { BeneficiosBlock } from './BeneficiosBlock'
 import { EstadisticasBlock } from './Estadisticas'
 import { GridImages } from './GridImages'
+import { OfertasBlock } from './OfertasBlock'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -17,7 +18,7 @@ const blockComponents = {
   tikTokLinks:TikTokLinksBlock,
   postRelationTour: null,
   reconocimientos: null,
-  ofertas: null,
+  ofertas: OfertasBlock,
   socios: null,
   textContent: TextContentBlock,
   beneficios: BeneficiosBlock,

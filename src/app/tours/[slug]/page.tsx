@@ -1,5 +1,5 @@
 import { RenderBlocks } from '@/blocks/renderBlocks';
-import { RenderHero } from '@/blocks/renderHeros';
+import { RenderHero } from '@/blocks/renderTourHero';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { BASEURL } from '@/lib/config';
 import { draftMode } from 'next/headers';
@@ -43,12 +43,12 @@ export default async function TourPage({ params: paramsPromise, searchParams: se
     notFound();
   }
 
-  const { layout, heroPageBlocks } = tour; // Assuming tours have layout and heroPageBlocks
+  const { layout, heroTour ,title} = tour; // Assuming tours have layout and heroPageBlocks
 
   return (
     <div className="">
       {draft && <LivePreviewListener />}
-      <RenderHero heroBlocks={heroPageBlocks} />
+      <RenderHero heroBlocks={heroTour} title={title}/>
       <RenderBlocks blocks={layout} />
     </div>
   );

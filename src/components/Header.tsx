@@ -4,14 +4,19 @@ import React from 'react';
 import { Navbar } from './Navbar';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { Destination } from '@/cms-types';
 
-export const Header: React.FC = () => {
+interface Props {
+  destinations: Destination[]
+}
+
+export const Header = ({destinations}:Props) => {
   const pathname = usePathname();
   const isHome = pathname === '/';
 
   return (
     <header className={cn(isHome ? 'h-0 overflow-visible' : '')}>
-      <Navbar />
+      <Navbar destinations={destinations}/>
     </header>
   );
 }; 

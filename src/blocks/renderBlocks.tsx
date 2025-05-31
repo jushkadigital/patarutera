@@ -9,6 +9,12 @@ import { TextContentBlock } from './TextContent'
 import { BeneficiosBlock } from './BeneficiosBlock'
 import { EstadisticasBlock } from './Estadisticas'
 import { GridImages } from './GridImages'
+import { SociosBlock } from './Socios'
+import { OfertasBlock } from './OfertasBlock'
+import { ReconocimientosBlock } from './Reconocimientos'
+import { DescrPriceBlock } from './DescPrice'
+import { YouTubeLinksBlock } from './YoutubeLinksBlock'
+import { GuiaTour } from './GuiaTourBlock'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -17,13 +23,16 @@ const blockComponents = {
   carouselDestination: CarouselDestinos,
   tikTokLinks:TikTokLinksBlock,
   postRelationTour: null,
-  reconocimientos: null,
-  ofertas: null,
-  socios: null,
+  reconocimientos: ReconocimientosBlock,
+  ofertas: OfertasBlock,
+  socios: SociosBlock,
   textContent: TextContentBlock,
   beneficios: BeneficiosBlock,
   estadisticas:EstadisticasBlock,
-  gridImages: GridImages
+  gridImages: null,
+  descrPrice: DescrPriceBlock,
+  youTubeLinks: YouTubeLinksBlock,
+  guiaTour: GuiaTour
 }
 
 
@@ -34,6 +43,8 @@ export const RenderBlocks: React.FC<{
   const { blocks } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
+
+  const NoPadding = ['carouselDestination','reconocimientos','socios']
 
    if (hasBlocks) {
     return (
@@ -46,7 +57,7 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="" key={index}>
+                <div className={!NoPadding.includes(blockType) ? 'w-full px-36' :''} key={index}>
    {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
                 </div>

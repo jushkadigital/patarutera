@@ -3,7 +3,9 @@ import { BannerCarousel } from "@/components/BannerCarousel";
 import { Carousel } from "@/components/Carousel";
 import { CarouselItem } from "@/components/ui/carousel";
 import { BASEURL } from "@/lib/config";
-type Props = CarouselHeroPage
+interface Props extends CarouselHeroPage{
+
+}
 
 export async function CarouselHero(props: Props) {
   console.log('HERE')

@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/image"
 interface Props {
     images: {src: string,alt:string}[]
@@ -7,8 +8,7 @@ export default function InfiniteImageCarousel({images}:Props) {
   const duplicatedImages = [...images, ...images]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex flex-col items-center justify-center p-8">
-      <h1 className="text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200">Infinite Image Carousel</h1>
+    <div className="min-h-[300px] flex flex-col items-center justify-center p-8">
 
       <div className="w-full max-w-7xl overflow-hidden relative">
         {/* Gradientes para el efecto de fade */}
@@ -24,14 +24,14 @@ export default function InfiniteImageCarousel({images}:Props) {
           {duplicatedImages.map((item, idx) => (
             <div
               key={`${item.alt}-${idx}`}
-              className="relative w-[300px] h-[200px] flex-shrink-0 rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-lg dark:border-gray-700 dark:bg-gray-800"
+              className="relative w-[250px] flex-shrink-0 rounded-2xl  overflow-hidden "
             >
               <Image
                 src={item.src || "/placeholder.svg"}
                 alt={item.alt}
-                width={300}
-                height={200}
-                className="w-full h-full object-cover"
+                width={100}
+                height={50}
+                className="w-full h-full object-contain aspect-square "
                 priority={idx < 8} // Prioriza las primeras 8 imágenes
               />
             </div>

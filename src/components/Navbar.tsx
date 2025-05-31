@@ -20,11 +20,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { Destination } from '@/cms-types';
 
 // Asume que tienes un logo en esta ruta, o reemplázalo
-const LOGO_URL = '/logo-placeholder.svg'; // Reemplaza con la ruta real de tu logo
-
-export const Navbar: React.FC = () => {
+const LOGO_URL = '/pataruteraLogoWhite.svg'; // Reemplaza con la ruta real de tu logo
+const LOGO_URLCOLOR = '/pataruteraLogo.svg'; // Reemplaza con la ruta real de tu logo
+interface Props {
+  destinations: Destination[]
+}
+export const Navbar = ({destinations}:Props) => {
   const pathname = usePathname();
   const isHome = pathname === '/';
 
@@ -35,53 +39,56 @@ export const Navbar: React.FC = () => {
       : 'bg-background text-foreground shadow-sm sticky top-0 py-4',
   );
 
+
+  console.log(destinations)
+
   return (
     <nav className={navbarClasses}>
       <div className="container mx-auto flex items-center justify-between px-4">
         {/* Sección 1: Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <Image src={LOGO_URL} alt="Logo" width={40} height={40} className={cn(isHome ? 'invert' : '')} />
-          <span className={cn("font-semibold text-xl hidden sm:inline", isHome ? 'text-white' : 'text-foreground')}>MiEmpresa</span>
+          <Image src={isHome ? LOGO_URL: LOGO_URLCOLOR} alt="Logo" width={100} height={100} className={cn(isHome ? '' : '')} />
         </Link>
 
         {/* Secciones 2, 3, 4: Navegación Principal y Dropdown */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
-            {/* Sección 2: Enlace 1 */}
-            <NavigationMenuItem>
-              <Link href="/productos" passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : '')}>
-                  Productos
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
 
+            
+            
             {/* Sección 3: Menú Desplegable */}
             <NavigationMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant={isHome ? "ghost" : "ghost"} className={cn("px-4 py-2", isHome ? 'hover:bg-white/10 text-white' : '')}>
-                    Servicios
+                  <Button variant={isHome ? "ghost" : "ghost"} className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>
+                    Destinos
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
-                  <DropdownMenuItem asChild>
-                    <Link href="/servicios/opcion1">Opción Servicio 1</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/servicios/opcion2">Opción Servicio 2</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/servicios/opcion3">Opción Servicio 3</Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
+              {destinations.map(ele=>(
+              <DropdownMenuItem asChild>
+                <Link href={`/destinos?city=${ele.name}`} passHref>
+                  {ele.name}
+              </Link>
+              </DropdownMenuItem>
+            ))}
+            </DropdownMenuContent>
               </DropdownMenu>
             </NavigationMenuItem>
+            {/* Sección 2: Enlace 1 */}
+            <NavigationMenuItem>
+              <Link href="/productos" passHref>
+                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>
+                  Paquetes
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+
 
             {/* Sección 4: Enlace 2 */}
             <NavigationMenuItem>
-              <Link href="/blog" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : '')}>
+              <Link href="/blog"  passHref>
+                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>
                   Blog
                 </NavigationMenuLink>
               </Link>
@@ -90,8 +97,7 @@ export const Navbar: React.FC = () => {
         </NavigationMenu>
 
         {/* Sección 5: Botón CTA */}
-        <Button variant={isHome ? "outline" : "default"} className={cn(isHome ? 'border-white text-white hover:bg-white hover:text-primary' : '')}>
-          Contacto
+        <Button variant={isHome ? "outline" : "default"} className={cn(isHome ? ' border-white text-white hover:bg-white hover:text-primary' : '','bg-transparent')}>
         </Button>
 
         {/* Placeholder para menú móvil si es necesario */}

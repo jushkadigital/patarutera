@@ -298,7 +298,7 @@ export interface RowBlock {
    */
   columns?:
     | {
-        columnWidth: number;
+        columnWidth: '25' | '33.333333' | '50' | '66.666667' | '75' | '100';
         /**
          * Añade los bloques de contenido que irán en esta columna.
          */
@@ -491,7 +491,7 @@ export interface ReconocimientosBlockType {
   blockTitle: TitleGroup;
   reconocimientos?:
     | {
-        image?: (number | null) | Media;
+        image: number | Media;
         id?: string | null;
       }[]
     | null;
@@ -507,7 +507,7 @@ export interface SociosBlockType {
   blockTitle: TitleGroup;
   socios?:
     | {
-        image?: (number | null) | Media;
+        image: number | Media;
         id?: string | null;
       }[]
     | null;
@@ -650,7 +650,7 @@ export interface TextContentBlockType {
  * via the `definition` "gridImagesBlockType".
  */
 export interface GridImagesBlockType {
-  typeGrid: 'mason' | 'regular';
+  typeGrid: 'masonry' | 'overlapping' | 'list' | 'mosaic' | 'grid';
   Image?:
     | {
         image: number | Media;
@@ -677,6 +677,7 @@ export interface Tour {
     | YouTubeLinksBlockType
     | SociosBlockType
     | ReconocimientosBlockType
+    | TextContentBlockType
   )[];
   featuredImage: number | Media;
   miniDescription: {
@@ -911,12 +912,15 @@ export interface YouTubeLinksBlockType {
 export interface Oferta {
   id: number;
   title: string;
-  descripcion?: string | null;
+  type: string;
   /**
    * Ingrese el descuento en % (e.g., 10 para 10%).
    */
   descuentoPorcentaje: number;
+  persona: string;
   imagen: number | Media;
+  price?: number | null;
+  slug?: string | null;
   tourRelacionado: number | Tour;
   updatedAt: string;
   createdAt: string;
@@ -1568,6 +1572,7 @@ export interface ToursSelect<T extends boolean = true> {
         youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
         socios?: T | SociosBlockTypeSelect<T>;
         reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+        textContent?: T | TextContentBlockTypeSelect<T>;
       };
   featuredImage?: T;
   miniDescription?: T;
@@ -1699,9 +1704,12 @@ export interface YouTubeLinksBlockTypeSelect<T extends boolean = true> {
  */
 export interface OfertasSelect<T extends boolean = true> {
   title?: T;
-  descripcion?: T;
+  type?: T;
   descuentoPorcentaje?: T;
+  persona?: T;
   imagen?: T;
+  price?: T;
+  slug?: T;
   tourRelacionado?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1930,4 +1938,3 @@ export interface TaskSchedulePublish {
 export interface Auth {
   [k: string]: unknown;
 }
-

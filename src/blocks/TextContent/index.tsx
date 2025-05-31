@@ -8,6 +8,7 @@ interface Props extends TextContentBlockType {
 }
 
 export async function TextContentBlock(props:Props){
+    console.log('textRender')
     const {blockTitle,description,descriptionAlignment} = props
     const classessDescription = cn(`text-${descriptionAlignment}`,`text-[20px]`)
     return (

@@ -57,6 +57,7 @@ const paramsCat = new URLSearchParams()
     return <div className="container mx-auto py-8 text-center text-red-500">{fetchError}</div>;
   }
 
+  console.log('render.BlockTour')
   return (
     // No hay controles de modo aquí porque es un Server Component
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
