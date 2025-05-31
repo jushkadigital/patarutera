@@ -41,7 +41,7 @@ export default async function RootLayout({
           </NuqsAdapter>
         </main>
         {/* Aquí podrías agregar un Footer si lo tienes */}
-        <Footer />
+        <Footer destination={data.docs}/>
       </body>
     </html>
   );

@@ -1,7 +1,12 @@
+import { Destination } from "@/cms-types"
 import Image from "next/image"
 import Link from "next/link"
 
-export default function Footer() {
+interface Props  {
+  destination: Destination[]
+}
+
+export default function Footer({destination}:Props) {
   return (
     <footer className="relative">
       {/* Background Image */}
@@ -18,8 +23,13 @@ export default function Footer() {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-16 text-white">
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Contact Information */}
+        <div>
+          <Image src={"/pataruteraLogo.svg"} alt="Logo" width={350} height={400} className={""} />
+        </div>
+          <div>
+
           <div>
             <h3 className="text-[#3eae64] text-xl font-medium mb-6">INFORMACIÓN DE CONTACTO</h3>
             <div className="space-y-4">
@@ -37,26 +47,17 @@ export default function Footer() {
               <p>Sábados: 8:00 - 18:30</p>
             </div>
           </div>
-
+          </div>
           {/* Destinations */}
           <div>
             <h3 className="text-[#3eae64] text-xl font-medium mb-6">DESTINOS</h3>
             <div className="space-y-4">
-              <Link href="#" className="block hover:underline">
-                Cusco
-              </Link>
-              <Link href="#" className="block hover:underline">
-                Lima
-              </Link>
-              <Link href="#" className="block hover:underline">
-                Arequipa
-              </Link>
-              <Link href="#" className="block hover:underline">
-                Madre de Dios
-              </Link>
-              <Link href="#" className="block hover:underline">
-                Ica
-              </Link>
+              {destination.map(ele=>(
+               <Link href={`/destinos?city=${ele.name}`} className="block hover:underline">
+                {ele.name}
+              </Link> 
+              ))}
+              
             </div>
           </div>
         </div>
