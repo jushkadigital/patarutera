@@ -93,7 +93,7 @@ export default async function Page({ params: paramsPromise, searchParams: search
     // console.log(layout);
 
     return (
-      <div className="">
+      <div className="flex flex-col space-y-10">
          {draft&&<LivePreviewListener />}
         <RenderHero heroBlocks={heroPageBlocks} />
         <RenderBlocks blocks={layout} />

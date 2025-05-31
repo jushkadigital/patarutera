@@ -24,7 +24,7 @@ export default function InfiniteImageCarousel({images}:Props) {
           {duplicatedImages.map((item, idx) => (
             <div
               key={`${item.alt}-${idx}`}
-              className="relative w-[250px] flex-shrink-0 rounded-2xl  overflow-hidden "
+              className="relative w-[200px] flex-shrink-0 rounded-2xl  overflow-hidden "
             >
               <Image
                 src={item.src || "/placeholder.svg"}
