@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Header } from "@/components/Header";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { BASEURL } from "@/lib/config";
+import Footer from "@/components/Footer";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -40,7 +41,7 @@ export default async function RootLayout({
           </NuqsAdapter>
         </main>
         {/* Aquí podrías agregar un Footer si lo tienes */}
-        {/* <Footer /> */}
+        <Footer />
       </body>
     </html>
   );
