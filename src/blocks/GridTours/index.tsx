@@ -1,16 +1,22 @@
 import type { Destination, GridToursBlock as GridToursBlockType, Tour, TourCategory } from '@/cms-types';
 import CardTour, { CardTourData } from '@/components/CardTour';
 import { Subtitle } from '@/components/Subtitle';
+import { ToursComponent } from '@/components/ToursComponent';
+import { useSharedState } from '@/hooks/sharedContextDestinos';
 import { BASEURL } from '@/lib/config';
 import { cn } from '@/lib/utils';
 
 // Añadir 'mode' a las Props
 interface Props extends GridToursBlockType {
+  rangeSlider?: boolean
 }
 
 export async function GridTours(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
   const { id, gridColumns, gridStyle:mode  ,destination,category,blockTitle} = props;
+
+
+
   console.log(mode)
   let tours: CardTourData[] = [];
   let fetchError = null;
@@ -56,6 +62,7 @@ const paramsCat = new URLSearchParams()
   if (fetchError) {
     return <div className="container mx-auto py-8 text-center text-red-500">{fetchError}</div>;
   }
+  
 
   console.log('render.BlockTour')
   return (
@@ -63,17 +70,8 @@ const paramsCat = new URLSearchParams()
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={blockTitle}/>
-      <div className={containerClasses}>
-        {tours.length > 0 ? (
-          tours.map((tour) => (
-            // Pasar la prop 'mode' a CardTour
-            // Asegurarse que tour.slug existe y es único. Si no, usar tour.id u otro identificador único.
-            <CardTour key={tour.id} unitData={tour} mode={mode ? 'grid' : 'list'} />
-          ))
-        ) : (
-          <p className="col-span-full text-center text-gray-500">No se encontraron tours.</p>
-        )}
-      </div>
+      <ToursComponent mode={mode!} tours={tours} rangeSlider={props.rangeSlider}/>
+      
     </div>
   );
 }

@@ -12,11 +12,11 @@ const Banner: React.FC<BannerProps> = ({ title, backgroundUrl, className = '' })
   console.log(backgroundUrl)
   return (
     <div
-      className={`relative w-full h-64 flex items-center justify-center text-white overflow-hidden ${className}`}
+      className={`relative w-full h-[50vh] flex items-center justify-center text-white overflow-hidden ${className}`}
     >
       {/* Imagen de fondo absoluta */}
       <Image
-        src={BASEURL + backgroundUrl}
+        src={backgroundUrl}
         alt={title}
         fill
         className="object-cover object-center absolute inset-0 -z-20"

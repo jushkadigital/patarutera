@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import  { Fragment } from 'react'
 
 import type { Media, Page } from '@/cms-types'
 import { MediaBlock } from '../blocks/MediaBlock'
@@ -9,6 +9,7 @@ import { BASEURL } from '@/lib/config'
 import { RenderHero } from '@/blocks/renderHeros'
 
 import { LeftPanelSearch } from '@/components/leftPanelSearch'
+import { SharedStateProvider } from '@/hooks/sharedContextDestinos'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -102,6 +103,7 @@ export async function DestinosPage(props: {
         })}
       </Fragment>
 
+      <SharedStateProvider>
       <div className='flex flex-row'>
         <div className='w-1/4'>
           <LeftPanelSearch categories={categories} destinations={destinations} />
@@ -113,7 +115,7 @@ export async function DestinosPage(props: {
               switch (blockType) {
                 case 'gridTours':
                   return <div className='my-16' key={index}>
-                    <GridTours  {...block} gridColumns={100} destination={destinationData} gridStyle={false}/>
+                    <GridTours  {...block} gridColumns={100} destination={destinationData} gridStyle={false} rangeSlider={true}/>
                   </div>
                 default:
                   return null
@@ -123,6 +125,7 @@ export async function DestinosPage(props: {
 
         </div>
       </div>
+      </SharedStateProvider>
     </div>
   )
 }

@@ -67,7 +67,7 @@ export const Navbar = ({destinations}:Props) => {
                 <DropdownMenuContent align="start">
               {destinations.map(ele=>(
               <DropdownMenuItem asChild>
-                <Link href={`/destinos?city=${ele.name}`} passHref>
+                <Link href={`/destinos?destination=${ele.name}&categories=`} passHref>
                   {ele.name}
               </Link>
               </DropdownMenuItem>
