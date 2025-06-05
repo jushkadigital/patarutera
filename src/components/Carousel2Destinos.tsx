@@ -3,6 +3,8 @@
 import * as React from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
+import { TitleGroup } from "@/cms-types"
+import { Subtitle } from "./Subtitle"
 
 interface SlideData {
   title: string
@@ -13,9 +15,10 @@ interface SlideData {
 
 interface CustomCarouselProps {
   slides: SlideData[]
+  titleObj: TitleGroup
 }
 
-export default function CustomCarousel({ slides }: CustomCarouselProps) {
+export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps) {
   const [api, setApi] = React.useState<CarouselApi>()
   const [current, setCurrent] = React.useState(0)
   const [count, setCount] = React.useState(0)
@@ -46,10 +49,11 @@ export default function CustomCarousel({ slides }: CustomCarouselProps) {
   }
 
   return (
-    <div className="w-full h-[90vmin] mx-auto relative">
+    <div className="w-full h-[100vmin] mx-auto relative">
       {/* Carousel container with background */}
       <div className="w-full h-full rounded-3xl overflow-hidden relative">
         {/* Background image container */}
+        <Subtitle titleGroup={titleObj} />
         <div className="absolute inset-0 w-full h-full">
           <AnimatePresence initial={false}>
             <motion.div
@@ -149,7 +153,7 @@ export default function CustomCarousel({ slides }: CustomCarouselProps) {
           </motion.button>
 
           {/* Slide indicators */}
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
+          <div className="absolute bottom-[130px] left-0 right-0 flex justify-center gap-2 z-20">
             {slides.map((_, index) => (
               <motion.button
                 key={index}

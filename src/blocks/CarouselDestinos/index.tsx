@@ -18,9 +18,7 @@ export async function CarouselDestinos(props: Props) {
     src:  doc.imageDestination.url,
     bgImage:  doc.backgroundDestination.url,
   }))
-  const slideData = [
-  ]
-  return <div className="w-full overflow-hidden h-full">
-    <CarouselDestinosComponent slides={dataMap}/>
+  return <div className="w-full overflow-hidden ">
+    <CarouselDestinosComponent slides={[...dataMap,...dataMap]} titleObj={titleObj}/>
   </div>
 } 
