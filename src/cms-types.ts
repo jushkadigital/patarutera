@@ -102,8 +102,14 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    reconocimientosCarousel: ReconocimientosCarousel;
+    sociosCarousel: SociosCarousel;
+  };
+  globalsSelect: {
+    reconocimientosCarousel: ReconocimientosCarouselSelect<false> | ReconocimientosCarouselSelect<true>;
+    sociosCarousel: SociosCarouselSelect<false> | SociosCarouselSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -256,6 +262,7 @@ export interface Page {
     | EstadisticasBlockType
     | TextContentBlockType
     | GridImagesBlockType
+    | GridPaquetesBlock
   )[];
   publishedAt?: string | null;
   slug?: string | null;
@@ -489,12 +496,6 @@ export interface Post {
  */
 export interface ReconocimientosBlockType {
   blockTitle: TitleGroup;
-  reconocimientos?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'reconocimientos';
@@ -505,12 +506,6 @@ export interface ReconocimientosBlockType {
  */
 export interface SociosBlockType {
   blockTitle: TitleGroup;
-  socios?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'socios';
@@ -533,6 +528,7 @@ export interface BlogCategory {
  */
 export interface OfertasBlock {
   title: TitleGroup;
+  typeGrid: 'masonry' | 'overlapping' | 'list' | 'mosaic' | 'grid';
   id?: string | null;
   blockName?: string | null;
   blockType: 'ofertas';
@@ -660,6 +656,29 @@ export interface GridImagesBlockType {
   id?: string | null;
   blockName?: string | null;
   blockType: 'gridImages';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridPaquetesBlock".
+ */
+export interface GridPaquetesBlock {
+  /**
+   * Si está marcado, los campos de este bloque se mostrarán con logica del frontend.
+   */
+  overrideDefaults?: boolean | null;
+  blockTitle: TitleGroup;
+  gridColumns?: number | null;
+  /**
+   * True grid, false list
+   */
+  gridStyle?: boolean | null;
+  /**
+   * Si se selecciona un destino, solo se mostrarán los paquetes de ese destino.
+   */
+  destination?: (number | Destination)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gridPaquetes';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1321,6 +1340,7 @@ export interface PagesSelect<T extends boolean = true> {
         estadisticas?: T | EstadisticasBlockTypeSelect<T>;
         textContent?: T | TextContentBlockTypeSelect<T>;
         gridImages?: T | GridImagesBlockTypeSelect<T>;
+        gridPaquetes?: T | GridPaquetesBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -1429,12 +1449,6 @@ export interface PostRelationTourBlockTypeSelect<T extends boolean = true> {
  */
 export interface SociosBlockTypeSelect<T extends boolean = true> {
   blockTitle?: T | TitleGroupSelect<T>;
-  socios?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
   id?: T;
   blockName?: T;
 }
@@ -1444,12 +1458,6 @@ export interface SociosBlockTypeSelect<T extends boolean = true> {
  */
 export interface ReconocimientosBlockTypeSelect<T extends boolean = true> {
   blockTitle?: T | TitleGroupSelect<T>;
-  reconocimientos?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
   id?: T;
   blockName?: T;
 }
@@ -1459,6 +1467,7 @@ export interface ReconocimientosBlockTypeSelect<T extends boolean = true> {
  */
 export interface OfertasBlockSelect<T extends boolean = true> {
   title?: T | TitleGroupSelect<T>;
+  typeGrid?: T;
   id?: T;
   blockName?: T;
 }
@@ -1548,6 +1557,19 @@ export interface GridImagesBlockTypeSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridPaquetesBlock_select".
+ */
+export interface GridPaquetesBlockSelect<T extends boolean = true> {
+  overrideDefaults?: T;
+  blockTitle?: T | TitleGroupSelect<T>;
+  gridColumns?: T;
+  gridStyle?: T;
+  destination?: T;
   id?: T;
   blockName?: T;
 }
@@ -1903,6 +1925,66 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reconocimientosCarousel".
+ */
+export interface ReconocimientosCarousel {
+  id: number;
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sociosCarousel".
+ */
+export interface SociosCarousel {
+  id: number;
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reconocimientosCarousel_select".
+ */
+export interface ReconocimientosCarouselSelect<T extends boolean = true> {
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sociosCarousel_select".
+ */
+export interface SociosCarouselSelect<T extends boolean = true> {
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TaskSchedulePublish".
  */
 export interface TaskSchedulePublish {
@@ -1938,3 +2020,4 @@ export interface TaskSchedulePublish {
 export interface Auth {
   [k: string]: unknown;
 }
+

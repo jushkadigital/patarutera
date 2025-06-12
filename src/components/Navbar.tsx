@@ -77,7 +77,7 @@ export const Navbar = ({destinations}:Props) => {
             </NavigationMenuItem>
             {/* Sección 2: Enlace 1 */}
             <NavigationMenuItem>
-              <Link href="/productos" passHref>
+              <Link href="/paquetes?destinations=Ica,Cusco" passHref>
                 <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>
                   Paquetes
                 </NavigationMenuLink>
@@ -87,7 +87,7 @@ export const Navbar = ({destinations}:Props) => {
 
             {/* Sección 4: Enlace 2 */}
             <NavigationMenuItem>
-              <Link href="/blog"  passHref>
+              <Link href="/blogs"  passHref>
                 <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>
                   Blog
                 </NavigationMenuLink>

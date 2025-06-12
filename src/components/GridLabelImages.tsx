@@ -12,11 +12,11 @@ interface GridItem {
 
 interface ComponentGridProps {
   items: GridItem[]
-  defaultLayout?: "grid" | "masonry" | "overlapping" | "list" | "mosaic"
+  layout?: "grid" | "masonry" | "overlapping" | "list" | "mosaic"
 }
 
-export default function ComponentGrid({ items, defaultLayout = "grid" }: ComponentGridProps) {
-  const [layout, setLayout] = useState(defaultLayout)
+export default function ComponentGrid({ items, layout = "grid" }: ComponentGridProps) {
+ // const [layout, setLayout] = useState(defaultLayout)
 
   // Ensure we have between 3-9 items
   const validItems = items.slice(0, 9)
@@ -203,7 +203,7 @@ export default function ComponentGrid({ items, defaultLayout = "grid" }: Compone
           </span>
         </div>
 
-        <Select value={layout} onValueChange={(value: any) => setLayout(value)}>
+        {/*<Select value={layout} onValueChange={(value: any) => setLayout(value)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select layout" />
           </SelectTrigger>
@@ -220,7 +220,7 @@ export default function ComponentGrid({ items, defaultLayout = "grid" }: Compone
               )
             })}
           </SelectContent>
-        </Select>
+        </Select>*/}
       </div>
 
       {/* Component Grid */}

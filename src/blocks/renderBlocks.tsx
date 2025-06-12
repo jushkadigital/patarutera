@@ -15,9 +15,11 @@ import { ReconocimientosBlock } from './Reconocimientos'
 import { DescrPriceBlock } from './DescPrice'
 import { YouTubeLinksBlock } from './YoutubeLinksBlock'
 import { GuiaTour } from './GuiaTourBlock'
+import { GridPaquetes } from './GridPaquetes'
 
 const blockComponents = {
   gridTours: GridTours,
+  gridPaquetes: GridPaquetes,
   mediaBlock: MediaBlock,
   rowBlock: RowBlock,
   carouselDestination: CarouselDestinos,

@@ -1,18 +1,28 @@
 import { Media, ReconocimientosBlockType } from "@/cms-types";
 import InfiniteImageCarousel from "@/components/infinity-image-carousel";
 import { Subtitle } from "@/components/Subtitle";
+import { BASEURL } from "@/lib/config";
 
 interface Props extends ReconocimientosBlockType {
 
 }
 
 export async function ReconocimientosBlock(props:Props){
-    const {reconocimientos,blockTitle} = props
+    const {blockTitle} = props
+    
+    const response = await fetch(`${BASEURL}/api/globals/reconocimientosCarousel`)
+    if (!response.ok) {
+        // Consider logging the response status and text for more detailed error info
+        // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
 
-    return reconocimientos && reconocimientos.length > 0 ? 
+
+    return data.images && data.images.length > 0 ? 
     (<div>
         <Subtitle titleGroup={blockTitle}/>
-        <InfiniteImageCarousel images={reconocimientos.map((ele)=>({src:(ele.image as Media).url!,alt: 'image'}))}/>
+        <InfiniteImageCarousel images={data.images.map((ele)=>({src:(ele.image as Media).url!,alt: 'image'}))}/>
     </div>) 
     :
      <div></div>

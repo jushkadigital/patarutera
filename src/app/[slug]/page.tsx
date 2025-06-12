@@ -3,6 +3,7 @@ import { RenderHero } from '@/blocks/renderHeros';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { BASEURL } from '@/lib/config';
 import { DestinosPage } from '@/specialPages/destinosPage';
+import { PaquetesPage } from '@/specialPages/paquetesPage';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
@@ -21,6 +22,7 @@ const specialPageComponents: { [key: string]: React.ComponentType<any> } = {
   // 'otro-slug-especial': OtroComponenteEspecial,
   // Add more mappings as needed
   'destinos': DestinosPage,
+  'paquetes': PaquetesPage
 };
 
 // Assume slugsEspeciales is defined here or imported

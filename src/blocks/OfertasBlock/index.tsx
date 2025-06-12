@@ -12,7 +12,7 @@ interface Props extends OfertasBlockType {
 
 export async function OfertasBlock(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
-  const {title} = props
+  const {title,typeGrid} = props
 
   let ofertas:Oferta[] = []
   try {
@@ -46,7 +46,7 @@ export async function OfertasBlock(props: Props) {
                 alt: 'gaa',
                 component: <OfertaCardComponent  price={ele.price!} perPerson={ele.persona} type={ele.type} title={ele.title}  background={(ele.imagen as Media).url! } slug={ele.slug!}/>
 
-            }))}/>    
+            }))} layout={typeGrid}/>    
       </div>
     </div>
   );

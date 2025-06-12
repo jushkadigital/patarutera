@@ -10,27 +10,25 @@ import { RenderHero } from '@/blocks/renderHeros'
 
 import { LeftPanelSearch } from '@/components/leftPanelSearch'
 import { SharedStateProvider } from '@/hooks/sharedContextDestinos'
+import { LeftPanelSearchPaquete } from '@/components/leftSearchPanelPaquetes'
+import { GridPaquetes } from '@/blocks/GridPaquetes'
 
-
-
-export async function DestinosPage(props: {
+export async function PaquetesPage(props: {
   pageData: Page,
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
-  const { destination } = props.searchParams
-  const destinationRequest = await fetch(`${BASEURL}/api/destinations?where[name][equals]=${destination}`)
+  const { destinations } = props.searchParams
+  console.log(destinations)
+  const destinationRequest = await fetch(`${BASEURL}/api/destinations?where[name][in]=${destinations}`)
   const destinationDataPre = await destinationRequest.json()
-  const destinationData = destinationDataPre.docs[0]
+  const destinationData = destinationDataPre.docs
   const { layout: blocks, heroPageBlocks } = props.pageData
   const hasBlocksLayout = blocks && Array.isArray(blocks) && blocks.length > 0
   const hasBlocksHero = heroPageBlocks && Array.isArray(heroPageBlocks) && heroPageBlocks.length > 0
 
-  const categoriesRequest = await fetch(`${BASEURL}/api/tourCategory`)
-  const categoriesData = await categoriesRequest.json()
-  const categories = categoriesData.docs
   const destinationsRequest = await fetch(`${BASEURL}/api/destinations`)
   const destinationsData = await destinationsRequest.json()
-  const destinations = destinationsData.docs
+  const destinationsDataFinal = destinationsData.docs
   // Si ambos son falsos, fallback
   if (!hasBlocksLayout && !hasBlocksHero) {
     return <div>No hay contenido para mostrar.</div>
@@ -51,7 +49,7 @@ export async function DestinosPage(props: {
                   //const data = await respone.json()
                   //const destinationData = data.docs[0]
 
-                  return <BannerBlock {...block} title={destinationData.name} image={(destinationData.backgroundDestination as Media)} />
+                  return <BannerBlock {...block} title={'Paquete'} image={(destinationsDataFinal[0].backgroundDestination as Media)} />
                 }
             }
           })}
@@ -91,7 +89,7 @@ export async function DestinosPage(props: {
           switch (blockType) {
             case 'banner':
               {
-                return <BannerBlock {...block} title={destinationData.name} image={(destinationData.backgroundDestination as Media)} />
+                  return <BannerBlock {...block} title={'Paquete'} image={(destinationsDataFinal[0].backgroundDestination as Media)} />
               }
             default:
               return null
@@ -102,16 +100,16 @@ export async function DestinosPage(props: {
       <SharedStateProvider>
       <div className='flex flex-row'>
         <div className='w-1/4'>
-          <LeftPanelSearch categories={categories} destinations={destinations} />
+          <LeftPanelSearchPaquete destinations={destinationsDataFinal} />
         </div>
         <div className='w-3/4'>
           <Fragment>
             {blocks.map(async (block, index) => {
               const { blockType } = block
               switch (blockType) {
-                case 'gridTours':
+                case 'gridPaquetes':
                   return <div className='my-16' key={index}>
-                    <GridTours  {...block} gridColumns={100} destination={destinationData} gridStyle={false} rangeSlider={true}/>
+                    <GridPaquetes  {...block} destination={destinationData} gridColumns={100} gridStyle={false} rangeSlider={true}/>
                   </div>
                 default:
                   return null

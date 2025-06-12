@@ -15,11 +15,11 @@ interface ImageItem {
 
 interface ImageGridProps {
   images: ImageItem[]
-  defaultLayout?: "grid" | "masonry" | "overlapping" | "list" | "mosaic"
+  layout?: "grid" | "masonry" | "overlapping" | "list" | "mosaic"
 }
 
-export default function ImageGrid({ images, defaultLayout = "grid" }: ImageGridProps) {
-  const [layout, setLayout] = useState(defaultLayout)
+export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
+  //const [layout, setLayout] = useState(defaultLayout)
 
   // Ensure we have between 3-9 images
   const validImages = images.slice(0, 9)
@@ -291,7 +291,7 @@ export default function ImageGrid({ images, defaultLayout = "grid" }: ImageGridP
           </span>
         </div>
 
-        <Select value={layout} onValueChange={(value: any) => setLayout(value)}>
+        {/*<Select value={layout} onValueChange={(value: any) => setLayout(value)}>
           <SelectTrigger className="">
             <SelectValue placeholder="Select layout" />
           </SelectTrigger>
@@ -308,7 +308,7 @@ export default function ImageGrid({ images, defaultLayout = "grid" }: ImageGridP
               )
             })}
           </SelectContent>
-        </Select>
+        </Select>*/}
       </div>
 
       {/* Image Grid */}
