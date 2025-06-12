@@ -121,7 +121,8 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
     return (
       <Card className="overflow-hidden shadow-lg max-w-full rounded-3xl flex flex-row py-0 max-h-[300px]">
           {/* Section 1: Image (Left) */}
-          <div className="w-1/3 relative">
+          <div className="w-1/3 relative">  
+
             <div className="absolute top-4 left-4 z-10">
               <Badge variant="outline" className="bg-white px-6 py-2 rounded-full border-0">
                 <span className="text-[#79368c] font-bold">
