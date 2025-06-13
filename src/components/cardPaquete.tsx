@@ -196,7 +196,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
                 </TooltipProvider>
               </div>
             </div>
-        <Link href={`/tours/${unitData.slug}`} className="w-full flex justify-center">
+        <Link href={`/paquetes/${unitData.slug}`} className="w-full flex justify-center">
         <Button className="w-fit bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold p-0 px-3 py-3 text-[16px] rounded-full ">
           Ver Detalles
         </Button>

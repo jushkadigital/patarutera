@@ -1,6 +1,6 @@
 import  { Fragment } from 'react'
 
-import type { Media, Page } from '@/cms-types'
+import type { GridToursBlock, Media, Page } from '@/cms-types'
 import { MediaBlock } from '../blocks/MediaBlock'
 import { GridTours } from '../blocks/GridTours'
 import { RowBlock } from '../blocks/RowBlock'
@@ -10,8 +10,33 @@ import { RenderHero } from '@/blocks/renderHeros'
 
 import { LeftPanelSearch } from '@/components/leftPanelSearch'
 import { SharedStateProvider } from '@/hooks/sharedContextDestinos'
+import { CarouselDestinos } from '@/blocks/CarouselDestinos'
+import { TikTokLinksBlock } from '@/blocks/TikToksLinksBlock'
+import { ReconocimientosBlock } from '@/blocks/Reconocimientos'
+import { OfertasBlock } from '@/blocks/OfertasBlock'
+import { SociosBlock } from '@/blocks/Socios'
+import { TextContentBlock } from '@/blocks/TextContent'
+import { BeneficiosBlock } from '@/blocks/BeneficiosBlock'
+import { EstadisticasBlock } from '@/blocks/Estadisticas'
+import { DescrPriceBlock } from '@/blocks/DescPrice'
+import { YouTubeLinksBlock } from '@/blocks/YoutubeLinksBlock'
 
-
+const blockComponents = {
+  gridTours: GridTours,
+  mediaBlock: MediaBlock,
+  rowBlock: RowBlock,
+  carouselDestination: CarouselDestinos,
+  tikTokLinks:TikTokLinksBlock,
+  postRelationTour: null,
+  reconocimientos: ReconocimientosBlock,
+  ofertas: OfertasBlock,
+  socios: SociosBlock,
+  textContent: TextContentBlock,
+  beneficios: BeneficiosBlock,
+  estadisticas:EstadisticasBlock,
+  gridImages: null,
+  youTubeLinks: YouTubeLinksBlock,
+}
 
 export async function DestinosPage(props: {
   pageData: Page,
@@ -37,51 +62,10 @@ export async function DestinosPage(props: {
   }
 
   // Solo heroBlocks
-  if (!hasBlocksLayout && hasBlocksHero) {
+  const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
+  
+  const NoPadding = ['carouselDestination','reconocimientos','socios']
 
-    return (
-      <div>
-        <Fragment>
-          {heroPageBlocks.map(async (block, index) => {
-            const { blockType } = block
-            switch (blockType) {
-              case 'banner':
-                {
-                  //const respone = await fetch(`${BASEURL}/api/destinations?where[name][equals]=${destination}`)
-                  //const data = await respone.json()
-                  //const destinationData = data.docs[0]
-
-                  return <BannerBlock {...block} title={destinationData.name} image={(destinationData.backgroundDestination as Media)} />
-                }
-            }
-          })}
-        </Fragment>
-      </div>
-    )
-  }
-
-  // Solo layout blocks
-  if (hasBlocksLayout && !hasBlocksHero) {
-    return (
-      <div>
-        <Fragment>
-          {blocks.map(async (block, index) => {
-            const { blockType } = block
-            switch (blockType) {
-              case 'gridTours':
-                return <div className='my-16' key={index}>
-                  <GridTours  {...block} gridColumns={6} />
-                </div>
-              default:
-                return null
-            }
-          })}
-        </Fragment>
-      </div>
-    )
-  }
-
-  // Ambos verdaderos
   return (
     <div>
       <Fragment>
@@ -100,28 +84,38 @@ export async function DestinosPage(props: {
       </Fragment>
 
       <SharedStateProvider>
-      <div className='flex flex-row'>
+      <div className='flex flex-row mt-10'>
         <div className='w-1/4'>
           <LeftPanelSearch categories={categories} destinations={destinations} />
         </div>
         <div className='w-3/4'>
-          <Fragment>
-            {blocks.map(async (block, index) => {
-              const { blockType } = block
-              switch (blockType) {
-                case 'gridTours':
-                  return <div className='my-16' key={index}>
-                    <GridTours  {...block} gridColumns={100} destination={destinationData} gridStyle={false} rangeSlider={true}/>
-                  </div>
-                default:
-                  return null
-              }
-            })}
-          </Fragment>
+
+        <GridTours  {...blocks[0] as GridToursBlock} gridColumns={100} destination={destinationData} gridStyle={false} rangeSlider={true}/>
+            
 
         </div>
       </div>
       </SharedStateProvider>
+      <div className='flex flex-col w-full'>
+          <Fragment>
+              {hasBlocks && blocks.slice(1).map((block, index) => {
+          const { blockType } = block
+          console.log(blockType)
+          if (blockType && blockType in blockComponents) {
+            const Block = blockComponents[blockType]
+
+            if (Block) {
+              return (
+                <div className={!NoPadding.includes(blockType) ? 'w-full px-36 ' :'w-full'} key={index}>
+                  <Block {...block} disableInnerContainer />
+                </div>
+              )
+            }
+          }
+          return null
+        })}
+          </Fragment>
+      </div>
     </div>
   )
 }

@@ -50,9 +50,9 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
   }
 
   return (
-    <div className="w-full h-[100vmin] mx-auto relative">
+    <div className="w-full h-[60vh] lg:h-[100vh] mx-auto relative">
       {/* Carousel container with background */}
-      <div className="w-full h-full rounded-3xl overflow-hidden relative">
+      <div className="w-full h-full overflow-hidden relative">
         {/* Background image container */}
         <Subtitle titleGroup={titleObj} />
         <div className="absolute inset-0 w-full h-full">

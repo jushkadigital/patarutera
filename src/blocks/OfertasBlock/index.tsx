@@ -36,10 +36,10 @@ export async function OfertasBlock(props: Props) {
 
   return (
     // No hay controles de modo aquí porque es un Server Component
-    <div className=" mx-auto py-4 bg bg-white w-[90%]">
+    <div className=" mx-auto py-0 bg bg-white ">
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={title}/>
-      <div className="w-[80%] mx-auto">
+      <div className=" mx-auto">
         <GridComponent items={ofertas.map(ele=>({
                 backgroundImage: (ele.imagen as Media).url! ,
                 id: String(ele.id!),

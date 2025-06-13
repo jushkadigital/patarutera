@@ -33,10 +33,10 @@ export default function ComponentGrid({ items, layout = "grid" }: ComponentGridP
   ]
 
   const renderGridLayout = () => {
-    const gridCols = validItems.length <= 4 ? "grid-cols-2" : validItems.length <= 6 ? "grid-cols-3" : "grid-cols-3"
+    const gridCols = validItems.length <= 4 ? "lg:grid-cols-2" : validItems.length <= 6 ? "lg:grid-cols-3" : "lg:grid-cols-3"
 
     return (
-      <div className={`grid ${gridCols} gap-4`}>
+      <div className={`grid grid-cols-1 ${gridCols} gap-4`}>
         {validItems.map((item) => (
           <div
             key={item.id}

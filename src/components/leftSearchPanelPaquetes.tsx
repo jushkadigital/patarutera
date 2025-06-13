@@ -25,7 +25,7 @@ interface LeftPanelSearchProps {
 // Componente principal: Se elimina TourCategoryList
 export function LeftPanelSearchPaquete({ title, destinations }: LeftPanelSearchProps) {
   return (
-    <div className='flex flex-col w-full space-y-4'>
+    <div className='flex flex-col w-full space-y-10 p-4'>
       <MultiDestinationSearch destinations={destinations} />
       <PriceFilter />
     </div>
@@ -59,9 +59,9 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
   };
 
   return (
-    <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden">
+    <div className="w-full  bg-white rounded-2xl shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-6 border-b border-[#d9d9d9]">
+      <div className="px-6 py-6 border-b ">
         <div className="flex items-center gap-3">
           <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
           <h1 className="text-[#2970b7] text-xl font-semibold tracking-wide">BUSCAR TOURS</h1>

@@ -16,12 +16,13 @@ export const Subtitle = ({ titleGroup, className = "" }:SubtitleProps)=>{
     const classesSubrayado = cn('mt-2','h-1','w-16',`bg-[var(--underline-color)]`)
     const classesText = cn('text-center','text-2xl','font-semibold','md:text-3xl',`text-[var(--text-color)]`,textSize[titleGroup.size],className)
     const Tag:any = (titleGroup.tag.toLowerCase()) 
-    return (
-    <div className="w-full py-6 z-50 relative" style={dynamicStyles}>
+    return titleGroup.titleText.trim() != "" ? <div className="w-full py-6 z-50 relative" style={dynamicStyles}>
       <div className="flex flex-col items-center justify-center">
         <Tag className={classesText}>{titleGroup.titleText}</Tag>
+        
         <div className={classesSubrayado} aria-hidden="true" />
       </div>
-    </div>       
-    )
+    </div>
+    : <div></div>
+           
 }

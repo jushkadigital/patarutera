@@ -13,7 +13,7 @@ export async function EstadisticasBlock(props:Props){
     "--bg-color": estadisticasText.colorBox?.toLocaleLowerCase() || 'currentColor', // 'currentColor' es un buen fallback
   } as React.CSSProperties;
 
-    const classessBox = cn('text-white','p-2','rounded-lg','text-center',`bg-[var(--bg-color)]`)
+    const classessBox = cn('text-white','p-1 lg:p-2','rounded-lg','text-center',`bg-[var(--bg-color)]`)
     console.log(estadisticasText.colorBox)
 
     return (

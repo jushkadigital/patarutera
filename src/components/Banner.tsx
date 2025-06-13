@@ -24,7 +24,7 @@ const Banner: React.FC<BannerProps> = ({ title, backgroundUrl, className = '' })
       />
       {/* Overlay para legibilidad */}
       <div className="absolute inset-0 bg-black/40 -z-10" />
-      <h1 className="relative z-10 text-3xl font-bold drop-shadow-lg text-center px-4">
+      <h1 className="relative z-10 text-5xl font-bold drop-shadow-lg text-center px-4">
         {title}
       </h1>
     </div>

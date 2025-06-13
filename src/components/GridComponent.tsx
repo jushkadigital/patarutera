@@ -36,10 +36,10 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
   ]
 
   const renderGridLayout = () => {
-    const gridCols = validImages.length <= 4 ? "grid-cols-2" : validImages.length <= 6 ? "grid-cols-3" : "grid-cols-3"
+    const gridCols = validImages.length <= 4 ? "lg:grid-cols-2" : validImages.length <= 6 ? "lg:grid-cols-3" : "lg:grid-cols-3"
 
     return (
-      <div className={`grid ${gridCols} gap-4`}>
+      <div className={`grid grid-cols-1 ${gridCols} gap-4`}>
         {validImages.map((image, index) => (
           <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg">
             <Image
@@ -164,7 +164,7 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
     // Dynamic mosaic based on number of images
     if (validImages.length === 3) {
       return (
-        <div className="grid grid-cols-2 grid-rows-2 gap-2 md:gap-4 h-[400px] md:h-[500px] w-full">
+        <div className="grid lg:grid-cols-2 lg:grid-rows-2 gap-2 md:gap-4 h-[400px] md:h-[500px] w-full">
           <div className="relative row-span-2 overflow-hidden rounded-lg">
             <Image
               src={validImages[0].src || "/placeholder.svg"}

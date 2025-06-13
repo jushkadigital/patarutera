@@ -15,8 +15,8 @@ export const Header = ({destinations}:Props) => {
   const isHome = pathname === '/';
 
   return (
-    <header className={cn(isHome ? 'h-0 overflow-visible' : '')}>
-      <Navbar destinations={destinations}/>
+    <header className={cn(isHome ? 'h-0 overflow-visible ' : '')}>
+      <Navbar destinations={destinations} isHome={isHome}/>
     </header>
   );
 }; 

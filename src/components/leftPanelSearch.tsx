@@ -28,7 +28,7 @@ interface LeftPanelSearch {
 
 export function LeftPanelSearch({categories,title,destinations}:LeftPanelSearch){
   return(
-    <div className='flex flex-col w-full'>
+    <div className='flex flex-col w-full space-y-10 p-4'>
       <TourSearchComponent destinations={destinations}/>
       <TourCategoryList categories={categories}/>
       <PriceFilter />
@@ -49,7 +49,7 @@ interface TourSearchComponentProps {
 
   const selectedOption = destinations.find((dest) => dest.name === destinoTemp)
   return (
-    <div className="min-h-screen bg-[#e3e3e3] p-4 flex items-center justify-center">
+    <div className="  p-0 flex items-center justify-center">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Header */}
         <div className="px-6 py-6 border-b border-[#d9d9d9]">

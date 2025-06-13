@@ -12,7 +12,7 @@ export async function CarouselHero(props: Props) {
 
   const response = await fetch(`${BASEURL}/api/destinations?limit=100&depth=1&sort=createdAt`)
   const data = await response.json()
-  return <div>
+  return <div className="relative w-full">
     <Carousel>
       {data.docs.map((item: any) => (
         <BannerCarousel key={item.id} title={item.name} backgroundUrl={item.carouselItemDestination.url} alt={item.carouselItemDestination.alt}/>
