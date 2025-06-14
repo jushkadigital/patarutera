@@ -85,14 +85,10 @@ export async function DestinosPage(props: {
 
       <SharedStateProvider>
       <div className='flex flex-row mt-10'>
-        <div className='w-1/4'>
-          <LeftPanelSearch categories={categories} destinations={destinations} />
-        </div>
-        <div className='w-3/4'>
-
+        
+        <LeftPanelSearch categories={categories} destinations={destinations} />
+        <div className='lg:w-3/4'>
         <GridTours  {...blocks[0] as GridToursBlock} gridColumns={100} destination={destinationData} gridStyle={false} rangeSlider={true}/>
-            
-
         </div>
       </div>
       </SharedStateProvider>

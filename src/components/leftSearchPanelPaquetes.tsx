@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Calendar, ChevronsUpDown, MapPin, Search, ChevronDown, X } from 'lucide-react';
+import { Calendar, ChevronsUpDown, MapPin, Search, ChevronDown, X, Filter } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -15,6 +15,8 @@ import { Destination, TourCategory } from '@/cms-types';
 import { parseAsArrayOf, useQueryState, parseAsString } from 'nuqs';
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { useSharedState } from '@/hooks/sharedContextDestinos';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
+import { useMobile } from '@/hooks/useMobile';
 
 // Interfaz actualizada: ya no necesita 'categories'
 interface LeftPanelSearchProps {
@@ -24,13 +26,50 @@ interface LeftPanelSearchProps {
 
 // Componente principal: Se elimina TourCategoryList
 export function LeftPanelSearchPaquete({ title, destinations }: LeftPanelSearchProps) {
+  
+  const isMobile = useMobile()
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   return (
-    <div className='flex flex-col w-full space-y-10 p-4'>
+ <div>
+      {isMobile 
+      ?
+      <div className=" absolute mt-[-25px]">
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Filter className="h-2 w-2" />
+                Filtros
+              </Button>
+            </SheetTrigger>
+    <SheetContent side="left" className="">
+      <SheetHeader>
+        <SheetTitle>Filtrar Tours</SheetTitle>
+      </SheetHeader>
+    <div className="mt-6 overflow-y-auto">
+      <div className='flex flex-col w-full space-y-10 p-4'>
       <MultiDestinationSearch destinations={destinations} />
       <PriceFilter />
     </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+        :
+    <div>
+      <div className='flex flex-col w-full space-y-10 p-4'>
+      <MultiDestinationSearch destinations={destinations} />
+      <PriceFilter />
+    </div>
+    </div>
+      }
+      
+    
+    
+    </div>   
+    
   );
 }
+
 
 interface MultiDestinationSearchProps {
   destinations: Destination[];

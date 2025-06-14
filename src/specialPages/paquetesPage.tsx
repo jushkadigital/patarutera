@@ -85,10 +85,8 @@ export async function PaquetesPage(props: {
 
       <SharedStateProvider>
       <div className='flex flex-row mt-10'>
-        <div className='w-1/4'>
           <LeftPanelSearchPaquete destinations={destinationsDataFinal} />
-        </div>
-        <div className='w-3/4'>
+        <div className='lg:w-3/4'>
         <GridPaquetes  {...blocks[0] as GridPaquetesBlock} destination={destinationData} gridColumns={100} gridStyle={false} rangeSlider={true}/>
         </div>
       </div>

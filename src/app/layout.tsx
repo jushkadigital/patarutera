@@ -29,7 +29,7 @@ export default async function RootLayout({
   const data = await response.json()
 
   return (
-    <html lang="en" className={cn(poppins.variable, "font-poppins")}>
+    <html lang="es" className={cn(poppins.variable, "font-poppins")}>
       <head>
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />

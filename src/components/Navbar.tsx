@@ -58,14 +58,15 @@ export const Navbar = ({destinations,isHome}:Props) => {
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>Destinos</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid gap-3 p-4 md:w-[250px]">
+              <NavigationMenuContent className="w-full md:w-[250px]">
+                <ul className="grid gap-3 p-4">
                   {
                     destinations.map(ele=>(
                       <ListItem
                   key={ele.name}
                   title={""}
                   href={`/destinos?destination=${ele.name}&categories=`}
+                  isHome={isHome}
                 >
                   {ele.name}
                 </ListItem>
@@ -113,10 +114,10 @@ function ListItem({
   children,
   href,
   ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
+}: React.ComponentPropsWithoutRef<"li"> & { href: string , isHome: boolean}) {
   return (
     <li {...props}>
-      <NavigationMenuLink asChild>
+      <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), props.isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>
         <Link href={href}>
           <div className="text-sm leading-none font-medium">{title}</div>
           <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
