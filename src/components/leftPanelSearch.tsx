@@ -58,12 +58,10 @@ export function LeftPanelSearch({categories,title,destinations}:LeftPanelSearch)
           </Sheet>
         </div>
         :
-        <div className='w-1/4'>
         <div className='flex flex-col w-full space-y-10 p-4'>
       <TourSearchComponent destinations={destinations}/>
       <TourCategoryList categories={categories}/>
       <PriceFilter />
-        </div>
         </div>
       }
       
