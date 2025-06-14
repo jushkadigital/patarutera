@@ -12,9 +12,8 @@ interface Props extends TourHerocarB{
 export async function TourHero(props: Props) {
     const {carContent,ImageContent} = props
     console.log('TOUR')
-  return <div className="flex flex-row w-full">
-    <div className="w-1/2 flex flex-row justify-center items-center">
-
+  return <div className="flex flex-col lg:flex-row w-full lg:px-36 lg:mb-10">
+    <div className="lg:w-1/3 flex flex-row justify-center items-center">
     <Carousel className="h-[400px]">
       {carContent!.carImages!.map((item) => (
         <Image alt="o"  src={(item.image as Media).url!} width={300}  height={350} className=" object-cover"/>
@@ -22,10 +21,9 @@ export async function TourHero(props: Props) {
     </Carousel>
     
     </div>
-    <div className="w-1/2 flex flex-row justify-center items-center">
+    <div className="lg:w-2/3 flex flex-row justify-center items-center">
       <div className="h-[400px] w-[300px] relative overflow-hidden">
-        
-        <Image alt="o"  src={(ImageContent.image as Media).url!} fill className="object-cover"/>
+        <Image alt="o" src={(ImageContent.image as Media).url!} fill className="object-cover"/>
       </div>
     </div>
   </div>

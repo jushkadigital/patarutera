@@ -197,8 +197,8 @@ export default function TabsViaje({tabs}:Props) {
 
   
   return (
-    <div className="w-full max-w-4xl mx-auto p-4">
-      <div className=" flex  flex-wrap justify-between gap-2">
+    <div className="w-full lg:max-w-4xl mx-auto lg:p-4">
+      <div className=" flex  lg:flex-wrap flex-col lg:flex-row justify-between gap-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}

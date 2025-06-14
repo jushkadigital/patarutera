@@ -18,7 +18,6 @@ export const RenderHero: React.FC<{heroBlocks:Tour['heroTour'],title:string}> = 
   const HeroToRender = blocks[props.heroBlocks[0].blockType]
         return <Fragment>
           <HeroToRender {...props.heroBlocks[0]} />
-          <div className='w-full'><h1 className='text-center text-4xl text-[#2970b7] font-bold italic'>{props.title}</h1></div>
           </Fragment>
     }
 
