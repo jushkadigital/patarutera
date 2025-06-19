@@ -18,10 +18,12 @@ import { GuiaTour } from './GuiaTourBlock'
 import { GridPaquetes } from './GridPaquetes'
 import { RevistaBlock } from './RevistaBlock'
 import { FormBitrix } from './FormBitrix'
+import { GridBlogs } from './GridBlog'
 
 const blockComponents = {
   gridTours: GridTours,
   gridPaquetes: GridPaquetes,
+  gridBlogs: GridBlogs,
   mediaBlock: MediaBlock,
   rowBlock: RowBlock,
   carouselDestination: CarouselDestinos,

@@ -10,7 +10,7 @@ interface ArticleData {
   title: string
   imageUrl: string
   imageQuery: string
-  description?: string // Solo para ArticleCardTop
+  description: string // Solo para ArticleCardTop
 }
 
 interface ArticleTopProps {
@@ -18,6 +18,7 @@ interface ArticleTopProps {
 }
 
 const ArticleCardTop: React.FC<ArticleTopProps> = ({ article }) => {
+  console.log(article.description)
   return (
     <Card className="bg-[#ffffff] rounded-xl shadow-lg overflow-hidden flex flex-col">
       <Link href={`/blog/${article.slug}`} className="block group">
@@ -111,30 +112,6 @@ const Pagination: React.FC = () => {
 }
 
 // Sample data for 10 articles
-const allArticlesData: ArticleData[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  slug: `articulo-${i + 1}`,
-  title: `Título del Artículo ${i + 1}`,
-  imageUrl: "/placeholder.svg",
-  imageQuery: `Placeholder para artículo ${i + 1} sobre Perú`,
-  description:
-    i < 3
-      ? `Descripción breve y atractiva para el artículo destacado número ${i + 1}. Explora las maravillas ocultas y la rica cultura. Presencia dos imponentes montañas sagradas cubiertas de nieve...`
-      : undefined,
-}))
-
-// Asignar queries de imagen más específicas para los primeros artículos basados en el diseño original
-allArticlesData[0].imageQuery = "Ancient stone bridge ruins with waterfall in Peruvian mountains"
-allArticlesData[1].imageQuery = "Hiker taking photo of vast green valley in Peru"
-allArticlesData[2].imageQuery = "Woman in colorful poncho by a serene mountain lake in Peru"
-allArticlesData[3].imageQuery = "Close up of a white llama in Peruvian highlands"
-allArticlesData[4].imageQuery = "Man in traditional Peruvian attire holding a flute in mountains"
-allArticlesData[5].imageQuery = "Ancient stone steps leading to arched ruins in lush greenery"
-allArticlesData[6].imageQuery = "Woman in red dress walking on a remote beach with cliffs"
-allArticlesData[7].imageQuery = "Woman in colorful poncho sitting by a tranquil lake in Peru"
-allArticlesData[8].imageQuery = "Man in traditional Peruvian attire smiling, mountain background"
-allArticlesData[9].imageQuery = "Hiker with backpack standing on a cliff overlooking green landscape"
-
 interface GridBlogProps {
   articles: ArticleData[]
 }
@@ -148,8 +125,9 @@ export function GridBlogComponent({ articles }: GridBlogProps) {
   const article8 = articles[7]
   const articles9_10 = articles.slice(8, 10)
 
+  console.log(articles)
   return (
-    <div className="min-h-screen bg-[#000000] text-[#ffffff] py-8 sm:py-12">
+    <div className="min-h-screen  text-[#ffffff] py-8 sm:py-12">
       <div className="container mx-auto px-4">
         {/* Top Articles Section */}
         {topArticles.length > 0 && (

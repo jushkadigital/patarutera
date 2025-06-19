@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 interface Props extends GridBlogsBlock {
 }
 
-export async function GridTours(props: Props) {
+export async function GridBlogs(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
   const { id, limit,generalStyle, gridStyle:mode  ,categories,blockTitle} = props;
 
@@ -22,7 +22,7 @@ export async function GridTours(props: Props) {
   let fetchError = null;
   try {
     
-   const response = await fetch( `${BASEURL}/api/posts?limit=${limit}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&where[categories.name][in]=${(categories as TourCategory[]).map(c => c.name).join(',')}`);
+   const response = await fetch(`${BASEURL}/api/posts?limit=${limit}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[description]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&where[categories.name][in]=${(categories as TourCategory[]).map(c => c.name).join(',')}`);
     if (!response.ok) {
         // Consider logging the response status and text for more detailed error info
         // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);

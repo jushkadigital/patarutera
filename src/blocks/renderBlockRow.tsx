@@ -32,8 +32,6 @@ const blockComponents = {
   youTubeLinks: YouTubeLinksBlock
 }
 
-
-
 export const RenderBlocksRow: React.FC<{
   blocks: any[]
 }> = (props) => {
