@@ -1,18 +1,19 @@
 "use client"
 
-import { ArrowRight, Link } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import Link from "next/link"
 
 
 interface Props {
-    backgroundImage: string
-    link: string
-    text: string
+  backgroundImage: string
+  link: string
+  text: string
 }
 
-export function ImageCuadroLink({backgroundImage,link,text}:Props) {
-return (
+export function ImageCuadroLink({ backgroundImage, link, text }: Props) {
+  return (
     <div className="w-full max-w-md mx-auto">
       {/* Card container with border and rounded corners */}
       <div className="relative bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 rounded-2xl border border-gray-500 overflow-hidden shadow-xl">
@@ -29,7 +30,6 @@ return (
         <div className="relative p-6 h-64 flex items-center justify-center">
           {/* Hand holding the brochure */}
           <div className="relative">
-
           </div>
         </div>
 
@@ -39,13 +39,11 @@ return (
             variant="ghost"
             size="sm"
             className="text-white hover:text-white hover:bg-white/10 text-sm font-semibold p-2"
-            asChild
           >
-            
-            <Link href={link}  >
-            {text}
+            <Link href={link} className=" flex items-center">
+              {text}
+              <ArrowRight/>
             </Link>
-            <ArrowRight className="ml-1 h-3 w-3" />
           </Button>
         </div>
       </div>

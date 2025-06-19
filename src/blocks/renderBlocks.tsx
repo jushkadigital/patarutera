@@ -38,7 +38,7 @@ const blockComponents = {
   youTubeLinks: YouTubeLinksBlock,
   guiaTour: GuiaTour,
   revistaBlock: RevistaBlock,
-  formBitrixBlock: FormBitrix
+  formBitrixBlock: FormBitrix,
 
 }
 

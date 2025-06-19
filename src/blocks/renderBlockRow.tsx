@@ -12,6 +12,7 @@ import { GridImages } from './GridImages'
 import { OfertasBlock } from './OfertasBlock'
 import { RevistaBlock } from './RevistaBlock'
 import { FormBitrix } from './FormBitrix'
+import { YouTubeLinksBlock } from './YoutubeLinksBlock'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -27,7 +28,8 @@ const blockComponents = {
   estadisticas:EstadisticasBlock,
   gridImages: GridImages,
   revistaBlock: RevistaBlock,
-  formBitrixBlock: FormBitrix
+  formBitrixBlock: FormBitrix,
+  youTubeLinks: YouTubeLinksBlock
 }
 
 
