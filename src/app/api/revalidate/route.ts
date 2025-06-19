@@ -6,6 +6,8 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 const REVALIDATE_TOKEN = process.env.REVALIDATE_TOKEN;
 
 export async function POST(request: NextRequest) {
+  
+  console.log("API REVALIDATEEEE")
   const body = await request.json();
   const secretFromBody = body.secret;
   console.log("REVALIDANDO")
