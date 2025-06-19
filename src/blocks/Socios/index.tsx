@@ -1,4 +1,5 @@
 import { Media, SociosBlockType } from "@/cms-types";
+import { GalleryCarousel } from "@/components/galleryCarousel";
 import InfiniteImageCarousel from "@/components/infinity-image-carousel";
 import { Subtitle } from "@/components/Subtitle";
 import { BASEURL } from "@/lib/config";
@@ -21,7 +22,7 @@ export async function SociosBlock(props:Props){
     return data.images && data.images.length > 0 ? 
     (<div>
         <Subtitle titleGroup={blockTitle}/>
-        <InfiniteImageCarousel images={data.images.map((ele)=>({src:(ele.image as Media).url!,alt: 'image'}))}/>
+        <GalleryCarousel images={data.images.map((ele)=>({src:(ele.image as Media).url!,alt: 'image'}))}/>
     </div>) 
     :
      <div></div>
