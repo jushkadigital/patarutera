@@ -13,6 +13,7 @@ export default async function FooterBlock({destination}:Props) {
 
   const navItems = footerData?.navItems || []
   console.log(navItems)
+
   return (
     <footer className="relative">
       {/* Background Image */}
