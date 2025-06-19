@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import type { Page } from '@/cms-types'
+import type { Page, Paquete, Tour } from '@/cms-types'
 import { MediaBlock } from './MediaBlock'
 import { GridTours } from './GridTours'
 import { RowBlock } from './RowBlock'
@@ -16,6 +16,8 @@ import { DescrPriceBlock } from './DescPrice'
 import { YouTubeLinksBlock } from './YoutubeLinksBlock'
 import { GuiaTour } from './GuiaTourBlock'
 import { GridPaquetes } from './GridPaquetes'
+import { RevistaBlock } from './RevistaBlock'
+import { FormBitrix } from './FormBitrix'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -34,13 +36,16 @@ const blockComponents = {
   gridImages: null,
   descrPrice: DescrPriceBlock,
   youTubeLinks: YouTubeLinksBlock,
-  guiaTour: GuiaTour
+  guiaTour: GuiaTour,
+  revistaBlock: RevistaBlock,
+  formBitrixBlock: FormBitrix
+
 }
 
 
 
 export const RenderBlocks: React.FC<{
-  blocks: Page['layout'][0][]
+  blocks: Page['layout'][0][] | Tour['layout'][0][] | Paquete['layout'][0][]
 }> = (props) => {
   const { blocks } = props
 
@@ -60,7 +65,6 @@ export const RenderBlocks: React.FC<{
             if (Block) {
               return (
                 <div className={!NoPadding.includes(blockType) ? 'w-full px-10 lg:px-36 ' :'w-full'} key={index}>
-   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
                 </div>
               )

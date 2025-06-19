@@ -10,6 +10,8 @@ import { BeneficiosBlock } from './BeneficiosBlock'
 import { EstadisticasBlock } from './Estadisticas'
 import { GridImages } from './GridImages'
 import { OfertasBlock } from './OfertasBlock'
+import { RevistaBlock } from './RevistaBlock'
+import { FormBitrix } from './FormBitrix'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -23,13 +25,15 @@ const blockComponents = {
   textContent: TextContentBlock,
   beneficios: BeneficiosBlock,
   estadisticas:EstadisticasBlock,
-  gridImages: GridImages
+  gridImages: GridImages,
+  revistaBlock: RevistaBlock,
+  formBitrixBlock: FormBitrix
 }
 
 
 
 export const RenderBlocksRow: React.FC<{
-  blocks: Page['layout'][0][]
+  blocks: any[]
 }> = (props) => {
   const { blocks } = props
 

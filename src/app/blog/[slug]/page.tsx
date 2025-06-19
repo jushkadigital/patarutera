@@ -43,14 +43,14 @@ export default async function PostPage({ params: paramsPromise, searchParams: se
     notFound();
   }
 
-  const { blocks, heroPost ,title} = post; // Assuming tours have layout and heroPageBlocks
+  const { layout, heroPost ,title} = post; // Assuming tours have layout and heroPageBlocks
 
   return (
     <div className="">
       {draft && <LivePreviewListener />}
       <div className="flex flex-col-reverse lg:flex-col">
       <RenderHero heroBlocks={heroPost}/>
-      <RenderBlocks blocks={blocks} />
+      <RenderBlocks blocks={layout} />
       </div>
       
     </div>

@@ -266,12 +266,7 @@ export interface Page {
     | TextContentBlockType
     | GridImagesBlockType
     | GridPaquetesBlock
-    | {
-        trackingCode: string;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'formBitrixBlock';
-      }
+    | FormBitrixBlock
   )[];
   publishedAt?: string | null;
   slug?: string | null;
@@ -331,24 +326,8 @@ export interface RowBlock {
           | EstadisticasBlockType
           | TextContentBlockType
           | GridImagesBlockType
-          | {
-              trackingCode: string;
-              id?: string | null;
-              blockName?: string | null;
-              blockType: 'formBitrixBlock';
-            }
-          | {
-              blockTitle: TitleGroup;
-              revistasLinks?:
-                | {
-                    url: string;
-                    id?: string | null;
-                  }[]
-                | null;
-              id?: string | null;
-              blockName?: string | null;
-              blockType: 'revistaBlock';
-            }
+          | FormBitrixBlock
+          | RevistaBlock
         )[];
         id?: string | null;
       }[]
@@ -485,17 +464,15 @@ export interface Post {
   heroPost?: BannerBlock[] | null;
   featuredImage: number | Media;
   description?: string | null;
-  blocks?:
-    | (
-        | ReconocimientosBlockType
-        | SociosBlockType
-        | GridBlogsBlock
-        | GridImagesBlockType
-        | TextContentBlockType
-        | GridImagesBlockType
-        | YouTubeLinksBlockType
-      )[]
-    | null;
+  layout: (
+    | ReconocimientosBlockType
+    | SociosBlockType
+    | GridBlogsBlock
+    | GridImagesBlockType
+    | TextContentBlockType
+    | GridImagesBlockType
+    | YouTubeLinksBlockType
+  )[];
   author: number | User;
   categories?: (number | BlogCategory)[] | null;
   publishedDate?: string | null;
@@ -618,6 +595,7 @@ export interface YouTubeLinksBlockType {
   blockTitle: TitleGroup;
   videoLinks?:
     | {
+        image?: (number | null) | Media;
         url: string;
         id?: string | null;
       }[]
@@ -718,6 +696,33 @@ export interface EstadisticasBlockType {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBitrixBlock".
+ */
+export interface FormBitrixBlock {
+  trackingCode: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'formBitrixBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RevistaBlock".
+ */
+export interface RevistaBlock {
+  blockTitle: TitleGroup;
+  revistasLinks?:
+    | {
+        image?: (number | null) | Media;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'revistaBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "GridPaquetesBlock".
  */
 export interface GridPaquetesBlock {
@@ -757,24 +762,8 @@ export interface Tour {
     | TextContentBlockType
     | SociosBlockType
     | ReconocimientosBlockType
-    | {
-        trackingCode: string;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'formBitrixBlock';
-      }
-    | {
-        blockTitle: TitleGroup;
-        revistasLinks?:
-          | {
-              url: string;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'revistaBlock';
-      }
+    | FormBitrixBlock
+    | RevistaBlock
   )[];
   featuredImage: number | Media;
   miniDescription: {
@@ -1014,37 +1003,19 @@ export interface Paquete {
   id: number;
   title: string;
   heroPaquete?: PaqueteHerocar[] | null;
-  layout?:
-    | (
-        | DescrPriceBlock
-        | GuiaTourBlock
-        | GridToursBlock
-        | GridBlogsBlock
-        | PostRelationTourBlockType
-        | YouTubeLinksBlockType
-        | TextContentBlockType
-        | SociosBlockType
-        | ReconocimientosBlockType
-        | {
-            trackingCode: string;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'formBitrixBlock';
-          }
-        | {
-            blockTitle: TitleGroup;
-            revistasLinks?:
-              | {
-                  url: string;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'revistaBlock';
-          }
-      )[]
-    | null;
+  layout: (
+    | DescrPriceBlock
+    | GuiaTourBlock
+    | GridToursBlock
+    | GridBlogsBlock
+    | PostRelationTourBlockType
+    | YouTubeLinksBlockType
+    | TextContentBlockType
+    | SociosBlockType
+    | ReconocimientosBlockType
+    | FormBitrixBlock
+    | RevistaBlock
+  )[];
   featuredImage: number | Media;
   miniDescription: {
     root: {
@@ -1424,13 +1395,7 @@ export interface PagesSelect<T extends boolean = true> {
         textContent?: T | TextContentBlockTypeSelect<T>;
         gridImages?: T | GridImagesBlockTypeSelect<T>;
         gridPaquetes?: T | GridPaquetesBlockSelect<T>;
-        formBitrixBlock?:
-          | T
-          | {
-              trackingCode?: T;
-              id?: T;
-              blockName?: T;
-            };
+        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -1482,26 +1447,8 @@ export interface RowBlockSelect<T extends boolean = true> {
               estadisticas?: T | EstadisticasBlockTypeSelect<T>;
               textContent?: T | TextContentBlockTypeSelect<T>;
               gridImages?: T | GridImagesBlockTypeSelect<T>;
-              formBitrixBlock?:
-                | T
-                | {
-                    trackingCode?: T;
-                    id?: T;
-                    blockName?: T;
-                  };
-              revistaBlock?:
-                | T
-                | {
-                    blockTitle?: T | TitleGroupSelect<T>;
-                    revistasLinks?:
-                      | T
-                      | {
-                          url?: T;
-                          id?: T;
-                        };
-                    id?: T;
-                    blockName?: T;
-                  };
+              formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+              revistaBlock?: T | RevistaBlockSelect<T>;
             };
         id?: T;
       };
@@ -1672,6 +1619,31 @@ export interface GridImagesBlockTypeSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBitrixBlock_select".
+ */
+export interface FormBitrixBlockSelect<T extends boolean = true> {
+  trackingCode?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RevistaBlock_select".
+ */
+export interface RevistaBlockSelect<T extends boolean = true> {
+  blockTitle?: T | TitleGroupSelect<T>;
+  revistasLinks?:
+    | T
+    | {
+        image?: T;
+        url?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "GridBlogsBlock_select".
  */
 export interface GridBlogsBlockSelect<T extends boolean = true> {
@@ -1722,26 +1694,8 @@ export interface ToursSelect<T extends boolean = true> {
         textContent?: T | TextContentBlockTypeSelect<T>;
         socios?: T | SociosBlockTypeSelect<T>;
         reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-        formBitrixBlock?:
-          | T
-          | {
-              trackingCode?: T;
-              id?: T;
-              blockName?: T;
-            };
-        revistaBlock?:
-          | T
-          | {
-              blockTitle?: T | TitleGroupSelect<T>;
-              revistasLinks?:
-                | T
-                | {
-                    url?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
+        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+        revistaBlock?: T | RevistaBlockSelect<T>;
       };
   featuredImage?: T;
   miniDescription?: T;
@@ -1861,6 +1815,7 @@ export interface YouTubeLinksBlockTypeSelect<T extends boolean = true> {
   videoLinks?:
     | T
     | {
+        image?: T;
         url?: T;
         id?: T;
       };
@@ -1926,7 +1881,7 @@ export interface PostsSelect<T extends boolean = true> {
       };
   featuredImage?: T;
   description?: T;
-  blocks?:
+  layout?:
     | T
     | {
         reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
@@ -1968,26 +1923,8 @@ export interface PaquetesSelect<T extends boolean = true> {
         textContent?: T | TextContentBlockTypeSelect<T>;
         socios?: T | SociosBlockTypeSelect<T>;
         reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-        formBitrixBlock?:
-          | T
-          | {
-              trackingCode?: T;
-              id?: T;
-              blockName?: T;
-            };
-        revistaBlock?:
-          | T
-          | {
-              blockTitle?: T | TitleGroupSelect<T>;
-              revistasLinks?:
-                | T
-                | {
-                    url?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
+        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+        revistaBlock?: T | RevistaBlockSelect<T>;
       };
   featuredImage?: T;
   miniDescription?: T;
@@ -2265,3 +2202,4 @@ export interface TaskSchedulePublish {
 export interface Auth {
   [k: string]: unknown;
 }
+
