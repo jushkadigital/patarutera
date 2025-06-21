@@ -12,7 +12,7 @@ export async function TextContentBlock(props:Props){
     const {blockTitle,description,descriptionAlignment} = props
     const classessDescription = cn(`text-${descriptionAlignment}`,`text-[20px]`)
     return (
-        <div>
+        <div className="mt-10">
 
         <Subtitle titleGroup={blockTitle}/>
         <div>
