@@ -50,7 +50,7 @@ export default async function PostPage({ params: paramsPromise, searchParams: se
       {draft && <LivePreviewListener />}
       <div className="flex flex-col-reverse lg:flex-col">
       <RenderHero heroBlocks={heroPost}/>
-      <div className='px-10'>
+      <div className='px-36'>
       <RenderBlocks blocks={layout} />
       </div>
       </div>
