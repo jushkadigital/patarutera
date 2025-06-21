@@ -98,7 +98,7 @@ export default async function Page({ params: paramsPromise, searchParams: search
       <div className="flex flex-col space-y-10">
          {draft&&<LivePreviewListener />}
         <RenderHero heroBlocks={heroPageBlocks} />
-        <div className={(slug !== 'home' && !slugsEspeciales.includes(slug))? "px-36" : ""} >
+        <div className={(slug !== 'home' && !slugsEspeciales.includes(slug))? "lg:px-36" : ""} >
         <RenderBlocks blocks={layout} />
         </div>
       </div>
