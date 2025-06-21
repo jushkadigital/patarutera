@@ -5,7 +5,9 @@ import { RenderBlocksRow } from '../renderBlockRow'
 import { cn } from '@/lib/utils'
 
 interface Props extends RowBlockType {
-
+context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function RowBlock(props: Props) {

@@ -4,7 +4,9 @@ import SupportBannerBlock from "@/components/supportBanner";
 import TabsViaje from "@/components/Tabs";
 
 interface Props extends GuiaTourBlock {
-
+context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function GuiaTour(props:Props){

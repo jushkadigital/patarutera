@@ -9,6 +9,9 @@ import { cn } from '@/lib/utils';
 
 // Añadir 'mode' a las Props
 interface Props extends GridBlogsBlock {
+  context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function GridBlogs(props: Props) {

@@ -3,7 +3,9 @@ import RichText from "@/components/RichText";
 import { cn } from "@/lib/utils";
 
 interface Props extends EstadisticasBlockType {
-
+context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function EstadisticasBlock(props:Props){

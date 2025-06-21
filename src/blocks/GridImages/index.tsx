@@ -2,6 +2,9 @@ import { GridImagesBlockType, Media } from "@/cms-types";
 import GridComponent from "@/components/GridComponent";
 
 interface Props extends GridImagesBlockType {
+    context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function GridImages(props: Props) {

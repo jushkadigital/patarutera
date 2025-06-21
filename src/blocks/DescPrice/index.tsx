@@ -5,11 +5,13 @@ import RichText from "@/components/RichText";
 import { Subtitle } from "@/components/Subtitle";
 
 interface Props extends DescrPriceBlockType {
-
+context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function DescrPriceBlock(props: Props) {
-    const { blockTitle, leftColumn, rightColumn } = props
+    const { blockTitle, leftColumn, rightColumn, context } = props
     return (
         <div className="w-full">
             <Subtitle titleGroup={blockTitle} />
@@ -27,7 +29,7 @@ export async function DescrPriceBlock(props: Props) {
                     </div>
                 </div>
                 <div>
-                    <PrecioCardComponent priceTitle={rightColumn.priceTitle!} prevText={rightColumn.prevText!} price={rightColumn.price} nextText={rightColumn.nextText!} paymentForm={rightColumn.paymentForm} />
+                    <PrecioCardComponent priceTitle={rightColumn.priceTitle!} prevText={rightColumn.prevText!} price={rightColumn.price} nextText={rightColumn.nextText!} paymentForm={rightColumn.paymentForm}  origen={context!.nameCollection}/>
                 </div>
 
 

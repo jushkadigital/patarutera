@@ -1,18 +1,23 @@
 "use client"
 
-import { Calendar, Users } from "lucide-react"
-import { useForm } from "react-hook-form"
 import { useState } from "react"
-import Image from "next/image"
+import { useForm } from "react-hook-form"
+import { User, Mail, MessageSquare, Send } from "lucide-react"
 import { Media } from "@/cms-types"
 
+// 1. INTERFAZ DE DATOS DEL FORMULARIO ACTUALIZADA
+// Se cambian los campos 'fecha' y 'pasajeros' por los que necesitas: 'nombre', 'email', 'mensaje'.
 interface FormData {
-  fecha: string
-  pasajeros: number
+  nombre: string
+  email: string
+  mensaje: string
 }
 
+// 2. PROPS DEL COMPONENTE SIMPLIFICADAS
+// Se ajustan las props para que sean más genéricas para un formulario de contacto.
+// 'origen' se mantiene para saber de dónde se envía el formulario.
 interface Props {
-    priceTitle: string;
+  priceTitle: string;
     prevText: string ;
     price: number;
     nextText: string;
@@ -22,12 +27,15 @@ interface Props {
       iconPassengers?: (number | null) | Media;
       InputPlaceHolderPassengers?: string | null;
     };
+  origen: string // Por ejemplo: "Página de Contacto", "Tour a Machu Picchu", etc.
 }
 
-export default function PrecioCardComponent({priceTitle,prevText,price,nextText,paymentForm}:Props) {
+export default function FormularioContacto({ priceTitle,prevText,price,nextText, origen }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState("")
 
+  // 3. CONFIGURACIÓN DE REACT-HOOK-FORM ACTUALIZADA
+  // Se inicializa el formulario con los nuevos campos y sus valores por defecto.
   const {
     register,
     handleSubmit,
@@ -35,70 +43,48 @@ export default function PrecioCardComponent({priceTitle,prevText,price,nextText,
     reset,
   } = useForm<FormData>({
     defaultValues: {
-      fecha: "",
-      pasajeros: 1,
+      nombre: "",
+      email: "",
+      mensaje: "",
     },
   })
 
-  const onSubmitReserva = async (data: FormData) => {
+  // 4. ÚNICA FUNCIÓN DE ENVÍO
+  // Se reemplazan 'onSubmitReserva' y 'onSubmitCarrito' por una sola función 'onSubmit'.
+  const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
     setSubmitMessage("")
 
     try {
-      // Simular llamada a API
+      // Simulamos una llamada a una API para enviar el correo o guardar en la BD.
       await new Promise((resolve) => setTimeout(resolve, 1500))
 
-      console.log("Datos de reserva:", {
-        ...data,
-        precio: 150,
-        accion: "reserva",
+      // En el objeto enviado, incluimos el 'origen' que viene de las props.
+      console.log("Datos del Formulario Enviado:", {
+        ...data, // Esto incluye nombre, email, mensaje
+        origen: origen, // Se añade el origen
       })
 
-      setSubmitMessage("¡Reserva iniciada exitosamente!")
+      setSubmitMessage("¡Mensaje enviado exitosamente! Gracias por contactarnos.")
+      reset() // Limpiamos el formulario después del envío.
 
-      // Aquí podrías redirigir a la página de pago o siguiente paso
-      // router.push('/checkout')
     } catch (error) {
-      setSubmitMessage("Error al procesar la reserva. Intenta nuevamente.")
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const onSubmitCarrito = async (data: FormData) => {
-    setIsSubmitting(true)
-    setSubmitMessage("")
-
-    try {
-      // Simular llamada a API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      console.log("Datos agregados al carrito:", {
-        ...data,
-        precio: 150,
-        accion: "carrito",
-      })
-
-      setSubmitMessage("¡Agregado al carrito exitosamente!")
-      reset()
-    } catch (error) {
-      setSubmitMessage("Error al agregar al carrito. Intenta nuevamente.")
+      console.error("Error al enviar el formulario:", error)
+      setSubmitMessage("Error al enviar el mensaje. Por favor, intenta nuevamente.")
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <div className="max-w-sm mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-[#eaeaea]">
-      {/* Header */}
-      <div className="bg-[#2970b7] text-white text-center py-6 rounded-t-3xl">
+    // 5. ESTRUCTURA Y ESTILOS DEL COMPONENTE ADAPTADOS
+    // Se mantiene un diseño limpio y profesional para el formulario.
+    <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200">
+       <div className="bg-[#2970b7] text-white text-center py-6 rounded-t-3xl">
         <h1 className="text-2xl font-bold tracking-wide">{priceTitle}</h1>
       </div>
-
-      {/* Content */}
-      <div className="p-6 space-y-6">
-        {/* Price Section */}
-        <div className="text-center">
+      
+      <div className="text-center">
           <p className="text-[#2970b7] text-lg mb-2">{prevText}</p>
           <div className="flex items-baseline justify-center gap-2">
             <span className="text-[#2970b7] text-5xl font-bold">S/. {price}</span>
@@ -107,91 +93,84 @@ export default function PrecioCardComponent({priceTitle,prevText,price,nextText,
           <div className="w-full h-1 bg-[#efba06] mt-4 rounded-full"></div>
         </div>
 
-        {/* Form */}
-        <form className="space-y-4">
-          {/* Date Input */}
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-[#6a6a6a] rounded-lg flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <input
-                type="date"
-                {...register("fecha", {
-                  required: "La fecha es requerida",
-                  validate: (value) => {
-                    const selectedDate = new Date(value)
-                    const today = new Date()
-                    today.setHours(0, 0, 0, 0)
-                    return selectedDate >= today || "La fecha debe ser hoy o posterior"
-                  },
-                })}
-                className={`w-full px-6 py-4 bg-white border-2 rounded-full text-[#6a6a6a] text-lg focus:outline-none transition-colors ${
-                  errors.fecha ? "border-red-500 focus:border-red-500" : "border-[#dddddd] focus:border-[#2970b7]"
-                }`}
-              />
-              {errors.fecha && <p className="text-red-500 text-sm mt-1 px-2">{errors.fecha.message}</p>}
-            </div>
+      <div className="p-8 space-y-6">
+        {/* Se utiliza 'handleSubmit' para envolver nuestro 'onSubmit' */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {/* Campo: Nombre */}
+          <div className="relative">
+            <User className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type="text"
+              placeholder="Nombre completo"
+              {...register("nombre", {
+                required: "El nombre es obligatorio.",
+                minLength: { value: 3, message: "El nombre debe tener al menos 3 caracteres." },
+              })}
+              className={`w-full pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-full text-gray-700 focus:outline-none transition-colors ${
+                errors.nombre ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
+              }`}
+            />
+            {errors.nombre && <p className="text-red-500 text-xs mt-1 ml-4">{errors.nombre.message}</p>}
           </div>
 
-          {/* Passengers Input */}
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-[#6a6a6a] rounded-lg flex items-center justify-center flex-shrink-0">
-              <Users className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <select
-                {...register("pasajeros", {
-                  required: "Selecciona el número de pasajeros",
-                  min: { value: 1, message: "Mínimo 1 pasajero" },
-                  max: { value: 10, message: "Máximo 10 pasajeros" },
-                })}
-                className={`w-full px-6 py-4 bg-white border-2 rounded-full text-[#6a6a6a] text-lg focus:outline-none transition-colors ${
-                  errors.pasajeros ? "border-red-500 focus:border-red-500" : "border-[#dddddd] focus:border-[#2970b7]"
-                }`}
-              >
-                <option value="">Seleccionar pasajeros</option>
-                {[...Array(10)].map((_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {i + 1} {i + 1 === 1 ? "pasajero" : "pasajeros"}
-                  </option>
-                ))}
-              </select>
-              {errors.pasajeros && <p className="text-red-500 text-sm mt-1 px-2">{errors.pasajeros.message}</p>}
-            </div>
+          {/* Campo: Email */}
+          <div className="relative">
+            <Mail className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type="email"
+              placeholder="Email"
+              {...register("email", {
+                required: "El email es obligatorio.",
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Por favor, introduce un email válido.",
+                },
+              })}
+              className={`w-full pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-full text-gray-700 focus:outline-none transition-colors ${
+                errors.email ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
+              }`}
+            />
+            {errors.email && <p className="text-red-500 text-xs mt-1 ml-4">{errors.email.message}</p>}
           </div>
+
+          {/* Campo: Mensaje */}
+          <div className="relative">
+            <MessageSquare className="absolute top-5 left-4 text-gray-400" size={20} />
+            <textarea
+              placeholder="Escribe tu mensaje aquí..."
+              rows={5}
+              {...register("mensaje", {
+                required: "El mensaje no puede estar vacío.",
+                maxLength: { value: 500, message: "El mensaje no puede superar los 500 caracteres." },
+              })}
+              className={`w-full pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-2xl text-gray-700 focus:outline-none transition-colors resize-none ${
+                errors.mensaje ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
+              }`}
+            />
+            {errors.mensaje && <p className="text-red-500 text-xs mt-1 ml-4">{errors.mensaje.message}</p>}
+          </div>
+
+          {/* Mensaje de Estado (Éxito o Error) */}
+          {submitMessage && (
+            <div
+              className={`text-center p-3 rounded-lg text-sm ${
+                submitMessage.includes("Error") ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"
+              }`}
+            >
+              {submitMessage}
+            </div>
+          )}
+
+          {/* Botón de Envío */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full flex items-center justify-center gap-2 bg-[#efba06] text-gray-900 text-lg font-bold py-3 rounded-full hover:bg-[#d8a605] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? "ENVIANDO..." : "ENVIAR MENSAJE"}
+            {!isSubmitting && <Send size={20} />}
+          </button>
         </form>
-
-        {/* Submit Message */}
-        {submitMessage && (
-          <div
-            className={`text-center p-3 rounded-lg ${
-              submitMessage.includes("Error") ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
-            }`}
-          >
-            {submitMessage}
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="space-y-3 pt-4">
-          <button
-            type="button"
-            onClick={handleSubmit(onSubmitReserva)}
-            disabled={isSubmitting}
-            className="w-full bg-[#3eae64] text-white text-lg font-bold py-4 rounded-full hover:bg-[#359a57] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? "PROCESANDO..." : "CONTINUAR RESERVA"}
-          </button>
-          <button
-            type="button"
-            onClick={handleSubmit(onSubmitCarrito)}
-            disabled={isSubmitting}
-            className="w-full bg-[#eaeaea] text-[#a0a0a0] text-lg font-medium py-4 rounded-full hover:bg-[#dddddd] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? "Agregando..." : "Agregar al carrito"}
-          </button>
-        </div>
       </div>
     </div>
   )

@@ -9,6 +9,9 @@ import { cn } from '@/lib/utils';
 // Añadir 'mode' a las Props
 interface Props extends GridToursBlockType {
   rangeSlider?: boolean
+  context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function GridTours(props: Props) {

@@ -4,7 +4,9 @@ import { Subtitle } from "@/components/Subtitle";
 import { cn } from "@/lib/utils";
 
 interface Props extends TextContentBlockType {
-
+context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function TextContentBlock(props:Props){

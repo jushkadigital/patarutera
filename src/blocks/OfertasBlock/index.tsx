@@ -8,6 +8,9 @@ import { OfertaCardComponent } from '@/components/OfertaCard';
 
 // Añadir 'mode' a las Props
 interface Props extends OfertasBlockType {
+  context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function OfertasBlock(props: Props) {

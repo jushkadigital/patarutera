@@ -3,7 +3,9 @@ import { Subtitle } from "@/components/Subtitle";
 import SupportBannerBlock from "@/components/supportBanner";
 
 interface Props extends BeneficiosBlockType {
-
+context?: {
+    nameCollection:string
+  }
 }
 
 export async function BeneficiosBlock(props:Props){

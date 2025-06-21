@@ -4,7 +4,9 @@ import { Subtitle } from "@/components/Subtitle";
 import YouTubeEmbed from "@/components/YoutubeEmbed";
 
 interface Props extends YouTubeLinksBlockType{
-
+context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function YouTubeLinksBlock(props: Props) {

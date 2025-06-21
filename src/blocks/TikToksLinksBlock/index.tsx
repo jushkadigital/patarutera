@@ -4,7 +4,9 @@ import { Subtitle } from "@/components/Subtitle";
 import TiktokEmbed from "@/components/TiktokEmbed";
 
 interface Props extends TikTokLinksBlockType{
-
+context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function TikTokLinksBlock(props: Props) {

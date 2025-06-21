@@ -47,7 +47,8 @@ const blockComponents = {
 
 
 export const RenderBlocks: React.FC<{
-  blocks: Page['layout'][0][] | Tour['layout'][0][] | Paquete['layout'][0][]
+  blocks: Page['layout'][0][] | Tour['layout'][0][] | Paquete['layout'][0][],
+  context?: {nameCollection:string} 
 }> = (props) => {
   const { blocks } = props
 
@@ -63,11 +64,10 @@ export const RenderBlocks: React.FC<{
           console.log(blockType)
           if (blockType && blockType in blockComponents) {
             const Block = blockComponents[blockType]
-
             if (Block) {
               return (
                 <div className={!NoPadding.includes(blockType) ? 'w-full px-10 lg:px-36 ' :'w-full'} key={index}>
-                  <Block {...block} disableInnerContainer />
+                  <Block {...block} disableInnerContainer  context={props.context} />
                 </div>
               )
             }

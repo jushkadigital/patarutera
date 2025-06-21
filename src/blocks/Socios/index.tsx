@@ -5,7 +5,9 @@ import { Subtitle } from "@/components/Subtitle";
 import { BASEURL } from "@/lib/config";
 
 interface Props extends SociosBlockType {
-
+context?: {
+    nameCollection:string
+  }| null
 }
 
 export async function SociosBlock(props:Props){

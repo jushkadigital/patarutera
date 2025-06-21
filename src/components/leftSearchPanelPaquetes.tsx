@@ -121,7 +121,7 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
                 <CollapsibleTrigger asChild>
                   <button
                     type="button"
-                    className="w-full text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
+                    className="min-w-[250px] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
                   >
                     {/* 4. Mostrar destinos seleccionados o placeholder */}
                     <div className="flex flex-wrap gap-1 items-center">
