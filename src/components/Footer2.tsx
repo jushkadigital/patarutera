@@ -46,7 +46,7 @@ export const FooterColumns = ({ columns }) => {
 
         return (
           <Link
-            href={`/${slugType}/${slug}`}
+            href={slugType == "pages" ? `/${slug}` :`/${slugType}/${slug}`}
             className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200"
             target={link.newTab ? "_blank" : undefined}
             rel={link.newTab ? "noopener noreferrer" : undefined}
