@@ -9,12 +9,13 @@ interface ComponentProps {
   title: string
   background: string
   slug: string
+  isBigSize:boolean
 }
 
-export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type, title, background ,slug}: ComponentProps) {
+export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type, title, background ,slug ,isBigSize}: ComponentProps) {
   return (
-    <div className=" flex items-center justify-end p-8 h-[400px]">
-      <Link href={`/tours/${slug}`} className="relative w-[600px] h-[400px] rounded-3xl overflow-hidden">
+    <div className=" flex items-center justify-end px-8 h-[400px]">
+      <Link href={`/tours/${slug}`} className="relative w-full h-full rounded-3xl overflow-hidden">
         {/* Background Image */}
         <Image src={background} alt="Background" fill className="object-cover" priority />
 
@@ -22,9 +23,11 @@ export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type
         <div className="absolute inset-0 opacity-60 z-10" style={{ backgroundColor: color }} />
 
         {/* Título en la izquierda - centrado verticalmente */}
-        <div className="absolute top-1/2 left-8 transform -translate-y-1/2 text-white font-bold z-20">
+        <div className={`absolute top-1/2  transform -translate-y-1/2 text-white font-bold z-20 flex ${isBigSize ? 'px-20' : 'px-10'}  justify-between w-full items-center`}>
+        <div>
+
           <div className="text-sm uppercase tracking-wider opacity-90">{type}</div>
-          <div className="text-3xl uppercase font-black mb-3">{title}</div>
+          <div className={`font-black ${isBigSize ? 'text-8xl':'text-6xl' } uppercase font-black mb-3`}>{title}</div>
 
           {/* Barra de colores */}
           <div className="flex h-1 w-32 rounded-full overflow-hidden">
@@ -36,28 +39,23 @@ export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type
             <div className="flex-1 bg-green-500"></div>
             <div className="flex-1 bg-teal-500"></div>
           </div>
+          
         </div>
+         <div className="  transform  text-white  z-20 flex items-baseline flex-col">
+        <div className="relative z-10">
 
-        {/* Precio en la derecha */}
-        <div className="absolute top-1/2 right-8 transform -translate-y-1/2 text-white font-bold z-20 flex items-baseline">
-          <span className="text-sm">S/</span>
-          <span className="text-4xl">{price}</span>
+          <span className="text-sm text-[#EFBA06]">S/</span>
+          <span className={`${isBigSize ? 'text-4xl lg:text-6xl' : 'text-3xl lg:text-5xl'}  font-bold`}>{price}</span>
         </div>
-
-        {/* Texto adicional del precio */}
-        <div className="absolute top-1/2 right-8 transform translate-y-2 text-white text-xs opacity-80 z-20">
+        <div className="relative z-10 text-[#EFBA06]">
         {perPerson}
         </div>
-
-        {/* SVG con ancho máximo de 200px */}
-        <div className="absolute inset-0 flex items-center justify-end pr-4 z-10">
+        <div className="absolute inset-0 flex items-center justify-end  ">
           <svg
-            width="200"
-            height="114"
             viewBox="0 0 351 201"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="max-w-[200px]"
+            className={`${ isBigSize?'w-[300px]':'w-[200px]'} h-auto`}
           >
             <path
               d="M0.00491333 97.3629C26.4851 119.367 55.519 138.386 86.6057 153.899C146.977 184.046 215.063 201 287.103 201C308.79 201 330.123 199.461 351 196.491V0C273.357 63.8383 174.012 102.142 65.7045 102.142C43.3839 102.142 21.4464 100.51 0 97.3629H0.00491333Z"
@@ -79,6 +77,16 @@ export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type
             </defs>
           </svg>
         </div>
+        </div>
+        </div>
+
+        {/* Precio en la derecha */}
+       
+
+        {/* Texto adicional del precio */}
+
+        {/* SVG con ancho máximo de 200px */}
+        
       </Link>
     </div>
   )

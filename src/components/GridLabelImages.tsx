@@ -51,13 +51,13 @@ export default function ComponentGrid({ items, layout = "grid" }: ComponentGridP
 
   const renderMasonryLayout = () => {
     const heights = ["h-64", "h-80", "h-72", "h-96"]
-
+    console.log('MASON')
     return (
-      <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+      <div className="grid grid-cols-2 gap-4 space-y-4">
         {validItems.map((item, index) => (
-          <div key={item.id} className="break-inside-avoid">
+          <div key={item.id} className={`${index == 2 ?'col-span-2' :''}`}>
             <div
-              className={`relative ${heights[index % heights.length]} overflow-hidden rounded-lg mb-4 transition-transform hover:scale-105`}
+              className={`relative  overflow-hidden rounded-lg mb-4 transition-transform hover:scale-105`}
             >
               {item.component}
             </div>

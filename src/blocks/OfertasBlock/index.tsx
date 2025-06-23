@@ -43,11 +43,11 @@ export async function OfertasBlock(props: Props) {
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={title}/>
       <div className=" mx-auto">
-        <GridComponent items={ofertas.map(ele=>({
+        <GridComponent items={ofertas.map((ele,idx)=>({
                 backgroundImage: (ele.imagen as Media).url! ,
                 id: String(ele.id!),
                 alt: 'gaa',
-                component: <OfertaCardComponent  price={ele.price!} perPerson={ele.persona} type={ele.type} title={ele.title}  background={(ele.imagen as Media).url! } slug={ele.slug!}/>
+                component: <OfertaCardComponent isBigSize={idx==2?true:false}  price={ele.price!} perPerson={ele.persona} type={ele.type} title={ele.title}  background={(ele.imagen as Media).url! } slug={ele.slug!}/>
 
             }))} layout={typeGrid}/>    
       </div>
