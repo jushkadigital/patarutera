@@ -59,7 +59,7 @@ export const Navbar = ({destinations,isHome}:Props) => {
             <NavigationMenuItem>
               <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>Destinos</NavigationMenuTrigger>
               <NavigationMenuContent className="w-full md:w-[250px]">
-                <ul className="grid gap-3 p-4">
+                <ul className="grid gap-2 p-2">
                   {
                     destinations.map(ele=>(
                       <ListItem
@@ -67,6 +67,7 @@ export const Navbar = ({destinations,isHome}:Props) => {
                   title={""}
                   href={`/destinos?destination=${ele.name}&categories=`}
                   isHome={isHome}
+                  className=""
                 >
                   {ele.name}
                 </ListItem>
@@ -120,7 +121,7 @@ function ListItem({
       <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), props.isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>
         <Link href={href}>
           <div className="text-sm leading-none font-medium">{title}</div>
-          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
+          <p className="text-muted-foreground  text-lg leading-snug">
             {children}
           </p>
         </Link>

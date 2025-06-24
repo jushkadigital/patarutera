@@ -1,3 +1,5 @@
+'use client'
+import { useMobile } from "@/hooks/useMobile"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -13,8 +15,11 @@ interface ComponentProps {
 }
 
 export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type, title, background ,slug ,isBigSize}: ComponentProps) {
+
+  const isMobile = useMobile()
+  isBigSize = isMobile ? false :isBigSize 
   return (
-    <div className=" flex items-center justify-end px-8 h-[400px]">
+    <div className=" flex items-center justify-end lg:px-8 h-[400px]">
       <Link href={`/tours/${slug}`} className="relative w-full h-full rounded-3xl overflow-hidden">
         {/* Background Image */}
         <Image src={background} alt="Background" fill className="object-cover" priority />
@@ -23,11 +28,11 @@ export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type
         <div className="absolute inset-0 opacity-60 z-10" style={{ backgroundColor: color }} />
 
         {/* Título en la izquierda - centrado verticalmente */}
-        <div className={`absolute top-1/2  transform -translate-y-1/2 text-white font-bold z-20 flex ${isBigSize ? 'px-20' : 'px-10'}  justify-between w-full items-center`}>
+        <div className={`absolute top-1/2  transform -translate-y-1/2 text-white font-bold z-20 flex flex-col lg:flex-row ${isBigSize ? 'px-20' : 'px-10'}  lg:justify-between w-full items-stretch lg:items-center`}>
         <div>
 
           <div className="text-sm uppercase tracking-wider opacity-90">{type}</div>
-          <div className={`font-black ${isBigSize ? 'text-8xl':'text-6xl' } uppercase font-black mb-3`}>{title}</div>
+          <div className={`font-black ${isBigSize ? 'text-5xl lg:text-8xl':'text-4xl lg:text-6xl' } uppercase font-black mb-3`}>{title}</div>
 
           {/* Barra de colores */}
           <div className="flex h-1 w-32 rounded-full overflow-hidden">
@@ -41,7 +46,7 @@ export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type
           </div>
           
         </div>
-         <div className="  transform  text-white  z-20 flex items-baseline flex-col">
+         <div className="  transform  text-white  z-20 flex lg:items-baseline items-end flex-col">
         <div className="relative z-10">
 
           <span className="text-sm text-[#EFBA06]">S/</span>
@@ -50,7 +55,7 @@ export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type
         <div className="relative z-10 text-[#EFBA06]">
         {perPerson}
         </div>
-        <div className="absolute inset-0 flex items-center justify-end  ">
+        <div className="absolute inset-0 transform translate-y-1/3 lg:translate-y-0 flex items-center justify-end  ">
           <svg
             viewBox="0 0 351 201"
             fill="none"

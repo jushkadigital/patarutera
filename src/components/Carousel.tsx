@@ -9,6 +9,7 @@ import {
   CarouselApi,
 } from '@/components/ui/carousel';
 import { motion, AnimatePresence } from "motion/react"
+import Autoplay from "embla-carousel-autoplay"
 
 interface CarouselProps extends PropsWithChildren<object> {
   className?: string;
@@ -34,8 +35,15 @@ const handlePrevious = () => {
   const handleNext = () => {
     api?.scrollNext()
   }
+
+   const plugin = React.useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  )
   return (
     <ShadCarousel 
+    plugins={[plugin.current]}
+    onMouseEnter={plugin.current.stop}
+    onMouseLeave={plugin.current.reset}
     setApi={setApi}
           className="w-full h-full"
           opts={{
