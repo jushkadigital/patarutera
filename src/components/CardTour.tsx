@@ -22,6 +22,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
   if (mode === "grid") {
     return (
       <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[680px] sm:h-[650px] md:h-[680px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
+          <Link href={`/tours/${unitData.slug}`}>
         <div className="relative overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
             <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
@@ -42,6 +43,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
             {/* Efecto de brillo que se mueve */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
         </div>
+          </Link>
 
         {/* Content section */}
         <CardContent className="px-4 sm:px-6">
@@ -111,8 +113,8 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
         </CardContent>
 
         <CardFooter className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
-          <Link href={`/tours/${unitData.slug}`} className="w-full flex justify-center">
-            <Button className="w-fit bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold px-6 py-3 sm:px-3 sm:py-3 text-sm sm:text-[16px] rounded-full">
+          <Link href={`/tours/${unitData.slug}`} className="w-full flex justify-center cursor-pointer">
+            <Button className="w-fit bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold px-6 py-3 sm:px-3 sm:py-3 text-sm sm:text-[16px] rounded-full cursor-pointer">
               Ver Detalles
             </Button>
           </Link>
@@ -124,7 +126,9 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
     return (
       <Card className="overflow-hidden shadow-lg w-full rounded-3xl flex flex-col md:flex-row py-0 md:max-h-[300px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         {/* Section 1: Image */}
-        <div className="w-full md:w-1/3 relative h-[250px] md:h-auto overflow-hidden">
+        
+          <Link href={`/tours/${unitData.slug}`} className="">
+        <div className="w-full  relative h-[250px] md:h-auto overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
             <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
               <span className="text-[#79368c] font-bold uppercase text-xs sm:text-sm">
@@ -132,6 +136,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
               </span>
             </Badge>
           </div>
+
           <Image
             alt={unitData.title || "Imagen del Tour"}
             src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
@@ -139,11 +144,13 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
             height={400}
             className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
           />
+
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
             {/* Efecto de brillo que se mueve */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
         </div>
+        </Link>
 
         {/* Section 2: Title and Description */}
         <div className="w-full md:w-1/3 p-4 sm:p-6 flex flex-col justify-center md:border-r border-gray-100">
