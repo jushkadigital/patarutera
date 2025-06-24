@@ -143,9 +143,8 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
                 <CollapsibleContent className="relative">
                   <div className="absolute top-1 left-0 right-0 bg-white border border-[#d9d9d9] rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
                     {destinations.map((destination) => (
-                      <button
+                      <div
                         key={destination.name}
-                        type="button"
                         onClick={() => handleDestinationToggle(destination.name)}
                         className="w-full text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-3 text-[#333] first:rounded-t-lg last:rounded-b-lg"
                       >
@@ -156,7 +155,7 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
                         />
                         <MapPin className="w-4 h-4 text-[#2970b7]" />
                         {destination.name}
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </CollapsibleContent>

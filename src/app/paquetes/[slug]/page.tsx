@@ -50,7 +50,7 @@ export default async function PaquetePage({ params: paramsPromise, searchParams:
       {draft && <LivePreviewListener />}
       <div className="flex flex-col-reverse lg:flex-col">
       <RenderHero heroBlocks={heroPaquete} title={title}/>
-      <div>
+      <div className='flex flex-col space-y-10'>
       <div className='w-full'><h1 className='text-center text-4xl text-[#2970b7] font-bold italic'>{title}</h1></div>
       <RenderBlocks blocks={layout} context={{nameCollection:'paquetes'}}/>
       </div>

@@ -126,9 +126,8 @@ interface TourSearchComponentProps {
                   <CollapsibleContent className="relative">
                     <div className="absolute top-1 left-0 right-0 bg-white border border-[#d9d9d9] rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
                       {destinations.map((destination) => (
-                        <button
+                        <div
                           key={destination.name}
-                          type="button"
                           onClick={() => {
                             setDestinoTemp(destination.name)
                             setIsOpen(false)
@@ -137,7 +136,7 @@ interface TourSearchComponentProps {
                         >
                           <MapPin className="w-4 h-4 text-[#2970b7]" />
                           {destination.name}
-                        </button>
+                        </div>
                       ))}
                     </div>
                   </CollapsibleContent>
