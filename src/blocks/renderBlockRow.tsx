@@ -35,6 +35,7 @@ const blockComponents = {
 export const RenderBlocksRow: React.FC<{
   blocks: any[]
 }> = (props) => {
+
   const { blocks } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0

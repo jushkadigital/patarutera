@@ -1,5 +1,5 @@
 import type { Destination, GridBlogsBlock, GridToursBlock as GridToursBlockType, Tour, TourCategory } from '@/cms-types';
-import { GridBlogComponent } from '@/components/Articles';
+import { PeruTravelBlogPage } from '@/components/Articles';
 import CardTour, { CardTourData } from '@/components/CardTour';
 import { Subtitle } from '@/components/Subtitle';
 import { ToursComponent } from '@/components/ToursComponent';
@@ -61,7 +61,7 @@ export async function GridBlogs(props: Props) {
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={blockTitle}/>
       {generalStyle == "masonry" ? 
-      <GridBlogComponent articles={posts.map((ele:any)=>({
+      <PeruTravelBlogPage articles={posts.map((ele:any)=>({
   id: ele.id,
   slug: ele.slug,
   title: ele.title,

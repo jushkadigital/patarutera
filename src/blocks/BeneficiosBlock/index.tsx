@@ -5,7 +5,7 @@ import SupportBannerBlock from "@/components/supportBanner";
 interface Props extends BeneficiosBlockType {
 context?: {
     nameCollection:string
-  }
+  }| null
 }
 
 export async function BeneficiosBlock(props:Props){

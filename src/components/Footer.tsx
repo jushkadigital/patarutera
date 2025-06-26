@@ -31,7 +31,7 @@ export default async function FooterBlock({destination}:Props) {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-16 text-white">
         
-        <div className="flex flex-row space-x-10">
+        <div className="flex flex-col lg:flex-row space-y-10 lg:space-x-10">
         <div>
           <Image src={"/pataruteraLogo.svg"} alt="Logo" width={350} height={400} className={""} />
         </div>
