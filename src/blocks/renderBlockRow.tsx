@@ -62,4 +62,8 @@ export const RenderBlocksRow: React.FC<{
       </Fragment>
     )
   }
+  else{
+    return <div> No contenido</div>
+  }
+
 }

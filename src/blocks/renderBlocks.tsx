@@ -76,5 +76,7 @@ export const RenderBlocks: React.FC<{
         })}
       </Fragment>
     )
+  }else{
+    return <div> No contenido</div>
   }
 }

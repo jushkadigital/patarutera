@@ -12,15 +12,17 @@ const blocks = {
 
 export const RenderHero: React.FC<{heroBlocks:Post['heroPost']}> = (props) => {
 
-  if (!props.heroBlocks || props.heroBlocks.length === 0) return null
     const hasBlocks = props.heroBlocks && Array.isArray(props.heroBlocks) && props.heroBlocks.length > 0
     console.log(hasBlocks)
     if (hasBlocks) {
-  const HeroToRender = blocks[props.heroBlocks[0].blockType]
+  const HeroToRender = blocks[props.heroBlocks![0].blockType]
   
-        return <HeroToRender {...props.heroBlocks[0]} />
+        return <HeroToRender {...props.heroBlocks![0]} />
         
     }
+    else{
+    return <div> No contenido</div>
+  }
 
 
 }
