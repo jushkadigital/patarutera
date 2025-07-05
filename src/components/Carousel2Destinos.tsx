@@ -6,6 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/com
 import { TitleGroup } from "@/cms-types"
 import { Subtitle } from "./Subtitle"
 import Link from "next/link"
+import Image from "next/image"
 
 interface SlideData {
   title: string
@@ -65,12 +66,11 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
               exit={{ opacity: 0 }}
               transition={{ duration: 1.2 }}
             >
-              <img src={slides[current]?.bgImage || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
+              <Image src={slides[current]?.bgImage || "/placeholder.svg"} alt="" fill className="w-full h-full object-cover"/>
               <div className="absolute inset-0 bg-black/50" />
             </motion.div>
           </AnimatePresence>
         </div>
-
         {/* Carousel */}
         <Carousel
           setApi={setApi}
@@ -84,16 +84,17 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
             {slides.map((slide, index) => (
               <CarouselItem key={index} className="pl-8 basis-auto">
                 <motion.div
-                  className="flex flex-col items-center justify-center relative text-center text-white w-[70vmin] h-[70vmin] cursor-pointer"
+                  className="flex flex-col items-center justify-center relative text-center text-white w-[70vmin] h-[80vmin] cursor-pointer rounded-2xl overflow-hidden"
                   onClick={() => handleSlideClick(index)}
                   animate={{
-                    scale: current === index ? 1.1 : 0.85,
+                    scale: current === index ? 1 : 0.75,
+                    borderRadius: '1rem'
                   }}
                   transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
                 >
-                  <motion.div className="absolute top-0 left-0 w-full h-full rounded-2xl overflow-hidden">
+                  <motion.div className="absolute top-0 left-0 w-full h-full">
                     <motion.img
-                      className="absolute inset-0 w-[120%] h-[120%] object-cover"
+                      className="absolute inset-0 w-[120%] h-[100%] object-cover"
                       animate={{ opacity: current === index ? 1 : 0.3 }}
                       transition={{ duration: 0.6 }}
                       alt={slide.title}
@@ -101,7 +102,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                     />
                     {current === index && (
                       <motion.div
-                        className="absolute inset-0 bg-black/30"
+                        className="absolute inset-0 bg-black/30 rounded-2xl"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.8 }}
@@ -109,7 +110,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                     )}
                   </motion.div>
 
-                  <motion.article
+                  <motion.div
                     className="relative p-[4vmin]"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: current === index ? 1 : 0 }}
@@ -130,7 +131,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                       </motion.button>
                       </Link>
                     </div>
-                  </motion.article>
+                  </motion.div>
                 </motion.div>
               </CarouselItem>
             ))}
