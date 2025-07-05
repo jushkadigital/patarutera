@@ -34,7 +34,7 @@ export async function generateStaticParams() {
   const pagesRequest = await fetch(`${BASEURL}/api/pages?depth=3&limit=1000&draft=false&select[slug]=true`)
   
   const pages = await pagesRequest.json()
-  // console.log(pages)
+   console.log(pages)
 
   const params = pages.docs
     ?.filter((doc: any) => {
@@ -44,6 +44,7 @@ export async function generateStaticParams() {
       return { slug }
     })
 
+    console.log(params)
   return params || [];
 }
 
@@ -63,10 +64,11 @@ type Args = {
 export default async function Page({ params: paramsPromise, searchParams: searchParamsPromise }: Args) {
   const { isEnabled: draft } = await draftMode();
   const resolvedParams = await paramsPromise;
+  console.log(resolvedParams)
   const searchParams = await searchParamsPromise;
   const { slug = 'home' } = resolvedParams;
   console.log(draft,'draft')
-  // console.log('Slug:', slug);
+  console.log('Slug:', slug);
   // console.log('Maps to Component:', mapsToComponent);
 
   let page: any;
@@ -109,6 +111,7 @@ export default async function Page({ params: paramsPromise, searchParams: search
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
+  console.log(slug)
   console.log(draft,'draftQuery')
   const data = await fetch(`${BASEURL}/api/pages?limit=1&where[slug][equals]=${slug}&depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
 
