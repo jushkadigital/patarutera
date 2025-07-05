@@ -48,9 +48,11 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
         {/* Content section */}
         <CardContent className="px-4 sm:px-6">
           {/* title */}
+        <Link href={`/tours/${unitData.slug}`}>
           <h2 className="text-[#2970b7] text-xl sm:text-2xl font-bold mb-1 text-center leading-tight">
             {unitData.title}
           </h2>
+          </Link>
           {/* miniDescription */}
           <div className="text-[#6a6a6a] text-xs sm:text-[12px] mb-3 text-center sm:text-left">
             <RichText data={unitData.miniDescription} enableGutter={false} />
@@ -154,9 +156,11 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
 
         {/* Section 2: Title and Description */}
         <div className="w-full md:w-1/3 p-4 sm:p-6 flex flex-col justify-center md:border-r border-gray-100">
+        <Link href={`/tours/${unitData.slug}`}>
           <h2 className="text-[#2970b7] text-2xl sm:text-3xl font-bold mb-2 sm:mb-3 text-center md:text-left">
             {unitData.title}
           </h2>
+        </Link>
           <div className="text-[#6a6a6a] text-sm sm:text-base text-center md:text-left">
             <RichText data={unitData.miniDescription} enableGutter={false} />
           </div>

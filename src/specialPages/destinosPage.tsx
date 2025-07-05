@@ -84,7 +84,7 @@ export async function DestinosPage(props: {
       </Fragment>
 
       <SharedStateProvider>
-      <div className='flex flex-row mt-10'>
+      <div className='flex flex-row mt-10 w-[85%] mx-auto'>
         
         <LeftPanelSearch categories={categories} destinations={destinations} />
         <div className='lg:w-3/4'>

@@ -21,6 +21,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
   if (mode === "grid") {
     return (
       <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[680px] sm:h-[650px] md:h-[680px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
+        <Link href={`/paquetes/${unitData.slug}`} className="">
         <div className="relative overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
             <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
@@ -41,13 +42,16 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
             {/* Efecto de brillo que se mueve */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
         </div>
+        </Link>
 
         {/* Content section */}
         <CardContent className="px-4 sm:px-6">
           {/* title */}
+        <Link href={`/paquetes/${unitData.slug}`} className="">
           <h2 className="text-[#2970b7] text-xl sm:text-2xl font-bold mb-1 text-center leading-tight">
             {unitData.title}
           </h2>
+          </Link>
           {/* miniDescription */}
           <div className="text-[#6a6a6a] text-xs sm:text-[12px] mb-3 text-center sm:text-left">
             <RichText data={unitData.miniDescription} enableGutter={false} />
@@ -123,6 +127,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
     return (
       <Card className="overflow-hidden shadow-lg w-full rounded-3xl flex flex-col md:flex-row py-0 md:max-h-[300px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         {/* Section 1: Image */}
+        
         <div className="w-full md:w-1/3 relative h-[250px] md:h-auto overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
             <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
@@ -131,6 +136,9 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
               </span>
             </Badge>
           </div>
+          
+          
+        <Link href={`/paquetes/${unitData.slug}`} className="">
           <Image
             alt={unitData.title || "Imagen del Tour"}
             src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
@@ -142,13 +150,16 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
 
             {/* Efecto de brillo que se mueve */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+            </Link>
         </div>
-
         {/* Section 2: Title and Description */}
         <div className="w-full md:w-1/3 p-4 sm:p-6 flex flex-col justify-center md:border-r border-gray-100">
+        
+        <Link href={`/paquetes/${unitData.slug}`} className="">
           <h2 className="text-[#2970b7] text-2xl sm:text-3xl font-bold mb-2 sm:mb-3 text-center md:text-left">
             {unitData.title}
           </h2>
+          </Link>
           <div className="text-[#6a6a6a] text-sm sm:text-base text-center md:text-left">
             <RichText data={unitData.miniDescription} enableGutter={false} />
           </div>

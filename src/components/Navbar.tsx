@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 import {
@@ -13,16 +12,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
+  NavigationMenuContent
 } from '@/components/ui/navigation-menu';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Destination } from '@/cms-types';
-import { NavigationMenuContent } from '@radix-ui/react-navigation-menu';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Menu } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 // Asume que tienes un logo en esta ruta, o reemplázalo
 const LOGO_URL = '/pataruteraLogoWhite.svg'; // Reemplaza con la ruta real de tu logo
@@ -50,11 +46,11 @@ export const Navbar = ({destinations,isHome}:Props) => {
       <div className=" mx-auto flex items-center justify-between px-4">
         {/* Sección 1: Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <Image src={isHome ? LOGO_URL: LOGO_URLCOLOR} alt="Logo" width={100} height={100} className={cn(isHome ? '' : '')} />
+          <Image src={isHome ? LOGO_URL: LOGO_URLCOLOR} alt="Logo" width={200} height={200} className={cn(isHome ? '' : '')} />
         </Link>
 
         {/* Secciones 2, 3, 4: Navegación Principal y Dropdown */}
-        <NavigationMenu className="md:flex" >
+        <NavigationMenu className="hidden md:flex" >
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>Destinos</NavigationMenuTrigger>
@@ -100,11 +96,62 @@ export const Navbar = ({destinations,isHome}:Props) => {
         </NavigationMenu>
 
         {/* Sección 5: Botón CTA */}
-        <Button variant={isHome ? "outline" : "default"} className={cn(isHome ? ' border-white text-white hover:bg-white hover:text-primary' : '','bg-transparent')}>
-        </Button>
 
         {/* Placeholder para menú móvil si es necesario */}
-        {/* <div className="md:hidden">...</div> */}
+         <div className="md"> </div> 
+         
+         {/* Mobile Navigation */}
+        <Sheet>
+          <SheetTrigger asChild>
+              <Menu size={40} className={cn("md:hidden", isHome ? "text-white hover:bg-white/10" : "text-[#2970b7] hover:bg-gray-100")}/>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+            <div className="flex flex-col space-y-4 mt-6">
+              {/* Logo en el menú móvil */}
+              <Link href="/" className="flex items-center space-x-2 mb-6">
+                <Image src={LOGO_URLCOLOR || "/placeholder.svg"} alt="Logo" width={150} height={150} />
+              </Link>
+
+              {/* Destinos con Collapsible */}
+              <Collapsible>
+                <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-lg font-semibold text-[#2970b7] hover:text-[#1e5a9b]">
+                  Destinos
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-2 pl-4">
+                  {destinations?.length > 0 ? (
+                    destinations.map((ele) => (
+                      <Link
+                        key={ele.name}
+                        href={`/destinos?destination=${ele.name}&categories=`}
+                        className="block py-2 text-sm text-gray-600 hover:text-[#2970b7] transition-colors"
+                      >
+                        {ele.name}
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="block py-2 text-sm text-gray-500">No hay destinos disponibles</div>
+                  )}
+                </CollapsibleContent>
+              </Collapsible>
+
+              {/* Paquetes */}
+              <Link
+                href="/paquetes?destinations=Ica,Cusco"
+                className="py-2 text-lg font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors"
+              >
+                Paquetes
+              </Link>
+
+              {/* Blog */}
+              <Link
+                href="/blogs"
+                className="py-2 text-lg font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors"
+              >
+                Blog
+              </Link>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </nav>
   );

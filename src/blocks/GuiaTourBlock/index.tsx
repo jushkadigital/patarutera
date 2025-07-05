@@ -16,7 +16,7 @@ export async function GuiaTour(props:Props){
             <Subtitle titleGroup={blockTitle}/>
             <div className="w-full">
                     <TabsViaje tabs={[sectionItinerario,sectionIncluyeNoIncluye,sectionPrecios,sectionInfoViaje].map((ele,idx)=>({
-                        id: String(idx),
+                        id: (idx),
                         label: ele.iconText,
                         icon: (ele.iconImage as Media).url!,
                         content: ele.contentSection

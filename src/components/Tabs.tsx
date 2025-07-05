@@ -7,7 +7,7 @@ import RichText from "./RichText"
 import Image from "next/image"
 
 interface Tab {
-    id: string
+    id: number
     label: string
     icon: string
     content: {
@@ -193,7 +193,7 @@ const tabs = [
     },
   ]
 export default function TabsViaje({tabs}:Props) {
-  const [activeTab, setActiveTab] = useState("itinerario")
+  const [activeTab, setActiveTab] = useState(0)
 
   
   return (
