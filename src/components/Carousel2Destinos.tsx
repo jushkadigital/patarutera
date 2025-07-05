@@ -7,6 +7,7 @@ import { TitleGroup } from "@/cms-types"
 import { Subtitle } from "./Subtitle"
 import Link from "next/link"
 import Image from "next/image"
+import { ArrowRight } from "lucide-react"
 
 interface SlideData {
   title: string
@@ -84,18 +85,18 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
             {slides.map((slide, index) => (
               <CarouselItem key={index} className="pl-8 basis-auto">
                 <motion.div
-                  className="flex flex-col items-center justify-center relative text-center text-white w-[70vmin] h-[80vmin] cursor-pointer rounded-2xl overflow-hidden"
+                  className="flex flex-col items-center justify-end relative text-center text-white w-[480px] h-[80vmin] cursor-pointer rounded-[4xl] overflow-hidden"
                   onClick={() => handleSlideClick(index)}
                   animate={{
                     scale: current === index ? 1 : 0.75,
-                    borderRadius: '1rem'
+                    borderRadius: '2.5rem'
                   }}
                   transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
                 >
                   <motion.div className="absolute top-0 left-0 w-full h-full">
                     <motion.img
                       className="absolute inset-0 w-[120%] h-[100%] object-cover"
-                      animate={{ opacity: current === index ? 1 : 0.3 }}
+                      animate={{ opacity: current === index ? 1 : 0.5 }}
                       transition={{ duration: 0.6 }}
                       alt={slide.title}
                       src={slide.src}
@@ -113,23 +114,30 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                   <motion.div
                     className="relative p-[4vmin]"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: current === index ? 1 : 0 }}
+                    animate={{ opacity: current === index ? 1 : 0.5 }}
                     transition={{ duration: 0.5, delay: current === index ? 0.2 : 0 }}
                   >
-                    <h2 className="text-lg md:text-2xl lg:text-4xl font-semibold relative">{slide.title}</h2>
+                    <h2 className="text-lg md:text-2xl lg:text-4xl font-bold relative uppercase ">{slide.title}</h2>
                     <div className="flex justify-center">
-                      <Link href={`/destinos?destination=${slide.title}&categories=`}>
+                      <Link href={`/destinos?destination=${slide.title}&categories=`} className="h-full">
                       <motion.button
-                        className="mt-6 px-4 py-2 w-fit mx-auto sm:text-sm text-black bg-white h-12 border border-transparent text-xs flex justify-center items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
+                        className="mt-6 px-4 py-0 w-[150px] mx-auto space-x-5  text-white bg-black/30 font-bold  border border-2 border-white flex justify-between items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
                         whileHover={{
                           scale: 1.05,
                           boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                         }}
                         whileTap={{ scale: 0.98 }}
+                        animate={{
+                          opacity: current === index ? 1 : 0,
+                           height: current === index ? '35px' : 0
+                        }}
+                  transition={{ duration: 0.5 }}
                       >
+                        
                         {slide.button}
+                        <ArrowRight size={20}/>
                       </motion.button>
-                      </Link>
+                        </Link>
                     </div>
                   </motion.div>
                 </motion.div>
