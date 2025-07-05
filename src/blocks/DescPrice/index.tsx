@@ -16,9 +16,9 @@ export async function DescrPriceBlock(props: Props) {
         <div className="w-full">
             <Subtitle titleGroup={blockTitle} />
             <div className="flex flex-col lg:flex-row w-full justify-around">
-                <div className="bg-[#ededed] p-0 lg:p-8">
+                <div className=" p-0 lg:p-8 shadow-sm border border-1 rounded-xl">
                     <div className="max-w-4xl mx-auto">
-                        <div className="bg-white rounded-lg p-3 lg:p-8 shadow-sm">
+                        <div className="bg-white rounded-lg p-3 lg:p-8 ">
                             {/* Header */}
                             <h1 className="text-[#2970b7] text-xl lg:text-3xl font-bold mb-6 leading-tight">
                                 {leftColumn.tourTitle}
