@@ -165,6 +165,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
           </motion.button>
 
           {/* Slide indicators */}
+          {/* Slide indicators */}
           <div className="absolute bottom-[130px] left-0 right-0 flex justify-center gap-2 z-20">
             {slides.map((_, index) => (
               <motion.button
