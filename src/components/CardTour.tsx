@@ -34,9 +34,9 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           <Image
             alt={unitData.title || "Imagen del Tour"}
             src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
-            width={400}
-            height={430}
-            className="w-full h-[350px] sm:h-[400px] md:h-[430px] object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
+            width={300}
+            height={350}
+            className="h-[350px] w-[300px] object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
@@ -130,7 +130,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
         {/* Section 1: Image */}
         
           <Link href={`/tours/${unitData.slug}`} className="">
-        <div className="w-full  relative h-[250px] md:h-auto overflow-hidden">
+        <div className=" relative h-[350px] w-[300px] overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
             <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
               <span className="text-[#79368c] font-bold uppercase text-xs sm:text-sm">
@@ -142,8 +142,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           <Image
             alt={unitData.title || "Imagen del Tour"}
             src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
-            width={400}
-            height={400}
+            fill
             className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
           />
 

@@ -128,7 +128,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
       <Card className="overflow-hidden shadow-lg w-full rounded-3xl flex flex-col md:flex-row py-0 md:max-h-[300px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         {/* Section 1: Image */}
         
-        <div className="w-full md:w-1/3 relative h-[250px] md:h-auto overflow-hidden">
+        <div className="w-full md:w-1/3 relative h-[350px]  overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
             <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
               <span className="text-[#79368c] font-bold uppercase text-xs sm:text-sm">
@@ -142,8 +142,8 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
           <Image
             alt={unitData.title || "Imagen del Tour"}
             src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
-            width={400}
-            height={400}
+            width={300}
+            height={350}
             className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
