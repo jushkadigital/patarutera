@@ -16,8 +16,9 @@ export async function DescrPriceBlock(props: Props) {
         <div className="w-full">
             <Subtitle titleGroup={blockTitle} />
             <div className="flex flex-col lg:flex-row w-full justify-around">
-                <div className=" p-0 lg:p-8 shadow-sm border border-1 rounded-xl">
-                    <div className="max-w-4xl mx-auto">
+                <div className="w-[70%] p-0 ">
+                    <div className="py-3 shadow-sm border border-1 rounded-xl w-[90%]">
+                    <div className="mx-auto w-[90%]">
                         <div className="bg-white rounded-lg p-3 lg:p-8 ">
                             {/* Header */}
                             <h1 className="text-[#2970b7] text-xl lg:text-3xl font-bold mb-6 leading-tight">
@@ -27,8 +28,9 @@ export async function DescrPriceBlock(props: Props) {
 
                         </div>
                     </div>
+                    </div>
                 </div>
-                <div>
+                <div className="w-[30%]">
                     <PrecioCardComponent priceTitle={rightColumn.priceTitle!} prevText={rightColumn.prevText!} price={rightColumn.price} nextText={rightColumn.nextText!} paymentForm={rightColumn.paymentForm}  origen={context!.nameCollection}/>
                 </div>
 

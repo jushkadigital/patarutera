@@ -16,6 +16,7 @@ import type {
   MediaBlock as MediaBlockProps,
 } from '@/cms-types'
 import { cn } from '@/utilities/ui'
+import { customListItemConverter } from './converts/itemNode'
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -30,9 +31,13 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   return relationTo === 'posts' ? `/posts/${slug}` : `/${slug}`
 }
 
-const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
+const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => {
+  console.log('hereJSX')
+    console.log(defaultConverters)
+  return({
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
+  ...customListItemConverter,
   blocks: {
     mediaBlock: ({ node }) => (
       <MediaBlock
@@ -45,7 +50,7 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
       />
     ),
   },
-})
+})}
 
 type Props = {
   data: DefaultTypedEditorState

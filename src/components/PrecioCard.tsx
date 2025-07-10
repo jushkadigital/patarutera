@@ -230,7 +230,7 @@ export default function FormularioContacto({ priceTitle,prevText,price,nextText,
 }
 {
   isMobile ? " " :
-    <div id="formPrice" className="max-w-md mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200">
+    <div id="formPrice" className=" mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200">
       
        <div className="bg-[#2970b7] text-white text-center py-6 rounded-t-3xl">
         <h1 className="text-2xl font-bold tracking-wide">{priceTitle}</h1>
@@ -304,7 +304,7 @@ export default function FormularioContacto({ priceTitle,prevText,price,nextText,
           {/* Mensaje de Estado (Éxito o Error) */}
           {submitMessage && (
             <div
-              className={`text-center p-3 rounded-lg text-sm ${
+              className={`text-center rounded-lg text-sm ${
                 submitMessage.includes("Error") ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"
               }`}
             >

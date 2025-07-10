@@ -203,7 +203,7 @@ export default function TabsViaje({tabs}:Props) {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`relative flex flex-col items-center justify-center p-4 min-w-[250px] border rounded-md transition-all ${
+            className={`relative flex flex-col items-center justify-center p-4 min-w-[300px] border rounded-md transition-all ${
               activeTab === tab.id ? "border-green-600 bg-white" : "border-gray-200 bg-white hover:bg-gray-50"
             }`}
           >
