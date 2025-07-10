@@ -13,7 +13,7 @@ export const BannerCarousel: React.FC<BannerProps> = ({ title, backgroundUrl,alt
   console.log(backgroundUrl)
   return (
     <div
-      className={`relative w-full h-[80vh]  flex items-center justify-center text-white overflow-hidden ${className}`}
+      className={`relative w-full h-[90vh]  flex items-center justify-center text-white overflow-hidden ${className}`}
     >
       {/* Imagen de fondo absoluta */}
       <Image

@@ -21,8 +21,8 @@ import { Menu } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 // Asume que tienes un logo en esta ruta, o reemplázalo
-const LOGO_URL = '/pataruteraLogoWhite.svg'; // Reemplaza con la ruta real de tu logo
-const LOGO_URLCOLOR = '/pataruteraLogo.svg'; // Reemplaza con la ruta real de tu logo
+const LOGO_URL = '/pataruteraLogoWhite.png'; // Reemplaza con la ruta real de tu logo
+const LOGO_URLCOLOR = '/pataruteraLogo.png'; // Reemplaza con la ruta real de tu logo
 interface Props {
   destinations: Destination[]
   isHome: boolean
