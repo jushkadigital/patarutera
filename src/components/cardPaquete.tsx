@@ -14,6 +14,11 @@ interface CardPaqueteProps {
   unitData: CardPaqueteData;
   mode?: 'grid' | 'list';
 }
+const trad = {
+  easy: 'Facil',
+  medium: 'Intermedio',
+  hard: 'Dificil'
+}
 
 export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
   console.log("render card")
@@ -101,7 +106,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
                         height={13}
                         className="sm:w-[18px] sm:h-[15px]"
                       />
-                      <span className="text-[#6a6a6a] text-xs sm:text-[11px] mt-1">{unitData.difficulty}</span>
+                      <span className="text-[#6a6a6a] text-xs sm:text-[11px] mt-1">{trad[unitData.difficulty]}</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -208,7 +213,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
                         height={13}
                         className="sm:w-[18px] sm:h-[15px]"
                       />
-                      <span className="text-[#6a6a6a] text-xs sm:text-sm mt-1">{unitData.difficulty}</span>
+                      <span className="text-[#6a6a6a] text-xs sm:text-sm mt-1">{trad[unitData.difficulty]}</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>

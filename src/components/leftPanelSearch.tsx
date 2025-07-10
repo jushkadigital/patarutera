@@ -178,17 +178,18 @@ export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps
 
   const selectedOption = destinations.find((dest) => dest.name === destinoTemp)
   return (
-    <div className="bg-white rounded-full shadow-lg border border-gray-200 px-8 py-4 max-w-4xl mx-auto">
-      <div className="flex items-center justify-between gap-8">
+    <div className="bg-white rounded-2xl lg:rounded-full shadow-lg border border-gray-200 px-8 py-4 max-w-4xl mx-auto">
+      <div className="flex flex-col lg:flex-row items-end lg:items-center justify-between gap-3 lg:gap-8">
         {/* Destinos Dropdown */}
-        <div className="flex items-center gap-3 flex-1 relative">
-          <MapPin className="w-8 h-8 text-[#2970b7] flex-shrink-0" />
+        <div className='flex items-center lg:gap-3 flex-1 '>
+        <div className="flex items-center lg:gap-3 flex-1 relative">
+          <MapPin className="w-5 h-5 lg:w-8 lg:h-8 text-[#2970b7] flex-shrink-0 hidden lg:block" />
           <div className="relative flex-1"></div>
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
                   <CollapsibleTrigger asChild>
                     <button
                       type="button"
-                      className="min-w-[250px] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
+                      className="min-w-[180px] lg:min-w-[250px] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
                     >
                       {selectedOption ? (
                         <>
@@ -222,9 +223,8 @@ export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps
                   </CollapsibleContent>
                 </Collapsible>
         </div>
-
         {/* Separador */}
-        <div className="w-px h-12 bg-gray-200"></div>
+        <div className="h-0 w-0 lg:w-px lg:h-12 bg-gray-200"></div>
 
         {/* Selector de día */}
         <div className="flex items-center gap-3 flex-1">
@@ -234,6 +234,10 @@ export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps
             <ChevronDown className="w-5 h-5 text-[#686868]" />
           </div>
         </div>
+
+        </div>
+
+        
 
         {/* Botón de búsqueda */}
         <Link href={`/destinos?destination=${destinoTemp}&categories=`} >

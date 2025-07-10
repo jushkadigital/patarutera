@@ -16,6 +16,12 @@ interface CardTourProps {
   mode?: "grid" | "list"
 }
 
+const trad = {
+  easy: 'Facil',
+  medium: 'Intermedio',
+  hard: 'Dificil'
+}
+
 export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
   console.log("render card")
 
@@ -23,7 +29,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
     return (
       <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[680px] sm:h-[650px] md:h-[680px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
           <Link href={`/tours/${unitData.slug}`}>
-        <div className="relative overflow-hidden">
+        <div className="relative h-[400px] w-full overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
             <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
               <span className="text-[#79368c] font-bold uppercase text-xs sm:text-sm">
@@ -34,9 +40,8 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           <Image
             alt={unitData.title || "Imagen del Tour"}
             src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
-            width={300}
-            height={350}
-            className="h-[350px] w-[300px] object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
+            fill
+            className=" object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
@@ -102,7 +107,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
                         height={13}
                         className="sm:w-[18px] sm:h-[15px]"
                       />
-                      <span className="text-[#6a6a6a] text-xs sm:text-[11px] mt-1">{unitData.difficulty}</span>
+                      <span className="text-[#6a6a6a] text-xs sm:text-[11px] mt-1">{trad[unitData.difficulty]}</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -208,7 +213,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
                         height={13}
                         className="sm:w-[18px] sm:h-[15px]"
                       />
-                      <span className="text-[#6a6a6a] text-xs sm:text-sm mt-1">{unitData.difficulty}</span>
+                      <span className="text-[#6a6a6a] text-xs sm:text-sm mt-1">{trad[unitData.difficulty]} </span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
