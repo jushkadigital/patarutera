@@ -197,13 +197,13 @@ export default function TabsViaje({tabs}:Props) {
 
   
   return (
-    <div className="w-full  mx-auto lg:p-4">
+    <div className="w-full  mx-auto ">
       <div className=" flex  lg:flex-wrap flex-col lg:flex-row justify-between gap-1">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`relative flex flex-col items-center justify-center p-4 min-w-[280px] border rounded-md transition-all ${
+            className={`relative flex flex-col items-center justify-center p-4 min-w-[230px] border rounded-md transition-all ${
               activeTab === tab.id ? "border-green-600 bg-white" : "border-gray-200 bg-white hover:bg-gray-50"
             }`}
           >

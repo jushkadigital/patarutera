@@ -24,7 +24,7 @@ export async function TourHero(props: Props) {
     
     </div>
     <div className="lg:w-2/3 flex flex-row justify-center items-center ">
-      <div className="h-[450px] w-[90%] max-w-[700px] mx-auto relative rounded-2xl overflow-hidden">
+      <div className="h-[450px] w-[95%] max-w-[700px] ml-auto relative rounded-2xl overflow-hidden">
         <Image alt="o" src={(ImageContent.image as Media).url!} fill className=" h-full w-full object-cover"/>
       </div>
     </div>
