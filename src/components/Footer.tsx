@@ -30,11 +30,11 @@ export default async function FooterBlock({destination}:Props) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-10 lg:px-4 pt-16 text-white">
+      <div className="relative z-10 container mx-auto px-10 lg:px-0 pt-16 text-white">
         
-        <div className="flex flex-col lg:flex-row space-y-10 lg:space-x-10">
+        <div className="flex flex-col lg:flex-row space-y-10 lg:space-x-15">
         <div>
-          <Image src={"/pataruteraLogo.svg"} alt="Logo" width={350} height={400} className={""} />
+          <Image src={"/pataLogo.png"} alt="Logo" width={350} height={400} className={""} />
         </div>
           <div>
             <FooterColumns columns={navItems.filter(ele=>ele.nameColumn !== "Destinos")}/>

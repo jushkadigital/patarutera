@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
 import { Button } from "./ui/button"
 import { useMobile } from "@/hooks/useMobile"
 import Link from "next/link"
+import { SvgWhatsapp } from "./IconsSvg"
 
 // 1. INTERFAZ DE DATOS DEL FORMULARIO ACTUALIZADA
 // Se cambian los campos 'fecha' y 'pasajeros' por los que necesitas: 'nombre', 'email', 'mensaje'.
@@ -103,7 +104,7 @@ export default function FormularioContacto({ priceTitle,prevText,price,nextText,
               size="lg"
               className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90"
             >
-              <MessageCircle className="h-6 w-6" />
+              <SvgWhatsapp />
               <span className="sr-only">Abrir formulario de contacto</span>
             </Button>
             </Link>
@@ -217,10 +218,10 @@ export default function FormularioContacto({ priceTitle,prevText,price,nextText,
           <DialogTrigger asChild>
             <Link href={'#formPrice'}>
             <Button
-              size="lg"
-              className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90"
+              size='icon'
+              className="rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90 size-15"
             >
-              <MessageCircle className="h-6 w-6" />
+              <SvgWhatsapp />
               <span className="sr-only">Abrir formulario de contacto</span>
             </Button>
             </Link>

@@ -17,6 +17,7 @@ import * as SliderPrimitive from "@radix-ui/react-slider"
 import { useSharedState } from '@/hooks/sharedContextDestinos';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 import { useMobile } from '@/hooks/useMobile';
+import Link from 'next/link';
 
 
 
@@ -79,7 +80,6 @@ interface TourSearchComponentProps {
 
  function TourSearchComponent({destinations}:TourSearchComponentProps) {
   const [isOpen, setIsOpen] = React.useState(false); // Default to open
-  const [destino, setDestino] = useQueryState('destination',{shallow:false})
   const [destinoTemp,setDestinoTemp] = React.useState("")
 
   const selectedOption = destinations.find((dest) => dest.name === destinoTemp)
@@ -161,7 +161,6 @@ interface TourSearchComponentProps {
           {/* Search Button */}
           <button 
           onClick={()=>{
-            setDestino((prev)=>destinoTemp)
           }}
           className="w-full bg-[#2970b7] text-white py-4 px-6 rounded-2xl font-medium text-lg flex items-center justify-center gap-3 hover:bg-[#2970b7]/90 transition-colors">
             Buscar
@@ -172,6 +171,84 @@ interface TourSearchComponentProps {
     </div>
   )
 }
+
+export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps) {
+  const [isOpen, setIsOpen] = React.useState(false); // Default to open
+  const [destinoTemp,setDestinoTemp] = React.useState("Cusco")
+
+  const selectedOption = destinations.find((dest) => dest.name === destinoTemp)
+  return (
+    <div className="bg-white rounded-full shadow-lg border border-gray-200 px-8 py-4 max-w-4xl mx-auto">
+      <div className="flex items-center justify-between gap-8">
+        {/* Destinos Dropdown */}
+        <div className="flex items-center gap-3 flex-1 relative">
+          <MapPin className="w-8 h-8 text-[#2970b7] flex-shrink-0" />
+          <div className="relative flex-1"></div>
+          <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+                  <CollapsibleTrigger asChild>
+                    <button
+                      type="button"
+                      className="min-w-[250px] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
+                    >
+                      {selectedOption ? (
+                        <>
+                          <MapPin className="w-4 h-4 text-[#2970b7]" />
+                          <span className="text-[#333]">{selectedOption.name}</span>
+                        </>
+                      ) : (
+                        <span className="text-[#adadac]">Seleccionar destino</span>
+                      )}
+                      <ChevronDown
+                        className={`w-5 h-5 text-[#adadac] transition-transform duration-200 absolute right-3 ${isOpen ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="relative">
+                    <div className="absolute top-1 left-0 right-0 bg-white border border-[#d9d9d9] rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                      {destinations.map((destination) => (
+                        <div
+                          key={destination.name}
+                          onClick={() => {
+                            setDestinoTemp(destination.name)
+                            setIsOpen(false)
+                          }}
+                          className="w-full text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg cursor-pointer"
+                        >
+                          <MapPin className="w-4 h-4 text-[#2970b7]" />
+                          {destination.name}
+                        </div>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+        </div>
+
+        {/* Separador */}
+        <div className="w-px h-12 bg-gray-200"></div>
+
+        {/* Selector de día */}
+        <div className="flex items-center gap-3 flex-1">
+          <Calendar className="w-6 h-6 text-[#79368c] fill-current flex-shrink-0" />
+          <div className="flex items-center gap-2 cursor-pointer">
+            <span className="text-[#686868] font-medium">Día</span>
+            <ChevronDown className="w-5 h-5 text-[#686868]" />
+          </div>
+        </div>
+
+        {/* Botón de búsqueda */}
+        <Link href={`/destinos?destination=${destinoTemp}&categories=`} >
+        <button className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg"
+        >
+          <span>Buscar</span>
+          <Search className="w-5 h-5" />
+        </button>
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+
 
 interface TourCategoryListProps {
   categories: TourCategory[]

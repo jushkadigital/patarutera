@@ -54,7 +54,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
   return (
     <div className="w-full h-[60vh] lg:h-[100vh] mx-auto relative">
       {/* Carousel container with background */}
-      <div className="w-full h-full overflow-hidden relative">
+      <div className="w-full h-full overflow-hidden relative flex flex-col items-end justify-center">
         {/* Background image container */}
         <Subtitle titleGroup={titleObj} />
         <div className="absolute inset-0 w-full h-full">
@@ -75,7 +75,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
         {/* Carousel */}
         <Carousel
           setApi={setApi}
-          className="w-full h-full"
+          className="w-full h-full flex flex-col justify-around"
           opts={{
             align: "center",
             loop: true,
@@ -85,7 +85,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
             {slides.map((slide, index) => (
               <CarouselItem key={index} className="pl-8 basis-auto">
                 <motion.div
-                  className="flex flex-col items-center justify-end relative text-center text-white w-[480px] h-[80vmin] cursor-pointer rounded-[4xl] overflow-hidden"
+                  className="flex flex-col items-center justify-end relative text-center text-white w-[480px] h-[70vmin] cursor-pointer rounded-[4xl] overflow-hidden"
                   onClick={() => handleSlideClick(index)}
                   animate={{
                     scale: current === index ? 1 : 0.75,
@@ -166,7 +166,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
 
           {/* Slide indicators */}
           {/* Slide indicators */}
-          <div className="absolute bottom-[130px] left-0 right-0 flex justify-center gap-2 z-20">
+          <div className=" left-0 right-0 flex justify-center gap-2 z-20">
             {slides.map((_, index) => (
               <motion.button
                 key={index}

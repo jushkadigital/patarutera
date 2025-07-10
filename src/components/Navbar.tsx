@@ -43,11 +43,12 @@ export const Navbar = ({destinations,isHome}:Props) => {
 
   return (
     <nav className={navbarClasses}>
-      <div className=" mx-auto flex items-center justify-between px-4">
+      <div className=" mx-auto flex items-center justify-around px-4">
         {/* Sección 1: Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <Image src={isHome ? LOGO_URL: LOGO_URLCOLOR} alt="Logo" width={200} height={200} className={cn(isHome ? '' : '')} />
         </Link>
+        <div></div>
 
         {/* Secciones 2, 3, 4: Navegación Principal y Dropdown */}
         <NavigationMenu className="hidden md:flex" >
@@ -108,10 +109,12 @@ export const Navbar = ({destinations,isHome}:Props) => {
           <SheetContent side="left" className="w-[400px] sm:w-[400px]">
             <div className="flex flex-col space-y-4 mt-6 justify-center">
               {/* Logo en el menú móvil */}
+              
+              <SheetClose asChild>
               <Link href="/" className="flex items-center justify-center space-x-2 mb-6">
                 <Image src={LOGO_URLCOLOR || "/placeholder.svg"} alt="Logo" width={150} height={150} />
               </Link>
-
+              </SheetClose>
               {/* Destinos con Collapsible */}
               <Collapsible>
                 <CollapsibleTrigger  className="flex w-full items-center justify-center py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b]">

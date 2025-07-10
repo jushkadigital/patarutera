@@ -16,14 +16,16 @@ export async function TourHero(props: Props) {
     <div className="lg:w-1/3 flex flex-row justify-center items-center">
     <Carousel className="h-[400px]">
       {carContent!.carImages!.map((item) => (
-        <Image alt="o"  src={(item.image as Media).url!} width={300}  height={350} className=" object-cover"/>
+        <div className="w-full h-[400px] relative rounded-2xl overflow-hidden">
+        <Image alt="o"  src={(item.image as Media).url!} fill className="h-full w-full object-cover"/>
+        </div>
       ))}
     </Carousel>
     
     </div>
     <div className="lg:w-2/3 flex flex-row justify-center items-center">
-      <div className="h-[400px] w-[300px] relative overflow-hidden">
-        <Image alt="o" src={(ImageContent.image as Media).url!} fill className="object-cover"/>
+      <div className="h-[400px] w-full relative rounded-2xl overflow-hidden">
+        <Image alt="o" src={(ImageContent.image as Media).url!} fill className=" h-full w-full object-cover"/>
       </div>
     </div>
   </div>

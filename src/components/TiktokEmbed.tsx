@@ -1,4 +1,4 @@
-"use client";
+/*"use client";
 
 import { useEffect } from "react"; // Ya no necesitas useRef si no lo usas
 
@@ -51,12 +51,84 @@ export default function TiktokEmbed({ url }: Props) {
         data-video-id={videoId}
         style={{ maxWidth: "605px", minWidth: "325px", margin: "10px auto" }}
       >
-        {/* Cambia "Loading..." por un placeholder más visual */}
         <section style={{ padding: "20px", textAlign: "center", border: "1px dashed #ccc", borderRadius: "8px" }}>
           <p>Cargando video de TikTok...</p>
-          {/* Podrías añadir un spinner o un esqueleto aquí */}
         </section>
       </blockquote>
     </div>
   );
+}
+*/
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+type Props = {
+  url: string;
+};
+
+function getVideoId(url: string): string | undefined {
+  try {
+    const match = url.match(/\/video\/(\d+)/);
+    return match?.[1];
+  } catch {
+    return undefined;
+  }
+}
+
+export default function TiktokEmbed({ url }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<string | null>(null);
+  const videoId = getVideoId(url);
+
+  useEffect(() => {
+    if (!videoId || !containerRef.current) {
+      setError("URL inválida o no se pudo extraer el ID del video.");
+      return;
+    }
+
+    const embed = document.createElement("blockquote");
+    embed.className = "tiktok-embed";
+    embed.setAttribute("cite", url);
+    embed.setAttribute("data-video-id", videoId);
+    embed.style.maxWidth = "605px";
+    embed.style.minWidth = "325px";
+
+    const section = document.createElement("section");
+    section.innerText = "Cargando video de TikTok...";
+    embed.appendChild(section);
+
+    containerRef.current.innerHTML = ""; // Limpieza previa
+    containerRef.current.appendChild(embed);
+
+    const loadTikTokScript = () => {
+      return new Promise<void>((resolve, reject) => {
+        if ((window as any).tiktok?.widgets?.load) {
+          return resolve();
+        }
+
+        const script = document.createElement("script");
+        script.src = "https://www.tiktok.com/embed.js";
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject("No se pudo cargar el script de TikTok");
+        document.body.appendChild(script);
+      });
+    };
+
+    loadTikTokScript()
+      .then(() => {
+        (window as any).tiktok?.widgets?.load?.();
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Error al cargar el video de TikTok.");
+      });
+  }, [url]);
+
+  if (error) {
+    return <p style={{ color: "red" }}>{error}</p>;
+  }
+
+  return <div ref={containerRef} />;
 }
