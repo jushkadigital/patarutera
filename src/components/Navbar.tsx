@@ -62,7 +62,7 @@ export const Navbar = ({destinations,isHome}:Props) => {
                       <ListItem
                   key={ele.name}
                   title={""}
-                  href={`/destinos?destination=${ele.name}&categories=`}
+                  href={`/tours?destination=${ele.name}&categories=`}
                   isHome={isHome}
                   className=""
                 >
@@ -126,7 +126,7 @@ export const Navbar = ({destinations,isHome}:Props) => {
                      <SheetClose asChild>
                       <Link
                         key={ele.name}
-                        href={`/destinos?destination=${ele.name}&categories=`}
+                        href={`/tours?destination=${ele.name}&categories=`}
                         className="block py-2 text-lg text-gray-800 hover:text-[#2970b7] transition-colors text-center"
                       >
                         {ele.name}

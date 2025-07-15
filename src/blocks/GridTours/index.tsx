@@ -1,5 +1,6 @@
 import type { Destination, GridToursBlock as GridToursBlockType, Tour, TourCategory } from '@/cms-types';
 import CardTour, { CardTourData } from '@/components/CardTour';
+import { Pagination } from '@/components/Pagination';
 import { Subtitle } from '@/components/Subtitle';
 import { ToursComponent } from '@/components/ToursComponent';
 import { useSharedState } from '@/hooks/sharedContextDestinos';
@@ -9,6 +10,8 @@ import { cn } from '@/lib/utils';
 // Añadir 'mode' a las Props
 interface Props extends GridToursBlockType {
   rangeSlider?: boolean
+  searchParams?: string
+  page?: number
   context?: {
     nameCollection:string
   }| null
@@ -16,12 +19,13 @@ interface Props extends GridToursBlockType {
 
 export async function GridTours(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
-  const { id, gridColumns, gridStyle:mode  ,destination,category,blockTitle} = props;
+  const { id, gridColumns, gridStyle:mode  ,destination,category,blockTitle, page, overrideDefaults,searchParams} = props;
 
 
 
   console.log(mode)
   let tours: CardTourData[] = [];
+  let data
   let fetchError = null;
 const params = new URLSearchParams()
 
@@ -38,13 +42,14 @@ const paramsCat = new URLSearchParams()
     const queryString = params.toString();    
     const queryStringCat = paramsCat.toString()
     // console.log('grid tours HERE') 
-   const response = await fetch( `${BASEURL}/api/tours?limit=${gridColumns }&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}&${queryStringCat}`);
+    const pageNumber = page ? `&page=${page}` : ''
+    const response = await fetch( `${BASEURL}/api/tours?limit=${gridColumns }${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}&${queryStringCat}`);
     if (!response.ok) {
         // Consider logging the response status and text for more detailed error info
         // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
+    data = await response.json();
     if (data && data.docs) {
       tours = data.docs;
     }
@@ -74,6 +79,7 @@ const paramsCat = new URLSearchParams()
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={blockTitle}/>
       <ToursComponent mode={mode!} tours={tours} rangeSlider={props.rangeSlider}/>
+      {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!}/>)}
       
     </div>
   );

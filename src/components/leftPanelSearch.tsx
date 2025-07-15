@@ -159,13 +159,13 @@ interface TourSearchComponentProps {
           </div>
 
           {/* Search Button */}
+          <Link href={`/tours?destination=${destinoTemp}&categories=`}>
           <button 
-          onClick={()=>{
-          }}
           className="w-full bg-[#2970b7] text-white py-4 px-6 rounded-2xl font-medium text-lg flex items-center justify-center gap-3 hover:bg-[#2970b7]/90 transition-colors">
             Buscar
             <Search className="w-5 h-5" />
           </button>
+          </Link>
         </div>
       </div>
     </div>
@@ -240,7 +240,7 @@ export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps
         
 
         {/* Botón de búsqueda */}
-        <Link href={`/destinos?destination=${destinoTemp}&categories=`} >
+        <Link href={`/tours?destination=${destinoTemp}&categories=`} >
         <button className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg"
         >
           <span>Buscar</span>

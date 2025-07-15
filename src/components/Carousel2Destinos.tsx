@@ -119,7 +119,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                   >
                     <h2 className="text-lg md:text-2xl lg:text-4xl font-bold relative uppercase ">{slide.title}</h2>
                     <div className="flex justify-center">
-                      <Link href={`/destinos?destination=${slide.title}&categories=`} className="h-full">
+                      <Link href={`/tours?destination=${slide.title}&categories=`} className="h-full">
                       <motion.button
                         className="mt-6 px-4 py-0 w-[150px] mx-auto space-x-5  text-white bg-black/30 font-bold  border border-2 border-white flex justify-between items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
                         whileHover={{

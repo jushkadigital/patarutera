@@ -65,6 +65,7 @@ export default function RichText(props: Props) {
       converters={jsxConverters}
       className={cn(
         'prose',
+        'prose-custom',
         {
           container: enableGutter,
           'max-w-none': !enableGutter,
