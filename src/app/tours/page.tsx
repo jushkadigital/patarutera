@@ -43,11 +43,13 @@ const blockComponents = {
 }
 
 
+interface Props {
+searchParams: Promise<{
+    [key: string]: string | string[] | undefined;
+  }>;
+}
 
-
-export default async function Page(props: {
-  searchParams: { [key: string]: string | string[] | undefined }
-}) {
+export default async function Page(props:Props) {
   const { destination } =await props.searchParams
   const params = await props.searchParams
   const queryString = new URLSearchParams(

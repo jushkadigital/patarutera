@@ -49,13 +49,13 @@ type Args = {
 }
 
 interface Props {
-    searchParams: { [key: string]: string | string[] | undefined },
-    params: {pageNumber: string}
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>,
+    params: Promise<{pageNumber: string}>
 }
 
 
 export default async function Page(props:Props) {
-  const { destination } =await props.searchParams
+  const { destination } = await props.searchParams
   const { pageNumber } = await props.params
 
   console.log(pageNumber)
