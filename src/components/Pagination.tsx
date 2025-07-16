@@ -17,12 +17,13 @@ export const Pagination: React.FC<{
   page: number
   totalPages: number
   searchParams:string
+  type: 'tours' | 'paquetes'| 'posts'
 }> = (props) => {
   const router = useRouter()
 
   console.log(props.searchParams)
 
-  const { className, page, totalPages } = props
+  const { className, page, totalPages, type } = props
 
   console.log("TOTAL PAGES")
   console.log(totalPages)
@@ -44,7 +45,7 @@ export const Pagination: React.FC<{
               className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
               onClick={() => {
                 if (hasPrevPage) {
-                  router.push(`/tours/page/${page - 1}?${props.searchParams}`)
+                  router.push(`/${type}/page/${page - 1}?${props.searchParams}`)
                 }
               }}
             />
@@ -64,7 +65,7 @@ export const Pagination: React.FC<{
                 className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
                 onClick={() => {
                   if (hasPrevPage) {
-                    router.push(`/tours/page/${page - 1}?${props.searchParams}`)
+                    router.push(`/${type}/page/${page - 1}?${props.searchParams}`)
                   }
                 }}
               >
@@ -92,7 +93,7 @@ export const Pagination: React.FC<{
                 className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
                 onClick={() => {
                   if (hasNextPage) {
-                    router.push(`/tours/page/${page + 1}?${props.searchParams}`)
+                    router.push(`/${type}/page/${page + 1}?${props.searchParams}`)
                   }
                 }}
               >
@@ -115,7 +116,7 @@ export const Pagination: React.FC<{
               className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
               onClick={() => {
                 if (hasNextPage) {
-                  router.push(`/tours/page/${page + 1}?${props.searchParams}`)
+                  router.push(`/${type}/page/${page + 1}?${props.searchParams}`)
                 }
               }}
             />

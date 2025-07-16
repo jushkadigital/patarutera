@@ -122,7 +122,7 @@ export default async function Page(props:Props) {
         
         <LeftPanelSearchPaquete  destinations={destinations} />
         <div className='lg:w-3/4'>
-        <GridPaquetes  {...blocks[0] as GridPaquetesBlock} destination={destinationData} gridColumns={6} gridStyle={false} rangeSlider={true} page={sanitizedPageNumber}/>
+        <GridPaquetes  {...blocks[0] as GridPaquetesBlock} destination={destinationData} gridColumns={6} gridStyle={false} rangeSlider={true} searchParams={queryString} page={sanitizedPageNumber}/>
         </div>
       </div>
       </SharedStateProvider>

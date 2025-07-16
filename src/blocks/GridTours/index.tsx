@@ -79,7 +79,7 @@ const paramsCat = new URLSearchParams()
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={blockTitle}/>
       <ToursComponent mode={mode!} tours={tours} rangeSlider={props.rangeSlider}/>
-      {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!}/>)}
+      {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!} type={'tours'}/>)}
       
     </div>
   );

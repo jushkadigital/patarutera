@@ -74,7 +74,7 @@ const params = new URLSearchParams()
       <Subtitle className="" titleGroup={blockTitle}/>
       <PaquetesComponent mode={mode!} paquetes={paquetes} rangeSlider={props.rangeSlider}/>
       
-      {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!}/>)}
+      {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!} type={'paquetes'}/>)}
     </div>
   );
 }
