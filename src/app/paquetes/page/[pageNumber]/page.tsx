@@ -1,7 +1,6 @@
-
 import  { cache, Fragment } from 'react'
 
-import type { GridToursBlock, Media, Page } from '@/cms-types'
+import type { GridPaquetesBlock, GridToursBlock, Media, Page } from '@/cms-types'
 import { MediaBlock } from '../../../../blocks/MediaBlock'
 import { GridTours } from '../../../../blocks/GridTours'
 import { RowBlock } from '../../../../blocks/RowBlock'
@@ -24,6 +23,8 @@ import { YouTubeLinksBlock } from '@/blocks/YoutubeLinksBlock'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { LeftPanelSearchPaquete } from '@/components/leftSearchPanelPaquetes'
+import { GridPaquetes } from '@/blocks/GridPaquetes'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -43,14 +44,14 @@ const blockComponents = {
 }
 
 
+
 interface Props {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>,
     params: Promise<{pageNumber: string}>
 }
 
-
 export default async function Page(props:Props) {
-  const { destination } = await props.searchParams
+    const { destination } = await props.searchParams
   const { pageNumber } = await props.params
 
   console.log(pageNumber)
@@ -84,9 +85,6 @@ export default async function Page(props:Props) {
   const hasBlocksLayout = blocks && Array.isArray(blocks) && blocks.length > 0
   const hasBlocksHero = heroPageBlocks && Array.isArray(heroPageBlocks) && heroPageBlocks.length > 0
 
-  const categoriesRequest = await fetch(`${BASEURL}/api/tourCategory`)
-  const categoriesData = await categoriesRequest.json()
-  const categories = categoriesData.docs
   const destinationsRequest = await fetch(`${BASEURL}/api/destinations`)
   const destinationsData = await destinationsRequest.json()
   const destinations = destinationsData.docs
@@ -111,7 +109,7 @@ export default async function Page(props:Props) {
           switch (blockType) {
             case 'banner':
               {
-                return <BannerBlock {...block} title={destinationData.name} image={(destinationData.backgroundDestination as Media)} />
+                return <BannerBlock {...block} />
               }
             default:
               return null
@@ -122,9 +120,9 @@ export default async function Page(props:Props) {
       <SharedStateProvider>
       <div className='flex flex-row mt-10 w-[85%] mx-auto'>
         
-        <LeftPanelSearch categories={categories} destinations={destinations} />
+        <LeftPanelSearchPaquete  destinations={destinations} />
         <div className='lg:w-3/4'>
-        <GridTours  {...blocks[0] as GridToursBlock} gridColumns={6} destination={destinationData} gridStyle={false} rangeSlider={true} searchParams={queryString} page={sanitizedPageNumber}/>
+        <GridPaquetes  {...blocks[0] as GridPaquetesBlock} destination={destinationData} gridColumns={6} gridStyle={false} rangeSlider={true} page={sanitizedPageNumber}/>
         </div>
       </div>
       </SharedStateProvider>
@@ -152,9 +150,20 @@ export default async function Page(props:Props) {
   )
 }
 
+
+const queryPageBySlug = cache(async () => {
+  const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
+  console.log(draft,'draftQuery')
+  const data = await fetch(`${BASEURL}/api/globals/pacP?depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
+  const result = await data.json();
+  console.log(result)
+  // console.log('queryBY');
+  // console.log(result);
+  return result || null;
+});
 export async function generateStaticParams() {
 
-  const req = await fetch(`${BASEURL}/api/tours/count`)
+  const req = await fetch(`${BASEURL}/api/paquetes/count`)
   const {totalDocs} = await req.json()
 
   const totalPages = Math.ceil(totalDocs / 10)
@@ -167,18 +176,6 @@ export async function generateStaticParams() {
 
   return pages
 }
-
-
-const queryPageBySlug = cache(async () => {
-  const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
-  console.log(draft,'draftQuery')
-  const data = await fetch(`${BASEURL}/api/globals/touP?depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
-  const result = await data.json();
-  console.log(result)
-  // console.log('queryBY');
-  // console.log(result);
-  return result || null;
-});
 
 // Optional: Metadata for the page
 // export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {

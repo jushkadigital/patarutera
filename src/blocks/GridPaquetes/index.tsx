@@ -1,6 +1,7 @@
 import type { Destination, GridPaquetesBlock as GridPaqueteBlockType, Paquete } from '@/cms-types';
 import { CardPaqueteData } from '@/components/cardPaquete';
 import CardTour, { CardTourData } from '@/components/CardTour';
+import { Pagination } from '@/components/Pagination';
 import { PaquetesComponent } from '@/components/PaquetesComponent';
 import { Subtitle } from '@/components/Subtitle';
 import { ToursComponent } from '@/components/ToursComponent';
@@ -11,15 +12,18 @@ import { cn } from '@/lib/utils';
 // Añadir 'mode' a las Props
 interface Props extends GridPaqueteBlockType {
   rangeSlider?: boolean
+  searchParams?: string
+  page?: number
 }
 
 export async function GridPaquetes(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
-  const { id, gridColumns, gridStyle:mode  ,destination,blockTitle} = props;
+  const { id, gridColumns, gridStyle:mode  ,destination,blockTitle,searchParams,page,overrideDefaults} = props;
 
 
 
   console.log(destination)
+  let data
   let paquetes: CardPaqueteData[] = [];
   let fetchError = null;
 const params = new URLSearchParams()
@@ -32,15 +36,14 @@ const params = new URLSearchParams()
   try {
     const queryString = params.toString();    
     // console.log('grid tours HERE') 
-   const response = await fetch(`${BASEURL}/api/paquetes?limit=${gridColumns}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}`);
-   console.log(`${BASEURL}/api/paquetes?limit=${gridColumns}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}`)
+  const pageNumber = page ? `&page=${page}` : ''
+   const response = await fetch(`${BASEURL}/api/paquetes?limit=${gridColumns}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}`);
     if (!response.ok) {
         // Consider logging the response status and text for more detailed error info
         // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
-    console.log(data)
+     data = await response.json();
     if (data && data.docs) {
       paquetes = data.docs;
     }
@@ -71,6 +74,7 @@ const params = new URLSearchParams()
       <Subtitle className="" titleGroup={blockTitle}/>
       <PaquetesComponent mode={mode!} paquetes={paquetes} rangeSlider={props.rangeSlider}/>
       
+      {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!}/>)}
     </div>
   );
 }
