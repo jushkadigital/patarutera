@@ -27,7 +27,7 @@ function isNumberInRange(numberToCheck: number, range: [number, number]): boolea
     return (
         <div className={containerClasses}>
         {paquetes.length > 0 ? (
-          rangeSlider ? paquetes.filter(ele=>isNumberInRange(ele.price,priceOne)).map((tour) => (
+          rangeSlider ? paquetes.filter(ele=>isNumberInRange(ele.price!,priceOne)).map((tour) => (
             // Pasar la prop 'mode' a CardTour
             // Asegurarse que tour.slug existe y es único. Si no, usar tour.id u otro identificador único.
             <CardPaquete key={tour.id} unitData={tour} mode={mode ? 'grid' : 'list'} />
