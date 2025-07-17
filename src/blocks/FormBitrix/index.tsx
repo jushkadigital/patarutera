@@ -1,7 +1,9 @@
 import {  FormBitrixBlock, Media, RevistaBlock as RevistaBlockType } from "@/cms-types";
+import BitrixFormLoader from "@/components/bitrixScript";
 import { ImageCuadroLink } from "@/components/ImageCuadroLink";
 import { Subtitle } from "@/components/Subtitle";
 import YouTubeEmbed from "@/components/YoutubeEmbed";
+import Script from "next/script";
 
 interface Props extends FormBitrixBlock{
 context?: {
@@ -10,14 +12,12 @@ context?: {
 }
 
 export async function FormBitrix(props: Props) {
-    const {} = props
+    const {trackingCode} = props
 
+    console.log(props)
     return (
-        <div className="w-full ">    
-        <div className="h-screen grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        {
-        }
-            </div>
+                <div className="w-full ">    
+                <BitrixFormLoader/>
         </div>
     )
 }
