@@ -194,7 +194,7 @@ const tabs = [
   ]
 export default function TabsViaje({tabs}:Props) {
   const [activeTab, setActiveTab] = useState(0)
-
+  console.log(tabs)
   
   return (
     <div className="w-full  mx-auto ">

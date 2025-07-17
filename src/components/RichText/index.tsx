@@ -53,13 +53,15 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
 })}
 
 type Props = {
-  data: DefaultTypedEditorState
+  data: any
  enableGutter?: boolean
   enableProse?: boolean
 } & React.HTMLAttributes<HTMLDivElement>
 
 export default function RichText(props: Props) {
   const { className, enableProse = true, enableGutter = true, ...rest } = props
+  console.log(props.data)
+
   return (
     <ConvertRichText
       converters={jsxConverters}

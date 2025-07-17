@@ -2,6 +2,7 @@
 
 import { JSXConverters } from '@payloadcms/richtext-lexical/react';
 import { SerializedListItemNode } from '@payloadcms/richtext-lexical';
+import styles from "../style.module.css"
 
 // (Opcional) Extiende el tipo para tener un autocompletado más preciso
 interface CustomSerializedListItemNode extends SerializedListItemNode {
@@ -9,18 +10,21 @@ interface CustomSerializedListItemNode extends SerializedListItemNode {
 }
 
 // Componente simple para renderizar el ícono (puedes usar SVGs, <img> o una librería de íconos)
-const Icon = ({ type }: { type: string }) => {
+function IconSelector(type:string)  {
+  const classText = 'list_item_with_icon'
+  console.log(type)
+
   switch (type) {
     case 'check':
-      return <span className="icon">✅</span>;
+      return classText+"_check"
     case 'nocheck':
-      return <span className="icon">❌</span>;
+      return classText+"_nocheck"
     case 'location':
-      return <span className="icon">📍</span>;
+      return classText+"_location"
     case 'circle':
-      return <span className="icon">🔵</span>;
+      return classText+"_circle"
     default:
-      return null; // No renderizar nada si no hay un iconType válido
+      return ''
   }
 };
 
@@ -29,16 +33,21 @@ export const customListItemConverter: JSXConverters<CustomSerializedListItemNode
     // Accedemos directamente a la propiedad personalizada 'iconType' desde el objeto 'node'
     const { iconType } = node;
 
-    return (
-      <li className={`list-item-with-icon icon-${iconType || 'default'}`}>
+    if(iconType){
+      
+      return (
+      <li className={`${styles['list_item_with_icon']} ${styles[IconSelector(iconType)]}`}>
         {/* Renderiza el componente de ícono si iconType existe */}
-        {iconType && <Icon type={iconType} />}
-        
-        {/* Renderiza el contenido del texto del list item */}
-        <span className="list-item-text">
           {nodesToJSX({ parent: node, nodes: node.children })}
-        </span>
       </li>
     );
+    }else{
+return (
+      <li className={``}>
+        {/* Renderiza el componente de ícono si iconType existe */}
+          {nodesToJSX({ parent: node, nodes: node.children })}
+      </li>
+    );
+    }
   }
 };
