@@ -122,85 +122,6 @@
 }
 
 @layer components {
-   .prose {
-    @apply text-gray-700 dark:text-gray-300;
-
-    h1, h2, h3, h4, h5, h6 {
-      @apply font-bold mb-4 text-gray-900 dark:text-gray-100;
-    }
-
-    h1 {
-      @apply text-4xl mt-8;
-    }
-
-    h2 {
-      @apply text-3xl mt-8;
-    }
-
-    h3 {
-      @apply text-2xl mt-6;
-    }
-
-    h4 {
-      @apply text-xl mt-6;
-    }
-
-    p {
-      @apply mb-4 leading-relaxed;
-    }
-
-    a {
-      @apply text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline;
-    }
-
-    ul, ol {
-      @apply mb-4 pl-8;
-    }
-
-    ul {
-      @apply list-disc;
-    }
-
-    ol {
-      @apply list-decimal;
-    }
-
-    li {
-      @apply mb-2;
-    }
-
-    blockquote {
-      @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-600 dark:text-gray-400 my-6;
-    }
-
-    code {
-      @apply bg-gray-100 dark:bg-gray-800 text-red-600 dark:text-red-400 px-1 py-0.5 rounded-sm font-mono text-sm;
-    }
-
-    pre {
-      @apply bg-gray-900 dark:bg-gray-800 text-white p-4 rounded-md my-6 overflow-x-auto;
-    }
-
-    pre code {
-      @apply bg-transparent text-inherit p-0 rounded-none;
-    }
-
-    hr {
-      @apply border-t border-gray-200 dark:border-gray-700 my-8;
-    }
-
-    strong {
-      @apply font-bold;
-    }
-
-    em {
-      @apply italic;
-    }
-
-    img {
-      @apply rounded-lg my-6;
-    }
-  }
 }
 
 .prose-custom {
@@ -294,14 +215,6 @@
 }*/
 
 /* Empezar la línea más abajo en el primer item */
-.prose-custom ul .list-item-with-icon:first-child:before {
-  top: 15px;
-}
-
-/* Parar la línea antes en el último item */
-.prose-custom ul .list-item-with-icon:last-child:before {
-  height: 6px;
-}
 
 /* Listas ordenadas */
 .prose-custom ol {
