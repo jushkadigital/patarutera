@@ -1,17 +1,35 @@
-import { Media, DescrPriceBlock as DescrPriceBlockType } from "@/cms-types";
+import { Media, DescrPriceBlock as DescrPriceBlockType, Footer } from "@/cms-types";
 import InfiniteImageCarousel from "@/components/infinity-image-carousel";
 import PrecioCardComponent from "@/components/PrecioCard";
 import RichText from "@/components/RichText";
 import { Subtitle } from "@/components/Subtitle";
+import { getCachedGlobal } from "@/utilities/getGlobals";
 
 interface Props extends DescrPriceBlockType {
 context?: {
     nameCollection:string
+    title: string
   }| null
 }
 
 export async function DescrPriceBlock(props: Props) {
     const { blockTitle, leftColumn, rightColumn, context } = props
+  const footerData: Footer = await getCachedGlobal('footer', 1)()
+  console.log(footerData)
+
+  let phoneNumber = ""
+  if (!footerData.navItems){
+
+  }else{
+    if(!footerData.navItems[0].links)
+    {
+
+    }
+    else{
+        
+     phoneNumber = footerData.navItems[0].links[0].link!.textInfo!
+    }
+  }
     return (
         <div className="w-full">
             <Subtitle titleGroup={blockTitle} />
@@ -31,7 +49,7 @@ export async function DescrPriceBlock(props: Props) {
                     </div>
                 </div>
                 <div className="w-[30%]">
-                    <PrecioCardComponent priceTitle={rightColumn.priceTitle!} prevText={rightColumn.prevText!} price={rightColumn.price} nextText={rightColumn.nextText!} paymentForm={rightColumn.paymentForm}  origen={context!.nameCollection}/>
+                    <PrecioCardComponent priceTitle={rightColumn.priceTitle!} prevText={rightColumn.prevText!} price={rightColumn.price} nextText={rightColumn.nextText!} paymentForm={rightColumn.paymentForm}  origen={context!.nameCollection} phoneNumber={phoneNumber} title={context!.title}/>
                 </div>
 
 

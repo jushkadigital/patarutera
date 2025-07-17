@@ -52,7 +52,7 @@ export default async function TourPage({ params: paramsPromise, searchParams: se
       <RenderHero heroBlocks={heroTour} title={title}/>
       <div className='flex flex-col space-y-10'>
       <div className='w-full'><h1 className='text-center text-4xl text-[#2970b7] font-bold italic'>{title}</h1></div>
-      <RenderBlocks blocks={layout} context={{nameCollection: 'posts'}} />
+      <RenderBlocks blocks={layout} context={{nameCollection: 'tour',title:title}} />
       </div>
       </div>
       

@@ -48,7 +48,7 @@ const blockComponents = {
 
 export const RenderBlocks: React.FC<{
   blocks: Page['layout'][0][] | Tour['layout'][0][] | Paquete['layout'][0][],
-  context?: {nameCollection:string} 
+  context?: {nameCollection:string,title:string} 
 }> = (props) => {
   const { blocks } = props
 

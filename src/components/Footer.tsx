@@ -11,9 +11,18 @@ interface Props  {
 
 export default async function FooterBlock({destination}:Props) {
   const footerData: Footer = await getCachedGlobal('footer', 1)()
+  const redes = await getCachedGlobal('redesNegocio',1)()
 
   const navItems = footerData?.navItems || []
   console.log(navItems)
+  console.log(redes)
+
+
+  const networkName = {
+    facebook: SvgFacebook,
+    instagram: SvgInstagram,
+    tiktok: SvgTiktok
+  }
 
   return (
     <footer className="relative">
@@ -49,9 +58,13 @@ export default async function FooterBlock({destination}:Props) {
 
       <div className="relative h-[100px] w-full bg-[#000000]/50  flex flex-col justify-center items gap-y-2">
       <div className=" flex flex-row justify-center items-center gap-x-10">
-      <SvgFacebook height={35} width={35}/>
-      <SvgInstagram height={35} width={35}/>
-      <SvgTiktok height={35} width={35}/>
+        {
+          redes.network.map(ele=>{
+           const Compo =  networkName[ele.iconName]
+            return <a key={ele.id} href={ele.link} ><Compo height={35} width={35} /></a>
+
+          })
+        }
       </div>
       <div className="text-white text-lg text-center">
         Desarrollado por Jushka Digital
