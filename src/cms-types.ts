@@ -2473,15 +2473,3 @@ export interface TaskSchedulePublish {
   };
   output?: unknown;
 }
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "auth".
- */
-export interface Auth {
-  [k: string]: unknown;
-}
-
-
-declare module 'payload' {
-  export interface GeneratedTypes extends Config {}
-}
