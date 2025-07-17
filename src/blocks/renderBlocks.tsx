@@ -47,7 +47,7 @@ const blockComponents = {
 
 
 export const RenderBlocks: React.FC<{
-  blocks: Page['layout'][0][] | Tour['layout'][0][] | Paquete['layout'][0][],
+  blocks: Page['layout'][0][] | NonNullable<Tour['layout']>[0][] | Paquete['layout'][0][],
   context?: {nameCollection:string,title:string} 
 }> = (props) => {
   const { blocks } = props
@@ -66,7 +66,7 @@ export const RenderBlocks: React.FC<{
             const Block = blockComponents[blockType]
             if (Block) {
               return (
-                <div className={!NoPadding.includes(blockType) ? 'w-full px-10 lg:px-[220px] mb-24 ' :'w-full mb-24'} key={index}>
+                <div className={!NoPadding.includes(blockType) ? 'w-full px-10 lg:px-[180px] mb-24 ' :'w-full mb-24'} key={index}>
                   <Block {...block} disableInnerContainer  context={props.context} />
                 </div>
               )

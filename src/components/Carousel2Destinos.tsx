@@ -52,7 +52,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
   }
 
   return (
-    <div className="w-full h-[60vh] lg:h-[100vh] mx-auto relative">
+    <div className="w-full h-[80vh] lg:h-[100vh] mx-auto relative">
       {/* Carousel container with background */}
       <div className="w-full h-full overflow-hidden relative flex flex-col items-end justify-center">
         {/* Background image container */}
@@ -85,7 +85,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
             {slides.map((slide, index) => (
               <CarouselItem key={index} className="pl-8 basis-auto">
                 <motion.div
-                  className="flex flex-col items-center justify-end relative text-center text-white w-[480px] h-[70vmin] cursor-pointer rounded-[4xl] overflow-hidden"
+                  className="flex flex-col items-center justify-end relative text-center text-white w-[480px] h-[130vmin] lg:h-[70vmin] cursor-pointer  lg:rounded-[4xl] overflow-hidden"
                   onClick={() => handleSlideClick(index)}
                   animate={{
                     scale: current === index ? 1 : 0.75,
@@ -117,11 +117,11 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                     animate={{ opacity: current === index ? 1 : 0.5 }}
                     transition={{ duration: 0.5, delay: current === index ? 0.2 : 0 }}
                   >
-                    <h2 className="text-lg md:text-2xl lg:text-4xl font-bold relative uppercase ">{slide.title}</h2>
+                    <h2 className="text-2xl md:text-2xl lg:text-4xl font-bold relative uppercase ">{slide.title}</h2>
                     <div className="flex justify-center">
                       <Link href={`/tours?destination=${slide.title}&categories=`} className="h-full">
                       <motion.button
-                        className="mt-6 px-4 py-0 w-[150px] mx-auto space-x-5  text-white bg-black/30 font-bold  border border-2 border-white flex justify-between items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
+                        className="mt-6 px-4 py-0 w-[150px] mx-auto space-x-5   text-white bg-black/30 font-bold  border border-2 border-white flex justify-between items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
                         whileHover={{
                           scale: 1.05,
                           boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
