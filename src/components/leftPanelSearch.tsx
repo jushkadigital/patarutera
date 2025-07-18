@@ -146,6 +146,7 @@ interface TourSearchComponentProps {
           </div>
 
           {/* Date Field */}
+          {/* 
           <div className="pb-8">
             <div className="flex items-start gap-4">
               <div className="mt-1">
@@ -157,7 +158,7 @@ interface TourSearchComponentProps {
               </div>
             </div>
           </div>
-
+          */}
           {/* Search Button */}
           <Link href={`/tours?destination=${destinoTemp}&categories=`}>
           <button 
@@ -227,6 +228,7 @@ export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps
         <div className="h-0 w-0 lg:w-px lg:h-12 bg-gray-200"></div>
 
         {/* Selector de día */}
+        {/* 
         <div className="flex items-center gap-3 flex-1">
           <Calendar className="w-6 h-6 text-[#79368c] fill-current flex-shrink-0" />
           <div className="flex items-center gap-2 cursor-pointer">
@@ -234,7 +236,7 @@ export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps
             <ChevronDown className="w-5 h-5 text-[#686868]" />
           </div>
         </div>
-
+        */}
         </div>
 
         
