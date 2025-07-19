@@ -52,7 +52,7 @@ searchParams: Promise<{
 }
 
 export default async function Page(props:Props) {
-  const { destination } =await props.searchParams
+  const { destinations } =await props.searchParams
   const params = await props.searchParams
   const queryString = new URLSearchParams(
     Object.entries(params).reduce((acc, [key, value]) => {
@@ -65,9 +65,11 @@ export default async function Page(props:Props) {
     }, {} as Record<string, string>)
   ).toString()
   const { isEnabled: draft } = await draftMode();
-  const destinationRequest = await fetch(`${BASEURL}/api/destinations?where[name][equals]=${destination}`)
+  console.log(destinations)
+  const destinationRequest = await fetch(`${BASEURL}/api/destinations?where[name][in]=${destinations}`)
   const destinationDataPre = await destinationRequest.json()
-  const destinationData = destinationDataPre.docs[0]
+  const destinationData = destinationDataPre.docs
+  console.log(destinationDataPre)
   let page: any;
   page = await queryPageBySlug(); 
     if (!page) {
@@ -83,7 +85,7 @@ export default async function Page(props:Props) {
   const categories = categoriesData.docs
   const destinationsRequest = await fetch(`${BASEURL}/api/destinations`)
   const destinationsData = await destinationsRequest.json()
-  const destinations = destinationsData.docs
+  const destinationsFinal = destinationsData.docs
   // Si ambos son falsos, fallback
   if (!hasBlocksLayout && !hasBlocksHero) {
     return <div>No hay contenido para mostrar.</div>
@@ -116,7 +118,7 @@ export default async function Page(props:Props) {
       <SharedStateProvider>
       <div className='flex flex-row mt-10 w-[85%] mx-auto'>
         
-        <LeftPanelSearchPaquete  destinations={destinations} />
+        <LeftPanelSearchPaquete  destinations={destinationsFinal} />
         <div className='lg:w-3/4'>
         <GridPaquetes  {...blocks[0] as GridPaquetesBlock} destination={destinationData} gridColumns={6} gridStyle={false} searchParams={queryString} rangeSlider={true}/>
         </div>
