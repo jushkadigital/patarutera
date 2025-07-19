@@ -37,7 +37,9 @@ const params = new URLSearchParams()
     const queryString = params.toString();    
     // console.log('grid tours HERE') 
   const pageNumber = page ? `&page=${page}` : ''
-   const response = await fetch(`${BASEURL}/api/paquetes?limit=${gridColumns}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}`);
+   const response = await fetch(`${BASEURL}/api/paquetes?limit=${gridColumns}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}`,{
+    next: { tags: ['paquetes'] },
+   });
     if (!response.ok) {
         // Consider logging the response status and text for more detailed error info
         // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
