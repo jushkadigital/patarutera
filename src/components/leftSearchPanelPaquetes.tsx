@@ -166,7 +166,7 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
 
         {/* Date Field (sin cambios) */}
         <div className="pb-8">
-          <div className="flex items-start gap-4">
+          {/*<div className="flex items-start gap-4">
             <div className="mt-1">
               <Calendar className="w-6 h-6 text-[#79368c]" />
             </div>
@@ -174,7 +174,7 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
               <label className="block text-[#2970b7] text-lg font-medium mb-1">Desde</label>
               <p className="text-[#adadac] text-lg">día/mes/año</p>
             </div>
-          </div>
+          </div>*/}
         </div>
 
         {/* Search Button */}

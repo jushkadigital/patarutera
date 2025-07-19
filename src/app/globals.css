@@ -123,8 +123,23 @@
 
 @layer components {
 }
+.multi-line-truncate {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Aunque -webkit-line-clamp ya lo implica, es bueno tenerlo */
+   text-align: center;
+}
+
+/* Puedes definir variaciones si necesitas un control más fino */
+.multi-line-truncate-2 {
+  -webkit-line-clamp: 2;
+}
 
 
+html{
+  font-family: 'Poppins', sans-serif;
+}
 
 /* Versión con colores personalizables */
 

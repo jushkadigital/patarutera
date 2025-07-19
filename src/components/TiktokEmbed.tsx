@@ -91,7 +91,7 @@ export default function TiktokEmbed({ url }: Props) {
     embed.className = "tiktok-embed";
     embed.setAttribute("cite", url);
     embed.setAttribute("data-video-id", videoId);
-    embed.style.maxWidth = "605px";
+    embed.style.maxWidth = "655px";
     embed.style.minWidth = "325px";
 
     const section = document.createElement("section");

@@ -54,7 +54,7 @@ export const Navbar = ({destinations,isHome}:Props) => {
         <NavigationMenu className="hidden md:flex" >
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>Destinos</NavigationMenuTrigger>
+              <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent  text-white' : 'text-[#2970b7]')}>Destinos</NavigationMenuTrigger>
               <NavigationMenuContent className="w-full md:w-[250px]">
                 <ul className="grid gap-2 p-2">
                   {
@@ -77,7 +77,7 @@ export const Navbar = ({destinations,isHome}:Props) => {
             </NavigationMenuItem>
             {/* Sección 2: Enlace 1 */}
             <NavigationMenuItem>
-                <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>
+                <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
               <Link href="/paquetes?destinations=Ica,Cusco" >
                   Paquetes
               </Link>
@@ -87,7 +87,7 @@ export const Navbar = ({destinations,isHome}:Props) => {
 
             {/* Sección 4: Enlace 2 */}
             <NavigationMenuItem>
-              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent hover:bg-white/10 text-white' : 'text-[#2970b7]')}>
+              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
               <Link href="/blogs" >
                 Blog
               </Link>

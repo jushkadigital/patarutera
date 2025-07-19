@@ -85,7 +85,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
             {slides.map((slide, index) => (
               <CarouselItem key={index} className="pl-8 basis-auto">
                 <motion.div
-                  className="flex flex-col items-center justify-end relative text-center text-white w-[480px] h-[130vmin] lg:h-[70vmin] cursor-pointer  lg:rounded-[4xl] overflow-hidden"
+                  className="flex flex-col items-center justify-end relative text-center text-white w-[350px] lg:w-[450px] h-[130vmin] lg:h-[80vmin] cursor-pointer  lg:rounded-[4xl] overflow-hidden"
                   onClick={() => handleSlideClick(index)}
                   animate={{
                     scale: current === index ? 1 : 0.75,
@@ -95,7 +95,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                 >
                   <motion.div className="absolute top-0 left-0 w-full h-full">
                     <motion.img
-                      className="absolute inset-0 w-[120%] h-[100%] object-cover"
+                      className="absolute inset-0  lg:w-[120%] h-[100%] object-cover"
                       animate={{ opacity: current === index ? 1 : 0.5 }}
                       transition={{ duration: 0.6 }}
                       alt={slide.title}

@@ -27,7 +27,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
 
   if (mode === "grid") {
     return (
-      <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[680px] sm:h-[650px] md:h-[680px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
+      <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[720px] md:h-[700px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
           <Link href={`/tours/${unitData.slug}`}>
         <div className="relative h-[400px] w-full overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
@@ -54,16 +54,19 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
         <CardContent className="px-4 sm:px-6">
           {/* title */}
         <Link href={`/tours/${unitData.slug}`}>
-          <h2 className="text-[#2970b7] text-xl sm:text-2xl font-bold mb-1 text-center leading-tight">
+        <div className="flex justify-center items-center min-h-15">
+            <h2 className="text-[#2970b7]  text-2xl sm:text-2xl font-bold text-center leading-tight  multi-line-truncate multi-line-truncate-2">
             {unitData.title}
           </h2>
+        </div>
+          
           </Link>
           {/* miniDescription */}
-          <div className="text-[#6a6a6a] text-xs sm:text-[12px] mb-3 text-center sm:text-left">
-            <RichText data={unitData.miniDescription} enableGutter={false} />
+          <div className="text-[#6a6a6a] text-xs mb-3">
+            <RichText data={unitData.miniDescription} enableGutter={false} className="min-h-[70px] !my-1 !text-[0.8rem] "/>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:flex-wrap justify-between items-center sm:items-end mb-0 px-2 sm:px-10 gap-4 sm:gap-0">
+          <div className="flex flex-row flex-wrap justify-around lg:justify-between items-center sm:items-end mb-0 px-2 sm:px-10 gap-4 sm:gap-0">
             <div className="text-center sm:text-left">
               {/* desde */}
               <p className="text-[#6a6a6a] text-xs sm:text-[13px] mb-1">{unitData.Desde}</p>
@@ -75,7 +78,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
               <p className="text-[#6a6a6a] text-xs sm:text-[11px]">{unitData["Person desc"]}</p>
             </div>
 
-            <div className="flex flex-row sm:flex-col items-center justify-center gap-4 sm:gap-2 h-full">
+            <div className="flex flex-col items-center justify-center gap-4 sm:gap-2 h-full">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -159,14 +162,16 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
         </Link>
 
         {/* Section 2: Title and Description */}
-        <div className="w-full md:w-1/3 p-4 sm:p-6 flex flex-col justify-center md:border-r border-gray-100">
+        <div className="w-full md:w-1/3 p-4 sm:p-6 flex flex-col justify-center gap-y-3 md:border-r border-gray-100">
         <Link href={`/tours/${unitData.slug}`}>
-          <h2 className="text-[#2970b7] text-2xl sm:text-3xl font-bold mb-2 sm:mb-3 text-center md:text-left">
+        <div className="flex justify-center items-center min-h-15">
+            <h2 className="text-[#2970b7] text-2xl sm:text-2xl font-bold text-center leading-tight  multi-line-truncate multi-line-truncate-2">
             {unitData.title}
           </h2>
+        </div>
         </Link>
-          <div className="text-[#6a6a6a] text-sm sm:text-base text-center md:text-left">
-            <RichText data={unitData.miniDescription} enableGutter={false} />
+          <div className="text-[#6a6a6a]  text-center md:text-left">
+            <RichText data={unitData.miniDescription} enableGutter={false} className="min-h-10 !my-2 "/>
           </div>
         </div>
 

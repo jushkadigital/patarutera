@@ -12,9 +12,9 @@ export const Subtitle = ({ titleGroup, className = "" }:SubtitleProps)=>{
     "--underline-color": titleGroup.underlineColor?.toLowerCase() || 'transparent', // 'transparent' como fallback
   } as React.CSSProperties;
 
-    const textSize = {'small': 'text-sm','medium': 'text-base','large':'text-xl','xlarge':'text-2xl'}
+    const textSize = {'small': 'text-sm','medium': 'text-2xl lg:text-3xl','large':'text-xl lg:text-2xl','xlarge':'text-2xl lg:text-3xl'}
     const classesSubrayado = cn('mt-2','h-1','w-16',`bg-[var(--underline-color)]`)
-    const classesText = cn('text-center','text-2xl','font-semibold','md:text-3xl',`text-[var(--text-color)]`,textSize[titleGroup.size],className)
+    const classesText = cn('text-center','font-semibold',`text-[var(--text-color)]`,textSize[titleGroup.size],className)
     const Tag:any = (titleGroup.tag.toLowerCase()) 
     return titleGroup.titleText.trim() != "" ? <div className="w-full py-6 z-50 relative" style={dynamicStyles}>
       <div className="flex flex-col items-center justify-center">
