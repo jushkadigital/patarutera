@@ -124,46 +124,70 @@
 @layer components {
 }
 
+
+
+/* Versión con colores personalizables */
+
 .prose-custom {
-  line-height: 1.6;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.7; /* Un poco más de aire para mejorar la lectura */
+  font-size: 1.1rem;   /* Tamaño de fuente base ligeramente más grande */
+  color: #333;        /* Color de texto principal más suave que el negro puro */
+  max-width: 75ch;     /* Limita el ancho para una legibilidad óptima */
+  margin: 2rem auto;   /* Centra el contenedor en la página */
+}
+
+/* --- Tipografía y Encabezados --- */
+
+.prose-custom h1,
+.prose-custom h2,
+.prose-custom h3 {
+  font-family: 'Poppins', sans-serif;
+  color: #1a1a1a;
+  font-weight: 700; /* Títulos más audaces para mayor impacto */
+  line-height: 1.3;
 }
 
 .prose-custom h1 {
-  font-weight: 400;
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   margin-bottom: 1rem;
-  color: #222;
 }
 
 .prose-custom h2 {
-  font-weight: 500;
   font-size: 2rem;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   margin-bottom: 1rem;
-  color: #222;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0; /* Separador sutil */
 }
 
 .prose-custom h3 {
-  font-weight: 500;
   font-size: 1.5rem;
-  margin-top: 1.5rem;
+  font-weight: 600; /* Ligeramente menos peso que h2 */
+  margin-top: 2rem;
   margin-bottom: 0.75rem;
-  color: #222;
 }
 
 .prose-custom p {
-  margin-bottom: 1rem;
-  line-height: 1.6;
+  margin-bottom: 1.25rem;
 }
 
 .prose-custom .lead {
-  font-size: 1.2rem;
-  color: #666;
+  font-size: 1.25rem;
+  color: #555;
   margin-bottom: 2rem;
-  font-style: italic;
+  font-style: normal; /* El estilo normal de Poppins es suficientemente elegante */
 }
 
-/* Listas conectadas - Sin bullets normales */
+/* --- Listas --- */
+
+.prose-custom ul,
+.prose-custom ol {
+  padding-left: 2rem;
+}
+
+.prose-custom li {
+}
 .prose-custom ul:has(.list-item-with-icon) {
   list-style-type: none;
   padding-left: 0;
@@ -177,106 +201,126 @@
   /* Usar padding para espaciar en lugar de margins para que la línea no se rompa */
   margin: 0;
   padding-bottom: 1em;
-  padding-left: 20px;
+  padding-left: 30px;
 }
 
-/* La línea actual colocada antes de cada item de lista */
-.prose-custom ul .list-item-with-icon:before {
-  background-color: #D5D5D5;
-  width: 1px;
-  content: "";
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 5px;
-}
-
-/* Bullets pequeños para items normales de lista */
-/*.prose-custom ul .list-item-with-icon::after {
-  content: "";
-  position: absolute;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' aria-hidden='true' viewBox='0 0 32 32' focusable='false'%3E%3Ccircle stroke='none' fill='%23c00' cx='16' cy='16' r='10'%3E%3C/circle%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-size: contain;
-  left: 0;
-  top: 2px;
-  width: 12px;
-  height: 12px;
-}*/
-
-/* Bullet grande para el primer item de lista */
-/*.prose-custom ul li:first-child::after {
-  content: "";
-  width: 16px;
-  height: 16px;
-  left: -2px;
-  top: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' aria-hidden='true' viewBox='0 0 32 32' focusable='false'%3E%3Cpath d='M16 4c6.6 0 12 5.4 12 12s-5.4 12-12 12S4 22.6 4 16 9.4 4 16 4zm0-4C7.2 0 0 7.2 0 16s7.2 16 16 16 16-7.2 16-16S24.8 0 16 0z' fill='%23c00'%3E%3C/path%3E%3Ccircle fill='%23c00' cx='16' cy='16' r='6'%3E%3C/circle%3E%3C/svg%3E");
-}*/
-
-/* Empezar la línea más abajo en el primer item */
-
-/* Listas ordenadas */
+/* Lista ordenada personalizada */
 .prose-custom ol {
   counter-reset: item;
-  padding-left: 0;
-  margin: 1.5rem 0;
-}
-
-.prose-custom ol li {
-  display: block;
-  margin-bottom: 0.5rem;
-  padding: 0.75rem 0;
-  padding-left: 2rem;
-  position: relative;
+  list-style-type: none; /* Ocultamos el número por defecto */
 }
 
 .prose-custom ol li::before {
   counter-increment: item;
-  content: counter(item) ".";
+  content: counter(item);
   position: absolute;
   left: 0;
-  top: 0.75rem;
-  color: #c00;
-  font-weight: bold;
+  color: #fff;
+  background-color: #005A9C; /* Color de acento profesional */
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.9em;
+  width: 1.7em;
+  height: 1.7em;
+  text-align: center;
+  line-height: 1.7em;
+  margin-top: 0.1em;
 }
+
+/* --- Elementos Destacados --- */
 
 /* Blockquotes */
 .prose-custom blockquote {
   margin: 2rem 0;
   padding: 1rem 1.5rem;
-  border-left: 4px solid #c00;
-  background: #f9f9f9;
+  border-left: 4px solid #005A9C; /* Usando el mismo color de acento */
+  background: #f7fafc; /* Fondo muy sutil */
   font-style: italic;
   color: #555;
 }
 
 /* Enlaces */
 .prose-custom a {
-  color: #06e;
-  text-decoration: underline;
+  color: #005A9C;
+  text-decoration: none; /* Quitamos el subrayado por defecto */
+  font-weight: 600;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 2px;
+  transition: background-size 0.3s;
 }
 
 .prose-custom a:hover {
-  color: #004080;
+  background-size: 100% 2px;
 }
 
-/* Código inline */
+/* Código */
 .prose-custom code {
-  background: #f5f5f5;
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
+  background: #eef2f7;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
   font-size: 0.9em;
-  color: #c00;
-  font-family: "Monaco", "Menlo", monospace;
+  color: #1a1a1a; /* Mejor contraste */
+  font-family: "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
 }
 
 /* Párrafo destacado */
 .prose-custom .highlight {
-  background: #fff3cd;
+  background: #fffbe6;
   border-left: 4px solid #ffc107;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   margin: 1.5rem 0;
 }
 
-/* Versión con colores personalizables */
+
+@media (max-width: 768px) {
+  
+  /* 1. Ajustar el espaciado principal y el tamaño de fuente base */
+  .prose-custom {
+    /* Reducimos los márgenes laterales para aprovechar el espacio */
+    /* Hacemos la fuente base un poco más pequeña para pantallas compactas */
+    font-size: 0.8rem; 
+  }
+
+  /* 2. Reducir el tamaño de los encabezados para que no abrumen */
+  .prose-custom h1 {
+    font-size: 2.2rem; /* Antes 2.8rem */
+    line-height: 1.2;
+  }
+
+  .prose-custom h2 {
+    font-size: 1.75rem; /* Antes 2rem */
+    margin-top: 2rem;
+  }
+
+  .prose-custom h3 {
+    font-size: 1.4rem; /* Antes 1.5rem */
+    margin-top: 1.5rem;
+  }
+
+  .prose-custom .lead {
+    font-size: 1.15rem; /* Antes 1.25rem */
+  }
+
+  /* 3. Reducir padding en elementos para un look más compacto */
+  .prose-custom blockquote,
+  .prose-custom .highlight {
+    padding: 1rem;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  /* 4. Ajustar el padding de las listas */
+  .prose-custom ul,
+  .prose-custom ol {
+    padding-left: 1rem;
+  }
+
+  .prose-custom ol li::before {
+    /* Hacemos el contador un poco más pequeño para que no se vea desproporcionado */
+    transform: scale(0.9);
+    left: -0.2em;
+  }
+
+}
