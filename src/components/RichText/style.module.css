@@ -16,7 +16,6 @@
 
 /* Parar la línea antes en el último item */
 .list_item_with_icon:last-child:before {
-  height: 6px;
 }
 /* Bullets pequeños para items normales de lista */
 .list_item_with_icon_check::after {
@@ -55,7 +54,7 @@
   height: 20px;
 }
 
-.list_item_with_icon_circle::after{
+.list_item_with_icon_location::after{
   content: "";
   position: absolute;
   background-image: url("/locationIconType.svg");

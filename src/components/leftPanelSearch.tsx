@@ -352,7 +352,7 @@ export  function PriceFilter() {
           min={minPrice}
           max={maxPrice}
           step={10}
-          minStepsBetweenThumbs={50}
+          minStepsBetweenThumbs={10}
         >
           {/* Gray track with yellow range */}
           <SliderPrimitive.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-gray-300">

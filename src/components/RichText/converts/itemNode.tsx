@@ -28,6 +28,21 @@ function IconSelector(type:string)  {
   }
 };
 
+function hasLineBreaker(statement:string,type:string){
+  switch(type){
+    case 'check':
+      return ""
+    case 'nocheck':
+      return ""
+    case 'location':
+      return statement
+    case 'circle':
+      return statement
+    default:
+      return ''
+  }
+}
+
 export const customListItemConverter: JSXConverters<CustomSerializedListItemNode> = {
   'custom-list-item': ({ node, nodesToJSX }) => {
     // Accedemos directamente a la propiedad personalizada 'iconType' desde el objeto 'node'
@@ -36,14 +51,14 @@ export const customListItemConverter: JSXConverters<CustomSerializedListItemNode
     if(iconType){
       
       return (
-      <li className={`${styles['list_item_with_icon']} ${styles[IconSelector(iconType)]}`}>
+      <li className={`${hasLineBreaker(styles['list_item_with_icon'],iconType)} ${styles[IconSelector(iconType)]}`}>
         {/* Renderiza el componente de ícono si iconType existe */}
           {nodesToJSX({ parent: node, nodes: node.children })}
       </li>
     );
     }else{
 return (
-      <li className={``}>
+      <li className={`${styles['list_item_with_icon']} `}>
         {/* Renderiza el componente de ícono si iconType existe */}
           {nodesToJSX({ parent: node, nodes: node.children })}
       </li>

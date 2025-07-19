@@ -103,7 +103,7 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
       <div className="px-6 py-6 border-b ">
         <div className="flex items-center gap-3">
           <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
-          <h1 className="text-[#2970b7] text-xl font-semibold tracking-wide">BUSCAR TOURS</h1>
+          <h1 className="text-[#2970b7] text-xl font-semibold tracking-wide">BUSCAR PAQUETES</h1>
         </div>
       </div>
 
@@ -217,7 +217,7 @@ export function PriceFilter() {
           min={minPrice}
           max={maxPrice}
           step={10}
-          minStepsBetweenThumbs={50}
+          minStepsBetweenThumbs={10}
         >
           {/* Gray track with yellow range */}
           <SliderPrimitive.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-gray-300">
