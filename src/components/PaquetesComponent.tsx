@@ -38,7 +38,7 @@ function isNumberInRange(numberToCheck: number, range: [number, number]): boolea
             <CardPaquete key={tour.id} unitData={tour} mode={mode ? 'grid' : 'list'} />
           ))
         ) : (
-          <p className="col-span-full text-center text-gray-500">No se encontraron tours.</p>
+          <p className="col-span-full text-center text-gray-500">No se encontraron Paquetes</p>
         )}
       </div>
     )
