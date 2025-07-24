@@ -19,7 +19,7 @@ export const FooterColumns = ({ columns }) => {
         // Tipo texto: solo muestra información sin enlace
         return (
           <div className="flex items-center space-x-2 text-gray-300">
-            {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0" />}
+            {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0 text-[#EFBA06]" />}
             <span>{link.textInfo}</span>
           </div>
         )
@@ -33,7 +33,7 @@ export const FooterColumns = ({ columns }) => {
             target={link.newTab ? "_blank" : undefined}
             rel={link.newTab ? "noopener noreferrer" : undefined}
           >
-            {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0" />}
+            {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0 text-[#EFBA06]" />}
             <span>{link.label}</span>
           </Link>
         )
@@ -68,7 +68,7 @@ export const FooterColumns = ({ columns }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {columns.map((column) => (
                 <div key={column.id} className="space-y-4">
-                  <h3 className="font-semibold text-lg mb-4 text-white">{column.nameColumn}</h3>
+                  <h3 className="font-bold text-[20px] mb-4 text-[#3EAE64]">{column.nameColumn}</h3>
                   <ul className="space-y-3">
                     {column.links.map((linkItem) => (
                       <li key={linkItem.id}>{renderLink(linkItem)}</li>

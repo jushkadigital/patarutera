@@ -36,7 +36,7 @@ export const BannerCarousel: React.FC<BannerProps> = ({ title, backgroundUrl,alt
       >
         RUTEA
         <br />
-       <span className='text-9xl! font-black uppercase'> {title}</span> 
+       <span className='text-7xl! lg:text-9xl! font-black uppercase'> {title}</span> 
       </h1>
     </div>
   );

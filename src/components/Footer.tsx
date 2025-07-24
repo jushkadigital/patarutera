@@ -42,16 +42,17 @@ export default async function FooterBlock({destination}:Props) {
       <div className="relative z-10 container mx-auto px-10 lg:px-0 pt-16 text-white">
         
         <div className="flex flex-col lg:flex-row space-y-10 lg:space-x-15">
-        <div>
-          <Image src={"/pataLogo.png"} alt="Logo" width={350} height={400} className={""} />
+        <div className="flex justify-center">
+          <Image src={"/pataLogo.png"} alt="Logo" width={250} height={200} className={"w-[200px] lg:w-[250px] h-22 hidden lg:block"} />
+          <Image src={"/pataruteraLogoWhite.png"} alt="Logo" width={250} height={200} className={"w-[250px] lg:w-[250px] h-22 block md:hidden"} />
         </div>
           <div>
             <FooterColumns columns={navItems.filter(ele=>ele.nameColumn !== "Destinos")}/>
           </div>
-          <Image src={"/verificadoLogo.jpg"} alt="Logo2" width={200} height={100}  className={"h-44 lg:h-36"} />
+          <Image src={"/verificadoLogo.png"} alt="Logo2" width={200} height={100}  className={"h-44 lg:h-36"} />
           <Image src={"/protegemeLogo.png"} alt="Logo3" width={250} height={50} className={"lg:h-36 h-56"} />
           {/* Destinations */}
-          <div> 
+          <div className="hidden md:block"> 
             <FooterColumns columns={[navItems.find(ele=>ele.nameColumn == "Destinos")]}/>
           </div>
         </div>
@@ -63,7 +64,7 @@ export default async function FooterBlock({destination}:Props) {
         {
           redes.network.map(ele=>{
            const Compo =  networkName[ele.iconName]
-            return <a key={ele.id} href={ele.link} ><Compo height={35} width={35} /></a>
+            return <a key={ele.id} href={ele.link} target="_blank" rel="noopener noreferrer" ><Compo height={35} width={35} /></a>
 
           })
         }

@@ -19,20 +19,20 @@ export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type
   const isMobile = useMobile()
   isBigSize = isMobile ? false :isBigSize 
   return (
-    <div className=" flex items-center justify-end lg:px-8 h-[400px]">
+    <div className={`flex items-center justify-end lg:px-0 ${isBigSize ?"h-[430px]" :"h-[400px]"}`}>
       <Link href={`/tours/${slug}`} className="relative w-full h-full rounded-3xl overflow-hidden">
         {/* Background Image */}
         <Image src={background} alt="Background" fill className="object-cover" priority />
 
         {/* Overlay */}
-        <div className="absolute inset-0 opacity-60 z-10" style={{ backgroundColor: color }} />
+        <div className="absolute inset-0 opacity-60 z-10" style={{ background: `linear-gradient(to right, ${color}, transparent)` }} />
 
         {/* Título en la izquierda - centrado verticalmente */}
         <div className={`absolute top-1/2  transform -translate-y-1/2 text-white font-bold z-20 flex flex-col lg:flex-row ${isBigSize ? 'px-20' : 'px-10'}  lg:justify-between w-full items-stretch lg:items-center`}>
         <div>
 
-          <div className="text-sm uppercase tracking-wider opacity-90">{type}</div>
-          <div className={`font-black ${isBigSize ? 'text-5xl lg:text-8xl':'text-4xl lg:text-6xl' } uppercase font-black mb-3`}>{title}</div>
+          <div className="text-2xl uppercase tracking-wider opacity-90">{type}</div>
+          <div className={`font-black ${isBigSize ? 'text-6xl lg:text-7xl':'text-3xl lg:text-4xl' } uppercase font-black mb-3`}>{title}</div>
 
           {/* Barra de colores */}
           <div className="flex h-1 w-32 rounded-full overflow-hidden">

@@ -1,6 +1,6 @@
 "use client"
 
-import { JSX, useState, type ReactNode } from "react"
+import React, { JSX, useState, type ReactNode } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Grid3X3, LayoutGrid, List, Layers, Square } from "lucide-react"
@@ -51,18 +51,26 @@ export default function ComponentGrid({ items, layout = "grid" }: ComponentGridP
 
   const renderMasonryLayout = () => {
     const heights = ["h-64", "h-80", "h-72", "h-96"]
+    const colorsBackground = ['#2970B7','#3EAE64','#79368C']
     console.log('MASON')
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 space-y-4">
-        {validItems.map((item, index) => (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 space-y-4">
+        {validItems.map((item, index) => {
+          const componenWithColor = React.cloneElement(item.component,{
+            color: colorsBackground[index]
+          })
+          return(
+
           <div key={item.id} className={`${index == 2 ?'lg:col-span-2' :''}`}>
             <div
               className={`relative  overflow-hidden rounded-lg mb-4 transition-transform hover:scale-105`}
             >
-              {item.component}
+              {componenWithColor}
             </div>
           </div>
-        ))}
+        )
+      }
+        )}
       </div>
     )
   }

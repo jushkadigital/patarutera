@@ -46,7 +46,7 @@ export const Navbar = ({destinations,isHome}:Props) => {
       <div className=" mx-auto flex items-center justify-around px-4">
         {/* Sección 1: Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <Image src={isHome ? LOGO_URL: LOGO_URLCOLOR} alt="Logo" width={200} height={200} className={cn(isHome ? '' : '')} />
+          <Image src={isHome ? LOGO_URL: LOGO_URLCOLOR} alt="Logo" width={200} height={200} className={cn('w-[150px] lg:w-[200px]')} />
         </Link>
         <div></div>
 

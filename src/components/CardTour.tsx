@@ -27,7 +27,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
 
   if (mode === "grid") {
     return (
-      <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[720px] md:h-[700px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
+      <Card className="w-full max-w-[340px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[720px] md:h-[700px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
           <Link href={`/tours/${unitData.slug}`}>
         <div className="relative h-[400px] w-full overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">

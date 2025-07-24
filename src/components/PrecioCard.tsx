@@ -192,7 +192,7 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
                         className="w-full flex items-center justify-center gap-2 bg-[#efba06] text-gray-900 text-lg font-bold py-3 rounded-full hover:bg-[#d8a605] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? "ENVIANDO..." : "ENVIAR MENSAJE"}
-                        {!isSubmitting && <SvgWhatsapp size={20} color="#000000" />}
+                        {!isSubmitting && <SvgWhatsapp size={20}  />}
                       </button>
                     </form>
                   </div>
@@ -307,7 +307,7 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
                   className="w-full flex items-center justify-center gap-2 bg-[#efba06] text-gray-900 text-lg font-bold py-3 rounded-full hover:bg-[#d8a605] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? "ENVIANDO..." : "ENVIAR MENSAJE"}
-                  {!isSubmitting && <SvgWhatsapp size={20} color="#000000"/>}
+                  {!isSubmitting && <SvgWhatsapp size={20} />}
                 </button>
               </form>
             </div>
