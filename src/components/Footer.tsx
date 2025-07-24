@@ -48,8 +48,8 @@ export default async function FooterBlock({destination}:Props) {
           <div>
             <FooterColumns columns={navItems.filter(ele=>ele.nameColumn !== "Destinos")}/>
           </div>
-          <Image src={"/verificadoLogo.jpg"} alt="Logo2" width={200} height={100}  className={"h-36"} />
-          <Image src={"/protegemeLogo.png"} alt="Logo3" width={250} height={50} className={"h-36"} />
+          <Image src={"/verificadoLogo.jpg"} alt="Logo2" width={200} height={100}  className={"h-44 lg:h-36"} />
+          <Image src={"/protegemeLogo.png"} alt="Logo3" width={250} height={50} className={"lg:h-36 h-56"} />
           {/* Destinations */}
           <div> 
             <FooterColumns columns={[navItems.find(ele=>ele.nameColumn == "Destinos")]}/>
