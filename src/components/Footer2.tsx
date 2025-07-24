@@ -65,7 +65,7 @@ export const FooterColumns = ({ columns }) => {
       <div className="container mx-auto ">
           {/* Logo y descripción - Izquierda */}
           {/* Grid de columnas - Derecha */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {columns.map((column) => (
                 <div key={column.id} className="space-y-4">
                   <h3 className="font-semibold text-lg mb-4 text-white">{column.nameColumn}</h3>
