@@ -128,14 +128,15 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis; /* Aunque -webkit-line-clamp ya lo implica, es bueno tenerlo */
-   text-align: center;
 }
 
 /* Puedes definir variaciones si necesitas un control más fino */
 .multi-line-truncate-2 {
   -webkit-line-clamp: 2;
 }
-
+.multi-line-truncate-3 {
+  -webkit-line-clamp: 3;
+}
 
 html{
   font-family: 'Poppins', sans-serif;
@@ -203,11 +204,7 @@ html{
 
 .prose-custom li {
 }
-.prose-custom ul:has(.list-item-with-icon) {
-  list-style-type: none;
-  padding-left: 0;
-  margin: 0.5rem 0;
-}
+
 
 .prose-custom ul li {
   /* Posicionamiento relativo para que la línea se coloque relativa al item */
@@ -288,6 +285,147 @@ html{
   margin: 1.5rem 0;
 }
 
+.prose-custom-lg {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.7; /* Un poco más de aire para mejorar la lectura */
+  font-size: clamp(3px,0.8vw,15px);   /* Tamaño de fuente base ligeramente más grande */
+  color: #333;        /* Color de texto principal más suave que el negro puro */
+}
+
+/* --- Tipografía y Encabezados --- */
+
+.prose-custom-lg h1,
+.prose-custom-lg h2,
+.prose-custom-lg h3 {
+  font-family: 'Poppins', sans-serif;
+  color: #1a1a1a;
+  font-weight: 700; /* Títulos más audaces para mayor impacto */
+  line-height: 1.3;
+}
+
+.prose-custom-lg h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+}
+
+.prose-custom-lg h2 {
+  font-size: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0; /* Separador sutil */
+}
+
+.prose-custom-lg h3 {
+  font-size: 1.5rem;
+  font-weight: 600; /* Ligeramente menos peso que h2 */
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-custom-lg p {
+  margin-bottom: 1.25rem;
+}
+
+.prose-custom-lg .lead {
+  font-size: 1.25rem;
+  color: #555;
+  margin-bottom: 2rem;
+  font-style: normal; /* El estilo normal de Poppins es suficientemente elegante */
+}
+
+/* --- Listas --- */
+
+.prose-custom-lg ul,
+.prose-custom-lg ol {
+  padding-left: 2rem;
+}
+
+.prose-custom-lg li {
+}
+
+
+.prose-custom-lg ul li {
+  /* Posicionamiento relativo para que la línea se coloque relativa al item */
+  position: relative;
+
+  /* Usar padding para espaciar en lugar de margins para que la línea no se rompa */
+  margin: 0;
+  padding-bottom: 1em;
+  padding-left: 30px;
+}
+
+/* Lista ordenada personalizada */
+.prose-custom-lg ol {
+  counter-reset: item;
+  list-style-type: none; /* Ocultamos el número por defecto */
+}
+
+.prose-custom-lg ol li::before {
+  counter-increment: item;
+  content: counter(item);
+  position: absolute;
+  left: 0;
+  color: #fff;
+  background-color: #005A9C; /* Color de acento profesional */
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.9em;
+  width: 1.7em;
+  height: 1.7em;
+  text-align: center;
+  line-height: 1.7em;
+  margin-top: 0.1em;
+}
+
+/* --- Elementos Destacados --- */
+
+/* Blockquotes */
+.prose-custom-lg blockquote {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid #005A9C; /* Usando el mismo color de acento */
+  background: #f7fafc; /* Fondo muy sutil */
+  font-style: italic;
+  color: #555;
+}
+
+/* Enlaces */
+.prose-custom-lg a {
+  color: #005A9C;
+  text-decoration: none; /* Quitamos el subrayado por defecto */
+  font-weight: 600;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 2px;
+  transition: background-size 0.3s;
+}
+
+.prose-custom-lg a:hover {
+  background-size: 100% 2px;
+}
+
+/* Código */
+.prose-custom-lg code {
+  background: #eef2f7;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #1a1a1a; /* Mejor contraste */
+  font-family: "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
+}
+
+/* Párrafo destacado */
+.prose-custom-lg .highlight {
+  background: #fffbe6;
+  border-left: 4px solid #ffc107;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+
+
 
 @media (max-width: 768px) {
   
@@ -337,5 +475,146 @@ html{
     transform: scale(0.9);
     left: -0.2em;
   }
+
+  .prose-custom-lg {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.7; /* Un poco más de aire para mejorar la lectura */
+  font-size: clamp(3px,0.8vw,15px);   /* Tamaño de fuente base ligeramente más grande */
+  color: #333;        /* Color de texto principal más suave que el negro puro */
+}
+
+/* --- Tipografía y Encabezados --- */
+
+.prose-custom-lg h1,
+.prose-custom-lg h2,
+.prose-custom-lg h3 {
+  font-family: 'Poppins', sans-serif;
+  color: #1a1a1a;
+  font-weight: 700; /* Títulos más audaces para mayor impacto */
+  line-height: 1.3;
+}
+
+.prose-custom-lg h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+}
+
+.prose-custom-lg h2 {
+  font-size: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0; /* Separador sutil */
+}
+
+.prose-custom-lg h3 {
+  font-size: 1.5rem;
+  font-weight: 600; /* Ligeramente menos peso que h2 */
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-custom-lg p {
+  margin-bottom: 1.25rem;
+}
+
+.prose-custom-lg .lead {
+  font-size: 1.25rem;
+  color: #555;
+  margin-bottom: 2rem;
+  font-style: normal; /* El estilo normal de Poppins es suficientemente elegante */
+}
+
+/* --- Listas --- */
+
+.prose-custom-lg ul,
+.prose-custom-lg ol {
+  padding-left: 2rem;
+}
+
+.prose-custom-lg li {
+}
+
+
+.prose-custom-lg ul li {
+  /* Posicionamiento relativo para que la línea se coloque relativa al item */
+  position: relative;
+
+  /* Usar padding para espaciar en lugar de margins para que la línea no se rompa */
+  margin: 0;
+  padding-bottom: 1em;
+  padding-left: 30px;
+}
+
+/* Lista ordenada personalizada */
+.prose-custom-lg ol {
+  counter-reset: item;
+  list-style-type: none; /* Ocultamos el número por defecto */
+}
+
+.prose-custom-lg ol li::before {
+  counter-increment: item;
+  content: counter(item);
+  position: absolute;
+  left: 0;
+  color: #fff;
+  background-color: #005A9C; /* Color de acento profesional */
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.9em;
+  width: 1.7em;
+  height: 1.7em;
+  text-align: center;
+  line-height: 1.7em;
+  margin-top: 0.1em;
+}
+
+/* --- Elementos Destacados --- */
+
+/* Blockquotes */
+.prose-custom-lg blockquote {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid #005A9C; /* Usando el mismo color de acento */
+  background: #f7fafc; /* Fondo muy sutil */
+  font-style: italic;
+  color: #555;
+}
+
+/* Enlaces */
+.prose-custom-lg a {
+  color: #005A9C;
+  text-decoration: none; /* Quitamos el subrayado por defecto */
+  font-weight: 600;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 2px;
+  transition: background-size 0.3s;
+}
+
+.prose-custom-lg a:hover {
+  background-size: 100% 2px;
+}
+
+/* Código */
+.prose-custom-lg code {
+  background: #eef2f7;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #1a1a1a; /* Mejor contraste */
+  font-family: "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
+}
+
+/* Párrafo destacado */
+.prose-custom-lg .highlight {
+  background: #fffbe6;
+  border-left: 4px solid #ffc107;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+
 
 }

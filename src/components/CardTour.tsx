@@ -27,12 +27,12 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
 
   if (mode === "grid") {
     return (
-      <Card className="w-full max-w-[340px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[720px] md:h-[700px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
-          <Link href={`/tours/${unitData.slug}`}>
-        <div className="relative h-[400px] w-full overflow-hidden">
-          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
-            <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
-              <span className="text-[#79368c] font-bold uppercase text-xs sm:text-sm">
+      <Card className="w-full max-w-[435px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[720px] lg:h-[clamp(190.44px,46vw,883.2px)] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
+          <Link href={`/tours/${unitData.slug}`} className="h-[63%]">
+        <div className="relative h-full  w-full overflow-hidden">
+          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 w-fit">
+            <Badge variant="outline" className="bg-white  py-1 lg:px-[clamp(3.31px,0.8vw,15.16px)]  rounded-full border-0  ">
+              <span className="text-[#79368c] font-semibold uppercase text-xs sm:text-sm lg:text-[clamp(3.5px,0.8vw,16.64px)]">
                 {unitData.destinos && (unitData.destinos as Destination).name}
               </span>
             </Badge>
@@ -51,11 +51,11 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           </Link>
 
         {/* Content section */}
-        <CardContent className="px-4 sm:px-6">
+        <CardContent className="px-4 sm:px-6 h-[37%]">
           {/* title */}
         <Link href={`/tours/${unitData.slug}`}>
-        <div className="flex justify-center items-center min-h-15">
-            <h2 className="text-[#2970b7]  text-2xl sm:text-2xl font-bold text-center leading-tight  multi-line-truncate multi-line-truncate-2">
+        <div className="flex justify-center items-center h-[clamp(12px,3vw,57.6px)]">
+            <h2 className="text-[#2970b7] lg:text-[clamp(5.52px,1.3vw,25.6px)] font-bold text-center leading-tight  multi-line-truncate multi-line-truncate-2">
             {unitData.title}
           </h2>
         </div>
@@ -63,19 +63,19 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           </Link>
           {/* miniDescription */}
           <div className="text-[#6a6a6a] text-xs mb-3">
-            <RichText data={unitData.miniDescription} enableGutter={false} className="min-h-[70px] !my-1 !text-[0.8rem] "/>
+            <RichText data={unitData.miniDescription} enableGutter={false} className="min-h-[clamp(13.8px,3.3vw,64px)]! !my-1 prose-custom-lg  prose-pink"/>
           </div>
 
           <div className="flex flex-row flex-wrap justify-around lg:justify-between items-center sm:items-end mb-0 px-2 sm:px-10 gap-4 sm:gap-0">
             <div className="text-center sm:text-left">
               {/* desde */}
-              <p className="text-[#6a6a6a] text-xs sm:text-[13px] mb-1">{unitData.Desde}</p>
+              <p className="text-[#6a6a6a] text-xs lg:text-[clamp(3.5px,0.86vw,16.64px)] mb-1">{unitData.Desde}</p>
               <div className="flex items-baseline justify-center sm:justify-start">
                 {/* price */}
-                <span className="text-[#2970b7] text-2xl sm:text-3xl font-bold">S/. {unitData.price}</span>
+                <span className="text-[#2970b7] text-2xl lg:text-[clamp(7.78px,1.86vw,35.84px)] font-bold">S/. {unitData.price}</span>
               </div>
               {/* Person desc */}
-              <p className="text-[#6a6a6a] text-xs sm:text-[11px]">{unitData["Person desc"]}</p>
+              <p className="text-[#6a6a6a] text-xs lg:text-[clamp(3.03px,0.7vw,14.08px)]">{unitData["Person desc"]}</p>
             </div>
 
             <div className="flex flex-col items-center justify-center gap-4 sm:gap-2 h-full">
@@ -86,11 +86,11 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
                       <Image
                         src={(unitData.iconMaxPassengers as Media).url! || "/placeholder.svg"}
                         alt="Max Passengers"
-                        width={16}
-                        height={13}
-                        className="sm:w-[18px] sm:h-[15px]"
+                        width={0}
+                        height={0}
+                      className="w-[clamp(4.9px,1.2vw,23px)] h-auto"
                       />
-                      <span className="text-[#6a6a6a] text-xs sm:text-[11px] mt-1">Hasta {unitData.maxPassengers}</span>
+                      <span className="text-[#6a6a6a] text-xs lg:text-[clamp(3.03px,0.7vw,14.08px)] mt-1">Hasta {unitData.maxPassengers}</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -106,11 +106,12 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
                       <Image
                         src={(unitData.iconDifficulty as Media).url! || "/placeholder.svg"}
                         alt="Difficulty"
-                        width={16}
-                        height={13}
-                        className="sm:w-[18px] sm:h-[15px]"
+                        width={0}
+                        height={0}
+                      className="w-[clamp(4.9px,1.2vw,23px)] h-auto"
+                        
                       />
-                      <span className="text-[#6a6a6a] text-xs sm:text-[11px] mt-1">{trad[unitData.difficulty]}</span>
+                      <span className="text-[#6a6a6a] text-xs lg:text-[clamp(3.03px,0.7vw,14.08px)] mt-1">{trad[unitData.difficulty]}</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -120,15 +121,13 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
               </TooltipProvider>
             </div>
           </div>
-        </CardContent>
-
-        <CardFooter className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
           <Link href={`/tours/${unitData.slug}`} className="w-full flex justify-center cursor-pointer">
             <Button className="w-fit bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold px-6 py-3 sm:px-3 sm:py-3 text-sm sm:text-[16px] rounded-full cursor-pointer">
               Ver Detalles
             </Button>
           </Link>
-        </CardFooter>
+        </CardContent>
+
       </Card>
     )
   } else {

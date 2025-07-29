@@ -43,7 +43,7 @@ const paramsCat = new URLSearchParams()
     const queryStringCat = paramsCat.toString()
     // console.log('grid tours HERE') 
     const pageNumber = page ? `&page=${page}` : ''
-    const response = await fetch( `${BASEURL}/api/tours?limit=${gridColumns }${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}&${queryStringCat}`,{
+    const response = await fetch(`${BASEURL}/api/tours?limit=${gridColumns }${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}&${queryStringCat}`,{
     next: { tags: ['tours'] },
     });
     if (!response.ok) {
@@ -77,7 +77,7 @@ const paramsCat = new URLSearchParams()
   console.log('render.BlockTour')
   return (
     // No hay controles de modo aquí porque es un Server Component
-    <div className=" mx-auto py-4 bg bg-white w-full">
+    <div className=" mx-auto  bg bg-white w-full">
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={blockTitle}/>
       <ToursComponent mode={mode!} tours={tours} rangeSlider={props.rangeSlider}/>

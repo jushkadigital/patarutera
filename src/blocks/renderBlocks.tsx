@@ -66,7 +66,7 @@ export const RenderBlocks: React.FC<{
             const Block = blockComponents[blockType]
             if (Block) {
               return (
-                <div className={!NoPadding.includes(blockType) ? 'w-full px-10 lg:px-[180px] mb-5 lg:mb-24' :'w-full mb-5 lg:mb-24'} key={index}>
+                <div className={!NoPadding.includes(blockType) ? 'w-full px-[clamp(25px,6.6vw,155px)] lg:px-[clamp(25px,15vw,288px)]' :'w-full'} key={index}>
                   <Block {...block} disableInnerContainer  context={props.context} />
                 </div>
               )
