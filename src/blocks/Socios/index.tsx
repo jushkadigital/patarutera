@@ -1,4 +1,5 @@
 import { Media, SociosBlockType } from "@/cms-types";
+import { CarouselConditional } from "@/components/CarouselConditional";
 import { GalleryCarousel } from "@/components/galleryCarousel";
 import InfiniteImageCarousel from "@/components/infinity-image-carousel";
 import { Subtitle } from "@/components/Subtitle";
@@ -24,7 +25,7 @@ export async function SociosBlock(props:Props){
     return data.images && data.images.length > 0 ? 
     (<div>
         <Subtitle titleGroup={blockTitle}/>
-        <GalleryCarousel images={data.images.map((ele)=>({src:(ele.image as Media).url!,alt: 'image'}))}/>
+        <CarouselConditional data={data}/>
     </div>) 
     :
      <div></div>

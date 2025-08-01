@@ -8,7 +8,7 @@ export default function InfiniteImageCarousel({images}:Props) {
   const duplicatedImages = [...images, ...images]
 
   return (
-    <div className="min-h-[300px] flex flex-col items-center justify-center p-8">
+    <div className="min-h-[100px] flex flex-col items-center justify-center p-8">
 
       <div className="w-full max-w-7xl overflow-hidden relative">
         {/* Gradientes para el efecto de fade */}
@@ -18,13 +18,13 @@ export default function InfiniteImageCarousel({images}:Props) {
         <div
           className="flex gap-6 py-4 animate-scroll-right"
           style={{
-            width: `${duplicatedImages.length * 318}px`, // 300px width + 18px gap
+            width: `${duplicatedImages.length * 118}px`, // 300px width + 18px gap
           }}
         >
           {duplicatedImages.map((item, idx) => (
             <div
               key={`${item.alt}-${idx}`}
-              className="relative w-[200px] flex-shrink-0 rounded-2xl  overflow-hidden "
+              className="relative w-[100px] flex-shrink-0 rounded-2xl  overflow-hidden "
             >
               <Image
                 src={item.src || "/placeholder.svg"}
@@ -45,7 +45,7 @@ export default function InfiniteImageCarousel({images}:Props) {
             transform: translateX(0);
           }
           to {
-            transform: translateX(-${images.length * 318}px);
+            transform: translateX(-${images.length * 118}px);
           }
         }
         

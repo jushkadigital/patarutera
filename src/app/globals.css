@@ -333,6 +333,46 @@ html{
   margin: 1.5rem 0;
 }
 
+/*
+ * Contenedor principal. Puedes usar clases de Tailwind aquí
+ * como 'max-w-md mx-auto'.
+ */
+.tiktok-container {
+  width: 100%;
+  max-width: 655px; /* Ancho máximo en pantallas grandes */
+  margin: 0 auto; /* Centrar el contenedor */
+}
+
+/*
+ * Contenedor del embed para mantener la relación de aspecto
+ * del video. Esto es lo más importante.
+ */
+.tiktok-embed-wrapper {
+  position: relative;
+  /* La relación de aspecto del video de TikTok es aproximadamente 9:16 (vertical).
+   * Calculamos el padding-bottom con (height / width) * 100 = (16 / 9) * 100 = 177.77%
+   * Este valor puede variar, ajústalo si es necesario.
+   */
+  padding-bottom: 177.77%; 
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/*
+ * Estilos para el iframe/blockquote del reproductor
+ * dentro del wrapper. Esto lo hace ocupar todo el espacio
+ * del contenedor y ser responsivo.
+ */
+.tiktok-embed-wrapper .tiktok-embed-block,
+.tiktok-embed-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+}
 
 
 /* Para el breakpoint 'sm' y superiores */

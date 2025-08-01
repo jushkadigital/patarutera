@@ -14,10 +14,10 @@ export const Subtitle = ({ titleGroup, className = "" }:SubtitleProps)=>{
 
     const textSize = {'small': 'text-sm','medium': 'text-2xl lg:text-3xl','large':'text-xl lg:text-2xl','xlarge':'text-2xl lg:text-3xl'}
     const classesSubrayado = cn('mt-2','h-1','w-16',`bg-[var(--underline-color)]`)
-    const classesText = cn('text-center','font-semibold',`text-[var(--text-color)]`,'text-[clamp(18px,2vw,28px)]',className)
+    const classesText = cn('text-center','font-semibold',`text-[var(--text-color)]`,'text-[clamp(18px,2vw,28px)]')
     const Tag:any = (titleGroup.tag.toLowerCase()) 
     return titleGroup.titleText.trim() != "" ? <div className="w-full pb-6 z-50 relative" style={dynamicStyles}>
-      <div className="flex flex-col items-center justify-center">
+      <div className={`flex flex-col items-center justify-center ${className}`}>
         <Tag className={classesText}>{titleGroup.titleText}</Tag>
         
         <div className={classesSubrayado} aria-hidden="true" />

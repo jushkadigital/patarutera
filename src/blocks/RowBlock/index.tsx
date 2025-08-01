@@ -11,7 +11,7 @@ context?: {
 }
 
 export async function RowBlock(props: Props) {
-    const { columns } = props
+    const { columns ,blockName} = props
 
     const wValues = {
       '25': 'lg:w-[25%]',
@@ -22,9 +22,8 @@ export async function RowBlock(props: Props) {
       '100': 'w-full'
 
     }
-
     return (
-        <div className='w-full flex flex-col lg:flex-row '>
+        <div className={`w-full flex flex-col lg:flex-row ${blockName == "ESTADISTICO"? 'hidden lg:flex ':''}`}>
           {columns?.map(ele=>(
           <div className={"w-full "+wValues[ele.columnWidth]}>
         <RenderBlocksRow blocks={ele.columnBlocks} />

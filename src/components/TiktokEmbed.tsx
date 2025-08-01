@@ -65,6 +65,7 @@ import { useEffect, useRef, useState } from "react";
 
 type Props = {
   url: string;
+  className: string
 };
 
 function getVideoId(url: string): string | undefined {
@@ -76,7 +77,7 @@ function getVideoId(url: string): string | undefined {
   }
 }
 
-export default function TiktokEmbed({ url }: Props) {
+export default function TiktokEmbed({ url,className }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const videoId = getVideoId(url);
@@ -88,11 +89,11 @@ export default function TiktokEmbed({ url }: Props) {
     }
 
     const embed = document.createElement("blockquote");
-    embed.className = "tiktok-embed";
+    embed.className = "tiktok-embed-block";
     embed.setAttribute("cite", url);
     embed.setAttribute("data-video-id", videoId);
-    embed.style.maxWidth = "655px";
-    embed.style.minWidth = "325px";
+    //embed.style.maxWidth = "655px";
+    //embed.style.minWidth = "325px";
 
     const section = document.createElement("section");
     section.innerText = "Cargando video de TikTok...";
@@ -130,5 +131,7 @@ export default function TiktokEmbed({ url }: Props) {
     return <p style={{ color: "red" }}>{error}</p>;
   }
 
-  return <div ref={containerRef} />;
+  return <div className={className}>
+   <div ref={containerRef} className="tiktok-embed-wrapper" />;
+  </div>
 }

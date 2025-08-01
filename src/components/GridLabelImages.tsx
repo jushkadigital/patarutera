@@ -54,7 +54,7 @@ export default function ComponentGrid({ items, layout = "grid" }: ComponentGridP
     const colorsBackground = ['#2970B7','#3EAE64','#79368C']
     console.log('MASON')
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-5 space-y-4">
         {validItems.map((item, index) => {
           const componenWithColor = React.cloneElement(item.component,{
             color: colorsBackground[index]

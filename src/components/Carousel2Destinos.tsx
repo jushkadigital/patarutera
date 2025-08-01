@@ -54,11 +54,11 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
 
   const LinkMotion = motion(Link)
   return (
-    <div className="w-full h-[80vh] lg:h-[100vh] mx-auto relative">
+    <div className="w-full h-[90vh] lg:h-[100vh] mx-auto relative">
       {/* Carousel container with background */}
       <div className="w-full h-full overflow-hidden relative flex flex-col items-end justify-center">
         {/* Background image container */}
-        <Subtitle titleGroup={titleObj} />
+        <Subtitle titleGroup={titleObj} className="mt-3 sm:mt-5 md:mt-8 lg:mt-10"/>
         <div className="absolute inset-0 w-full h-full">
           <AnimatePresence initial={false}>
             <motion.div
@@ -88,7 +88,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
               <CarouselItem key={index} className="pl-8 basis-auto">
                 <LinkMotion
                 href={`/tours?destination=${slide.title}&categories=`}
-                  className="flex flex-col items-center justify-end relative text-center text-white w-[350px] lg:w-[450px] h-[130vmin] lg:h-[65vmin] cursor-pointer  lg:rounded-[4xl] overflow-hidden"
+                  className="flex flex-col items-center justify-end relative text-center text-white w-[350px] lg:w-[450px] h-[70vh] lg:h-[70vh] cursor-pointer  lg:rounded-[4xl] overflow-hidden"
                   onClick={() => handleSlideClick(index)}
                   animate={{
                     scale: current === index ? 1 : 0.75,
@@ -99,7 +99,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                   <motion.div className="absolute top-0 left-0 w-full h-full">
                     <motion.img
                       className="absolute inset-0  lg:w-[120%] h-[100%] object-cover"
-                      animate={{ opacity: current === index ? 1 : 0.6 }}
+                      animate={{ opacity: current === index ? 1 : 0.8 }}
                       transition={{ duration: 0.6 }}
                       alt={slide.title}
                       src={slide.src}
@@ -120,11 +120,11 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                     animate={{ opacity: current === index ? 1 : 0.5 }}
                     transition={{ duration: 0.5, delay: current === index ? 0.2 : 0 }}
                   >
-                    <h2 className="text-2xl md:text-2xl lg:text-4xl font-bold relative uppercase ">{slide.title}</h2>
+                    <h2 className="text-2xl text-[23px] sm:text-[clamp(23.21px,2.26vw,43.52px)] font-bold relative uppercase ">{slide.title}</h2>
                     <div className="flex justify-center">
                       <Link href={`/tours?destination=${slide.title}&categories=`} className="h-full cursor-pointer">
                       <motion.button
-                        className="mt-6 px-4 py-0 text-sm w-[150px] mx-auto space-x-5   text-white bg-black/30 font-bold  border border-2 border-white flex justify-between items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] cursor-pointer"
+                        className="mt-6 px-4 py-0 text-[13px] sm:text-[13px] lg:text-[14px] w-[150px] mx-auto space-x-5   text-white bg-black/30 font-bold  border border-2 border-white flex justify-between items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] cursor-pointer"
                         whileHover={{
                           scale: 1.05,
                           boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",

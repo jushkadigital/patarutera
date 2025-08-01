@@ -1,7 +1,9 @@
 import { Media, ReconocimientosBlockType } from "@/cms-types";
+import { CarouselConditional } from "@/components/CarouselConditional";
 import { GalleryCarousel } from "@/components/galleryCarousel";
 import InfiniteImageCarousel from "@/components/infinity-image-carousel";
 import { Subtitle } from "@/components/Subtitle";
+import { useMobile } from "@/hooks/useMobile";
 import { BASEURL } from "@/lib/config";
 
 interface Props extends ReconocimientosBlockType {
@@ -21,12 +23,16 @@ export async function ReconocimientosBlock(props:Props){
     }
     const data = await response.json();
 
+    
 
     return data.images && data.images.length > 0 ? 
-    (<div>
-        <Subtitle titleGroup={blockTitle}/>
-        <GalleryCarousel images={data.images.map((ele)=>({src:(ele.image as Media).url!,alt: 'image'}))}/>
-    </div>) 
+    (
+    <div>
+    <Subtitle titleGroup={blockTitle}/>
+    <CarouselConditional data={data}/>
+    
+    </div>
+    ) 
     :
      <div></div>
 }

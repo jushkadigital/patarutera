@@ -15,11 +15,14 @@ export async function TikTokLinksBlock(props: Props) {
     return (
         <div className="w-full ">    
         <Subtitle titleGroup={blockTitle}/>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6">
+        <div className="h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2 md:gap-6">
         {
-          videoLinks &&  videoLinks.map((ele)=>(
-            <TiktokEmbed key={ele.id} url={ele.url}/>
-            ))
+          videoLinks &&  videoLinks.map((ele,index)=> index == 3 ?(
+            <TiktokEmbed key={ele.id} url={ele.url} className="hidden"/>
+            ): 
+            
+            <TiktokEmbed key={ele.id} url={ele.url} className=""/>
+          )
         }
             </div>
         </div>

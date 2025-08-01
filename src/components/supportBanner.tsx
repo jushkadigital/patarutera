@@ -24,7 +24,7 @@ export default function SupportBannerBlock({text,colorBanner,imgUrl}:Props) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className={classessLine}></div>
-            <h2 className="text-[#898989] text-xl font-medium mt-0  text-lg font-semibold transition-colors duration-300
+            <h2 className="text-[#898989] text-[clamp(0px,3.8vw,20.48px)] sm:text-[clamp(0px,2.8vw,20.48px)] lg:text-[clamp(10.92px,1vw,20.48px)] font-medium mt-0  font-semibold transition-colors duration-300
                       group-hover:text-white max-w-44 align-top">{text}</h2>
           </div>
           <div className="w-12 h-12 flex items-center justify-center">
