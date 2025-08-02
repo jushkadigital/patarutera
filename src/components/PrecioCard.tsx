@@ -88,7 +88,14 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
 
 
 
-
+function formatMoney(amount: number, currency: string = "USD", locale: string = "en-US"): string {
+  return amount.toLocaleString(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
 
   return (
     // 5. ESTRUCTURA Y ESTILOS DEL COMPONENTE ADAPTADOS
@@ -96,20 +103,21 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
     <Fragment>
       {
         isMobile ?
-          <div className="fixed bottom-6 right-6 z-50">
+          <div className="fixed bottom-0 right-0 z-80 w-full">
 
             <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
-                <Link href={'#formPrice'}>
-                  <Button
-                    size="lg"
-                    className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90"
-                  >
-                    <SvgWhatsapp size={40}/>
-                    <span className="sr-only">Abrir formulario de contacto</span>
-                  </Button>
-                </Link>
+              <div className={`w-full px-10 bg-[#FFF] ${open ?'hidden' : ''}  border-gray-300 border-t-[0.5px] h-24 flex flex-row justify-center items-center`}>
+              <div className="w-2/3">
+                <div className="text-gray-600"> De: <span className="text-[#25D366] ">{formatMoney(price)} </span></div>
+                <div>{title}</div>
+
+              </div>
+              <DialogTrigger asChild className="w-1/3">
+                <Button className="bg-[#25D366] rounded-full text-white py-7! font-bold text-lg" onClick={()=>setOpen(false)}>
+                  RESERVAR
+                </Button>
               </DialogTrigger>
+              </div>
               <DialogContent className="sm:max-w-[425px] mx-4">
                 <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200">
                   <div className="bg-[#2970b7] text-white text-center py-6 rounded-t-3xl">
@@ -189,7 +197,7 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full flex items-center justify-center gap-2 bg-[#efba06] text-gray-900 text-lg font-bold py-3 rounded-full hover:bg-[#d8a605] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white text-lg font-bold py-3 rounded-full hover:bg-[#d8a605] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? "ENVIANDO..." : "ENVIAR MENSAJE"}
                         {!isSubmitting && <SvgWhatsapp size={20}  />}
@@ -304,7 +312,7 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 bg-[#efba06] text-gray-900 text-lg font-bold py-3 rounded-full hover:bg-[#d8a605] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white text-lg font-bold py-3 rounded-full hover:bg-[#d8a605] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? "ENVIANDO..." : "ENVIAR MENSAJE"}
                   {!isSubmitting && <SvgWhatsapp size={20} />}

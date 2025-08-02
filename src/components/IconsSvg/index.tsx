@@ -68,7 +68,7 @@ export const SvgTiktok = ({
 
 export const SvgWhatsapp = ({
   size = 24,
-  color = '#06ea74',
+  color = '#FFFFFF',
   ...props
 }: React.SVGProps<SVGSVGElement> & { size?: number | string; color?: string }) => (
   <svg

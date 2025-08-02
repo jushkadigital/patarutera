@@ -60,7 +60,7 @@ export default async function FooterBlock({destination}:Props) {
           <div className="flex flex-row gap-x-3 items-center justify-center">
 
           <div
-    className="relative flex-shrink-0 w-[clamp(0px,30vw,500px)] md:w-[clamp(0px,25vw,300px)] lg:w-[clamp(0px,15vw,300px)]  h-[clamp(0px,30vw,500px)] md:h-[clamp(0px,25vw,300px)] lg:h-[clamp(0px,15vw,300px)]"
+    className="relative flex-shrink-0 w-[clamp(0px,30vw,500px)] md:w-[clamp(0px,25vw,300px)] lg:w-[clamp(0px,13vw,300px)]  h-[clamp(0px,30vw,500px)] md:h-[clamp(0px,25vw,300px)] lg:h-[clamp(0px,13vw,300px)]"
     >
     <Image
       src="/verificadoLogo.png"
@@ -71,7 +71,7 @@ export default async function FooterBlock({destination}:Props) {
     />
   </div>
    <div
-    className="relative flex-shrink-0 w-[clamp(0px,30vw,500px)] md:w-[clamp(0px,25vw,300px)] lg:w-[clamp(0px,15vw,300px)]  h-[clamp(0px,30vw,500px)] md:h-[clamp(0px,25vw,300px)] lg:h-[clamp(0px,15vw,300px)]"
+    className="relative flex-shrink-0 w-[clamp(0px,30vw,500px)] md:w-[clamp(0px,25vw,300px)] lg:w-[clamp(0px,13vw,300px)]  h-[clamp(0px,30vw,500px)] md:h-[clamp(0px,25vw,300px)] lg:h-[clamp(0px,13vw,300px)]"
   >
     <Image
       src="/protegemeLogo.png"
