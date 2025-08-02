@@ -54,7 +54,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
 
   const LinkMotion = motion(Link)
   return (
-    <div className="w-full h-[90vh] lg:h-[100vh] mx-auto relative">
+    <div className="w-full h-[100vh] lg:h-[100vh] mx-auto relative">
       {/* Carousel container with background */}
       <div className="w-full h-full overflow-hidden relative flex flex-col items-end justify-center">
         {/* Background image container */}
@@ -88,7 +88,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
               <CarouselItem key={index} className="pl-8 basis-auto">
                 <LinkMotion
                 href={`/tours?destination=${slide.title}&categories=`}
-                  className="flex flex-col items-center justify-end relative text-center text-white w-[350px] lg:w-[450px] h-[70vh] lg:h-[70vh] cursor-pointer  lg:rounded-[4xl] overflow-hidden"
+                  className="flex flex-col items-center justify-end relative text-center text-white w-[300px] sm:w-[350px] lg:w-[450px] h-[70vh] lg:h-[70vh] cursor-pointer  lg:rounded-[4xl] overflow-hidden"
                   onClick={() => handleSlideClick(index)}
                   animate={{
                     scale: current === index ? 1 : 0.75,

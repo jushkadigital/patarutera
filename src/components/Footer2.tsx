@@ -20,7 +20,7 @@ export const FooterColumns = ({ columns }) => {
         return (
           <div className="flex items-center space-x-2 text-gray-300">
             {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0 text-[#EFBA06]" />}
-            <span>{link.textInfo}</span>
+            <span className="text-[clamp(10.92px,1vw,20.45px)]">{link.textInfo}</span>
           </div>
         )
 
@@ -34,7 +34,7 @@ export const FooterColumns = ({ columns }) => {
             rel={link.newTab ? "noopener noreferrer" : undefined}
           >
             {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0 text-[#EFBA06]" />}
-            <span>{link.label}</span>
+            <span className="text-[clamp(10.92px,1vw,20.45px)]">{link.label}</span>
           </Link>
         )
 
@@ -52,7 +52,7 @@ export const FooterColumns = ({ columns }) => {
             rel={link.newTab ? "noopener noreferrer" : undefined}
           >
             {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0" />}
-            <span>{label}</span>
+            <span className="text-[clamp(10.92px,1vw,20.45px)]">{label}</span>
           </Link>
         )
 
@@ -62,7 +62,7 @@ export const FooterColumns = ({ columns }) => {
   }
 
   return (
-      <div className="container mx-auto ">
+      <div className=" mx-auto ">
           {/* Logo y descripción - Izquierda */}
           {/* Grid de columnas - Derecha */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

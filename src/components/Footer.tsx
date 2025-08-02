@@ -25,23 +25,23 @@ export default async function FooterBlock({destination}:Props) {
   }
 
   return (
-    <footer className="relative">
+    <footer className="relative rounded-t-[7vw] lg:rounded-none">
       {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 ">
         <Image
           src="/footer1.png"
           alt="Peruvian landscape"
           fill
-          className="object-cover"
+          className="object-cover rounded-t-[7vw] lg:rounded-none"
           priority
         />
-        <div className="absolute inset-0 bg-[#2d3e3a]/50" />
+        <div className="absolute inset-0 bg-[#2d3e3a]/50 rounded-t-[7vw] lg:rounded-none" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-10 lg:px-0 pt-16 text-white">
+      <div className="relative z-10    lg:px-0 pt-16 text-white w-full">
         
-        <div className="flex flex-col lg:flex-row space-y-10 lg:space-x-15">
+        <div className="flex flex-col lg:flex-row space-y-10 lg:space-x-5 mx-auto w-[90%]">
         <div className="flex justify-center">
           <Image src={"/pataLogo.png"} alt="Logo" width={250} height={200} className={"w-[200px] lg:w-[250px] h-22 hidden lg:block"} />
           <Image src={"/pataruteraLogoWhite.png"} alt="Logo" width={250} height={200} className={"w-[250px] lg:w-[250px] h-22 block md:hidden"} />
@@ -49,8 +49,30 @@ export default async function FooterBlock({destination}:Props) {
           <div>
             <FooterColumns columns={navItems.filter(ele=>ele.nameColumn !== "Destinos")}/>
           </div>
-          <Image src={"/verificadoLogo.png"} alt="Logo2" width={200} height={100}  className={"h-44 lg:h-36"} />
-          <Image src={"/protegemeLogo.png"} alt="Logo3" width={250} height={50} className={"lg:h-36 h-56"} />
+          <div className="flex flex-row gap-x-3">
+
+          <div
+    className="relative flex-shrink-0 w-[clamp(0px,15vw,200px)]"
+  >
+    <Image
+      src="/verificadoLogo.png"
+      alt="Logo2"
+      fill
+      className="rounded-full object-contain"
+      priority
+    />
+  </div>
+   <div
+    className="relative flex-shrink-0 w-[clamp(0px,15vw,200px)]"
+  >
+    <Image
+      src="/protegemeLogo.png"
+      alt="Logo3"
+      fill
+      className="rounded-full object-cover"
+    />
+  </div>
+          </div>
           {/* Destinations */}
           <div className="hidden md:block"> 
             <FooterColumns columns={[navItems.find(ele=>ele.nameColumn == "Destinos")]}/>

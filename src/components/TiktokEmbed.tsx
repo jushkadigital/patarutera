@@ -89,11 +89,9 @@ export default function TiktokEmbed({ url,className }: Props) {
     }
 
     const embed = document.createElement("blockquote");
-    embed.className = "tiktok-embed-block";
+    embed.className = "tiktok-embed";
     embed.setAttribute("cite", url);
     embed.setAttribute("data-video-id", videoId);
-    //embed.style.maxWidth = "655px";
-    //embed.style.minWidth = "325px";
 
     const section = document.createElement("section");
     section.innerText = "Cargando video de TikTok...";

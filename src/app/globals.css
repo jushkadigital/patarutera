@@ -364,7 +364,7 @@ html{
  * dentro del wrapper. Esto lo hace ocupar todo el espacio
  * del contenedor y ser responsivo.
  */
-.tiktok-embed-wrapper .tiktok-embed-block,
+.tiktok-embed-wrapper .tiktok-embed,
 .tiktok-embed-wrapper iframe {
   position: absolute;
   top: 0;
