@@ -20,7 +20,7 @@ export const FooterColumns = ({ columns }) => {
         return (
           <div className="flex items-center space-x-2 text-gray-300">
             {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0 text-[#EFBA06]" />}
-            <span className="text-[clamp(10.92px,1vw,20.45px)]">{link.textInfo}</span>
+            <span className="text-[clamp(0px,2.9vw,15.36px)] lg:text-[clamp(10.92px,1vw,20.45px)]">{link.textInfo}</span>
           </div>
         )
 
@@ -34,7 +34,7 @@ export const FooterColumns = ({ columns }) => {
             rel={link.newTab ? "noopener noreferrer" : undefined}
           >
             {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0 text-[#EFBA06]" />}
-            <span className="text-[clamp(10.92px,1vw,20.45px)]">{link.label}</span>
+            <span className="text-[clamp(0px,2.9vw,15.36px)] lg:text-[clamp(10.92px,1vw,20.45px)]">{link.label}</span>
           </Link>
         )
 
@@ -52,7 +52,7 @@ export const FooterColumns = ({ columns }) => {
             rel={link.newTab ? "noopener noreferrer" : undefined}
           >
             {IconComponent && <IconComponent className="w-4 h-4 flex-shrink-0" />}
-            <span className="text-[clamp(10.92px,1vw,20.45px)]">{label}</span>
+            <span className="text-[clamp(0px,2.9vw,15.36px)] lg:text-[clamp(10.92px,1vw,20.45px)]">{label}</span>
           </Link>
         )
 
@@ -67,8 +67,8 @@ export const FooterColumns = ({ columns }) => {
           {/* Grid de columnas - Derecha */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {columns.map((column) => (
-                <div key={column.id} className="space-y-4">
-                  <h3 className="font-bold text-[20px] mb-4 text-[#3EAE64]">{column.nameColumn}</h3>
+                <div key={column.id} className="space-y-4 flex flex-col pl-[clamp(0px,3vw,40px)] lg:pl-0 text-left">
+                  <h3 className="font-bold text-[clamp(0px,3.6vw,19.2px)] lg:text-[clamp(13.65px,1.3vw,25.6px)] mb-4 text-[#3EAE64]">{column.nameColumn}</h3>
                   <ul className="space-y-3">
                     {column.links.map((linkItem) => (
                       <li key={linkItem.id}>{renderLink(linkItem)}</li>

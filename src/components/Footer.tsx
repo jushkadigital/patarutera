@@ -43,27 +43,35 @@ export default async function FooterBlock({destination}:Props) {
         
         <div className="flex flex-col lg:flex-row space-y-10 lg:space-x-5 mx-auto w-[90%]">
         <div className="flex justify-center">
-          <Image src={"/pataLogo.png"} alt="Logo" width={250} height={200} className={"w-[200px] lg:w-[250px] h-22 hidden lg:block"} />
-          <Image src={"/pataruteraLogoWhite.png"} alt="Logo" width={250} height={200} className={"w-[250px] lg:w-[250px] h-22 block md:hidden"} />
+          <div
+    className="relative flex-shrink-0 w-[clamp(0px,30vw,500px)] lg:w-[clamp(0px,13.5vw,300px)]  h-[clamp(0px,30vw,500px)] lg:h-[clamp(0px,6vw,300px)]  hidden lg:block"
+    >
+          <Image src={"/pataLogo.png"} alt="Logo" fill className={" object-cover"} />
+    </div>
+    <div
+    className="relative flex-shrink-0 w-[clamp(0px,37vw,500px)] lg:w-[clamp(0px,13.5vw,300px)]  h-[clamp(0px,13vw,500px)] lg:h-[clamp(0px,6vw,300px)] block lg:hidden"
+    >
+          <Image src={"/pataruteraLogoWhite.png"} alt="Logo" fill className={" "} />
+    </div>
         </div>
           <div>
             <FooterColumns columns={navItems.filter(ele=>ele.nameColumn !== "Destinos")}/>
           </div>
-          <div className="flex flex-row gap-x-3">
+          <div className="flex flex-row gap-x-3 items-center justify-center">
 
           <div
-    className="relative flex-shrink-0 w-[clamp(0px,15vw,200px)]"
-  >
+    className="relative flex-shrink-0 w-[clamp(0px,30vw,500px)] md:w-[clamp(0px,25vw,300px)] lg:w-[clamp(0px,15vw,300px)]  h-[clamp(0px,30vw,500px)] md:h-[clamp(0px,25vw,300px)] lg:h-[clamp(0px,15vw,300px)]"
+    >
     <Image
       src="/verificadoLogo.png"
       alt="Logo2"
       fill
-      className="rounded-full object-contain"
+      className="rounded-full object-cover"
       priority
     />
   </div>
    <div
-    className="relative flex-shrink-0 w-[clamp(0px,15vw,200px)]"
+    className="relative flex-shrink-0 w-[clamp(0px,30vw,500px)] md:w-[clamp(0px,25vw,300px)] lg:w-[clamp(0px,15vw,300px)]  h-[clamp(0px,30vw,500px)] md:h-[clamp(0px,25vw,300px)] lg:h-[clamp(0px,15vw,300px)]"
   >
     <Image
       src="/protegemeLogo.png"
@@ -74,7 +82,7 @@ export default async function FooterBlock({destination}:Props) {
   </div>
           </div>
           {/* Destinations */}
-          <div className="hidden md:block"> 
+          <div className="hidden lg:block"> 
             <FooterColumns columns={[navItems.find(ele=>ele.nameColumn == "Destinos")]}/>
           </div>
         </div>
@@ -91,7 +99,7 @@ export default async function FooterBlock({destination}:Props) {
           })
         }
       </div>
-      <div className="text-white text-lg text-center">
+      <div className="text-[#FFF] text-[clamp(0px,2.4vw,12.8px)] lg:text-[clamp(8.87px,0.86vw,16.64px)] text-center">
         Desarrollado por Jushka Digital
       </div>
       </div>

@@ -30,9 +30,9 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
       <Card className="w-full max-w-[435px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[clamp(0px,166vw,1341.2px)] sm:h-[clamp(190.44px,74vw,883.2px)] lg:h-[clamp(190.44px,46vw,883.2px)] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
           <Link href={`/tours/${unitData.slug}`} className="h-[63%]">
         <div className="relative h-full  w-full overflow-hidden">
-          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 w-fit">
-            <Badge variant="outline" className="bg-white  py-1 lg:px-[clamp(3.31px,0.8vw,15.16px)]  rounded-full border-0  ">
-              <span className="text-[#79368c] font-semibold uppercase text-xs sm:text-sm lg:text-[clamp(3.5px,0.8vw,16.64px)]">
+          <div className="absolute top-2 left-2 sm:top-4 md:top-3 lg:top-1 sm:left-4 z-10 w-fit">
+            <Badge variant="outline" className="bg-white  py-[clamp(1.3px,0.9vw,4.56px)] sm:py-[clamp(1.3px,0.6vw,4.56px)] lg:py-[clamp(1.3px,0.4vw,4.56px)] px-[clamp(0px,1.92vw,10.24px)]  lg:px-[clamp(3.31px,0.8vw,15.16px)]  rounded-full border-0  ">
+              <span className="text-[#79368c] font-semibold uppercase text-[clamp(0px,2.8vw,15.36px)] sm:text-[clamp(0px,1.5vw,15.36px)] lg:text-[clamp(3.5px,0.8vw,16.64px)]">
                 {unitData.destinos && (unitData.destinos as Destination).name}
               </span>
             </Badge>

@@ -26,7 +26,7 @@ export const BannerCarousel: React.FC<BannerProps> = ({ title, backgroundUrl,alt
       {/* Overlay para legibilidad */}
       <div className="absolute inset-0 bg-black/40 -z-10" />
       <h1
-        className={`relative z-10 text-3xl md:text-8xl lg:text-3xl font-black text-center leading-tight`}
+        className={`relative z-10 text-3xl md:text-5xl lg:text-3xl font-black text-center leading-tight`}
         style={{
           background: "linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.1) 100%)",
           WebkitBackgroundClip: "text",
@@ -36,7 +36,7 @@ export const BannerCarousel: React.FC<BannerProps> = ({ title, backgroundUrl,alt
       >
         RUTEA
         <br />
-       <span className='text-7xl! lg:text-9xl! font-black uppercase'> {title}</span> 
+       <span className='text-7xl! md:text-8xl! lg:text-9xl! font-black uppercase'> {title}</span> 
       </h1>
     </div>
   );
