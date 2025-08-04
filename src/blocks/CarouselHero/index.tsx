@@ -18,9 +18,16 @@ export async function CarouselHero(props: Props) {
   const data = await response.json()
   return <div className="relative w-full">
     <Carousel>
-      {data.docs.map((item: any) => (
-        <BannerCarousel key={item.id} title={item.name} backgroundUrl={item.carouselItemDestination.url} alt={item.carouselItemDestination.alt}/>
-      ))}
+      {data.docs.map((item: any) => {
+        if(!item.carouselItemDestination ){
+         return(
+        <BannerCarousel key={item.id} title={item.name} backgroundUrl={'/placeholder.svg'} alt={'aoe'}/>
+      ) 
+        }
+        
+        return(
+        <BannerCarousel key={item.id} title={item.name} backgroundUrl={item.carouselItemDestination.url || '/placeholder.svg'} alt={'aoe'}/>
+      )})}
     </Carousel>
     <div className="absolute bottom-20 w-full flex justify-center">
       <TourSearchBoxHorizontal destinations={destinations}/>
