@@ -5,6 +5,78 @@
   position: absolute;
   top: 0px;
   bottom: 0px;
+  left: 7px;
+}
+
+
+/* Empezar la línea más abajo en el primer item */
+.list_item_with_icon:first-child:before {
+  top: 15px;
+}
+
+/* Parar la línea antes en el último item */
+.list_item_with_icon:last-child:before {
+}
+/* Bullets pequeños para items normales de lista */
+.list_item_with_icon_check::after {
+  content: "";
+  position: absolute;
+  background-image: url("/checkIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 4px;
+  width: 25px;
+  height: 25px;
+}
+
+.list_item_with_icon_nocheck::after {
+  content: "";
+  position: absolute;
+  background-image: url("/noCheckIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 2px;
+  width: 25px;
+  height: 25px;
+}
+
+.list_item_with_icon_circle::after{
+  content: "";
+  position: absolute;
+  background-image: url("/circleIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 0px;
+  width: 30px;
+  height: 30px;
+}
+
+.list_item_with_icon_location::after{
+  content: "";
+  position: absolute;
+  background-image: url("/locationIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 0px;
+  width: 30px;
+  height: 30px;
+}
+
+
+/* Pantallas pequeñas (sm) */
+@media (min-width: 480px) {
+  /* Estilos para pantallas de 480px en adelante */
+  .list_item_with_icon:before {
+  background-color: #D5D5D5;
+  width: 1px;
+  content: "";
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
   left: 14px;
 }
 
@@ -64,4 +136,159 @@
   top: 0px;
   width: 30px;
   height: 30px;
+}
+}
+
+/* Pantallas medianas (md) */
+@media (min-width: 768px) {
+  /* Estilos para pantallas de 768px en adelante */
+  .list_item_with_icon:before {
+  background-color: #D5D5D5;
+  width: 1px;
+  content: "";
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 14px;
+}
+
+
+/* Empezar la línea más abajo en el primer item */
+.list_item_with_icon:first-child:before {
+  top: 15px;
+}
+
+/* Parar la línea antes en el último item */
+.list_item_with_icon:last-child:before {
+}
+/* Bullets pequeños para items normales de lista */
+.list_item_with_icon_check::after {
+  content: "";
+  position: absolute;
+  background-image: url("/checkIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 4px;
+  width: 25px;
+  height: 25px;
+}
+
+.list_item_with_icon_nocheck::after {
+  content: "";
+  position: absolute;
+  background-image: url("/noCheckIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 2px;
+  width: 25px;
+  height: 25px;
+}
+
+.list_item_with_icon_circle::after{
+  content: "";
+  position: absolute;
+  background-image: url("/circleIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 0px;
+  width: 30px;
+  height: 30px;
+}
+
+.list_item_with_icon_location::after{
+  content: "";
+  position: absolute;
+  background-image: url("/locationIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 0px;
+  width: 30px;
+  height: 30px;
+}
+}
+
+/* Pantallas grandes (lg) */
+@media (min-width: 1024px) {
+  /* Estilos para pantallas de 1024px en adelante */
+  .list_item_with_icon:before {
+  background-color: #D5D5D5;
+  width: 1px;
+  content: "";
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 14px;
+}
+
+
+/* Empezar la línea más abajo en el primer item */
+.list_item_with_icon:first-child:before {
+  top: 15px;
+}
+
+/* Parar la línea antes en el último item */
+.list_item_with_icon:last-child:before {
+}
+/* Bullets pequeños para items normales de lista */
+.list_item_with_icon_check::after {
+  content: "";
+  position: absolute;
+  background-image: url("/checkIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 4px;
+  width: 25px;
+  height: 25px;
+}
+
+.list_item_with_icon_nocheck::after {
+  content: "";
+  position: absolute;
+  background-image: url("/noCheckIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 2px;
+  width: 25px;
+  height: 25px;
+}
+
+.list_item_with_icon_circle::after{
+  content: "";
+  position: absolute;
+  background-image: url("/circleIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 0px;
+  width: 30px;
+  height: 30px;
+}
+
+.list_item_with_icon_location::after{
+  content: "";
+  position: absolute;
+  background-image: url("/locationIconType.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: 0;
+  top: 0px;
+  width: 30px;
+  height: 30px;
+}
+}
+
+/* Pantallas extra grandes (xl) */
+@media (min-width: 1440px) {
+  /* Estilos para pantallas de 1440px en adelante */
+}
+
+/* Pantallas 2xl */
+@media (min-width: 1920px) {
+  /* Estilos para pantallas de 1920px en adelante */
 }
