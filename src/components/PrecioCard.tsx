@@ -118,6 +118,7 @@ function formatMoney(amount: number, currency: string = "USD", locale: string = 
                 </Button>
               </DialogTrigger>
               </div>
+
               <DialogContent className="">
                 <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200">
                   <div className="bg-[#2970b7] text-white text-center py-6 rounded-t-3xl">
