@@ -48,10 +48,10 @@ export default async function TourPage({ params: paramsPromise, searchParams: se
   return (
     <div className="">
       {draft && <LivePreviewListener />}
-      <div className="flex flex-col-reverse lg:flex-col mt-10 lg:mt-0">
+      <div className="flex flex-col-reverse md:flex-col mt-10 md:mt-0">
       <RenderHero heroBlocks={heroTour} title={title}/>
       <div className='flex flex-col space-y-10'>
-      <div className='w-full'><h1 className='text-center text-4xl text-[#2970b7] font-bold italic'>{title}</h1></div>
+      <div className='w-full'><h1 className='text-center text-4xl lg:text-[clamp(16.3px,2.6vw,50.72px)]  text-[#2970b7] font-bold italic'>{title}</h1></div>
       <RenderBlocks blocks={layout} context={{nameCollection: 'tour',title:title}} />
       </div>
       </div>

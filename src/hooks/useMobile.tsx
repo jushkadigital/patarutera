@@ -17,14 +17,17 @@ import React, {useEffect, useState} from "react";
 // }
 
 
+interface Props {
+  breakpoint:number
+}
 
-export const useMobile = () => {
+export const useMobile = ({breakpoint}:Props = { breakpoint: 768 }) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     // Función para actualizar el estado de isMobile
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < breakpoint);
     };
 
     // Llamar a handleResize una vez al montar el componente

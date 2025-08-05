@@ -31,15 +31,15 @@ export async function DescrPriceBlock(props: Props) {
     }
   }
     return (
-        <div className="w-full">
+        <div className="w-full ">
             <Subtitle titleGroup={blockTitle} />
             <div className="flex flex-col lg:flex-row w-full justify-around">
-                <div className="w-full lg:w-[70%] p-0 ">
-                    <div className="py-3 shadow-sm border border-1 rounded-xl lg:w-[90%]">
-                    <div className="mx-auto lg:w-[90%]">
+                <div className="w-full lg:w-[65%] p-0 ">
+                    <div className="py-3 shadow-sm border border-1 rounded-xl lg:w-[95%]">
+                    <div className="mx-auto w-[90%] lg:w-[95%]">
                         <div className="bg-white rounded-lg p-3 lg:p-8 ">
                             {/* Header */}
-                            <h1 className="text-[#2970b7] text-xl lg:text-3xl font-bold mb-6 leading-tight">
+                            <h1 className="text-[#2970b7] text-xl lg:text-[clamp(16.3px,1.6vw,30.72px)] font-bold mb-6 leading-tight">
                                 {leftColumn.tourTitle}
                             </h1>
                             <RichText data={leftColumn.tourDescription} />
@@ -48,7 +48,7 @@ export async function DescrPriceBlock(props: Props) {
                     </div>
                     </div>
                 </div>
-                <div className="w-[0px] lg:w-[30%]">
+                <div className="w-[60%] mx-auto lg:mx-0 lg:w-[35%] sm:mt-10 lg:mt-0">
                     <PrecioCardComponent priceTitle={rightColumn.priceTitle!} prevText={rightColumn.prevText!} price={rightColumn.price!} nextText={rightColumn.nextText!} paymentForm={rightColumn.paymentForm}  origen={context!.nameCollection} phoneNumber={phoneNumber} title={context!.title}/>
                 </div>
 

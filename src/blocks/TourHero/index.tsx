@@ -12,19 +12,19 @@ interface Props extends TourHerocarB{
 export async function TourHero(props: Props) {
     const {carContent,ImageContent} = props
     console.log('TOUR')
-  return <div className="flex flex-col lg:flex-row w-full lg:px-[220px] lg:mb-10">
-    <div className="lg:w-1/3 flex flex-row justify-center items-center">
+  return <div className="flex flex-col md:flex-row w-full md:px-[clamp(102px,10vw,192px)] md:mb-10">
+    <div className="mx-auto md:mx-0 w-[40%] md:w-[40%] flex flex-row justify-center items-center">
     <Carousel className="">
       {carContent!.carImages!.map((item) => (
-        <div className="w-[450px] h-[450px] relative rounded-2xl overflow-hidden">
+        <div className="w-[clamp(140px,33vw,640px)] h-[clamp(140px,33vw,640px)] relative rounded-2xl overflow-hidden">
         <Image alt="o"  src={(item.image as Media).url!} fill className="h-full w-full object-cover"/>
         </div>
       ))}
     </Carousel>
     
     </div>
-    <div className="lg:w-2/3 flex flex-row justify-center items-center ">
-      <div className="h-[450px] w-[95%] max-w-[700px] ml-auto relative rounded-2xl overflow-hidden">
+    <div className="md:w-[60%] flex flex-row justify-center items-center ">
+      <div className="h-[clamp(125px,32vw,614px)] w-[clamp(140px,43.3vw,832px)]  relative rounded-2xl overflow-hidden">
         <Image alt="o" src={(ImageContent.image as Media).url!} fill className=" h-full w-full object-cover"/>
       </div>
     </div>

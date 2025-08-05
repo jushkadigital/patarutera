@@ -210,7 +210,7 @@ export default function TabsViaje({tabs}:Props) {
             <div className="flex justify-center mb-2">
               <Image src={tab.icon} alt="" width={30} height={30} className="object-cover"/>
               </div>
-            <span className="text-sm font-medium">{tab.label}</span>
+            <span className="text-sm text-[clamp(12.2px,1.2vw,23px)] font-medium">{tab.label}</span>
             {activeTab === tab.id && (
               <motion.div
                 className="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-green-600"

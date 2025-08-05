@@ -532,7 +532,7 @@ html{
 .prose-custom {
   font-family: 'Poppins', sans-serif;
   line-height: 1.7; /* Un poco más de aire para mejorar la lectura */
-  font-size: 1.1rem;   /* Tamaño de fuente base ligeramente más grande */
+  font-size: clamp(10.9px,1vw,20.48px);   /* Tamaño de fuente base ligeramente más grande */
   color: #333;        /* Color de texto principal más suave que el negro puro */
   max-width: 75ch;     /* Limita el ancho para una legibilidad óptima */
   margin: 2rem auto;   /* Centra el contenedor en la página */
