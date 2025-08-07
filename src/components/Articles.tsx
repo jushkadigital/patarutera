@@ -3,31 +3,26 @@ import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Media, Post } from "@/cms-types"
+import RichText from "./RichText"
 
-interface ArticleData {
-  id: number
-  slug: string
-  title: string
-  imageUrl: string
-  imageQuery: string
-  description?: string // Solo para ArticleCardTop
-}
+
+export type CardPostData = Pick<Post, 'id' | 'title'| 'description' | 'featuredImage' |  'slug' >
 
 interface ArticleTopProps {
-  article: ArticleData
+  article: CardPostData
 }
 
-const ArticleCardTop: React.FC<ArticleTopProps> = ({ article }) => {
+const ArticleCardTop = ({ article }:ArticleTopProps) => {
   return (
     <Card className="bg-[#ffffff] rounded-xl shadow-lg overflow-hidden flex flex-col group hover:shadow-xl transition-shadow duration-300 py-0">
       <Link href={`/blog/${article.slug}`} className="block">
         <div className="relative w-full h-48 sm:h-56 overflow-hidden">
           <Image
-            src={`${article.imageUrl}?query=${encodeURIComponent(article.imageQuery)}`}
-            alt={article.imageQuery}
+            src={(article.featuredImage as Media).url!}
+            alt={(article.featuredImage as Media).alt!}
             layout="fill"
-            objectFit="cover"
-            className="group-hover:scale-105 transition-transform duration-300"
+            className="group-hover:scale-105 transition-transform duration-300 object-cover"
           />
         </div>
         <CardHeader className="py-2">
@@ -37,7 +32,9 @@ const ArticleCardTop: React.FC<ArticleTopProps> = ({ article }) => {
         </CardHeader>
         {article.description && (
           <CardContent className="pt-0">
-            <CardDescription className="text-sm text-[#000000] leading-relaxed">{article.description}</CardDescription>
+            <CardDescription className="text-sm text-[#000000] leading-relaxed">
+              <RichText data={article.description}/>
+            </CardDescription>
 
       <Link href={`/blog/${article.slug}`} className="block">
             <Button variant='ghost' className="cursor-pointer">Ver mas</Button>
@@ -50,7 +47,7 @@ const ArticleCardTop: React.FC<ArticleTopProps> = ({ article }) => {
 }
 
 interface ArticleEntryProps {
-  article: ArticleData
+  article: CardPostData
   imagePosition?: "left" | "right"
   size?: "large" | "small"
   className?: string
@@ -74,8 +71,8 @@ const ArticleEntry: React.FC<ArticleEntryProps> = ({
         className={`relative block group ${imageSizeClass} ${size === "large" ? "min-h-[300px] md:min-h-[400px]" : "min-h-[200px]"} rounded-xl overflow-hidden`}
       >
         <Image
-          src={`${article.imageUrl}?query=${encodeURIComponent(article.imageQuery)}`}
-          alt={article.imageQuery}
+          src={(article.featuredImage as Media).url!}
+          alt={(article.featuredImage as Media).alt!}
           layout="fill"
           objectFit="cover"
           className="group-hover:scale-105 transition-transform duration-300"
@@ -119,32 +116,10 @@ const Pagination: React.FC = () => {
 }
 
 // Sample data for 10 articles
-const allArticlesData: ArticleData[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  slug: `articulo-${i + 1}`,
-  title: `Título del Artículo ${i + 1}`,
-  imageUrl: "/placeholder.svg",
-  imageQuery: `Placeholder para artículo ${i + 1} sobre Perú`,
-  description:
-    i < 3
-      ? `Descripción breve y atractiva para el artículo destacado número ${i + 1}. Explora las maravillas ocultas y la rica cultura. Presencia dos imponentes montañas sagradas cubiertas de nieve...`
-      : undefined,
-}))
 
 // Asignar queries de imagen más específicas para los primeros artículos basados en el diseño original
-allArticlesData[0].imageQuery = "Ancient stone bridge ruins with waterfall in Peruvian mountains"
-allArticlesData[1].imageQuery = "Hiker taking photo of vast green valley in Peru"
-allArticlesData[2].imageQuery = "Woman in colorful poncho by a serene mountain lake in Peru"
-allArticlesData[3].imageQuery = "Close up of a white llama in Peruvian highlands"
-allArticlesData[4].imageQuery = "Man in traditional Peruvian attire holding a flute in mountains"
-allArticlesData[5].imageQuery = "Ancient stone steps leading to arched ruins in lush greenery"
-allArticlesData[6].imageQuery = "Woman in red dress walking on a remote beach with cliffs"
-allArticlesData[7].imageQuery = "Woman in colorful poncho sitting by a tranquil lake in Peru"
-allArticlesData[8].imageQuery = "Man in traditional Peruvian attire smiling, mountain background"
-allArticlesData[9].imageQuery = "Hiker with backpack standing on a cliff overlooking green landscape"
-
 interface PeruTravelBlogPageProps {
-  articles: ArticleData[]
+  articles: CardPostData[]
 }
 
 export function PeruTravelBlogPage({ articles }: PeruTravelBlogPageProps) {

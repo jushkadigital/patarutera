@@ -1,6 +1,6 @@
 import  { cache, Fragment } from 'react'
 
-import type { GridPaquetesBlock, GridToursBlock, Media, Page } from '@/cms-types'
+import type { GridBlogsBlock, GridToursBlock, Media, Page } from '@/cms-types'
 import { MediaBlock } from '../../../../blocks/MediaBlock'
 import { GridTours } from '../../../../blocks/GridTours'
 import { RowBlock } from '../../../../blocks/RowBlock'
@@ -23,8 +23,7 @@ import { YouTubeLinksBlock } from '@/blocks/YoutubeLinksBlock'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { LeftPanelSearchPaquete } from '@/components/leftSearchPanelPaquetes'
-import { GridPaquetes } from '@/blocks/GridPaquetes'
+import { GridBlogs } from '@/blocks/GridBlog'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -44,21 +43,17 @@ const blockComponents = {
 }
 
 
-
 interface Props {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>,
-    params: Promise<{pageNumber: string}>
+searchParams: Promise<{
+    [key: string]: string | string[] | undefined;
+  }>;
+params: Promise<{pageNumber: string}>
 }
 
 export default async function Page(props:Props) {
-    const { destination } = await props.searchParams
-  const { pageNumber } = await props.params
-
-  console.log(pageNumber)
-  console.log(destination)
-  const sanitizedPageNumber = Number(pageNumber)
-
-  const params = await props.searchParams
+    
+const { pageNumber } = await props.params
+const params = await props.searchParams
   const queryString = new URLSearchParams(
     Object.entries(params).reduce((acc, [key, value]) => {
       if (typeof value === 'string') {
@@ -69,10 +64,9 @@ export default async function Page(props:Props) {
       return acc
     }, {} as Record<string, string>)
   ).toString()
+
+  const sanitizedPageNumber = Number(pageNumber)
   const { isEnabled: draft } = await draftMode();
-  const destinationRequest = await fetch(`${BASEURL}/api/destinations?where[name][equals]=${destination}`)
-  const destinationDataPre = await destinationRequest.json()
-  const destinationData = destinationDataPre.docs[0]
   let page: any;
   page = await queryPageBySlug(); 
     if (!page) {
@@ -80,11 +74,13 @@ export default async function Page(props:Props) {
     }
 
     if (!Number.isInteger(sanitizedPageNumber)) notFound()
-
   const { layout: blocks, heroPageBlocks } = page
   const hasBlocksLayout = blocks && Array.isArray(blocks) && blocks.length > 0
   const hasBlocksHero = heroPageBlocks && Array.isArray(heroPageBlocks) && heroPageBlocks.length > 0
 
+  const categoriesRequest = await fetch(`${BASEURL}/api/tourCategory`)
+  const categoriesData = await categoriesRequest.json()
+  const categories = categoriesData.docs
   const destinationsRequest = await fetch(`${BASEURL}/api/destinations`)
   const destinationsData = await destinationsRequest.json()
   const destinations = destinationsData.docs
@@ -109,7 +105,7 @@ export default async function Page(props:Props) {
           switch (blockType) {
             case 'banner':
               {
-                return <BannerBlock {...block} />
+                return <BannerBlock {...block}  />
               }
             default:
               return null
@@ -117,17 +113,12 @@ export default async function Page(props:Props) {
         })}
       </Fragment>
 
-      <SharedStateProvider>
-      <div className='flex flex-row mt-10 w-[85%] mx-auto'>
+      <div className='flex flex-row mt-10 w-[90%] md:w-[85%] mx-auto'>
         
-        <div className='lg:w-1/3'>
-        <LeftPanelSearchPaquete  destinations={destinations} />
-        </div>
-        <div className='w-full lg:w-3/4'>
-        <GridPaquetes  {...blocks[0] as GridPaquetesBlock} destination={destinationData} gridColumns={6} gridStyle={false} rangeSlider={true} searchParams={queryString} page={sanitizedPageNumber}/>
+        <div className='w-full '>
+        <GridBlogs  {...blocks[0] as GridBlogsBlock} searchParams={queryString} />
         </div>
       </div>
-      </SharedStateProvider>
       <div className='flex flex-col w-full'>
           <Fragment>
               {hasBlocks && blocks.slice(1).map((block, index) => {
@@ -156,28 +147,13 @@ export default async function Page(props:Props) {
 const queryPageBySlug = cache(async () => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
   console.log(draft,'draftQuery')
-  const data = await fetch(`${BASEURL}/api/globals/pacP?depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
+  const data = await fetch(`${BASEURL}/api/globals/blogP?depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
   const result = await data.json();
   console.log(result)
   // console.log('queryBY');
   // console.log(result);
   return result || null;
 });
-export async function generateStaticParams() {
-
-  const req = await fetch(`${BASEURL}/api/paquetes/count`)
-  const {totalDocs} = await req.json()
-
-  const totalPages = Math.ceil(totalDocs / 10)
-
-  const pages: { pageNumber: string }[] = []
-
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
-  }
-
-  return pages
-}
 
 // Optional: Metadata for the page
 // export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
@@ -190,4 +166,4 @@ export async function generateStaticParams() {
 //     title: `${pageData.title || 'Page'} | Patarutera`,
 //     // description: pageData.seoDescription || defaultDescription,
 //   };
-// } 
+// }

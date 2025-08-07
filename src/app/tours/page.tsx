@@ -117,7 +117,7 @@ export default async function Page(props:Props) {
         <div className='lg:w-1/3'>
         <LeftPanelSearch categories={categories} destinations={destinations} />
         </div>
-        <div className='lg:w-3/4'>
+        <div className='w-full lg:w-3/4'>
         <GridTours  {...blocks[0] as GridToursBlock} gridColumns={6} destination={destinationData} gridStyle={false} rangeSlider={true} searchParams={queryString}/>
         </div>
       </div>

@@ -1,6 +1,7 @@
-import type { Destination, GridBlogsBlock, GridToursBlock as GridToursBlockType, Tour, TourCategory } from '@/cms-types';
+import type { BlogCategory, Destination, GridBlogsBlock, GridToursBlock as GridToursBlockType, Tour, TourCategory } from '@/cms-types';
 import { PeruTravelBlogPage } from '@/components/Articles';
 import CardTour, { CardTourData } from '@/components/CardTour';
+import { Pagination } from '@/components/Pagination';
 import { Subtitle } from '@/components/Subtitle';
 import { ToursComponent } from '@/components/ToursComponent';
 import { useSharedState } from '@/hooks/sharedContextDestinos';
@@ -9,6 +10,8 @@ import { cn } from '@/lib/utils';
 
 // Añadir 'mode' a las Props
 interface Props extends GridBlogsBlock {
+  page?: number
+  searchParams?: string
   context?: {
     nameCollection:string
   }| null
@@ -16,25 +19,38 @@ interface Props extends GridBlogsBlock {
 
 export async function GridBlogs(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
-  const { id, limit,generalStyle, gridStyle:mode  ,categories,blockTitle} = props;
+  const { id, limit,generalStyle, gridStyle:mode ,categories,page,blockTitle,overrideDefaults,searchParams} = props;
 
 
 
   console.log(mode)
   let posts = [];
+  let data
   let fetchError = null;
+  
+  const paramsCat = new URLSearchParams()
+  console.log(categories)
+  if((categories as BlogCategory[]).length > 0){
+        paramsCat.append('where[categories.name][in]', (categories as BlogCategory[]).map(c => c.name).join(','))
+    }
   try {
     
-   const response = await fetch(`${BASEURL}/api/posts?limit=${limit}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[description]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&where[categories.name][in]=${(categories as TourCategory[]).map(c => c.name).join(',')}`);
+    const queryStringCat = paramsCat.toString()
+    console.log(queryStringCat)
+  const pageNumber = page ? `&page=${page}` : ''
+   const response = await fetch(`${BASEURL}/api/posts?limit=${limit}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[description]=true&${queryStringCat}`);
+   console.log(`${BASEURL}/api/posts?limit=${limit}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[description]=true&${queryStringCat}`)
     if (!response.ok) {
         // Consider logging the response status and text for more detailed error info
         // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
+    data = await response.json();
     if (data && data.docs) {
       posts = data.docs;
     }
+    console.log(data)
+    console.log(data.totalPages)
   } catch (error) {
     console.error("Error fetching tours:", error);
     // Podrías también lanzar el error para que un ErrorBoundary superior lo capture si es necesario
@@ -53,7 +69,7 @@ export async function GridBlogs(props: Props) {
     return <div className="container mx-auto py-8 text-center text-red-500">{fetchError}</div>;
   }
   
-
+  console.log(data)
 
   return (
     // No hay controles de modo aquí porque es un Server Component
@@ -61,18 +77,11 @@ export async function GridBlogs(props: Props) {
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={blockTitle}/>
       {generalStyle == "masonry" ? 
-      <PeruTravelBlogPage articles={posts.map((ele:any)=>({
-  id: ele.id,
-  slug: ele.slug,
-  title: ele.title,
-  imageUrl: ele.featuredImage.url,
-  imageQuery: ele.featuredImage.alt,
-  description: ele.description
-          }))}/>
+      <PeruTravelBlogPage articles={posts}/>
       :
       <div></div>
       }
-      
+      {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!} type={'posts'}/>)}
     </div>
   );
 }

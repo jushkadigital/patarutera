@@ -54,7 +54,6 @@ export default async function Page(props:Props) {
   const { pageNumber } = await props.params
 
   console.log(pageNumber)
-  console.log(destination)
   const sanitizedPageNumber = Number(pageNumber)
 
   const params = await props.searchParams
@@ -125,7 +124,7 @@ export default async function Page(props:Props) {
         <div className='lg:w-1/3'>
         <LeftPanelSearch categories={categories} destinations={destinations} />
         </div>
-        <div className='lg:w-3/4'>
+        <div className='w-full lg:w-3/4'>
         <GridTours  {...blocks[0] as GridToursBlock} gridColumns={6} destination={destinationData} gridStyle={false} rangeSlider={true} searchParams={queryString} page={sanitizedPageNumber}/>
         </div>
       </div>
@@ -156,7 +155,7 @@ export default async function Page(props:Props) {
 
 export async function generateStaticParams() {
 
-  const req = await fetch(`${BASEURL}/api/tours/count`)
+  const req = await fetch(`${BASEURL}/api/posts/count`)
   const {totalDocs} = await req.json()
 
   const totalPages = Math.ceil(totalDocs / 10)

@@ -77,7 +77,7 @@ const paramsCat = new URLSearchParams()
   console.log('render.BlockTour')
   return (
     // No hay controles de modo aquí porque es un Server Component
-    <div className=" mx-auto  bg bg-white w-full">
+    <div className=" mx-auto py-4 bg bg-white w-[90%]">
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={blockTitle}/>
       <ToursComponent mode={mode!} tours={tours} rangeSlider={props.rangeSlider}/>

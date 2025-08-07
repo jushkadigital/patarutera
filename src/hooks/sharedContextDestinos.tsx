@@ -6,7 +6,7 @@ const SharedStateContext = createContext<{ priceOne: [number,number]; setPriceOn
 ({priceOne:[0,300],setPriceOne:(prev)=>prev});
 
 export const SharedStateProvider = ({ children }) => {
-  const [priceOne, setPriceOne] = useState<[number,number]>([0,900]);
+  const [priceOne, setPriceOne] = useState<[number,number]>([0,1800]);
 
   return (
     <SharedStateContext.Provider value={{ priceOne, setPriceOne }}>

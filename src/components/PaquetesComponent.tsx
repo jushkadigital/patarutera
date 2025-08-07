@@ -2,6 +2,7 @@
 import { useSharedState } from "@/hooks/sharedContextDestinos";
 import CardPaquete, { CardPaqueteData } from "./cardPaquete"
 import { cn } from "@/lib/utils";
+import { useMobile } from "@/hooks/useMobile";
 
 interface Props {
     paquetes:CardPaqueteData[]
@@ -23,14 +24,16 @@ function isNumberInRange(numberToCheck: number, range: [number, number]): boolea
 
   console.log(priceOne)
   console.log(rangeSlider)
+  console.log(paquetes)
 
+  const responsive = useMobile({breakpoint:480})
     return (
         <div className={containerClasses}>
         {paquetes.length > 0 ? (
           rangeSlider ? paquetes.filter(ele=>isNumberInRange(ele.price!,priceOne)).map((tour) => (
             // Pasar la prop 'mode' a CardTour
             // Asegurarse que tour.slug existe y es único. Si no, usar tour.id u otro identificador único.
-            <CardPaquete key={tour.id} unitData={tour} mode={mode ? 'grid' : 'list'} />
+            <CardPaquete key={tour.id} unitData={tour} mode={mode ? 'grid' : responsive ? 'grid':'list'} />
           )):
           paquetes.map((tour) => (
             // Pasar la prop 'mode' a CardTour

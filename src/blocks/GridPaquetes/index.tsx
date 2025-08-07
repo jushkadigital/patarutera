@@ -65,7 +65,8 @@ const params = new URLSearchParams()
   }
   
 
-  console.log('render.BlockTour')
+  console.log('render.BlockPaquete')
+  console.log(paquetes)
   return (
     // No hay controles de modo aquí porque es un Server Component
     <div className=" mx-auto py-4 bg bg-white w-[90%]">

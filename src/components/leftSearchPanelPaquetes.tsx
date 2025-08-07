@@ -27,7 +27,7 @@ interface LeftPanelSearchProps {
 // Componente principal: Se elimina TourCategoryList
 export function LeftPanelSearchPaquete({ title, destinations }: LeftPanelSearchProps) {
   
-  const isMobile = useMobile()
+  const isMobile = useMobile({breakpoint:1024})
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   return (
  <div>
@@ -103,7 +103,7 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
       <div className="px-6 py-6 border-b ">
         <div className="flex items-center gap-3">
           <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
-          <h1 className="text-[#2970b7] text-xl font-semibold tracking-wide">BUSCAR PAQUETES</h1>
+          <h1 className="text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-semibold tracking-wide">BUSCAR PAQUETES</h1>
         </div>
       </div>
 
@@ -116,23 +116,23 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
               <MapPin className="w-6 h-6 text-[#2970b7]" />
             </div>
             <div className="flex-1">
-              <label className="block text-[#2970b7] text-lg font-medium mb-2">Destino(s)</label>
+              <label className="block text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-medium mb-2">Destino(s)</label>
               <Collapsible open={isOpen} onOpenChange={setIsOpen}>
                 <CollapsibleTrigger asChild>
                   <button
                     type="button"
-                    className="min-w-[250px] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
+                    className="w-[clamp(170px,16.6vw,320px)] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
                   >
                     {/* 4. Mostrar destinos seleccionados o placeholder */}
                     <div className="flex flex-wrap gap-1 items-center">
                       {tempDestinations!.length > 0 ? (
                         tempDestinations!.map(dest => (
-                          <span key={dest} className="bg-[#2970b7] text-white text-sm font-medium px-2 py-1 rounded-full flex items-center gap-1">
+                          <span key={dest} className="bg-[#2970b7]  text-white lg:text-[clamp(10.92px,1vw,20.48px)] font-medium px-2 py-1 rounded-full flex items-center gap-1">
                             {dest}
                           </span>
                         ))
                       ) : (
-                        <span className="text-[#adadac]">Seleccionar destinos</span>
+                        <span className="text-[#adadac] lg:text-[clamp(10.9px,1vw,20.48px)]">Seleccionar destinos</span>
                       )}
                     </div>
                     <ChevronDown
@@ -146,12 +146,12 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
                       <div
                         key={destination.name}
                         onClick={() => handleDestinationToggle(destination.name)}
-                        className="w-full text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-3 text-[#333] first:rounded-t-lg last:rounded-b-lg"
+                        className="w-[clamp(170px,16.6vw,320px)] text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg"
                       >
                         {/* 5. Usar Checkbox para indicar selección */}
                         <Checkbox
                           checked={tempDestinations!.includes(destination.name)}
-                          className="data-[state=checked]:bg-[#2970b7] data-[state=checked]:border-[#2970b7]"
+                          className="data-[state=checked]:bg-[#2970b7] data-[state=checked]:border-[#2970b7] "
                         />
                         <MapPin className="w-4 h-4 text-[#2970b7]" />
                         {destination.name}
@@ -184,9 +184,9 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
             setSelectedDestinations(tempDestinations);
             setIsOpen(false); // Opcional: cerrar el dropdown al buscar
           }}
-          className="w-full bg-[#2970b7] text-white py-4 px-6 rounded-2xl font-medium text-lg flex items-center justify-center gap-3 hover:bg-[#2970b7]/90 transition-colors">
+          className="w-full bg-[#2970b7] text-white py-4 px-6 rounded-2xl font-medium text-lg lg:text-[clamp(10.9px,1vw,20.48px)] flex items-center justify-center gap-3 hover:bg-[#2970b7]/90 transition-colors">
           Buscar
-          <Search className="w-5 h-5" />
+          <Search className="lg:w-3 xl:w-5 lg:h-3 xl:h-5" />
         </button>
       </div>
     </div>

@@ -116,10 +116,12 @@ export default async function Page(props:Props) {
       </Fragment>
 
       <SharedStateProvider>
-      <div className='flex flex-row mt-10 w-[85%] mx-auto'>
+      <div className='flex flex-row mt-10  w-[90%] md:w-[85%] mx-auto'>
         
+        <div className='lg:w-1/3'>
         <LeftPanelSearchPaquete  destinations={destinationsFinal} />
-        <div className='lg:w-3/4'>
+        </div>
+        <div className='w-full lg:w-3/4'>
         <GridPaquetes  {...blocks[0] as GridPaquetesBlock} destination={destinationData} gridColumns={6} gridStyle={false} searchParams={queryString} rangeSlider={true}/>
         </div>
       </div>
