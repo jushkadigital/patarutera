@@ -116,7 +116,7 @@ const params = await props.searchParams
       <div className='flex flex-row mt-10 w-[90%] md:w-[85%] mx-auto'>
         
         <div className='w-full '>
-        <GridBlogs  {...blocks[0] as GridBlogsBlock} searchParams={queryString} />
+        <GridBlogs  {...blocks[0] as GridBlogsBlock} limit={9} searchParams={queryString} page={sanitizedPageNumber}/>
         </div>
       </div>
       <div className='flex flex-col w-full'>

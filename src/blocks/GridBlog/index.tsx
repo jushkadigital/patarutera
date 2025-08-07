@@ -39,7 +39,6 @@ export async function GridBlogs(props: Props) {
     console.log(queryStringCat)
   const pageNumber = page ? `&page=${page}` : ''
    const response = await fetch(`${BASEURL}/api/posts?limit=${limit}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[description]=true&${queryStringCat}`);
-   console.log(`${BASEURL}/api/posts?limit=${limit}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[description]=true&${queryStringCat}`)
     if (!response.ok) {
         // Consider logging the response status and text for more detailed error info
         // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);

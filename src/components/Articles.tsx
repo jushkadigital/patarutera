@@ -206,8 +206,6 @@ export function PeruTravelBlogPage({ articles }: PeruTravelBlogPageProps) {
           )}
         </section>
 
-        {/* Pagination Section */}
-        <Pagination />
       </div>
     </div>
   )

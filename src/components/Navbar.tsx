@@ -88,7 +88,7 @@ export const Navbar = ({destinations,isHome}:Props) => {
             {/* Sección 4: Enlace 2 */}
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
-              <Link href="/blogs" >
+              <Link href="/blog" >
                 Blog
               </Link>
                 </NavigationMenuLink>
