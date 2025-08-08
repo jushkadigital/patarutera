@@ -109,6 +109,7 @@ export interface Config {
     redesNegocio: RedesNegocio;
     touP: TouP;
     pacP: PacP;
+    blogP: BlogP;
   };
   globalsSelect: {
     reconocimientosCarousel: ReconocimientosCarouselSelect<false> | ReconocimientosCarouselSelect<true>;
@@ -117,6 +118,7 @@ export interface Config {
     redesNegocio: RedesNegocioSelect<false> | RedesNegocioSelect<true>;
     touP: TouPSelect<false> | TouPSelect<true>;
     pacP: PacPSelect<false> | PacPSelect<true>;
+    blogP: BlogPSelect<false> | BlogPSelect<true>;
   };
   locale: null;
   user: User & {
@@ -479,7 +481,21 @@ export interface Post {
   title: string;
   heroPost?: BannerBlock[] | null;
   featuredImage: number | Media;
-  description?: string | null;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   layout: (
     | ReconocimientosBlockType
     | SociosBlockType
@@ -2285,6 +2301,42 @@ export interface PacP {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogP".
+ */
+export interface BlogP {
+  id: number;
+  heroPageBlocks?: (BannerBlock | CarouselHeroPage)[] | null;
+  layout?:
+    | (
+        | DescrPriceBlock
+        | GuiaTourBlock
+        | GridToursBlock
+        | GridBlogsBlock
+        | PostRelationTourBlockType
+        | YouTubeLinksBlockType
+        | TextContentBlockType
+        | SociosBlockType
+        | ReconocimientosBlockType
+        | FormBitrixBlock
+        | RevistaBlock
+      )[]
+    | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  createdBy?: (number | null) | User;
+  publishedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reconocimientosCarousel_select".
  */
 export interface ReconocimientosCarouselSelect<T extends boolean = true> {
@@ -2445,6 +2497,46 @@ export interface PacPSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogP_select".
+ */
+export interface BlogPSelect<T extends boolean = true> {
+  heroPageBlocks?:
+    | T
+    | {
+        banner?: T | BannerBlockSelect<T>;
+        carouselHeroPage?: T | CarouselHeroPageSelect<T>;
+      };
+  layout?:
+    | T
+    | {
+        descrPrice?: T | DescrPriceBlockSelect<T>;
+        guiaTour?: T | GuiaTourBlockSelect<T>;
+        gridTours?: T | GridToursBlockSelect<T>;
+        gridBlogs?: T | GridBlogsBlockSelect<T>;
+        postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
+        youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
+        textContent?: T | TextContentBlockTypeSelect<T>;
+        socios?: T | SociosBlockTypeSelect<T>;
+        reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+        revistaBlock?: T | RevistaBlockSelect<T>;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  createdBy?: T;
+  publishedAt?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TaskSchedulePublish".
  */
 export interface TaskSchedulePublish {
@@ -2468,8 +2560,12 @@ export interface TaskSchedulePublish {
           relationTo: 'paquetes';
           value: number | Paquete;
         } | null);
-    global?: ('touP' | 'pacP') | null;
+    global?: ('touP' | 'pacP' | 'blogP') | null;
     user?: (number | null) | User;
   };
   output?: unknown;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "auth".
+ */

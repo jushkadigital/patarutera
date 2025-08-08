@@ -4,6 +4,8 @@ import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { BASEURL } from '@/lib/config';
 import { DestinosPage } from '@/specialPages/destinosPage';
 import { PaquetesPage } from '@/specialPages/paquetesPage';
+import {  generateMetaPage } from '@/utilities/generateMeta';
+import { Metadata, ResolvingMetadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
@@ -32,10 +34,7 @@ const slugsEspeciales = Object.keys(specialPageComponents); // Get special slugs
 
 export async function generateStaticParams() {
   const pagesRequest = await fetch(`${BASEURL}/api/pages?depth=3&limit=1000&draft=false&select[slug]=true`)
-  
   const pages = await pagesRequest.json()
-   console.log(pages)
-
   const params = pages.docs
     ?.filter((doc: any) => {
       return doc.slug !== 'home'
@@ -107,7 +106,14 @@ export default async function Page({ params: paramsPromise, searchParams: search
     );
   }
 }
+export async function generateMetadata({ params:paramsPromise }: Args,parent:ResolvingMetadata): Promise<Metadata> {
 
+  console.log('gaa')
+   const { slug ='home' } = await paramsPromise;
+   const page = await queryPageBySlug({slug});
+   return generateMetaPage({doc:page})
+   
+ } 
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
@@ -120,16 +126,5 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   // console.log(result);
   return result.docs?.[0] || null;
 });
-
 // Optional: Metadata for the page
-// export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
-//   const { slug } = params;
-//   const pageData = await getPageDataBySlug(slug);
-//   if (!pageData) {
-//     return { title: "Page Not Found" };
-//   }
-//   return {
-//     title: `${pageData.title || 'Page'} | Patarutera`,
-//     // description: pageData.seoDescription || defaultDescription,
-//   };
-// } 
+ 
