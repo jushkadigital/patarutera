@@ -30,6 +30,7 @@ export default async function RootLayout({
   const response = await fetch(`${BASEURL}/api/destinations?limit=100&depth=1&sort=createdAt`)
   const data = await response.json()
    const PIXEL_ID = process.env.NEXT_PUBLIC_PIXEL_ID;
+   console.log(PIXEL_ID)
 
   return (
     <html lang="es" className={cn(poppins.variable, "font-poppins")}>
