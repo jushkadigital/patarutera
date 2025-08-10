@@ -37,6 +37,7 @@ export default async function RootLayout({
    const PIXEL_ID = process.env.NEXT_PUBLIC_PIXEL_ID;
    assertIsDefined(PIXEL_ID)
 
+
   return (
     <html lang="es" className={cn(poppins.variable, "font-poppins")}>
       <head>
@@ -46,7 +47,7 @@ export default async function RootLayout({
       <body className="min-h-screen flex flex-col">
         <Script
           id="fb-pixel-script"
-          strategy="worker"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               !function(f,b,e,v,n,t,s)
