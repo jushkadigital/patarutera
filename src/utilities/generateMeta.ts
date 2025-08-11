@@ -11,7 +11,7 @@ export const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null
   let url = serverUrl + '/api/media/file/emptyimage-1200x630.png'
   if (image && typeof image === 'object' && 'url' in image) {
     const ogUrl = image.sizes?.og?.url
-    url = ogUrl ? serverUrl + ogUrl : serverUrl + image.url
+    url = ogUrl ? ogUrl : serverUrl + image.url
   }
   return url
 }
