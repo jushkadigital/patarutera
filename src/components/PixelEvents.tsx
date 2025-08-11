@@ -7,7 +7,8 @@ export default function PixelEvents() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-const PIXEL_ID = process.env.NEXT_PUBLIC_PIXEL_ID;
+//const PIXEL_ID = process.env.NEXT_PUBLIC_PIXEL_ID;
+   const PIXEL_ID = 971219730544055
 
   useEffect(() => {
     // Leemos la variable de entorno de forma segura en el cliente.
