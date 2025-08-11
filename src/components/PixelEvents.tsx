@@ -12,7 +12,7 @@ export default function PixelEvents() {
     // Leemos la variable de entorno de forma segura en el cliente.
     const PIXEL_ID = process.env.NEXT_PUBLIC_PIXEL_ID;
 
-    if (PIXEL_ID && typeof window.fbq === 'function'  ) {
+    if (PIXEL_ID && typeof window.fbq === 'function' ) {
       window.fbq('init', PIXEL_ID);
       // Disparamos el primer PageView justo después de inicializar.
     }
