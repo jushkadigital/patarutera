@@ -11,8 +11,8 @@ const PIXEL_ID = process.env.NEXT_PUBLIC_PIXEL_ID;
 
   useEffect(() => {
     // Leemos la variable de entorno de forma segura en el cliente.
-
     if (PIXEL_ID && typeof window.fbq === 'function' ) {
+        console.log(PIXEL_ID)
       window.fbq('init', PIXEL_ID);
       // Disparamos el primer PageView justo después de inicializar.
     }
