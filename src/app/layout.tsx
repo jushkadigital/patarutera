@@ -35,9 +35,6 @@ export default async function RootLayout({
   const response = await fetch(`${BASEURL}/api/destinations?limit=100&depth=1&sort=createdAt`)
   const data = await response.json()
    //const PIXEL_ID = process.env.NEXT_PUBLIC_PIXEL_ID;
-   const PIXEL_ID = 971219730544055
-   
-   assertIsDefined(PIXEL_ID)
 
 
   return (
@@ -60,7 +57,6 @@ export default async function RootLayout({
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '${PIXEL_ID}');
             `,
           }}
         />
