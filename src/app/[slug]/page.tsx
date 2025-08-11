@@ -120,7 +120,6 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   console.log(slug)
   console.log(draft,'draftQuery')
   const data = await fetch(`${BASEURL}/api/pages?limit=1&where[slug][equals]=${slug}&depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
-
   const result = await data.json();
   // console.log('queryBY');
   // console.log(result);

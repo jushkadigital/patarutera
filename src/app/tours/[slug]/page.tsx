@@ -1,9 +1,13 @@
 import { RenderBlocks } from '@/blocks/renderBlocks';
 import { RenderHero } from '@/blocks/renderTourHero';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
+import { TourSchema } from '@/components/Schema';
 import { BASEURL } from '@/lib/config';
+import { generateMetaPage } from '@/utilities/generateMeta';
+import { Metadata, ResolvingMetadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
+import Script from 'next/script';
 import { cache } from 'react';
 
 export async function generateStaticParams() {
@@ -45,7 +49,14 @@ export default async function TourPage({ params: paramsPromise, searchParams: se
 
   const { layout, heroTour ,title} = tour; // Assuming tours have layout and heroPageBlocks
 
+  const schema = TourSchema(tour)
+
+
   return (
+    <>
+    <Script type={'application/ld+json'} strategy={'lazyOnload'}>
+    {JSON.stringify(schema)}
+    </Script>
     <div className="">
       {draft && <LivePreviewListener />}
       <div className="flex flex-col-reverse md:flex-col mt-10 md:mt-0">
@@ -57,6 +68,7 @@ export default async function TourPage({ params: paramsPromise, searchParams: se
       </div>
       
     </div>
+    </>
   );
 }
 
@@ -67,6 +79,15 @@ const queryTourBySlug = cache(async ({ slug }: { slug: string }) => {
   const result = await data.json();
   return result.docs?.[0] || null;
 });
+export async function generateMetadata({ params:paramsPromise }: Args,parent:ResolvingMetadata): Promise<Metadata> {
+
+  console.log('gaa')
+   const { slug ='home' } = await paramsPromise;
+   const page = await queryTourBySlug({slug});
+   return generateMetaPage({doc:page})
+   
+}
+
 
 // Optional: Metadata for the tour page
 // import { Metadata } from 'next'; // Uncomment if using metadata
