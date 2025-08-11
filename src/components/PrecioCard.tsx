@@ -65,6 +65,9 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
     try {
       // Simulamos una llamada a una API para enviar el correo o guardar en la BD.
 
+    if (typeof window.fbq === 'function' ) {
+      window.fbq('track', 'Lead');
+    }
       const cleanedNumber = phoneNumber.replace(/[^0-9]/g, '')
       const finalMessage =  `Hola soy ${data.nombre} estoy interesado en ${origen}:${title} somos ${data.numberPasajeros} pasajeros , mensaje adicional: ${data.mensaje}`
       // En el objeto enviado, incluimos el 'origen' que viene de las props.
