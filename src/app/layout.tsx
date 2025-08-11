@@ -9,7 +9,8 @@ import Footer from "@/components/Footer";
 import Script from "next/script";
 import { Suspense } from 'react';
 import PixelEvents from "@/components/PixelEvents";
-
+import { GoogleTagManager } from '@next/third-parties/google'
+      
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -44,6 +45,7 @@ export default async function RootLayout({
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
+        <GoogleTagManager gtmId="G-6XPFF81QJW" />
       <body className="min-h-screen flex flex-col">
         <Script
           id="fb-pixel-script"
