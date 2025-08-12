@@ -91,9 +91,8 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
 
 
 
-function formatMoney(amount: number, currency: string = "USD", locale: string = "en-US"): string {
+function formatMoney(amount: number, currency: string = "PEN", locale: string = "en-US"): string {
   return amount.toLocaleString(locale, {
-    style: "currency",
     currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
@@ -111,7 +110,7 @@ function formatMoney(amount: number, currency: string = "USD", locale: string = 
             <Dialog open={open} onOpenChange={setOpen}>
               <div className={`w-full px-10 bg-[#FFF] ${open ?'hidden' : ''}  border-gray-300 border-t-[0.5px] h-24 flex flex-row justify-center items-center`}>
               <div className="w-2/3">
-                <div className="text-gray-600"> De: <span className="text-[#25D366] ">{formatMoney(price)} </span></div>
+                <div className="text-gray-600"> De: <span className="text-[#25D366] ">S/.{formatMoney(price)} </span></div>
                 <div>{title}</div>
 
               </div>
@@ -245,7 +244,7 @@ function formatMoney(amount: number, currency: string = "USD", locale: string = 
             <div className="text-center mt-7 lg:mt-3">
               <p className="text-[#2970b7] text-lg lg:text-[clamp(9.5px,0.9vw,17.9px)] mb-2">{prevText}</p>
               <div className="flex items-baseline justify-center gap-2">
-                <span className="text-[#2970b7] text-5xl lg:text-[clamp(21.8px,2.1vw,40.96px)] font-bold">S/. {price}</span>
+                <span className="text-[#2970b7] text-5xl lg:text-[clamp(21.8px,2.1vw,40.96px)] font-bold">S/.{formatMoney(price)}</span>
                 <span className="text-[#a0a0a0] text-lg lg:text-[clamp(7px,0.7vw,14px)]">/ {nextText}</span>
               </div>
               <div className="w-full h-1 bg-[#efba06] mt-4 rounded-full"></div>

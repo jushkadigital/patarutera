@@ -19,7 +19,7 @@ export const TourSchema = (props:Tour)=>{
         },
         'offers':{
             "@type": 'Offer',
-            "priceCurrency": "USD",
+            "priceCurrency": "PEN",
             "price": props.priceGeneral,
             "availability": "https://schema.org/InStock",
             "url": `${getClientSideURL()}/tours/${props.slug}`

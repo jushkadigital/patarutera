@@ -33,11 +33,11 @@ const ArticleCardTop = ({ article }:ArticleTopProps) => {
         {article.description && (
           <CardContent className="pt-0">
             <CardDescription className="text-sm text-[#000000] leading-relaxed">
-              <RichText data={article.description}/>
+              <RichText data={article.description} className="custom-prose-lg"/>
             </CardDescription>
 
       <Link href={`/blog/${article.slug}`} className="block">
-            <Button variant='ghost' className="cursor-pointer">Ver mas</Button>
+            <Button variant='ghost' className="cursor-pointer text-[#2970B7]">Ver mas</Button>
       </Link>
           </CardContent>
         )}
@@ -80,10 +80,13 @@ const ArticleEntry: React.FC<ArticleEntryProps> = ({
       </Link>
       <CardContent className={`${textContainerClass} flex flex-col justify-center p-6`}>
         <CardHeader className="p-0 pb-3 sm:pb-4">
-          <CardTitle className={`${titleSizeClass} font-semibold text-[#2970b7] hover:text-blue-700 transition-colors`}>
+          <CardTitle className={`${titleSizeClass} font-semibold text-[#2970b7] hover:text-blue-700 transition-colors leading-tight  multi-line-truncate multi-line-truncate-2`}>
             <Link href={`/blog/${article.slug}`}>{article.title}</Link>
           </CardTitle>
         </CardHeader>
+        <CardDescription className="text-sm text-[#000000] leading-relaxed">
+              <RichText data={article.description} className="custom-prose-lg !my-1"/>
+            </CardDescription>
         <Link href={`/blog/${article.slug}`} className="block">
             <Button variant='ghost' className="cursor-pointer">Ver mas</Button>
       </Link>
@@ -92,28 +95,6 @@ const ArticleEntry: React.FC<ArticleEntryProps> = ({
   )
 }
 
-const Pagination: React.FC = () => {
-  const pages = [1, 2, 3, 4, 5]
-  const currentPage = 1
-
-  return (
-    <nav className="flex justify-center items-center space-x-2 sm:space-x-3 my-12">
-      {pages.map((page) => (
-        <Button
-          key={page}
-          variant={currentPage === page ? "default" : "outline"}
-          size="icon"
-          className={`
-            ${currentPage === page ? "bg-[#ffffff] text-[#000000] hover:bg-[#efefef]" : "bg-transparent text-[#ffffff] border-[#a7a7a7] hover:bg-[#2970b7] hover:border-[#2970b7] hover:text-white"}
-            rounded-md w-8 h-8 sm:w-10 sm:h-10 text-sm sm:text-base
-          `}
-        >
-          {page}
-        </Button>
-      ))}
-    </nav>
-  )
-}
 
 // Sample data for 10 articles
 
@@ -126,10 +107,9 @@ export function PeruTravelBlogPage({ articles }: PeruTravelBlogPageProps) {
   // Slice the articles for different sections
   const topArticles = articles.slice(0, 3)
   const article4 = articles[3] // Artículo individual grande
-  const article5 = articles[4] // Artículo grande izquierda
-  const articles6_7 = articles.slice(5, 7) // 2 artículos pequeños derecha
-  const article8 = articles[7] // Artículo grande derecha
-  const articles9_10 = articles.slice(8, 10) // 2 artículos pequeños izquierda
+  const articles5_6 = articles.slice(4, 6) // 2 artículos pequeños derecha
+  const article7 = articles[6] // Artículo grande derecha
+  const articles8_9 = articles.slice(7, 9) // 2 artículos pequeños izquierda
 
   return (
     <div className=" py-8 sm:py-12">
@@ -147,23 +127,22 @@ export function PeruTravelBlogPage({ articles }: PeruTravelBlogPageProps) {
 
         {/* Content Entries Section */}
         <section>
-          {article4 && <ArticleEntry article={article4} imagePosition="left" size="large" />}
 
-          {(article5 || articles6_7.length > 0) && (
+          {(article4 || articles5_6.length > 0) && (
             <div className="flex flex-col lg:flex-row lg:space-x-8 my-8">
-              {article5 && (
+              {article4 && (
                 <div className="lg:w-1/2 mt-8 lg:mt-0">
                   <ArticleEntry
-                    article={article5}
+                    article={article4}
                     imagePosition="left"
                     size="large"
                     className="my-0 h-full flex flex-col"
                   />
                 </div>
               )}
-              {articles6_7.length > 0 && (
+              {articles5_6.length > 0 && (
                 <div className="lg:w-1/2 flex flex-col space-y-8">
-                  {articles6_7.map((article) => (
+                  {articles5_6.map((article) => (
                     <ArticleEntry
                       key={article.id}
                       article={article}
@@ -177,11 +156,11 @@ export function PeruTravelBlogPage({ articles }: PeruTravelBlogPageProps) {
             </div>
           )}
 
-          {(article8 || articles9_10.length > 0) && (
-            <div className="flex flex-col lg:flex-row-reverse lg:space-x-reverse lg:space-x-8 my-8">
-              {articles9_10.length > 0 && (
+          {(article7 || articles8_9.length > 0) && (
+            <div className="flex flex-col lg:flex-row lg:space-x-reverse lg:space-x-8 my-8">
+              {articles8_9.length > 0 && (
                 <div className="lg:w-1/2 flex flex-col space-y-8">
-                  {articles9_10.map((article) => (
+                  {articles8_9.map((article) => (
                     <ArticleEntry
                       key={article.id}
                       article={article}
@@ -192,11 +171,11 @@ export function PeruTravelBlogPage({ articles }: PeruTravelBlogPageProps) {
                   ))}
                 </div>
               )}
-              {article8 && (
+              {article7 && (
                 <div className="lg:w-1/2 mt-8 lg:mt-0">
                   <ArticleEntry
-                    article={article8}
-                    imagePosition="right"
+                    article={article7}
+                    imagePosition="left"
                     size="large"
                     className="my-0 h-full flex flex-col"
                   />
