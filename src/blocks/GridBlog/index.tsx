@@ -1,5 +1,6 @@
 import type { BlogCategory, Destination, GridBlogsBlock, GridToursBlock as GridToursBlockType, Tour, TourCategory } from '@/cms-types';
 import { PeruTravelBlogPage } from '@/components/Articles';
+import { BlogsComponent } from '@/components/BlogsComponent';
 import CardTour, { CardTourData } from '@/components/CardTour';
 import { Pagination } from '@/components/Pagination';
 import { Subtitle } from '@/components/Subtitle';
@@ -78,7 +79,7 @@ export async function GridBlogs(props: Props) {
       {generalStyle == "masonry" ? 
       <PeruTravelBlogPage articles={posts}/>
       :
-      <div></div>
+      <BlogsComponent mode={mode!} posts={posts}/>
       }
       {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!} type={'posts'}/>)}
     </div>

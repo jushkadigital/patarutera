@@ -4,12 +4,13 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import Link from "next/link"
-import { Destination, Media, Paquete, Tour } from "@/cms-types";
+import { Destination, Media, Paquete, Post, Tour } from "@/cms-types";
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import RichText from "./RichText"
 
 export type CardTourData = Pick<Tour, 'id' | 'title'| 'miniDescription' | 'featuredImage' | 'Desde' | 'price' | 'Person desc' | 'iconMaxPassengers' | 'maxPassengers' |'iconDifficulty' | 'difficulty' | 'slug' | 'destinos'>
+
 
 interface CardTourProps {
   unitData: CardTourData

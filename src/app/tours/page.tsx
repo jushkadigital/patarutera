@@ -24,6 +24,7 @@ import { YouTubeLinksBlock } from '@/blocks/YoutubeLinksBlock'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { GridBlogs } from '@/blocks/GridBlog'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -40,6 +41,7 @@ const blockComponents = {
   estadisticas:EstadisticasBlock,
   gridImages: null,
   youTubeLinks: YouTubeLinksBlock,
+  gridBlogs: GridBlogs
 }
 
 
