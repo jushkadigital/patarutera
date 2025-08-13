@@ -1,3 +1,4 @@
+'use client'
 import type React from "react"
 import Link from "next/link"
 import Image from "next/image"
@@ -5,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Media, Post } from "@/cms-types"
 import RichText from "./RichText"
+import { useMobile } from "@/hooks/useMobile"
 
 
 export type CardPostData = Pick<Post, 'id' | 'title'| 'description' | 'featuredImage' |  'slug' >
@@ -17,7 +19,7 @@ const ArticleCardTop = ({ article }:ArticleTopProps) => {
   return (
     <Card className="bg-[#ffffff] rounded-xl shadow-lg overflow-hidden flex flex-col group hover:shadow-xl transition-shadow duration-300 py-0">
       <Link href={`/blog/${article.slug}`} className="block">
-        <div className="relative w-full h-48 sm:h-56 overflow-hidden">
+        <div className="relative w-full h-80 lg:h-[clamp(0px,18vw,345px)] overflow-hidden">
           <Image
             src={(article.featuredImage as Media).url!}
             alt={(article.featuredImage as Media).alt!}
@@ -26,7 +28,7 @@ const ArticleCardTop = ({ article }:ArticleTopProps) => {
           />
         </div>
         <CardHeader className="py-2">
-          <CardTitle className="text-md sm:text-lg lg:text-[clamp(12.24px,1.3vw,25.6px)] font-semibold text-[#2970b7] group-hover:text-blue-700 transition-colors">
+          <CardTitle className="text-xl sm:text-2xl lg:text-[clamp(12.24px,1.3vw,25.6px)] font-semibold text-[#2970b7] group-hover:text-blue-700 transition-colors">
             {article.title}
           </CardTitle>
         </CardHeader>
@@ -59,16 +61,23 @@ const ArticleEntry: React.FC<ArticleEntryProps> = ({
   size = "large",
   className = "",
 }) => {
-  const imageSizeClass = size === "large" ? "w-full md:w-1/2 h-64 md:h-auto" : "w-full sm:w-1/3 h-40 sm:h-auto"
-  const textContainerClass = size === "large" ? "md:w-1/2" : "sm:w-2/3"
+  
+  const isMobile = useMobile()
+
+  if (isMobile){
+    size = 'large'
+  }
+
+  const imageSizeClass = size === "large" ? "w-full md:w-1/2 h-80 lg:h-[clamp(320px,31.33vw,601px)]" : "w-full sm:w-1/3 h-40 lg:h-[clamp(153.6px,15vw,288px)]"
+  const textContainerClass = size === "large" ? "w-full md:w-1/2" : "w-full sm:w-2/3"
   const flexDirection = imagePosition === "left" ? "flex-col md:flex-row" : "flex-col md:flex-row-reverse"
-  const titleSizeClass = size === "large" ? "text-2xl sm:text-3xl lg:text-[clamp(12.24px,1.3vw,25.6px)]" : "text-xl sm:text-xl lg:text-[clamp(10.24px,1vw,19.2px)]"
+  const titleSizeClass = size === "large" ? "text-xl sm:text-2xl lg:text-[clamp(12.24px,1.3vw,25.6px)]" : "text-xl sm:text-xl lg:text-[clamp(10.24px,1vw,19.2px)]"
 
   return (
     <Card className={`bg-transparent border-none shadow-none flex ${flexDirection} items-center my-8 ${className} py-0`}>
       <Link
         href={`/blog/${article.slug}`}
-        className={`relative block group ${imageSizeClass} ${size === "large" ? "min-h-[300px] md:min-h-[400px]" : "min-h-[200px]"} rounded-xl overflow-hidden`}
+        className={`relative block group ${imageSizeClass}  rounded-xl overflow-hidden`}
       >
         <Image
           src={(article.featuredImage as Media).url!}
