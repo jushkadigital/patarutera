@@ -152,7 +152,7 @@ export default async function Page(props:Props) {
 const queryPageBySlug = cache(async () => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
   console.log(draft,'draftQuery')
-  const data = await fetch(`${BASEURL}/api/globals/touP?depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
+  const data = await fetch(`${BASEURL}/api/globals/touP?depth=3&draft=${draft}`); // Added depth=2 for potentially richer layout data
   const result = await data.json();
   console.log(result)
   // console.log('queryBY');

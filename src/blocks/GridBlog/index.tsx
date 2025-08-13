@@ -1,4 +1,4 @@
-import type { BlogCategory, Destination, GridBlogsBlock, GridToursBlock as GridToursBlockType, Tour, TourCategory } from '@/cms-types';
+import type { BlogCategory, Destination, GridBlogsBlock, GridToursBlock as GridToursBlockType, Media, Post, Tour, TourCategory } from '@/cms-types';
 import { PeruTravelBlogPage } from '@/components/Articles';
 import { BlogsComponent } from '@/components/BlogsComponent';
 import CardTour, { CardTourData } from '@/components/CardTour';
@@ -20,15 +20,16 @@ interface Props extends GridBlogsBlock {
 
 export async function GridBlogs(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
-  const { id, limit,generalStyle, gridStyle:mode ,categories,page,blockTitle,overrideDefaults,searchParams} = props;
+  const { id, limit,generalStyle, gridStyle:mode ,categories,page,blockTitle,overrideDefaults,searchParams,populateBy,selectedDocs} = props;
 
 
 
   console.log(mode)
-  let posts = [];
+  let posts:any[] = [];
   let data
   let fetchError = null;
   
+  if(populateBy === 'collection'){
   const paramsCat = new URLSearchParams()
   console.log(categories)
   if((categories as BlogCategory[]).length > 0){
@@ -56,6 +57,13 @@ export async function GridBlogs(props: Props) {
     // Podrías también lanzar el error para que un ErrorBoundary superior lo capture si es necesario
     // throw error;
   }
+  }else{
+
+    posts = selectedDocs ? selectedDocs!.map((ele)=>(
+      {title : (ele.value as Post).title,featuredImage: ((ele.value as Post).featuredImage as Media),description: (ele.value as Post).description,slug: (ele.value as Post).slug!}))
+      : []
+  }
+  
 
   const mode2= false
   // Clases condicionales basadas en la prop 'mode'
