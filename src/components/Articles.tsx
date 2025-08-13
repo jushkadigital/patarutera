@@ -26,7 +26,7 @@ const ArticleCardTop = ({ article }:ArticleTopProps) => {
           />
         </div>
         <CardHeader className="py-2">
-          <CardTitle className="text-xl sm:text-2xl font-semibold text-[#2970b7] group-hover:text-blue-700 transition-colors">
+          <CardTitle className="text-md sm:text-lg lg:text-[clamp(12.24px,1.3vw,25.6px)] font-semibold text-[#2970b7] group-hover:text-blue-700 transition-colors">
             {article.title}
           </CardTitle>
         </CardHeader>
@@ -62,7 +62,7 @@ const ArticleEntry: React.FC<ArticleEntryProps> = ({
   const imageSizeClass = size === "large" ? "w-full md:w-1/2 h-64 md:h-auto" : "w-full sm:w-1/3 h-40 sm:h-auto"
   const textContainerClass = size === "large" ? "md:w-1/2" : "sm:w-2/3"
   const flexDirection = imagePosition === "left" ? "flex-col md:flex-row" : "flex-col md:flex-row-reverse"
-  const titleSizeClass = size === "large" ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"
+  const titleSizeClass = size === "large" ? "text-2xl sm:text-3xl lg:text-[clamp(12.24px,1.3vw,25.6px)]" : "text-xl sm:text-xl lg:text-[clamp(10.24px,1vw,19.2px)]"
 
   return (
     <Card className={`bg-transparent border-none shadow-none flex ${flexDirection} items-center my-8 ${className} py-0`}>
@@ -117,7 +117,7 @@ export function PeruTravelBlogPage({ articles }: PeruTravelBlogPageProps) {
         {/* Top Articles Section */}
         {topArticles.length > 0 && (
           <section className="mb-12 sm:mb-16">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 lg:gap-8">
               {topArticles.map((article) => (
                 <ArticleCardTop key={article.id} article={article} />
               ))}
@@ -141,7 +141,7 @@ export function PeruTravelBlogPage({ articles }: PeruTravelBlogPageProps) {
                 </div>
               )}
               {articles5_6.length > 0 && (
-                <div className="lg:w-1/2 flex flex-col space-y-8">
+                <div className="lg:w-1/2 flex flex-col space-y-8 mt-8">
                   {articles5_6.map((article) => (
                     <ArticleEntry
                       key={article.id}
