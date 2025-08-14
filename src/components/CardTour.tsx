@@ -139,7 +139,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
   } else {
     // mode === 'list' - Responsive: vertical on mobile, horizontal on larger screens
     return (
-      <Card className="overflow-hidden shadow-lg w-full rounded-3xl flex flex-row py-0 md:h-[clamp(191px,25.66vw,558px)] lg:h-[clamp(191px,18.66vw,358px)]  group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
+      <Card className="overflow-hidden gap-1! shadow-lg w-full rounded-3xl flex flex-row py-0 md:h-[clamp(191px,25.66vw,558px)] lg:h-[clamp(191px,18.66vw,358px)]  group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         {/* Section 1: Image */}
         
           <Link href={`/tours/${unitData.slug}`} className="w-1/3">

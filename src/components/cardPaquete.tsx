@@ -269,7 +269,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
 
   if (mode === "grid") {
     return (
-      <Card className="w-full max-w-[435px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[clamp(0px,166vw,1341.2px)] sm:h-[clamp(190.44px,74vw,883.2px)] lg:h-[clamp(190.44px,46vw,883.2px)] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
+      <Card className="w-full max-w-[435px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-1! h-[clamp(0px,166vw,1341.2px)] sm:h-[clamp(190.44px,74vw,883.2px)] lg:h-[clamp(190.44px,46vw,883.2px)] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         <Link href={`/paquetes/${unitData.slug}`} className="h-[63%]">
         <div className="relative h-full w-full overflow-hidden">
           <div className="absolute top-2 left-2 sm:top-4 md:top-3 lg:top-1 sm:left-4 z-10 w-fit">
@@ -378,7 +378,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
   } else {
     // mode === 'list'
     return (
-      <Card className="overflow-hidden shadow-lg w-full rounded-3xl flex flex-row py-0 md:h-[clamp(191px,25.66vw,558px)] lg:h-[clamp(191px,18.66vw,358px)]  group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
+      <Card className="overflow-hidden shadow-lg w-full rounded-3xl gap-1! flex flex-row py-0 md:h-[clamp(191px,25.66vw,558px)] lg:h-[clamp(191px,18.66vw,358px)]  group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         {/* Section 1: Image */}
         
           <Link href={`/paquetes/${unitData.slug}`} className="w-1/3">

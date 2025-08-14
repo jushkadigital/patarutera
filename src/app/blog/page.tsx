@@ -123,7 +123,7 @@ const categoriesData = await categoriesRequest.json()
 
             if (Block) {
               return (
-                <div className={!NoPadding.includes(blockType) ? 'w-full px-36 ' :'w-full'} key={index}>
+                <div className={!NoPadding.includes(blockType) ? 'w-full px-[clamp(25px,6.6vw,155px)] lg:px-[clamp(136px,13.33vw,256px)]' :'w-full'} key={index}>
                   <Block {...block} disableInnerContainer />
                 </div>
               )
