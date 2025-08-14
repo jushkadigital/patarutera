@@ -62,6 +62,7 @@ export async function GridBlogs(props: Props) {
     posts = selectedDocs ? selectedDocs!.map((ele)=>(
       {title : (ele.value as Post).title,featuredImage: ((ele.value as Post).featuredImage as Media),description: (ele.value as Post).description,slug: (ele.value as Post).slug!}))
       : []
+
   }
   
 
