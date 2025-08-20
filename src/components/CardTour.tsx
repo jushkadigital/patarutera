@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
 import Link from "next/link"
 import { Destination, Media, Paquete, Post, Tour } from "@/cms-types";
 import { Button } from "@/components/ui/button"
@@ -40,8 +40,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
             </Badge>
           </div>
           <Image
-            alt={unitData.title || "Imagen del Tour"}
-            src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
+            media={(unitData.featuredImage as Media)}
             fill
             className=" object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
           />
@@ -85,10 +84,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
                   <TooltipTrigger asChild>
                     <div className="flex flex-col items-center">
                       <Image
-                        src={(unitData.iconMaxPassengers as Media).url! || "/placeholder.svg"}
-                        alt="Max Passengers"
-                        width={0}
-                        height={0}
+                        media={(unitData.iconMaxPassengers as Media)}
                       className="w-[clamp(0px,4.33vw,44.2px)] sm:w-[clamp(0px,2.33vw,44.2px)] lg:w-[clamp(4.9px,1.2vw,23px)] h-auto"
                       />
                       <span className="text-[#6a6a6a] text-[clamp(0px,2.65vw,27.20px)] sm:text-[clamp(0px,1.15vw,27.20px)] lg:text-[clamp(3.03px,0.7vw,14.08px)] mt-1">Hasta {unitData.maxPassengers}</span>
@@ -105,10 +101,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
                   <TooltipTrigger asChild>
                     <div className="flex flex-col items-center">
                       <Image
-                        src={(unitData.iconDifficulty as Media).url! || "/placeholder.svg"}
-                        alt="Difficulty"
-                        width={0}
-                        height={0}
+                        media={(unitData.iconDifficulty as Media)}
                       className="w-[clamp(0px,4.33vw,44.2px)] sm:w-[clamp(0px,2.33vw,44.2px)] lg:w-[clamp(4.9px,1.2vw,23px)] h-auto"
                         
                       />
@@ -154,8 +147,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           </div>
 
           <Image
-            alt={unitData.title || "Imagen del Tour"}
-            src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
+            media={(unitData.featuredImage as Media)}
             fill
             className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
           />
@@ -198,10 +190,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
                   <TooltipTrigger asChild>
                     <div className="flex flex-col items-center">
                       <Image
-                        src={(unitData.iconMaxPassengers as Media).url! || "/placeholder.svg"}
-                        alt="Max Passengers"
-                        width={16}
-                        height={13}
+                        media={(unitData.iconMaxPassengers as Media)}
                         className="w-[clamp(0px,4.33vw,44.2px)] sm:w-[clamp(0px,2.33vw,44.2px)] lg:w-[clamp(4.9px,1.2vw,23px)] h-auto"
                       />
                       <span className="text-[#6a6a6a] text-[clamp(0px,2.65vw,27.20px)] sm:text-[clamp(0px,1.15vw,27.20px)] lg:text-[clamp(3.03px,0.7vw,14.08px)] ">Hasta {unitData.maxPassengers}</span>
@@ -218,10 +207,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
                   <TooltipTrigger asChild>
                     <div className="flex flex-col items-center">
                       <Image
-                        src={(unitData.iconDifficulty as Media).url! || "/placeholder.svg"}
-                        alt="Difficulty"
-                        width={16}
-                        height={13}
+                        media={(unitData.iconDifficulty as Media)}
                         className="w-[clamp(0px,4.33vw,44.2px)] sm:w-[clamp(0px,2.33vw,44.2px)] lg:w-[clamp(4.9px,1.2vw,23px)] h-auto"
                       />
                       <span className="text-[#6a6a6a] text-[clamp(0px,2.65vw,27.20px)] sm:text-[clamp(0px,1.15vw,27.20px)] lg:text-[clamp(3.03px,0.7vw,14.08px)] mt-1">{trad[unitData.difficulty]} </span>

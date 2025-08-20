@@ -1,251 +1,8 @@
-
-// "use client"
-
-// import { Card, CardContent, CardFooter } from "@/components/ui/card"
-// import { Badge } from "@/components/ui/badge"
-// import Image from "next/image"
-// import Link from "next/link"
-// import { Destination, Media, Paquete, Tour } from "@/cms-types";
-// import { Button } from "@/components/ui/button"
-// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-// import RichText from "./RichText"
-
-// export type CardPaqueteData = Pick<Paquete, 'id' | 'title'| 'miniDescription' | 'featuredImage' | 'Desde' | 'price' | 'Person desc' | 'iconMaxPassengers' | 'maxPassengers' |'iconDifficulty' | 'difficulty' | 'slug' | 'destinos'>
-// interface CardPaqueteProps {
-//   unitData: CardPaqueteData;
-//   mode?: 'grid' | 'list';
-// }
-// const trad = {
-//   easy: 'Facil',
-//   medium: 'Intermedio',
-//   hard: 'Dificil'
-// }
-
-// export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
-//   console.log("render card")
-
-//   if (mode === "grid") {
-//     return (
-//       <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[680px] sm:h-[650px] md:h-[680px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
-//         <Link href={`/paquetes/${unitData.slug}`} className="">
-//         <div className="relative overflow-hidden">
-//           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
-//             <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
-//               <span className="text-[#79368c] font-bold uppercase text-xs sm:text-sm">
-//             {unitData.destinos && (unitData.destinos as Destination[]).map(ele=>ele.name).join(", ")}
-//               </span>
-//             </Badge>
-//           </div>
-//           <Image
-//             alt={unitData.title || "Imagen del Tour"}
-//             src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
-//             width={400}
-//             height={430}
-//             className="w-full h-[350px] sm:h-[400px] md:h-[430px] object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
-//           />
-//           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 " />
-
-//             {/* Efecto de brillo que se mueve */}
-//             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
-//         </div>
-//         </Link>
-
-//         {/* Content section */}
-//         <CardContent className="px-4 sm:px-6">
-//           {/* title */}
-//         <Link href={`/paquetes/${unitData.slug}`} className="">
-//         <div className="flex justify-center items-center min-h-15">
-//             <h2 className="text-[#2970b7] text-2xl sm:text-2xl font-bold text-center leading-tight  multi-line-truncate multi-line-truncate-2">
-//             {unitData.title}
-//           </h2>
-//         </div>
-          
-//           </Link>
-//           {/* miniDescription */}
-//           <div className="text-[#6a6a6a] text-xs sm:text-[12px] mb-3 text-center sm:text-left">
-//             <RichText data={unitData.miniDescription} enableGutter={false} className="max-h-36 truncate"/>
-//           </div>
-
-//           <div className="flex flex-col sm:flex-row sm:flex-wrap justify-between items-center sm:items-end mb-0 px-2 sm:px-10 gap-4 sm:gap-0">
-//             <div className="text-center sm:text-left">
-//               {/* desde */}
-//               <p className="text-[#6a6a6a] text-xs sm:text-[13px] mb-1">{unitData.Desde}</p>
-//               <div className="flex items-baseline justify-center sm:justify-start">
-//                 {/* price */}
-//                 <span className="text-[#2970b7] text-2xl sm:text-3xl font-bold">S/. {unitData.price}</span>
-//               </div>
-//               {/* Person desc */}
-//               <p className="text-[#6a6a6a] text-xs sm:text-[11px]">{unitData["Person desc"]}</p>
-//             </div>
-
-//             <div className="flex flex-row sm:flex-col items-center justify-center gap-4 sm:gap-2 h-full">
-//               <TooltipProvider>
-//                 <Tooltip>
-//                   <TooltipTrigger asChild>
-//                     <div className="flex flex-col items-center">
-//                       <Image
-//                         src={(unitData.iconMaxPassengers as Media).url! || "/placeholder.svg"}
-//                         alt="Max Passengers"
-//                         width={16}
-//                         height={13}
-//                         className="sm:w-[18px] sm:h-[15px]"
-//                       />
-//                       <span className="text-[#6a6a6a] text-xs sm:text-[11px] mt-1">Hasta {unitData.maxPassengers}</span>
-//                     </div>
-//                   </TooltipTrigger>
-//                   <TooltipContent>
-//                     <p>Capacidad máxima de {unitData.maxPassengers} personas</p>
-//                   </TooltipContent>
-//                 </Tooltip>
-//               </TooltipProvider>
-
-//               <TooltipProvider>
-//                 <Tooltip>
-//                   <TooltipTrigger asChild>
-//                     <div className="flex flex-col items-center">
-//                       <Image
-//                         src={(unitData.iconDifficulty as Media).url! || "/placeholder.svg"}
-//                         alt="Difficulty"
-//                         width={16}
-//                         height={13}
-//                         className="sm:w-[18px] sm:h-[15px]"
-//                       />
-//                       <span className="text-[#6a6a6a] text-xs sm:text-[11px] mt-1">{trad[unitData.difficulty]}</span>
-//                     </div>
-//                   </TooltipTrigger>
-//                   <TooltipContent>
-//                     <p>Nivel de dificultad {unitData.difficulty}</p>
-//                   </TooltipContent>
-//                 </Tooltip>
-//               </TooltipProvider>
-//             </div>
-//           </div>
-//         </CardContent>
-
-//         <CardFooter className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
-//           <Link href={`/paquetes/${unitData.slug}`} className="w-full flex justify-center">
-//             <Button className="w-fit bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold px-6 py-3 sm:px-3 sm:py-3 text-sm sm:text-[16px] rounded-full">
-//               Ver Detalles
-//             </Button>
-//           </Link>
-//         </CardFooter>
-//       </Card>
-//     )
-//   } else {
-//     // mode === 'list' - Responsive: vertical on mobile, horizontal on larger screens
-//     return (
-//       <Card className="overflow-hidden shadow-lg w-full rounded-3xl flex flex-col md:flex-row py-0 md:max-h-[300px] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
-//         {/* Section 1: Image */}
-        
-//         <div className="w-full md:w-1/3 relative h-[350px]  overflow-hidden">
-//           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
-//             <Badge variant="outline" className="bg-white px-3 py-1 sm:px-6 sm:py-2 rounded-full border-0">
-//               <span className="text-[#79368c] font-bold uppercase text-xs sm:text-sm">
-//             {unitData.destinos && (unitData.destinos as Destination[]).map(ele=>ele.name).join(", ")}
-//               </span>
-//             </Badge>
-//           </div>
-          
-          
-//         <Link href={`/paquetes/${unitData.slug}`} className="">
-//           <Image
-//             alt={unitData.title || "Imagen del Tour"}
-//             src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
-//             width={300}
-//             height={350}
-//             className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
-//           />
-//           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-
-//             {/* Efecto de brillo que se mueve */}
-//             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
-//             </Link>
-//         </div>
-//         {/* Section 2: Title and Description */}
-//         <div className="w-full md:w-1/3 p-4 sm:p-6 flex flex-col justify-center gap-y-3 md:border-r border-gray-100">
-        
-//         <Link href={`/paquetes/${unitData.slug}`} className="">
-//         <div className="flex justify-center items-center min-h-15">
-//             <h2 className="text-[#2970b7] text-2xl sm:text-2xl font-bold text-center leading-tight  multi-line-truncate multi-line-truncate-2">
-//             {unitData.title}
-//           </h2>
-//           </div>
-//           </Link>
-//           <div className="text-[#6a6a6a] text-center md:text-left ">
-//             <RichText data={unitData.miniDescription} enableGutter={false} className="min-h-13 !my-2 !text-[0.8rem]"/>
-//           </div>
-//         </div>
-
-//         {/* Section 3: Price, Icons and Button */}
-//         <div className="w-full md:w-1/3 p-4 sm:p-6 flex flex-col justify-center">
-//           <div className="flex flex-col justify-center items-center">
-//             <div className="mb-4 sm:mb-6 text-center">
-//               <p className="text-[#6a6a6a] text-sm mb-1">{unitData.Desde}</p>
-//               <div className="flex items-baseline justify-center">
-//                 <span className="text-[#2970b7] text-3xl sm:text-4xl font-bold">S/. {unitData.price}</span>
-//               </div>
-//               <p className="text-[#6a6a6a] text-sm">{unitData["Person desc"]}</p>
-//             </div>
-
-//             <div className="flex gap-6 sm:gap-6 mb-4 sm:mb-6">
-//               <TooltipProvider>
-//                 <Tooltip>
-//                   <TooltipTrigger asChild>
-//                     <div className="flex flex-col items-center">
-//                       <Image
-//                         src={(unitData.iconMaxPassengers as Media).url! || "/placeholder.svg"}
-//                         alt="Max Passengers"
-//                         width={16}
-//                         height={13}
-//                         className="sm:w-[18px] sm:h-[15px]"
-//                       />
-//                       <span className="text-[#6a6a6a] text-xs sm:text-sm mt-1">Hasta {unitData.maxPassengers}</span>
-//                     </div>
-//                   </TooltipTrigger>
-//                   <TooltipContent>
-//                     <p>Capacidad máxima de {unitData.maxPassengers} personas</p>
-//                   </TooltipContent>
-//                 </Tooltip>
-//               </TooltipProvider>
-
-//               <TooltipProvider>
-//                 <Tooltip>
-//                   <TooltipTrigger asChild>
-//                     <div className="flex flex-col items-center">
-//                       <Image
-//                         src={(unitData.iconDifficulty as Media).url! || "/placeholder.svg"}
-//                         alt="Difficulty"
-//                         width={16}
-//                         height={13}
-//                         className="sm:w-[18px] sm:h-[15px]"
-//                       />
-//                       <span className="text-[#6a6a6a] text-xs sm:text-sm mt-1">{trad[unitData.difficulty]}</span>
-//                     </div>
-//                   </TooltipTrigger>
-//                   <TooltipContent>
-//                     <p>Nivel de dificultad {unitData.difficulty}</p>
-//                   </TooltipContent>
-//                 </Tooltip>
-//               </TooltipProvider>
-//             </div>
-//           </div>
-
-//           <Link href={`/paquetes/${unitData.slug}`} className="w-full flex justify-center">
-//             <Button className="w-fit bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold px-6 py-3 sm:px-3 sm:py-3 text-sm sm:text-[16px] rounded-full">
-//               Ver Detalles
-//             </Button>
-//           </Link>
-//         </div>
-//       </Card>
-//     )
-//   }
-// }
-
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
 import Link from "next/link"
 import { Destination, Media, Paquete, Tour } from "@/cms-types";
 import { Button } from "@/components/ui/button"
@@ -280,10 +37,9 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
             </Badge>
           </div>
           <Image
-            alt={unitData.title || "Imagen del Paquete"}
-            src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
-            fill
+            media={unitData.featuredImage as Media}
             className=" object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
+            fill
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
@@ -325,10 +81,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
                   <TooltipTrigger asChild>
                     <div className="flex flex-col items-center">
                       <Image
-                        src={(unitData.iconMaxPassengers as Media).url! || "/placeholder.svg"}
-                        alt="Max Passengers"
-                        width={0}
-                        height={0}
+                        media={unitData.featuredImage as Media}
                         className="w-[clamp(0px,4.33vw,44.2px)] sm:w-[clamp(0px,2.33vw,44.2px)] lg:w-[clamp(4.9px,1.2vw,23px)] h-auto"
                       />
                       <span className="text-[#6a6a6a] text-[clamp(0px,2.65vw,27.20px)] sm:text-[clamp(0px,1.15vw,27.20px)] lg:text-[clamp(3.03px,0.7vw,14.08px)] mt-1">Hasta {unitData.maxPassengers}</span>
@@ -345,10 +98,8 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
                   <TooltipTrigger asChild>
                     <div className="flex flex-col items-center">
                       <Image
-                        src={(unitData.iconDifficulty as Media).url! || "/placeholder.svg"}
-                        alt="Difficulty"
-                        width={0}
-                        height={0}
+                        media={(unitData.iconDifficulty as Media)}
+
                       className="w-[clamp(0px,4.33vw,44.2px)] sm:w-[clamp(0px,2.33vw,44.2px)] lg:w-[clamp(4.9px,1.2vw,23px)] h-auto"
                       />
                       <span className="text-[#6a6a6a] text-[clamp(0px,2.65vw,27.20px)] sm:text-[clamp(0px,1.15vw,27.20px)] lg:text-[clamp(3.03px,0.7vw,14.08px)] mt-1">{trad[unitData.difficulty]}</span>
@@ -393,8 +144,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
           </div>
 
           <Image
-            alt={unitData.title || "Imagen del Paquete"}
-            src={(unitData.featuredImage as Media).url! || "/placeholder.svg"}
+            media={(unitData.featuredImage as Media)}
             fill
             className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
           />
@@ -437,10 +187,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
                   <TooltipTrigger asChild>
                     <div className="flex flex-col items-center">
                       <Image
-                        src={(unitData.iconMaxPassengers as Media).url! || "/placeholder.svg"}
-                        alt="Max Passengers"
-                        width={0}
-                        height={0}
+                        media={(unitData.iconMaxPassengers as Media)}
                         className="w-[clamp(0px,4.33vw,44.2px)] sm:w-[clamp(0px,2.33vw,44.2px)] lg:w-[clamp(4.9px,1.2vw,23px)] h-auto"
                       />
                       <span className="text-[#6a6a6a] text-[clamp(0px,2.65vw,27.20px)] sm:text-[clamp(0px,1.15vw,27.20px)] lg:text-[clamp(3.03px,0.7vw,14.08px)] ">Hasta {unitData.maxPassengers}</span>
@@ -457,10 +204,7 @@ export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
                   <TooltipTrigger asChild>
                     <div className="flex flex-col items-center">
                       <Image
-                        src={(unitData.iconDifficulty as Media).url! || "/placeholder.svg"}
-                        alt="Difficulty"
-                        width={0}
-                        height={0}
+                        media={(unitData.iconDifficulty as Media)}
                         className="w-[clamp(0px,4.33vw,44.2px)] sm:w-[clamp(0px,2.33vw,44.2px)] lg:w-[clamp(4.9px,1.2vw,23px)] h-auto"
                       />
                       <span className="text-[#6a6a6a] text-[clamp(0px,2.65vw,27.20px)] sm:text-[clamp(0px,1.15vw,27.20px)] lg:text-[clamp(3.03px,0.7vw,14.08px)] mt-1">{trad[unitData.difficulty]} </span>

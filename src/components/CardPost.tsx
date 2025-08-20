@@ -1,7 +1,8 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
+
 import Link from "next/link"
 import { Media, Post } from "@/cms-types"
 import { Button } from "@/components/ui/button"
@@ -25,10 +26,9 @@ export default function CardPost({ unitData, mode = "list" }: CardPostProps) {
         <Link href={`/blog/${unitData.slug}`} className="block h-56">
           <div className="relative h-full w-full overflow-hidden">
             <Image
-              alt={unitData.title || "Imagen del Post"}
-              src={(unitData.featuredImage as Media)?.url || "/placeholder.svg"}
-              fill
+              media={unitData.featuredImage as Media}
               className="object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
+              fill
             />
             {/* Efecto de brillo que se mueve */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
@@ -72,10 +72,9 @@ export default function CardPost({ unitData, mode = "list" }: CardPostProps) {
         <Link href={`/blog/${unitData.slug}`} className="w-full md:w-1/3 block h-56 md:h-full">
           <div className="relative h-full w-full overflow-hidden">
             <Image
-              alt={unitData.title || "Imagen del Post"}
-              src={(unitData.featuredImage as Media)?.url || "/placeholder.svg"}
-              fill
+              media={(unitData.featuredImage as Media)}
               className="object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2"
+              fill
             />
             {/* Efecto de brillo */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />

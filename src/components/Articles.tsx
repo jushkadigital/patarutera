@@ -1,7 +1,7 @@
 'use client'
 import type React from "react"
 import Link from "next/link"
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Media, Post } from "@/cms-types"
@@ -21,9 +21,7 @@ const ArticleCardTop = ({ article }:ArticleTopProps) => {
       <Link href={`/blog/${article.slug}`} className="block">
         <div className="relative w-full h-80 lg:h-[clamp(0px,18vw,345px)] overflow-hidden">
           <Image
-            src={(article.featuredImage as Media).url!}
-            alt={(article.featuredImage as Media).alt!}
-            layout="fill"
+            media={(article.featuredImage as Media)}
             className="group-hover:scale-105 transition-transform duration-300 object-cover"
           />
         </div>
@@ -80,10 +78,7 @@ const ArticleEntry: React.FC<ArticleEntryProps> = ({
         className={`relative block group ${imageSizeClass}  rounded-xl overflow-hidden`}
       >
         <Image
-          src={(article.featuredImage as Media).url!}
-          alt={(article.featuredImage as Media).alt!}
-          layout="fill"
-          objectFit="cover"
+          media={(article.featuredImage as Media)}
           className="group-hover:scale-105 transition-transform duration-300"
         />
       </Link>

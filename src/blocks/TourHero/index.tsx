@@ -3,7 +3,8 @@ import { BannerCarousel } from "@/components/BannerCarousel";
 import { Carousel } from "@/components/Carousel";
 import { CarouselItem } from "@/components/ui/carousel";
 import { BASEURL } from "@/lib/config";
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
+
 
 interface Props extends TourHerocarB{
 
@@ -17,7 +18,7 @@ export async function TourHero(props: Props) {
     <Carousel className="">
       {carContent!.carImages!.map((item) => (
         <div className="w-[clamp(140px,33vw,640px)] h-[clamp(140px,33vw,640px)] relative rounded-2xl overflow-hidden">
-        <Image alt="o"  src={(item.image as Media).url!} fill className="h-full w-full object-cover"/>
+        <Image   media={(item.image as Media)} fill className="h-full w-full object-cover"/>
         </div>
       ))}
     </Carousel>
@@ -25,7 +26,7 @@ export async function TourHero(props: Props) {
     </div>
     <div className="md:w-[60%] flex flex-row justify-center items-center ">
       <div className="h-[clamp(125px,32vw,614px)] w-[clamp(140px,43.3vw,832px)]  relative rounded-2xl overflow-hidden">
-        <Image alt="o" src={(ImageContent.image as Media).url!} fill className=" h-full w-full object-cover"/>
+        <Image  media={(ImageContent.image as Media)} fill className=" h-full w-full object-cover"/>
       </div>
     </div>
   </div>
