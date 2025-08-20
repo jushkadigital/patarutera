@@ -36,21 +36,23 @@ export default function PayloadImage({ media, className,sources = [
   if (!media) return null
 
   const getMaxSizeNotNull = (sizes:NonNullable<Media['sizes']>)=>{
-    let lastKey = ''
+    let lastKey = {key: '',width:0}
     for (const key in sizes) {
       if(isValidImageObject(sizes[key])){
-        lastKey = key
+        if(sizes[key]!.width > lastKey.width){
+        lastKey = {key: key , width:sizes[key]!.width}
+        }
       }
       else{
 
       }
     }
-    if (lastKey == ''){
+    if (lastKey.key == ''){
       return {
         url: media.url, width: media.width, height: media.height, mimeType: media.mimeType
       }
     }
-    return sizes[lastKey]
+    return sizes[lastKey.key]
   }
 
   const { alt, url, width, height, sizes } = media
