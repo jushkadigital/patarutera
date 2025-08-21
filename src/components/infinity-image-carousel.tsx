@@ -1,7 +1,8 @@
 'use client'
-import Image from "next/image"
+import { Media } from "@/cms-types"
+import Image from "@/components/PayloadImage"
 interface Props {
-    images: {src: string,alt:string}[]
+    images: {src: Media}[]
 }
 export default function InfiniteImageCarousel({images}:Props) {
   // Duplicamos las imágenes para crear el efecto infinito
@@ -23,14 +24,11 @@ export default function InfiniteImageCarousel({images}:Props) {
         >
           {duplicatedImages.map((item, idx) => (
             <div
-              key={`${item.alt}-${idx}`}
+              key={`${item.src.alt || 'eu'}-${idx}`}
               className="relative w-[100px] flex-shrink-0 rounded-2xl  overflow-hidden "
             >
               <Image
-                src={item.src || "/placeholder.svg"}
-                alt={item.alt}
-                width={100}
-                height={50}
+                media={item.src}
                 className="w-full h-full object-contain aspect-square "
                 priority={idx < 8} // Prioriza las primeras 8 imágenes
               />

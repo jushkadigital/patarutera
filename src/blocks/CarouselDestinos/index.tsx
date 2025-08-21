@@ -1,7 +1,15 @@
-import { CarouselDestinationBlock } from "@/cms-types";
+import { CarouselDestinationBlock, Media } from "@/cms-types";
 import CarouselDestinosComponent from "@/components/Carousel2Destinos";
 import { BASEURL } from "@/lib/config";
 type Props = CarouselDestinationBlock
+
+
+type ItemDestination = {
+  title: string,
+  button: string,
+  src: Media,
+  bgImage: Media
+}
 
 export async function CarouselDestinos(props: Props) {
 
@@ -12,8 +20,8 @@ export async function CarouselDestinos(props: Props) {
   const data = await response.json()
 
 
-  const dataMap = data.docs.map((doc: any) => {
-    if(!doc.imageDestination && !doc.backgroundDestination){
+  const dataMap:ItemDestination[] = data.docs.map((doc: any) => {
+    /*if(!doc.imageDestination && !doc.backgroundDestination){
 return ({
     title: doc.name,
     button: "Ver Destino",
@@ -39,15 +47,15 @@ return ({
     bgImage:  '/placeholder.svg',
   })
   
-    }
+    }*/
     return({
     title: doc.name,
     button: "Ver Destino",
-    src:  doc.imageDestination.url,
-    bgImage:  doc.backgroundDestination.url,
+    src:  doc.imageDestination,
+    bgImage:  doc.backgroundDestination,
   })})
   
   return <div className="w-full overflow-hidden ">
-    <CarouselDestinosComponent slides={[...dataMap,...dataMap]} titleObj={titleObj}/>
+    <CarouselDestinosComponent slides={[...dataMap]} titleObj={titleObj}/>
   </div>
 } 

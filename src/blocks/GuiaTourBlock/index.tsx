@@ -18,7 +18,7 @@ export async function GuiaTour(props:Props){
                     <TabsViaje tabs={[sectionItinerario,sectionIncluyeNoIncluye,sectionPrecios,sectionInfoViaje].map((ele,idx)=>({
                         id: (idx),
                         label: ele.iconText,
-                        icon: (ele.iconImage as Media).url!,
+                        icon: (ele.iconImage as Media),
                         content: ele.contentSection
                     }))}/>
                  </div>

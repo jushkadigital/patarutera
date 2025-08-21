@@ -19,7 +19,7 @@ export async function YouTubeLinksBlock(props: Props) {
         <div className="flex flex-row">
         {
           videoLinks &&  videoLinks.map((ele)=>(
-            <ImageCuadroLink backgroundImage={(ele.image! as Media).url!} link={ele.url} text="Ver Video"/>
+            <ImageCuadroLink backgroundImage={(ele.image! as Media)} link={ele.url} text="Ver Video"/>
             ))
         }
             </div>

@@ -18,7 +18,7 @@ export async function RevistaBlock(props: Props) {
         <div className="flex flex-row">
         {
           revistasLinks && revistasLinks.map(ele=>(
-            <ImageCuadroLink backgroundImage={(ele.image! as Media).url!} link={ele.url} text="Ver Revista"/>
+            <ImageCuadroLink backgroundImage={(ele.image! as Media)} link={ele.url} text="Ver Revista"/>
           ))
         }
             </div>

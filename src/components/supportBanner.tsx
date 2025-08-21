@@ -2,7 +2,7 @@
 import { Media } from "@/cms-types"
 import { cn } from "@/lib/utils"
 import { User } from "lucide-react"
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
 
 interface Props{
 text: string 
@@ -28,7 +28,7 @@ export default function SupportBannerBlock({text,colorBanner,imgUrl}:Props) {
                       group-hover:text-white max-w-44 align-top">{text}</h2>
           </div>
           <div className="w-12 h-12 flex items-center justify-center">
-            { imgUrl ? <Image src={(imgUrl as Media).url || "/placeholder.svg"} alt={(imgUrl as Media).alt || 'img'} width={100}  height={100} className="transition-filter duration-100
+            { imgUrl ? <Image media={(imgUrl as Media)}  className="transition-filter duration-100
                      group-hover:filter group-hover:brightness-0 group-hover:invert"/>:<User className="w-6 h-6 text-[#898989]" />}
           </div>
         </div>

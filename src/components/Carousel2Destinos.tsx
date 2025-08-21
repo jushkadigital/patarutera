@@ -3,17 +3,17 @@
 import * as React from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
-import { TitleGroup } from "@/cms-types"
+import { Media, TitleGroup } from "@/cms-types"
 import { Subtitle } from "./Subtitle"
 import Link from "next/link"
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
 import { ArrowRight } from "lucide-react"
 
-interface SlideData {
-  title: string
-  button: string
-  src: string
-  bgImage: string
+type SlideData = {
+  title: string,
+  button: string,
+  src: Media,
+  bgImage: Media
 }
 
 interface CustomCarouselProps {
@@ -51,6 +51,8 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
     api?.scrollTo(index)
   }
 
+  const FramerImage = motion(Image)
+
 
   const LinkMotion = motion(Link)
   return (
@@ -69,7 +71,7 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
               exit={{ opacity: 0 }}
               transition={{ duration: 1.2 }}
             >
-              <Image src={slides[current]?.bgImage || "/placeholder.svg"} alt="" fill className="w-full h-full object-cover"/>
+              <Image media={(slides[current]).bgImage}  fill className="w-full h-full object-cover"/>
               <div className="absolute inset-0 bg-black/50" />
             </motion.div>
           </AnimatePresence>
@@ -98,12 +100,12 @@ export default function CustomCarousel({ slides,titleObj }: CustomCarouselProps)
                   as={'div'}
                 >
                   <motion.div className="absolute top-0 left-0 w-full h-full">
-                    <motion.img
+                    <FramerImage
                       className="absolute inset-0  lg:w-[120%] h-[100%] object-cover"
                       animate={{ opacity: current === index ? 1 : 0.8 }}
                       transition={{ duration: 0.6 }}
-                      alt={slide.title}
-                      src={slide.src}
+                      fill
+                      media={slide.src}
                     />
                     {current === index && (
                       <motion.div

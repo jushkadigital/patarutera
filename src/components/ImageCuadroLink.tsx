@@ -2,12 +2,13 @@
 
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
 import Link from "next/link"
+import { Media } from "@/cms-types"
 
 
 interface Props {
-  backgroundImage: string
+  backgroundImage: Media
   link: string
   text: string
 }
@@ -19,10 +20,8 @@ export function ImageCuadroLink({ backgroundImage, link, text }: Props) {
       <div className="relative bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 rounded-2xl border border-gray-500 overflow-hidden shadow-xl">
         {/* Mountain background */}
         <Image
-          src={backgroundImage}
-          alt="icon"
-          layout="fill"
-          objectFit="cover"
+          media={backgroundImage}
+          fill
           className="opacity-40"
         />
 

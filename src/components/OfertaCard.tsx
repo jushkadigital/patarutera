@@ -1,6 +1,7 @@
 'use client'
+import { Media } from "@/cms-types"
 import { useMobile } from "@/hooks/useMobile"
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
 import Link from "next/link"
 
 interface ComponentProps {
@@ -9,7 +10,7 @@ interface ComponentProps {
   perPerson: string
   type: string
   title: string
-  background: string
+  background: Media
   slug: string
   isBigSize:boolean
 }
@@ -22,7 +23,7 @@ export  function OfertaCardComponent({ color = "#79368C",price , perPerson, type
     <div className={`flex w-full items-center justify-center lg:px-0 ${isBigSize ?"h-[clamp(93px,43.6vw,855px)] lg:h-[clamp(93px,23.6vw,455px)]" :"h-[clamp(93px,44.6vw,835px)] lg:h-[clamp(93px,22.6vw,435px)]"}`}>
       <Link href={`/tours/${slug}`} className="relative w-full h-full rounded-3xl overflow-hidden">
         {/* Background Image */}
-        <Image src={background} alt="Background" fill className="object-cover" priority />
+        <Image media={background} fill className="object-cover" priority />
 
         {/* Overlay */}
         <div className="absolute inset-0 opacity-60 z-10" style={{ background: `linear-gradient(to right, ${color}, transparent)` }} />

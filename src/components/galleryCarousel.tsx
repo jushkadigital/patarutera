@@ -1,8 +1,8 @@
-import Image from "next/image"
+import { Media } from "@/cms-types"
+import Image from "@/components/PayloadImage"
 
 type image = {
-    src:string,
-    alt:string
+    src:Media,
 }
 
 
@@ -23,11 +23,9 @@ export  function GalleryCarousel({images}:Props) {
             className="flex-1 min-w-0 max-w-36 aspect-square relative  rounded-lg transition-shadow duration-300"
           >
             <Image
-              src={image.src || "/placeholder.svg"}
-              alt={image.alt}
+              media={image.src}
               fill
               className="object-contain hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 640px) 14vw, (max-width: 768px) 12vw, (max-width: 1024px) 10vw, 8vw"
             />
           </div>
         ))}
