@@ -8,15 +8,17 @@ import { Destination } from '@/cms-types';
 
 interface Props {
   destinations: Destination[]
+  socialNetworks: any[]
+  email: string
 }
 
-export const Header = ({destinations}:Props) => {
+export const Header = ({ destinations, socialNetworks, email }: Props) => {
   const pathname = usePathname();
   const isHome = pathname === '/';
 
   return (
     <header className={cn(isHome ? 'h-0 overflow-visible ' : '')}>
-      <Navbar destinations={destinations} isHome={isHome}/>
+      <Navbar destinations={destinations} isHome={isHome} socialNetworks={socialNetworks} email={email} />
     </header>
   );
 }; 

@@ -10,7 +10,8 @@ import Script from "next/script";
 import { Suspense } from 'react';
 import PixelEvents from "@/components/PixelEvents";
 import { GoogleTagManager } from '@next/third-parties/google'
-      
+import { TopBannerComplete } from "@/components/TopBanner";
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -35,8 +36,8 @@ export default async function RootLayout({
 
   const response = await fetch(`${BASEURL}/api/destinations?limit=100&depth=1&sort=createdAt`)
   const data = await response.json()
-   //const PIXEL_ID = process.env.NEXT_PUBLIC_PIXEL_ID;
-   
+  //const PIXEL_ID = process.env.NEXT_PUBLIC_PIXEL_ID;
+
 
 
   return (
@@ -45,7 +46,7 @@ export default async function RootLayout({
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-        <GoogleTagManager gtmId="G-6XPFF81QJW" />
+      <GoogleTagManager gtmId="G-6XPFF81QJW" />
       <body className="min-h-screen flex flex-col">
         <Script
           id="fb-pixel-script"
@@ -66,20 +67,19 @@ export default async function RootLayout({
         <Suspense fallback={null}>
           <PixelEvents />
         </Suspense>
-
-        <Header destinations={data.docs}/>
+        <TopBannerComplete destinations={data.docs} />
         <main className="flex-grow">
           <NuqsAdapter>
             {children}
           </NuqsAdapter>
         </main>
-         <Script
+        <Script
           src="https://www.tiktok.com/embed.js"
           strategy="lazyOnload" // Carga el script cuando el navegador está inactivo
-          
+
         />
         {/* Aquí podrías agregar un Footer si lo tienes */}
-        <Footer destination={data.docs}/>
+        <Footer destination={data.docs} />
       </body>
     </html>
   );
