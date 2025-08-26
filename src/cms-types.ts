@@ -325,31 +325,31 @@ export interface RowBlock {
    * Añade un item por cada columna que necesites. Cada item contendrá sus propios bloques internos.
    */
   columns?:
-    | {
-        columnWidth: '25' | '33.333333' | '50' | '66.666667' | '75' | '100';
-        /**
-         * Añade los bloques de contenido que irán en esta columna.
-         */
-        columnBlocks: (
-          | GridToursBlock
-          | MediaBlock
-          | PostRelationTourBlockType
-          | SociosBlockType
-          | ReconocimientosBlockType
-          | OfertasBlock
-          | CarouselDestinationBlock
-          | TikTokLinksBlockType
-          | YouTubeLinksBlockType
-          | BeneficiosBlockType
-          | EstadisticasBlockType
-          | TextContentBlockType
-          | GridImagesBlockType
-          | FormBitrixBlock
-          | RevistaBlock
-        )[];
-        id?: string | null;
-      }[]
-    | null;
+  | {
+    columnWidth: '25' | '33.333333' | '50' | '66.666667' | '75' | '100';
+    /**
+     * Añade los bloques de contenido que irán en esta columna.
+     */
+    columnBlocks: (
+      | GridToursBlock
+      | MediaBlock
+      | PostRelationTourBlockType
+      | SociosBlockType
+      | ReconocimientosBlockType
+      | OfertasBlock
+      | CarouselDestinationBlock
+      | TikTokLinksBlockType
+      | YouTubeLinksBlockType
+      | BeneficiosBlockType
+      | EstadisticasBlockType
+      | TextContentBlockType
+      | GridImagesBlockType
+      | FormBitrixBlock
+      | RevistaBlock
+    )[];
+    id?: string | null;
+  }[]
+  | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'rowBlock';
@@ -561,11 +561,11 @@ export interface GridBlogsBlock {
   categories?: (number | BlogCategory)[] | null;
   limit?: number | null;
   selectedDocs?:
-    | {
-        relationTo: 'posts';
-        value: number | Post;
-      }[]
-    | null;
+  | {
+    relationTo: 'posts';
+    value: number | Post;
+  }[]
+  | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'gridBlogs';
@@ -589,11 +589,11 @@ export interface BlogCategory {
 export interface GridImagesBlockType {
   typeGrid: 'masonry' | 'overlapping' | 'list' | 'mosaic' | 'grid';
   Image?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
+  | {
+    image: number | Media;
+    id?: string | null;
+  }[]
+  | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'gridImages';
@@ -634,12 +634,12 @@ export interface TextContentBlockType {
 export interface YouTubeLinksBlockType {
   blockTitle: TitleGroup;
   videoLinks?:
-    | {
-        image?: (number | null) | Media;
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
+  | {
+    image?: (number | null) | Media;
+    url: string;
+    id?: string | null;
+  }[]
+  | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'youTubeLinks';
@@ -672,11 +672,11 @@ export interface CarouselDestinationBlock {
 export interface TikTokLinksBlockType {
   blockTitle: TitleGroup;
   videoLinks?:
-    | {
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
+  | {
+    url: string;
+    id?: string | null;
+  }[]
+  | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'tikTokLinks';
@@ -689,12 +689,12 @@ export interface BeneficiosBlockType {
   blockTitle: TitleGroup;
   colorItem: string;
   beneficios?:
-    | {
-        beneficioText: string;
-        beneficioImage?: (number | null) | Media;
-        id?: string | null;
-      }[]
-    | null;
+  | {
+    beneficioText: string;
+    beneficioImage?: (number | null) | Media;
+    id?: string | null;
+  }[]
+  | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'beneficios';
@@ -723,12 +723,12 @@ export interface EstadisticasBlockType {
     };
     colorBox?: string | null;
     estadisticasBox?:
-      | {
-          numbers?: string | null;
-          description?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+    | {
+      numbers?: string | null;
+      description?: string | null;
+      id?: string | null;
+    }[]
+    | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -751,12 +751,12 @@ export interface FormBitrixBlock {
 export interface RevistaBlock {
   blockTitle: TitleGroup;
   revistasLinks?:
-    | {
-        image?: (number | null) | Media;
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
+  | {
+    image?: (number | null) | Media;
+    url: string;
+    id?: string | null;
+  }[]
+  | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'revistaBlock';
@@ -793,21 +793,23 @@ export interface Tour {
   title: string;
   heroTour?: TourHerocarB[] | null;
   layout?:
-    | (
-        | DescrPriceBlock
-        | GuiaTourBlock
-        | GridToursBlock
-        | GridBlogsBlock
-        | RowBlock
-        | PostRelationTourBlockType
-        | YouTubeLinksBlockType
-        | TextContentBlockType
-        | SociosBlockType
-        | ReconocimientosBlockType
-        | FormBitrixBlock
-        | RevistaBlock
-      )[]
-    | null;
+  | (
+    | DescrPriceBlock
+    | GuiaTourBlock
+    | GridToursBlock
+    | GridBlogsBlock
+    | RowBlock
+    | PostRelationTourBlockType
+    | YouTubeLinksBlockType
+    | TextContentBlockType
+    | SociosBlockType
+    | ReconocimientosBlockType
+    | FormBitrixBlock
+    | RevistaBlock
+    | AdicionalTourBlock
+    | DataTourBlock
+  )[]
+  | null;
   featuredImage: number | Media;
   miniDescription: {
     root: {
@@ -866,11 +868,11 @@ export interface Tour {
 export interface TourHerocarB {
   carContent?: {
     carImages?:
-      | {
-          image: number | Media;
-          id?: string | null;
-        }[]
-      | null;
+    | {
+      image: number | Media;
+      id?: string | null;
+    }[]
+    | null;
   };
   ImageContent: {
     image: number | Media;
@@ -1030,6 +1032,64 @@ export interface GuiaTourBlock {
   blockType: 'guiaTour';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "adicionalTourBlock".
+ */
+export interface AdicionalTourBlock {
+  title: TitleGroup;
+  arrayData?:
+  | {
+    title?: string | null;
+    content?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    id?: string | null;
+  }[]
+  | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'adicionalTour';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dataTourBlock".
+ */
+export interface DataTourBlock {
+  duration: {
+    title: string;
+    valueDia: number;
+    valueNoche: number;
+  };
+  groupSize: {
+    title: string;
+    value: number;
+  };
+  difficulty: 'easy' | 'medium' | 'hard';
+  altitud: {
+    title: string;
+    value: number;
+  };
+  idioma: {
+    title: string;
+    value: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'dataTour';
+}
+/**
  * Ofertas especiales de Tours
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1071,6 +1131,8 @@ export interface Paquete {
     | ReconocimientosBlockType
     | FormBitrixBlock
     | RevistaBlock
+    | AdicionalTourBlock
+    | DataTourBlock
   )[];
   featuredImage: number | Media;
   miniDescription: {
@@ -1126,11 +1188,11 @@ export interface Paquete {
 export interface PaqueteHerocar {
   carContent?: {
     carImages?:
-      | {
-          image: number | Media;
-          id?: string | null;
-        }[]
-      | null;
+    | {
+      image: number | Media;
+      id?: string | null;
+    }[]
+    | null;
   };
   ImageContent: {
     image: number | Media;
@@ -1149,23 +1211,23 @@ export interface PayloadJob {
    * Input data provided to the job
    */
   input?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+  | {
+    [k: string]: unknown;
+  }
+  | unknown[]
+  | string
+  | number
+  | boolean
+  | null;
   taskStatus?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+  | {
+    [k: string]: unknown;
+  }
+  | unknown[]
+  | string
+  | number
+  | boolean
+  | null;
   completedAt?: string | null;
   totalTried?: number | null;
   /**
@@ -1176,54 +1238,54 @@ export interface PayloadJob {
    * If hasError is true, this is the error that caused it
    */
   error?:
+  | {
+    [k: string]: unknown;
+  }
+  | unknown[]
+  | string
+  | number
+  | boolean
+  | null;
+  /**
+   * Task execution log
+   */
+  log?:
+  | {
+    executedAt: string;
+    completedAt: string;
+    taskSlug: 'inline' | 'schedulePublish';
+    taskID: string;
+    input?:
     | {
-        [k: string]: unknown;
-      }
+      [k: string]: unknown;
+    }
     | unknown[]
     | string
     | number
     | boolean
     | null;
-  /**
-   * Task execution log
-   */
-  log?:
+    output?:
     | {
-        executedAt: string;
-        completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
-        taskID: string;
-        input?:
-          | {
-              [k: string]: unknown;
-            }
-          | unknown[]
-          | string
-          | number
-          | boolean
-          | null;
-        output?:
-          | {
-              [k: string]: unknown;
-            }
-          | unknown[]
-          | string
-          | number
-          | boolean
-          | null;
-        state: 'failed' | 'succeeded';
-        error?:
-          | {
-              [k: string]: unknown;
-            }
-          | unknown[]
-          | string
-          | number
-          | boolean
-          | null;
-        id?: string | null;
-      }[]
+      [k: string]: unknown;
+    }
+    | unknown[]
+    | string
+    | number
+    | boolean
     | null;
+    state: 'failed' | 'succeeded';
+    error?:
+    | {
+      [k: string]: unknown;
+    }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+    id?: string | null;
+  }[]
+  | null;
   taskSlug?: ('inline' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
@@ -1238,50 +1300,50 @@ export interface PayloadJob {
 export interface PayloadLockedDocument {
   id: number;
   document?:
-    | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'pages';
-        value: number | Page;
-      } | null)
-    | ({
-        relationTo: 'tours';
-        value: number | Tour;
-      } | null)
-    | ({
-        relationTo: 'ofertas';
-        value: number | Oferta;
-      } | null)
-    | ({
-        relationTo: 'tourCategory';
-        value: number | TourCategory;
-      } | null)
-    | ({
-        relationTo: 'destinations';
-        value: number | Destination;
-      } | null)
-    | ({
-        relationTo: 'blogCategories';
-        value: number | BlogCategory;
-      } | null)
-    | ({
-        relationTo: 'posts';
-        value: number | Post;
-      } | null)
-    | ({
-        relationTo: 'paquetes';
-        value: number | Paquete;
-      } | null)
-    | ({
-        relationTo: 'payload-jobs';
-        value: number | PayloadJob;
-      } | null);
+  | ({
+    relationTo: 'users';
+    value: number | User;
+  } | null)
+  | ({
+    relationTo: 'media';
+    value: number | Media;
+  } | null)
+  | ({
+    relationTo: 'pages';
+    value: number | Page;
+  } | null)
+  | ({
+    relationTo: 'tours';
+    value: number | Tour;
+  } | null)
+  | ({
+    relationTo: 'ofertas';
+    value: number | Oferta;
+  } | null)
+  | ({
+    relationTo: 'tourCategory';
+    value: number | TourCategory;
+  } | null)
+  | ({
+    relationTo: 'destinations';
+    value: number | Destination;
+  } | null)
+  | ({
+    relationTo: 'blogCategories';
+    value: number | BlogCategory;
+  } | null)
+  | ({
+    relationTo: 'posts';
+    value: number | Post;
+  } | null)
+  | ({
+    relationTo: 'paquetes';
+    value: number | Paquete;
+  } | null)
+  | ({
+    relationTo: 'payload-jobs';
+    value: number | PayloadJob;
+  } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
@@ -1302,14 +1364,14 @@ export interface PayloadPreference {
   };
   key?: string | null;
   value?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+  | {
+    [k: string]: unknown;
+  }
+  | unknown[]
+  | string
+  | number
+  | boolean
+  | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1360,79 +1422,79 @@ export interface MediaSelect<T extends boolean = true> {
   focalX?: T;
   focalY?: T;
   sizes?:
+  | T
+  | {
+    thumbnail?:
     | T
     | {
-        thumbnail?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        square?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        small?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        medium?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        large?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        xlarge?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        og?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-      };
+      url?: T;
+      width?: T;
+      height?: T;
+      mimeType?: T;
+      filesize?: T;
+      filename?: T;
+    };
+    square?:
+    | T
+    | {
+      url?: T;
+      width?: T;
+      height?: T;
+      mimeType?: T;
+      filesize?: T;
+      filename?: T;
+    };
+    small?:
+    | T
+    | {
+      url?: T;
+      width?: T;
+      height?: T;
+      mimeType?: T;
+      filesize?: T;
+      filename?: T;
+    };
+    medium?:
+    | T
+    | {
+      url?: T;
+      width?: T;
+      height?: T;
+      mimeType?: T;
+      filesize?: T;
+      filename?: T;
+    };
+    large?:
+    | T
+    | {
+      url?: T;
+      width?: T;
+      height?: T;
+      mimeType?: T;
+      filesize?: T;
+      filename?: T;
+    };
+    xlarge?:
+    | T
+    | {
+      url?: T;
+      width?: T;
+      height?: T;
+      mimeType?: T;
+      filesize?: T;
+      filename?: T;
+    };
+    og?:
+    | T
+    | {
+      url?: T;
+      width?: T;
+      height?: T;
+      mimeType?: T;
+      filesize?: T;
+      filename?: T;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1441,38 +1503,38 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
   heroPageBlocks?:
-    | T
-    | {
-        banner?: T | BannerBlockSelect<T>;
-        carouselHeroPage?: T | CarouselHeroPageSelect<T>;
-      };
+  | T
+  | {
+    banner?: T | BannerBlockSelect<T>;
+    carouselHeroPage?: T | CarouselHeroPageSelect<T>;
+  };
   layout?:
-    | T
-    | {
-        rowBlock?: T | RowBlockSelect<T>;
-        gridTours?: T | GridToursBlockSelect<T>;
-        gridBlogs?: T | GridBlogsBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
-        socios?: T | SociosBlockTypeSelect<T>;
-        reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-        ofertas?: T | OfertasBlockSelect<T>;
-        carouselDestination?: T | CarouselDestinationBlockSelect<T>;
-        tikTokLinks?: T | TikTokLinksBlockTypeSelect<T>;
-        beneficios?: T | BeneficiosBlockTypeSelect<T>;
-        estadisticas?: T | EstadisticasBlockTypeSelect<T>;
-        textContent?: T | TextContentBlockTypeSelect<T>;
-        gridImages?: T | GridImagesBlockTypeSelect<T>;
-        gridPaquetes?: T | GridPaquetesBlockSelect<T>;
-        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
-      };
+  | T
+  | {
+    rowBlock?: T | RowBlockSelect<T>;
+    gridTours?: T | GridToursBlockSelect<T>;
+    gridBlogs?: T | GridBlogsBlockSelect<T>;
+    mediaBlock?: T | MediaBlockSelect<T>;
+    postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
+    socios?: T | SociosBlockTypeSelect<T>;
+    reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+    ofertas?: T | OfertasBlockSelect<T>;
+    carouselDestination?: T | CarouselDestinationBlockSelect<T>;
+    tikTokLinks?: T | TikTokLinksBlockTypeSelect<T>;
+    beneficios?: T | BeneficiosBlockTypeSelect<T>;
+    estadisticas?: T | EstadisticasBlockTypeSelect<T>;
+    textContent?: T | TextContentBlockTypeSelect<T>;
+    gridImages?: T | GridImagesBlockTypeSelect<T>;
+    gridPaquetes?: T | GridPaquetesBlockSelect<T>;
+    formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+  };
   meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
+  | T
+  | {
+    title?: T;
+    image?: T;
+    description?: T;
+  };
   createdBy?: T;
   publishedAt?: T;
   slug?: T;
@@ -1506,30 +1568,30 @@ export interface CarouselHeroPageSelect<T extends boolean = true> {
  */
 export interface RowBlockSelect<T extends boolean = true> {
   columns?:
+  | T
+  | {
+    columnWidth?: T;
+    columnBlocks?:
     | T
     | {
-        columnWidth?: T;
-        columnBlocks?:
-          | T
-          | {
-              gridTours?: T | GridToursBlockSelect<T>;
-              mediaBlock?: T | MediaBlockSelect<T>;
-              postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
-              socios?: T | SociosBlockTypeSelect<T>;
-              reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-              ofertas?: T | OfertasBlockSelect<T>;
-              carouselDestination?: T | CarouselDestinationBlockSelect<T>;
-              tikTokLinks?: T | TikTokLinksBlockTypeSelect<T>;
-              youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
-              beneficios?: T | BeneficiosBlockTypeSelect<T>;
-              estadisticas?: T | EstadisticasBlockTypeSelect<T>;
-              textContent?: T | TextContentBlockTypeSelect<T>;
-              gridImages?: T | GridImagesBlockTypeSelect<T>;
-              formBitrixBlock?: T | FormBitrixBlockSelect<T>;
-              revistaBlock?: T | RevistaBlockSelect<T>;
-            };
-        id?: T;
-      };
+      gridTours?: T | GridToursBlockSelect<T>;
+      mediaBlock?: T | MediaBlockSelect<T>;
+      postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
+      socios?: T | SociosBlockTypeSelect<T>;
+      reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+      ofertas?: T | OfertasBlockSelect<T>;
+      carouselDestination?: T | CarouselDestinationBlockSelect<T>;
+      tikTokLinks?: T | TikTokLinksBlockTypeSelect<T>;
+      youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
+      beneficios?: T | BeneficiosBlockTypeSelect<T>;
+      estadisticas?: T | EstadisticasBlockTypeSelect<T>;
+      textContent?: T | TextContentBlockTypeSelect<T>;
+      gridImages?: T | GridImagesBlockTypeSelect<T>;
+      formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+      revistaBlock?: T | RevistaBlockSelect<T>;
+    };
+    id?: T;
+  };
   id?: T;
   blockName?: T;
 }
@@ -1622,11 +1684,11 @@ export interface CarouselDestinationBlockSelect<T extends boolean = true> {
 export interface TikTokLinksBlockTypeSelect<T extends boolean = true> {
   blockTitle?: T | TitleGroupSelect<T>;
   videoLinks?:
-    | T
-    | {
-        url?: T;
-        id?: T;
-      };
+  | T
+  | {
+    url?: T;
+    id?: T;
+  };
   id?: T;
   blockName?: T;
 }
@@ -1637,12 +1699,12 @@ export interface TikTokLinksBlockTypeSelect<T extends boolean = true> {
 export interface YouTubeLinksBlockTypeSelect<T extends boolean = true> {
   blockTitle?: T | TitleGroupSelect<T>;
   videoLinks?:
-    | T
-    | {
-        image?: T;
-        url?: T;
-        id?: T;
-      };
+  | T
+  | {
+    image?: T;
+    url?: T;
+    id?: T;
+  };
   id?: T;
   blockName?: T;
 }
@@ -1654,12 +1716,12 @@ export interface BeneficiosBlockTypeSelect<T extends boolean = true> {
   blockTitle?: T | TitleGroupSelect<T>;
   colorItem?: T;
   beneficios?:
-    | T
-    | {
-        beneficioText?: T;
-        beneficioImage?: T;
-        id?: T;
-      };
+  | T
+  | {
+    beneficioText?: T;
+    beneficioImage?: T;
+    id?: T;
+  };
   id?: T;
   blockName?: T;
 }
@@ -1669,19 +1731,19 @@ export interface BeneficiosBlockTypeSelect<T extends boolean = true> {
  */
 export interface EstadisticasBlockTypeSelect<T extends boolean = true> {
   estadisticasText?:
+  | T
+  | {
+    title?: T;
+    description?: T;
+    colorBox?: T;
+    estadisticasBox?:
     | T
     | {
-        title?: T;
-        description?: T;
-        colorBox?: T;
-        estadisticasBox?:
-          | T
-          | {
-              numbers?: T;
-              description?: T;
-              id?: T;
-            };
-      };
+      numbers?: T;
+      description?: T;
+      id?: T;
+    };
+  };
   id?: T;
   blockName?: T;
 }
@@ -1703,11 +1765,11 @@ export interface TextContentBlockTypeSelect<T extends boolean = true> {
 export interface GridImagesBlockTypeSelect<T extends boolean = true> {
   typeGrid?: T;
   Image?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
+  | T
+  | {
+    image?: T;
+    id?: T;
+  };
   id?: T;
   blockName?: T;
 }
@@ -1727,12 +1789,12 @@ export interface FormBitrixBlockSelect<T extends boolean = true> {
 export interface RevistaBlockSelect<T extends boolean = true> {
   blockTitle?: T | TitleGroupSelect<T>;
   revistasLinks?:
-    | T
-    | {
-        image?: T;
-        url?: T;
-        id?: T;
-      };
+  | T
+  | {
+    image?: T;
+    url?: T;
+    id?: T;
+  };
   id?: T;
   blockName?: T;
 }
@@ -1772,26 +1834,28 @@ export interface GridPaquetesBlockSelect<T extends boolean = true> {
 export interface ToursSelect<T extends boolean = true> {
   title?: T;
   heroTour?:
-    | T
-    | {
-        tourHerocar?: T | TourHerocarBSelect<T>;
-      };
+  | T
+  | {
+    tourHerocar?: T | TourHerocarBSelect<T>;
+  };
   layout?:
-    | T
-    | {
-        descrPrice?: T | DescrPriceBlockSelect<T>;
-        guiaTour?: T | GuiaTourBlockSelect<T>;
-        gridTours?: T | GridToursBlockSelect<T>;
-        gridBlogs?: T | GridBlogsBlockSelect<T>;
-        rowBlock?: T | RowBlockSelect<T>;
-        postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
-        youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
-        textContent?: T | TextContentBlockTypeSelect<T>;
-        socios?: T | SociosBlockTypeSelect<T>;
-        reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
-        revistaBlock?: T | RevistaBlockSelect<T>;
-      };
+  | T
+  | {
+    descrPrice?: T | DescrPriceBlockSelect<T>;
+    guiaTour?: T | GuiaTourBlockSelect<T>;
+    gridTours?: T | GridToursBlockSelect<T>;
+    gridBlogs?: T | GridBlogsBlockSelect<T>;
+    rowBlock?: T | RowBlockSelect<T>;
+    postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
+    youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
+    textContent?: T | TextContentBlockTypeSelect<T>;
+    socios?: T | SociosBlockTypeSelect<T>;
+    reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+    formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+    revistaBlock?: T | RevistaBlockSelect<T>;
+    adicionalTour?: T | AdicionalTourBlockSelect<T>;
+    dataTour?: T | DataTourBlockSelect<T>;
+  };
   featuredImage?: T;
   miniDescription?: T;
   Desde?: T;
@@ -1802,12 +1866,12 @@ export interface ToursSelect<T extends boolean = true> {
   iconDifficulty?: T;
   difficulty?: T;
   meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
+  | T
+  | {
+    title?: T;
+    image?: T;
+    description?: T;
+  };
   priceGeneral?: T;
   categorias?: T;
   destinos?: T;
@@ -1825,20 +1889,20 @@ export interface ToursSelect<T extends boolean = true> {
  */
 export interface TourHerocarBSelect<T extends boolean = true> {
   carContent?:
+  | T
+  | {
+    carImages?:
     | T
     | {
-        carImages?:
-          | T
-          | {
-              image?: T;
-              id?: T;
-            };
-      };
+      image?: T;
+      id?: T;
+    };
+  };
   ImageContent?:
-    | T
-    | {
-        image?: T;
-      };
+  | T
+  | {
+    image?: T;
+  };
   id?: T;
   blockName?: T;
 }
@@ -1849,27 +1913,27 @@ export interface TourHerocarBSelect<T extends boolean = true> {
 export interface DescrPriceBlockSelect<T extends boolean = true> {
   blockTitle?: T | TitleGroupSelect<T>;
   leftColumn?:
-    | T
-    | {
-        tourTitle?: T;
-        tourDescription?: T;
-      };
+  | T
+  | {
+    tourTitle?: T;
+    tourDescription?: T;
+  };
   rightColumn?:
+  | T
+  | {
+    priceTitle?: T;
+    prevText?: T;
+    price?: T;
+    nextText?: T;
+    paymentForm?:
     | T
     | {
-        priceTitle?: T;
-        prevText?: T;
-        price?: T;
-        nextText?: T;
-        paymentForm?:
-          | T
-          | {
-              iconDate?: T;
-              InputPlaceHolderDate?: T;
-              iconPassengers?: T;
-              InputPlaceHolderPassengers?: T;
-            };
-      };
+      iconDate?: T;
+      InputPlaceHolderDate?: T;
+      iconPassengers?: T;
+      InputPlaceHolderPassengers?: T;
+    };
+  };
   id?: T;
   blockName?: T;
 }
@@ -1880,33 +1944,83 @@ export interface DescrPriceBlockSelect<T extends boolean = true> {
 export interface GuiaTourBlockSelect<T extends boolean = true> {
   blockTitle?: T | TitleGroupSelect<T>;
   sectionItinerario?:
-    | T
-    | {
-        iconText?: T;
-        iconImage?: T;
-        contentSection?: T;
-      };
+  | T
+  | {
+    iconText?: T;
+    iconImage?: T;
+    contentSection?: T;
+  };
   sectionIncluyeNoIncluye?:
-    | T
-    | {
-        iconText?: T;
-        iconImage?: T;
-        contentSection?: T;
-      };
+  | T
+  | {
+    iconText?: T;
+    iconImage?: T;
+    contentSection?: T;
+  };
   sectionPrecios?:
-    | T
-    | {
-        iconText?: T;
-        iconImage?: T;
-        contentSection?: T;
-      };
+  | T
+  | {
+    iconText?: T;
+    iconImage?: T;
+    contentSection?: T;
+  };
   sectionInfoViaje?:
-    | T
-    | {
-        iconText?: T;
-        iconImage?: T;
-        contentSection?: T;
-      };
+  | T
+  | {
+    iconText?: T;
+    iconImage?: T;
+    contentSection?: T;
+  };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "adicionalTourBlock_select".
+ */
+export interface AdicionalTourBlockSelect<T extends boolean = true> {
+  title?: T | TitleGroupSelect<T>;
+  arrayData?:
+  | T
+  | {
+    title?: T;
+    content?: T;
+    id?: T;
+  };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dataTourBlock_select".
+ */
+export interface DataTourBlockSelect<T extends boolean = true> {
+  duration?:
+  | T
+  | {
+    title?: T;
+    valueDia?: T;
+    valueNoche?: T;
+  };
+  groupSize?:
+  | T
+  | {
+    title?: T;
+    value?: T;
+  };
+  difficulty?: T;
+  altitud?:
+  | T
+  | {
+    title?: T;
+    value?: T;
+  };
+  idioma?:
+  | T
+  | {
+    title?: T;
+    value?: T;
+  };
   id?: T;
   blockName?: T;
 }
@@ -1963,29 +2077,29 @@ export interface BlogCategoriesSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   heroPost?:
-    | T
-    | {
-        banner?: T | BannerBlockSelect<T>;
-      };
+  | T
+  | {
+    banner?: T | BannerBlockSelect<T>;
+  };
   featuredImage?: T;
   description?: T;
   layout?:
-    | T
-    | {
-        reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-        socios?: T | SociosBlockTypeSelect<T>;
-        gridBlogs?: T | GridBlogsBlockSelect<T>;
-        gridImages?: T | GridImagesBlockTypeSelect<T>;
-        textContent?: T | TextContentBlockTypeSelect<T>;
-        youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
-      };
+  | T
+  | {
+    reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+    socios?: T | SociosBlockTypeSelect<T>;
+    gridBlogs?: T | GridBlogsBlockSelect<T>;
+    gridImages?: T | GridImagesBlockTypeSelect<T>;
+    textContent?: T | TextContentBlockTypeSelect<T>;
+    youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
+  };
   meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
+  | T
+  | {
+    title?: T;
+    image?: T;
+    description?: T;
+  };
   createdBy?: T;
   categories?: T;
   publishedDate?: T;
@@ -2002,25 +2116,27 @@ export interface PostsSelect<T extends boolean = true> {
 export interface PaquetesSelect<T extends boolean = true> {
   title?: T;
   heroPaquete?:
-    | T
-    | {
-        paqueteHerocar?: T | PaqueteHerocarSelect<T>;
-      };
+  | T
+  | {
+    paqueteHerocar?: T | PaqueteHerocarSelect<T>;
+  };
   layout?:
-    | T
-    | {
-        descrPrice?: T | DescrPriceBlockSelect<T>;
-        guiaTour?: T | GuiaTourBlockSelect<T>;
-        gridTours?: T | GridToursBlockSelect<T>;
-        gridBlogs?: T | GridBlogsBlockSelect<T>;
-        postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
-        youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
-        textContent?: T | TextContentBlockTypeSelect<T>;
-        socios?: T | SociosBlockTypeSelect<T>;
-        reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
-        revistaBlock?: T | RevistaBlockSelect<T>;
-      };
+  | T
+  | {
+    descrPrice?: T | DescrPriceBlockSelect<T>;
+    guiaTour?: T | GuiaTourBlockSelect<T>;
+    gridTours?: T | GridToursBlockSelect<T>;
+    gridBlogs?: T | GridBlogsBlockSelect<T>;
+    postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
+    youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
+    textContent?: T | TextContentBlockTypeSelect<T>;
+    socios?: T | SociosBlockTypeSelect<T>;
+    reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+    formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+    revistaBlock?: T | RevistaBlockSelect<T>;
+    adicionalTour?: T | AdicionalTourBlockSelect<T>;
+    dataTour?: T | DataTourBlockSelect<T>;
+  };
   featuredImage?: T;
   miniDescription?: T;
   Desde?: T;
@@ -2031,12 +2147,12 @@ export interface PaquetesSelect<T extends boolean = true> {
   iconDifficulty?: T;
   difficulty?: T;
   meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
+  | T
+  | {
+    title?: T;
+    image?: T;
+    description?: T;
+  };
   priceGeneral?: T;
   destinos?: T;
   createdBy?: T;
@@ -2053,20 +2169,20 @@ export interface PaquetesSelect<T extends boolean = true> {
  */
 export interface PaqueteHerocarSelect<T extends boolean = true> {
   carContent?:
+  | T
+  | {
+    carImages?:
     | T
     | {
-        carImages?:
-          | T
-          | {
-              image?: T;
-              id?: T;
-            };
-      };
+      image?: T;
+      id?: T;
+    };
+  };
   ImageContent?:
-    | T
-    | {
-        image?: T;
-      };
+  | T
+  | {
+    image?: T;
+  };
   id?: T;
   blockName?: T;
 }
@@ -2082,18 +2198,18 @@ export interface PayloadJobsSelect<T extends boolean = true> {
   hasError?: T;
   error?: T;
   log?:
-    | T
-    | {
-        executedAt?: T;
-        completedAt?: T;
-        taskSlug?: T;
-        taskID?: T;
-        input?: T;
-        output?: T;
-        state?: T;
-        error?: T;
-        id?: T;
-      };
+  | T
+  | {
+    executedAt?: T;
+    completedAt?: T;
+    taskSlug?: T;
+    taskID?: T;
+    input?: T;
+    output?: T;
+    state?: T;
+    error?: T;
+    id?: T;
+  };
   taskSlug?: T;
   queue?: T;
   waitUntil?: T;
@@ -2140,11 +2256,11 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface ReconocimientosCarousel {
   id: number;
   images?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
+  | {
+    image: number | Media;
+    id?: string | null;
+  }[]
+  | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2155,11 +2271,11 @@ export interface ReconocimientosCarousel {
 export interface SociosCarousel {
   id: number;
   images?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
+  | {
+    image: number | Media;
+    id?: string | null;
+  }[]
+  | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2170,41 +2286,41 @@ export interface SociosCarousel {
 export interface Footer {
   id: number;
   navItems?:
+  | {
+    nameColumn: string;
+    links?:
     | {
-        nameColumn: string;
-        links?:
-          | {
-              link?: {
-                type?: ('reference' | 'custom' | 'text') | null;
-                newTab?: boolean | null;
-                reference?:
-                  | ({
-                      relationTo: 'pages';
-                      value: number | Page;
-                    } | null)
-                  | ({
-                      relationTo: 'tours';
-                      value: number | Tour;
-                    } | null)
-                  | ({
-                      relationTo: 'paquetes';
-                      value: number | Paquete;
-                    } | null)
-                  | ({
-                      relationTo: 'posts';
-                      value: number | Post;
-                    } | null);
-                url?: string | null;
-                textInfo?: string | null;
-                label?: string | null;
-                icon?: string | null;
-              };
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
+      link?: {
+        type?: ('reference' | 'custom' | 'text') | null;
+        newTab?: boolean | null;
+        reference?:
+        | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+        | ({
+          relationTo: 'tours';
+          value: number | Tour;
+        } | null)
+        | ({
+          relationTo: 'paquetes';
+          value: number | Paquete;
+        } | null)
+        | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null);
+        url?: string | null;
+        textInfo?: string | null;
+        label?: string | null;
+        icon?: string | null;
+      };
+      id?: string | null;
+    }[]
     | null;
+    id?: string | null;
+  }[]
+  | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2215,12 +2331,12 @@ export interface Footer {
 export interface RedesNegocio {
   id: number;
   network?:
-    | {
-        iconName: string;
-        link: string;
-        id?: string | null;
-      }[]
-    | null;
+  | {
+    iconName: string;
+    link: string;
+    id?: string | null;
+  }[]
+  | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2232,21 +2348,21 @@ export interface TouP {
   id: number;
   heroPageBlocks?: (BannerBlock | CarouselHeroPage)[] | null;
   layout?:
-    | (
-        | DescrPriceBlock
-        | GuiaTourBlock
-        | GridToursBlock
-        | GridBlogsBlock
-        | RowBlock
-        | PostRelationTourBlockType
-        | YouTubeLinksBlockType
-        | TextContentBlockType
-        | SociosBlockType
-        | ReconocimientosBlockType
-        | FormBitrixBlock
-        | RevistaBlock
-      )[]
-    | null;
+  | (
+    | DescrPriceBlock
+    | GuiaTourBlock
+    | GridToursBlock
+    | GridBlogsBlock
+    | RowBlock
+    | PostRelationTourBlockType
+    | YouTubeLinksBlockType
+    | TextContentBlockType
+    | SociosBlockType
+    | ReconocimientosBlockType
+    | FormBitrixBlock
+    | RevistaBlock
+  )[]
+  | null;
   meta?: {
     title?: string | null;
     /**
@@ -2269,22 +2385,22 @@ export interface PacP {
   id: number;
   heroPageBlocks?: (BannerBlock | CarouselHeroPage)[] | null;
   layout?:
-    | (
-        | DescrPriceBlock
-        | GuiaTourBlock
-        | GridToursBlock
-        | GridPaquetesBlock
-        | GridBlogsBlock
-        | RowBlock
-        | PostRelationTourBlockType
-        | YouTubeLinksBlockType
-        | TextContentBlockType
-        | SociosBlockType
-        | ReconocimientosBlockType
-        | FormBitrixBlock
-        | RevistaBlock
-      )[]
-    | null;
+  | (
+    | DescrPriceBlock
+    | GuiaTourBlock
+    | GridToursBlock
+    | GridPaquetesBlock
+    | GridBlogsBlock
+    | RowBlock
+    | PostRelationTourBlockType
+    | YouTubeLinksBlockType
+    | TextContentBlockType
+    | SociosBlockType
+    | ReconocimientosBlockType
+    | FormBitrixBlock
+    | RevistaBlock
+  )[]
+  | null;
   meta?: {
     title?: string | null;
     /**
@@ -2307,20 +2423,20 @@ export interface BlogP {
   id: number;
   heroPageBlocks?: (BannerBlock | CarouselHeroPage)[] | null;
   layout?:
-    | (
-        | DescrPriceBlock
-        | GuiaTourBlock
-        | GridToursBlock
-        | GridBlogsBlock
-        | PostRelationTourBlockType
-        | YouTubeLinksBlockType
-        | TextContentBlockType
-        | SociosBlockType
-        | ReconocimientosBlockType
-        | FormBitrixBlock
-        | RevistaBlock
-      )[]
-    | null;
+  | (
+    | DescrPriceBlock
+    | GuiaTourBlock
+    | GridToursBlock
+    | GridBlogsBlock
+    | PostRelationTourBlockType
+    | YouTubeLinksBlockType
+    | TextContentBlockType
+    | SociosBlockType
+    | ReconocimientosBlockType
+    | FormBitrixBlock
+    | RevistaBlock
+  )[]
+  | null;
   meta?: {
     title?: string | null;
     /**
@@ -2341,11 +2457,11 @@ export interface BlogP {
  */
 export interface ReconocimientosCarouselSelect<T extends boolean = true> {
   images?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
+  | T
+  | {
+    image?: T;
+    id?: T;
+  };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2356,11 +2472,11 @@ export interface ReconocimientosCarouselSelect<T extends boolean = true> {
  */
 export interface SociosCarouselSelect<T extends boolean = true> {
   images?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
+  | T
+  | {
+    image?: T;
+    id?: T;
+  };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2371,27 +2487,27 @@ export interface SociosCarouselSelect<T extends boolean = true> {
  */
 export interface FooterSelect<T extends boolean = true> {
   navItems?:
+  | T
+  | {
+    nameColumn?: T;
+    links?:
     | T
     | {
-        nameColumn?: T;
-        links?:
-          | T
-          | {
-              link?:
-                | T
-                | {
-                    type?: T;
-                    newTab?: T;
-                    reference?: T;
-                    url?: T;
-                    textInfo?: T;
-                    label?: T;
-                    icon?: T;
-                  };
-              id?: T;
-            };
-        id?: T;
+      link?:
+      | T
+      | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        textInfo?: T;
+        label?: T;
+        icon?: T;
       };
+      id?: T;
+    };
+    id?: T;
+  };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2402,12 +2518,12 @@ export interface FooterSelect<T extends boolean = true> {
  */
 export interface RedesNegocioSelect<T extends boolean = true> {
   network?:
-    | T
-    | {
-        iconName?: T;
-        link?: T;
-        id?: T;
-      };
+  | T
+  | {
+    iconName?: T;
+    link?: T;
+    id?: T;
+  };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2418,34 +2534,34 @@ export interface RedesNegocioSelect<T extends boolean = true> {
  */
 export interface TouPSelect<T extends boolean = true> {
   heroPageBlocks?:
-    | T
-    | {
-        banner?: T | BannerBlockSelect<T>;
-        carouselHeroPage?: T | CarouselHeroPageSelect<T>;
-      };
+  | T
+  | {
+    banner?: T | BannerBlockSelect<T>;
+    carouselHeroPage?: T | CarouselHeroPageSelect<T>;
+  };
   layout?:
-    | T
-    | {
-        descrPrice?: T | DescrPriceBlockSelect<T>;
-        guiaTour?: T | GuiaTourBlockSelect<T>;
-        gridTours?: T | GridToursBlockSelect<T>;
-        gridBlogs?: T | GridBlogsBlockSelect<T>;
-        rowBlock?: T | RowBlockSelect<T>;
-        postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
-        youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
-        textContent?: T | TextContentBlockTypeSelect<T>;
-        socios?: T | SociosBlockTypeSelect<T>;
-        reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
-        revistaBlock?: T | RevistaBlockSelect<T>;
-      };
+  | T
+  | {
+    descrPrice?: T | DescrPriceBlockSelect<T>;
+    guiaTour?: T | GuiaTourBlockSelect<T>;
+    gridTours?: T | GridToursBlockSelect<T>;
+    gridBlogs?: T | GridBlogsBlockSelect<T>;
+    rowBlock?: T | RowBlockSelect<T>;
+    postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
+    youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
+    textContent?: T | TextContentBlockTypeSelect<T>;
+    socios?: T | SociosBlockTypeSelect<T>;
+    reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+    formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+    revistaBlock?: T | RevistaBlockSelect<T>;
+  };
   meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
+  | T
+  | {
+    title?: T;
+    image?: T;
+    description?: T;
+  };
   createdBy?: T;
   publishedAt?: T;
   _status?: T;
@@ -2459,35 +2575,35 @@ export interface TouPSelect<T extends boolean = true> {
  */
 export interface PacPSelect<T extends boolean = true> {
   heroPageBlocks?:
-    | T
-    | {
-        banner?: T | BannerBlockSelect<T>;
-        carouselHeroPage?: T | CarouselHeroPageSelect<T>;
-      };
+  | T
+  | {
+    banner?: T | BannerBlockSelect<T>;
+    carouselHeroPage?: T | CarouselHeroPageSelect<T>;
+  };
   layout?:
-    | T
-    | {
-        descrPrice?: T | DescrPriceBlockSelect<T>;
-        guiaTour?: T | GuiaTourBlockSelect<T>;
-        gridTours?: T | GridToursBlockSelect<T>;
-        gridPaquetes?: T | GridPaquetesBlockSelect<T>;
-        gridBlogs?: T | GridBlogsBlockSelect<T>;
-        rowBlock?: T | RowBlockSelect<T>;
-        postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
-        youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
-        textContent?: T | TextContentBlockTypeSelect<T>;
-        socios?: T | SociosBlockTypeSelect<T>;
-        reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
-        revistaBlock?: T | RevistaBlockSelect<T>;
-      };
+  | T
+  | {
+    descrPrice?: T | DescrPriceBlockSelect<T>;
+    guiaTour?: T | GuiaTourBlockSelect<T>;
+    gridTours?: T | GridToursBlockSelect<T>;
+    gridPaquetes?: T | GridPaquetesBlockSelect<T>;
+    gridBlogs?: T | GridBlogsBlockSelect<T>;
+    rowBlock?: T | RowBlockSelect<T>;
+    postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
+    youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
+    textContent?: T | TextContentBlockTypeSelect<T>;
+    socios?: T | SociosBlockTypeSelect<T>;
+    reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+    formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+    revistaBlock?: T | RevistaBlockSelect<T>;
+  };
   meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
+  | T
+  | {
+    title?: T;
+    image?: T;
+    description?: T;
+  };
   createdBy?: T;
   publishedAt?: T;
   _status?: T;
@@ -2501,33 +2617,33 @@ export interface PacPSelect<T extends boolean = true> {
  */
 export interface BlogPSelect<T extends boolean = true> {
   heroPageBlocks?:
-    | T
-    | {
-        banner?: T | BannerBlockSelect<T>;
-        carouselHeroPage?: T | CarouselHeroPageSelect<T>;
-      };
+  | T
+  | {
+    banner?: T | BannerBlockSelect<T>;
+    carouselHeroPage?: T | CarouselHeroPageSelect<T>;
+  };
   layout?:
-    | T
-    | {
-        descrPrice?: T | DescrPriceBlockSelect<T>;
-        guiaTour?: T | GuiaTourBlockSelect<T>;
-        gridTours?: T | GridToursBlockSelect<T>;
-        gridBlogs?: T | GridBlogsBlockSelect<T>;
-        postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
-        youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
-        textContent?: T | TextContentBlockTypeSelect<T>;
-        socios?: T | SociosBlockTypeSelect<T>;
-        reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
-        formBitrixBlock?: T | FormBitrixBlockSelect<T>;
-        revistaBlock?: T | RevistaBlockSelect<T>;
-      };
+  | T
+  | {
+    descrPrice?: T | DescrPriceBlockSelect<T>;
+    guiaTour?: T | GuiaTourBlockSelect<T>;
+    gridTours?: T | GridToursBlockSelect<T>;
+    gridBlogs?: T | GridBlogsBlockSelect<T>;
+    postRelationTour?: T | PostRelationTourBlockTypeSelect<T>;
+    youTubeLinks?: T | YouTubeLinksBlockTypeSelect<T>;
+    textContent?: T | TextContentBlockTypeSelect<T>;
+    socios?: T | SociosBlockTypeSelect<T>;
+    reconocimientos?: T | ReconocimientosBlockTypeSelect<T>;
+    formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+    revistaBlock?: T | RevistaBlockSelect<T>;
+  };
   meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
+  | T
+  | {
+    title?: T;
+    image?: T;
+    description?: T;
+  };
   createdBy?: T;
   publishedAt?: T;
   _status?: T;
@@ -2544,22 +2660,22 @@ export interface TaskSchedulePublish {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
     doc?:
-      | ({
-          relationTo: 'pages';
-          value: number | Page;
-        } | null)
-      | ({
-          relationTo: 'tours';
-          value: number | Tour;
-        } | null)
-      | ({
-          relationTo: 'posts';
-          value: number | Post;
-        } | null)
-      | ({
-          relationTo: 'paquetes';
-          value: number | Paquete;
-        } | null);
+    | ({
+      relationTo: 'pages';
+      value: number | Page;
+    } | null)
+    | ({
+      relationTo: 'tours';
+      value: number | Tour;
+    } | null)
+    | ({
+      relationTo: 'posts';
+      value: number | Post;
+    } | null)
+    | ({
+      relationTo: 'paquetes';
+      value: number | Paquete;
+    } | null);
     global?: ('touP' | 'pacP' | 'blogP') | null;
     user?: (number | null) | User;
   };
@@ -2569,3 +2685,4 @@ export interface TaskSchedulePublish {
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
+

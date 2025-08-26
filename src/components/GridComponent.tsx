@@ -1,30 +1,44 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
+import Image from "@/components/PayloadImage"
 import { Card } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Grid3X3, LayoutGrid, List, Layers, Square } from "lucide-react"
+import { Media } from "@/cms-types"
 
 interface ImageItem {
   src?: string | null
   alt?: string
   id: string
-} 
+}
 
 interface ImageGridProps {
-  images: ImageItem[]
-  layout?: "grid" | "masonry" | "overlapping" | "list" | "mosaic"
+  images: Media[]
+  layout?: "grid" | "masonry" | "overlapping" | "list" | "mosaic" | "block"
 }
 
 export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
   //const [layout, setLayout] = useState(defaultLayout)
 
   // Ensure we have between 3-9 images
-  const validImages = images.slice(0, 9)
-  if (validImages.length < 3) {
-    console.warn("ImageGrid requires at least 3 images")
+  //
+  //
+  let validImages: Media[]
+  if (layout == "block") {
+
+    validImages = images
+
+  }
+  else {
+    validImages = images.slice(0, 9)
+
+    if (validImages.length < 3) {
+
+      console.warn("ImageGrid requires at least 3 images")
+    }
+
   }
 
   const layoutOptions = [
@@ -35,6 +49,26 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
     { value: "mosaic", label: "Mosaic", icon: Square },
   ]
 
+
+  const renderBlockLayout = () => {
+    return (
+      <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4`}>
+        {validImages.map((image, index) => (
+          <div key={image.id}>
+            <div className="relative aspect-square overflow-hidden rounded-lg">
+              <Image
+                media={image}
+                fill
+                className="object-cover transition-transform hover:scale-105"
+              />
+            </div>
+            <span>{image.alt}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   const renderGridLayout = () => {
     const gridCols = validImages.length <= 4 ? "lg:grid-cols-2" : validImages.length <= 6 ? "lg:grid-cols-3" : "lg:grid-cols-3"
 
@@ -43,11 +77,9 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
         {validImages.map((image, index) => (
           <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg">
             <Image
-              src={image.src || "/placeholder.svg"}
-              alt={image.alt || 'image'}
+              media={image}
               fill
               className="object-cover transition-transform hover:scale-105"
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             />
           </div>
         ))}
@@ -64,11 +96,9 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
           <div key={image.id} className="break-inside-avoid">
             <div className={`relative ${heights[index % heights.length]} overflow-hidden rounded-lg mb-4`}>
               <Image
-                src={image.src || "/placeholder.svg"}
-                alt={image.alt || 'image'}
+                media={image}
                 fill
                 className="object-cover transition-transform hover:scale-105"
-                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
               />
             </div>
           </div>
@@ -121,11 +151,9 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
               }}
             >
               <Image
-                src={image.src || "/placeholder.svg"}
-                alt={image.alt || 'image'}
+                media={image}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 80vw, (max-width: 1200px) 60vw, 50vw"
               />
             </div>
           )
@@ -142,11 +170,9 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
             <div className="flex flex-col md:flex-row">
               <div className="relative w-full md:w-48 h-48 md:h-32">
                 <Image
-                  src={image.src || "/placeholder.svg"}
-                  alt={image.alt || 'image'}
+                  media={image}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 200px"
                 />
               </div>
               <div className="p-4 flex-1">
@@ -167,29 +193,23 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
         <div className="grid lg:grid-cols-2 lg:grid-rows-2 gap-2 md:gap-4 h-[400px] md:h-[500px] w-full">
           <div className="relative row-span-2 overflow-hidden rounded-lg">
             <Image
-              src={validImages[0].src || "/placeholder.svg"}
-              alt={validImages[0].alt || 'image'}
+              media={validImages[0]}
               fill
               className="object-cover"
-              sizes="50vw"
             />
           </div>
           <div className="relative overflow-hidden rounded-lg">
             <Image
-              src={validImages[1].src || "/placeholder.svg"}
-              alt={validImages[1].alt || 'image'}
+              media={validImages[1]}
               fill
               className="object-cover"
-              sizes="50vw"
             />
           </div>
           <div className="relative overflow-hidden rounded-lg">
             <Image
-              src={validImages[2].src || "/placeholder.svg"}
-              alt={validImages[2].alt || 'image'}
+              media={validImages[2]}
               fill
               className="object-cover"
-              sizes="50vw"
             />
           </div>
         </div>
@@ -201,7 +221,10 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
         <div className="grid grid-cols-2 gap-2 md:gap-4 h-[400px] md:h-[500px] w-full">
           {validImages.map((image) => (
             <div key={image.id} className="relative overflow-hidden rounded-lg">
-              <Image src={image.src || "/placeholder.svg"} alt={image.alt || 'image'} fill className="object-cover" sizes="50vw" />
+              <Image media={image}
+                fill
+                className="object-cover"
+              />
             </div>
           ))}
         </div>
@@ -213,52 +236,46 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
       <div className="grid grid-cols-4 grid-rows-3 gap-2 md:gap-4 h-[500px] md:h-[600px] w-full">
         <div className="relative col-span-2 row-span-2 overflow-hidden rounded-lg">
           <Image
-            src={validImages[0].src || "/placeholder.svg"}
-            alt={validImages[0].alt || 'image'}
+            media={validImages[0]}
             fill
             className="object-cover"
-            sizes="50vw"
           />
         </div>
         <div className="relative overflow-hidden rounded-lg">
           <Image
-            src={validImages[1].src || "/placeholder.svg"}
-            alt={validImages[1].alt || 'image'}
+            media={validImages[1]}
             fill
             className="object-cover"
-            sizes="25vw"
           />
         </div>
         <div className="relative overflow-hidden rounded-lg">
           <Image
-            src={validImages[2].src || "/placeholder.svg"}
-            alt={validImages[2].alt || 'image'}
+            media={validImages[2]}
             fill
             className="object-cover"
-            sizes="25vw"
           />
         </div>
         <div className="relative overflow-hidden rounded-lg">
           <Image
-            src={validImages[3].src || "/placeholder.svg"}
-            alt={validImages[3].alt || 'image'}
+            media={validImages[3]}
             fill
             className="object-cover"
-            sizes="25vw"
           />
         </div>
         <div className="relative overflow-hidden rounded-lg">
           <Image
-            src={validImages[4].src || "/placeholder.svg"}
-            alt={validImages[4].alt || 'image'}
+            media={validImages[4]}
             fill
             className="object-cover"
-            sizes="25vw"
           />
         </div>
         {validImages.slice(5).map((image, index) => (
           <div key={image.id} className="relative overflow-hidden rounded-lg">
-            <Image src={image.src || "/placeholder.svg"} alt={image.alt || 'image'} fill className="object-cover" sizes="25vw" />
+            <Image
+              media={image}
+              fill
+              className="object-cover"
+            />
           </div>
         ))}
       </div>
@@ -275,6 +292,8 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
         return renderListLayout()
       case "mosaic":
         return renderMosaicLayout()
+      case "block":
+        return renderBlockLayout()
       default:
         return renderGridLayout()
     }
@@ -286,8 +305,6 @@ export default function ImageGrid({ images, layout = "grid" }: ImageGridProps) {
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">
-            {validImages.length < 3 && "Minimum 3 images required"}
-            {validImages.length > 9 && "Showing first 9 images"}
           </span>
         </div>
 

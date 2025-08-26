@@ -9,10 +9,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label'; // Asumiendo que tienes un componente Label o usa html label
 import { Destination, TourCategory } from '@/cms-types';
-import {parseAsArrayOf,useQueryState,parseAsString} from 'nuqs'
+import { parseAsArrayOf, useQueryState, parseAsString } from 'nuqs'
 import * as SliderPrimitive from "@radix-ui/react-slider"
 import { useSharedState } from '@/hooks/sharedContextDestinos';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
@@ -29,14 +34,15 @@ interface LeftPanelSearch {
 
 
 
-export function LeftPanelSearch({categories,title,destinations}:LeftPanelSearch){
-  const isMobile = useMobile({breakpoint:1024})
+export function LeftPanelSearch({ categories, title, destinations }: LeftPanelSearch) {
+  console.log(destinations)
+  const isMobile = useMobile({ breakpoint: 1024 })
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
-  return(
+  return (
     <div>
-      {isMobile 
-      ?
-      <div className=" absolute mt-[-25px] ">
+      {isMobile
+        ?
+        <div className=" absolute mt-[-25px] ">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen} >
             <SheetTrigger asChild>
               <Button variant="outline" size="sm">
@@ -44,30 +50,30 @@ export function LeftPanelSearch({categories,title,destinations}:LeftPanelSearch)
                 Filtros
               </Button>
             </SheetTrigger>
-    <SheetContent side="left" className="">
-      <SheetHeader>
-        <SheetTitle>Filtrar Tours</SheetTitle>
-      </SheetHeader>
-    <div className="mt-6 overflow-y-auto">
-    <div className='flex flex-col w-full space-y-10 p-4'>
-      <TourSearchComponent destinations={destinations}/>
-      <TourCategoryList categories={categories}/>
-      <PriceFilter />
-    </div>
-        </div>
+            <SheetContent side="left" className="">
+              <SheetHeader>
+                <SheetTitle>Filtrar Tours</SheetTitle>
+              </SheetHeader>
+              <div className="mt-6 overflow-y-auto">
+                <div className='flex flex-col w-full space-y-10 p-4'>
+                  <TourSearchComponent destinations={destinations} />
+                  <TourCategoryList categories={categories} />
+                  <PriceFilter />
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
         :
         <div className='flex flex-col w-full space-y-10 p-4'>
-      <TourSearchComponent destinations={destinations}/>
-      <TourCategoryList categories={categories}/>
-      <PriceFilter />
+          <TourSearchComponent destinations={destinations} />
+          <TourCategoryList categories={categories} />
+          <PriceFilter />
         </div>
       }
-      
-    
-    
+
+
+
     </div>
   )
 }
@@ -78,9 +84,9 @@ interface TourSearchComponentProps {
 
 
 
- function TourSearchComponent({destinations}:TourSearchComponentProps) {
+function TourSearchComponent({ destinations }: TourSearchComponentProps) {
   const [isOpen, setIsOpen] = React.useState(false); // Default to open
-  const [destinoTemp,setDestinoTemp] = React.useState("")
+  const [destinoTemp, setDestinoTemp] = React.useState("")
 
   const selectedOption = destinations.find((dest) => dest.name === destinoTemp)
   return (
@@ -102,10 +108,10 @@ interface TourSearchComponentProps {
               <div className="mt-1">
                 <MapPin className="w-6 h-6 text-[#2970b7] " />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 ">
                 <label className="block text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-medium mb-2">Destino</label>
-                <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-                  <CollapsibleTrigger asChild>
+                <Popover open={isOpen} onOpenChange={setIsOpen}>
+                  <PopoverTrigger asChild>
                     <button
                       type="button"
                       className="w-[clamp(170px,16.6vw,320px)] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
@@ -122,9 +128,9 @@ interface TourSearchComponentProps {
                         className={`w-5 h-5 text-[#adadac] transition-transform duration-200 absolute right-3 ${isOpen ? "rotate-180" : ""}`}
                       />
                     </button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="relative">
-                    <div className="absolute top-1 left-0  bg-white border border-[#d9d9d9] rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                  </PopoverTrigger>
+                  <PopoverContent className="relative border-none p-0">
+                    <div className="w-fit absolute left-1/5 bg-white border border-[#d9d9d9] rounded-lg shadow-lg  max-h-60 z-80">
                       {destinations.map((destination) => (
                         <div
                           key={destination.name}
@@ -139,8 +145,8 @@ interface TourSearchComponentProps {
                         </div>
                       ))}
                     </div>
-                  </CollapsibleContent>
-                </Collapsible>
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
           </div>
@@ -161,11 +167,11 @@ interface TourSearchComponentProps {
           */}
           {/* Search Button */}
           <Link href={`/tours?destination=${destinoTemp}&categories=`}>
-          <button 
-          className="w-full bg-[#2970b7] text-white py-4 px-6 rounded-2xl font-medium text-lg lg:text-[clamp(10.9px,1vw,20.48px)] flex items-center justify-center gap-3 hover:bg-[#2970b7]/90 transition-colors">
-            Buscar
-            <Search className="lg:w-3 xl:w-5 lg:h-3 xl:h-5" />
-          </button>
+            <button
+              className="w-full bg-[#2970b7] text-white py-4 px-6 rounded-2xl font-medium text-lg lg:text-[clamp(10.9px,1vw,20.48px)] flex items-center justify-center gap-3 hover:bg-[#2970b7]/90 transition-colors">
+              Buscar
+              <Search className="lg:w-3 xl:w-5 lg:h-3 xl:h-5" />
+            </button>
           </Link>
         </div>
       </div>
@@ -173,9 +179,9 @@ interface TourSearchComponentProps {
   )
 }
 
-export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps) {
+export function TourSearchBoxHorizontal({ destinations }: TourSearchComponentProps) {
   const [isOpen, setIsOpen] = React.useState(false); // Default to open
-  const [destinoTemp,setDestinoTemp] = React.useState("Cusco")
+  const [destinoTemp, setDestinoTemp] = React.useState("Cusco")
 
   const selectedOption = destinations.find((dest) => dest.name === destinoTemp)
   return (
@@ -183,52 +189,52 @@ export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps
       <div className="flex flex-col lg:flex-row items-end lg:items-center justify-between gap-3 lg:gap-8">
         {/* Destinos Dropdown */}
         <div className='flex items-center lg:gap-3 flex-1 '>
-        <div className="flex items-center lg:gap-3 flex-1 relative">
-          <MapPin className="w-5 h-5 lg:w-8 lg:h-8 text-[#2970b7] flex-shrink-0 hidden lg:block" />
-          <div className="relative flex-1"></div>
-          <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-                  <CollapsibleTrigger asChild>
-                    <button
-                      type="button"
-                      className="min-w-[180px] lg:min-w-[250px] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
+          <div className="flex items-center lg:gap-3 flex-1 relative">
+            <MapPin className="w-5 h-5 lg:w-8 lg:h-8 text-[#2970b7] flex-shrink-0 hidden lg:block" />
+            <div className="relative flex-1"></div>
+            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+              <CollapsibleTrigger asChild>
+                <button
+                  type="button"
+                  className="min-w-[180px] lg:min-w-[250px] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
+                >
+                  {selectedOption ? (
+                    <>
+                      <MapPin className="w-4 h-4 text-[#2970b7]" />
+                      <span className="text-[#333]">{selectedOption.name}</span>
+                    </>
+                  ) : (
+                    <span className="text-[#adadac]">Seleccionar destino</span>
+                  )}
+                  <ChevronDown
+                    className={`w-5 h-5 text-[#adadac] transition-transform duration-200 absolute right-3 ${isOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="relative">
+                <div className="absolute top-1 left-0 right-0 bg-white border border-[#d9d9d9] rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                  {destinations.map((destination) => (
+                    <div
+                      key={destination.name}
+                      onClick={() => {
+                        setDestinoTemp(destination.name)
+                        setIsOpen(false)
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg cursor-pointer"
                     >
-                      {selectedOption ? (
-                        <>
-                          <MapPin className="w-4 h-4 text-[#2970b7]" />
-                          <span className="text-[#333]">{selectedOption.name}</span>
-                        </>
-                      ) : (
-                        <span className="text-[#adadac]">Seleccionar destino</span>
-                      )}
-                      <ChevronDown
-                        className={`w-5 h-5 text-[#adadac] transition-transform duration-200 absolute right-3 ${isOpen ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="relative">
-                    <div className="absolute top-1 left-0 right-0 bg-white border border-[#d9d9d9] rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
-                      {destinations.map((destination) => (
-                        <div
-                          key={destination.name}
-                          onClick={() => {
-                            setDestinoTemp(destination.name)
-                            setIsOpen(false)
-                          }}
-                          className="w-full text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg cursor-pointer"
-                        >
-                          <MapPin className="w-4 h-4 text-[#2970b7]" />
-                          {destination.name}
-                        </div>
-                      ))}
+                      <MapPin className="w-4 h-4 text-[#2970b7]" />
+                      {destination.name}
                     </div>
-                  </CollapsibleContent>
-                </Collapsible>
-        </div>
-        {/* Separador */}
-        <div className="h-0 w-0 lg:w-px lg:h-12 bg-gray-200"></div>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+          {/* Separador */}
+          <div className="h-0 w-0 lg:w-px lg:h-12 bg-gray-200"></div>
 
-        {/* Selector de día */}
-        {/* 
+          {/* Selector de día */}
+          {/* 
         <div className="flex items-center gap-3 flex-1">
           <Calendar className="w-6 h-6 text-[#79368c] fill-current flex-shrink-0" />
           <div className="flex items-center gap-2 cursor-pointer">
@@ -239,15 +245,15 @@ export  function TourSearchBoxHorizontal({destinations}:TourSearchComponentProps
         */}
         </div>
 
-        
+
 
         {/* Botón de búsqueda */}
         <Link href={`/tours?destination=${destinoTemp}&categories=`} >
-        <button className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg"
-        >
-          <span>Buscar</span>
-          <Search className="w-5 h-5" />
-        </button>
+          <button className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg"
+          >
+            <span>Buscar</span>
+            <Search className="w-5 h-5" />
+          </button>
         </Link>
       </div>
     </div>
@@ -267,7 +273,7 @@ interface TourCategoryListProps {
 
 function TourCategoryList({ categories, title = "Categorías" }: TourCategoryListProps) {
   const [isOpen, setIsOpen] = React.useState(true)
-  const [selectedCategories, setSelectedCategories] = useQueryState('categories', parseAsArrayOf(parseAsString).withOptions({shallow:false}))
+  const [selectedCategories, setSelectedCategories] = useQueryState('categories', parseAsArrayOf(parseAsString).withOptions({ shallow: false }))
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
@@ -331,24 +337,24 @@ function TourCategoryList({ categories, title = "Categorías" }: TourCategoryLis
 }
 
 
-export  function PriceFilter() {
+export function PriceFilter() {
   const minPrice = 0
   const maxPrice = 1999
 
-  const {priceOne:priceRange,setPriceOne:setPriceRange} = useSharedState()
+  const { priceOne: priceRange, setPriceOne: setPriceRange } = useSharedState()
 
   return (
     <div className="w-full  mx-auto rounded-3xl border border-[#e3e3e3] bg-white p-6">
-      
-      <div  className="flex items-center gap-3">
-      <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
-      <h2 className="text-[#2970b7] text-xl font-semibold tracking-wide">Filtrar Precio</h2>
+
+      <div className="flex items-center gap-3">
+        <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
+        <h2 className="text-[#2970b7] text-xl font-semibold tracking-wide">Filtrar Precio</h2>
       </div>
       <div className="relative pt-4 pb-8">
         <SliderPrimitive.Root
           className="relative flex w-full touch-none select-none items-center"
           value={priceRange}
-          onValueChange={(setPriceRange as (value: number[])=>void)}
+          onValueChange={(setPriceRange as (value: number[]) => void)}
           min={minPrice}
           max={maxPrice}
           step={10}

@@ -11,8 +11,10 @@ import {
   RichText as ConvertRichText,
 } from '@payloadcms/richtext-lexical/react'
 
+import GridComponent from "@/components/GridComponent";
 
 import type {
+  Media,
   MediaBlock as MediaBlockProps,
 } from '@/cms-types'
 import { cn } from '@/utilities/ui'
@@ -20,7 +22,7 @@ import { customListItemConverter } from './converts/itemNode'
 
 type NodeTypes =
   | DefaultNodeTypes
-  | SerializedBlockNode< MediaBlockProps >
+  | SerializedBlockNode<MediaBlockProps>
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   const { value, relationTo } = linkNode.fields.doc!
@@ -33,28 +35,33 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => {
   console.log('hereJSX')
-    console.log(defaultConverters)
-  return({
-  ...defaultConverters,
-  ...LinkJSXConverter({ internalDocToHref }),
-  ...customListItemConverter,
-  blocks: {
-    mediaBlock: ({ node }) => (
-      <MediaBlock
-        className="col-start-1 col-span-3"
-        imgClassName="m-0"
-        {...node.fields}
-        captionClassName="mx-auto max-w-[48rem]"
-        enableGutter={false}
-        disableInnerContainer={true}
-      />
-    ),
-  },
-})}
+  console.log(defaultConverters)
+  return ({
+    ...defaultConverters,
+    ...LinkJSXConverter({ internalDocToHref }),
+    ...customListItemConverter,
+    blocks: {
+      mediaBlock: ({ node }) => (
+        <MediaBlock
+          className="col-start-1 col-span-3"
+          imgClassName="m-0"
+          {...node.fields}
+          captionClassName="mx-auto max-w-[48rem]"
+          enableGutter={false}
+          disableInnerContainer={true}
+        />
+      ),
+      gridImages: ({ node }) => (
+        <GridComponent images={node.fields.Image.map((ele) => ele.image as Media)} layout={'block'} />
+      )
+
+    },
+  })
+}
 
 type Props = {
   data: any
- enableGutter?: boolean
+  enableGutter?: boolean
   enableProse?: boolean
 } & React.HTMLAttributes<HTMLDivElement>
 
