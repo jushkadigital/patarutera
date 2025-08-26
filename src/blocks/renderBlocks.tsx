@@ -20,6 +20,7 @@ import { RevistaBlock } from './RevistaBlock'
 import { FormBitrix } from './FormBitrix'
 import { GridBlogs } from './GridBlog'
 import { AdicionalBlock } from './AdicionalBlock'
+import { DataTourBlock } from './DataTour'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -42,8 +43,8 @@ const blockComponents = {
   guiaTour: GuiaTour,
   revistaBlock: RevistaBlock,
   formBitrixBlock: FormBitrix,
-  adicionalTour: AdicionalBlock
-
+  adicionalTour: AdicionalBlock,
+  dataTour: DataTourBlock
 }
 
 

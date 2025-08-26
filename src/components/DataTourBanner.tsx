@@ -14,23 +14,22 @@ interface Props {
 const imageObj = {
   duration: '/durationData.svg',
   groupSize: '/groupSizeData.svg',
-  difficulty: '/difficulty.svg',
+  difficulty: '/difficultyData.svg',
   altitud: '/altitudData.svg',
-  idioma: '/idiomaData.svg'
+  idioma: '/IdiomaData.svg'
 }
 
 
-export default function SupportBannerBlock({ text, title, imgUrl, className }: Props) {
+export default function DataTourBanner({ text, title, imgUrl, className }: Props) {
 
-  const classessLine = cn('w-1', 'h-12', `bg-[var(--bg-color)]`, 'rounded-full')
   return (
-    <div className={cn('flex flex-row', className)}>
-      <div className="relative">
-        <Image src={imageObj[imgUrl]} alt={`logo ${title}`} fill className="object-cover" />
+    <div className={cn('flex flex-row gap-x-4 border rounded-2xl md:border-none md:rounded-none py-3 px-2', className)}>
+      <div className="relative max-w-[30%] min-w-10 flex justify-center items-center">
+        <Image src={imageObj[imgUrl]} alt={`logo ${title}`} fill className="object-contain" />
       </div>
-      <div className="w-[70%]">
-        <div>{title}</div>
-        <div>{text}</div>
+      <div className="w-[60%] flex flex-col">
+        <div className="text-[#2970B7] md:text-[14px]">{title}</div>
+        <div className="text-[#6A6A6A] md:text-[14px]">{text}</div>
       </div>
     </div>
   )

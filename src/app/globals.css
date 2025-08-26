@@ -124,6 +124,9 @@
 
 @layer components {
 }
+
+
+
 .multi-line-truncate {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -907,7 +910,35 @@ html{
 @media (min-width: 768px) {
   /* Tus estilos para md van aquí */
     /* Tus estilos para lg van aquí */
-  
+  .divisor-x-corto {
+      gap: 1.5rem; /* Espacio entre elementos */
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    /* Selecciona todos los hijos directos excepto el primero */
+    .divisor-x-corto > *:not(:first-child) {
+      /* Necesario para posicionar el pseudo-elemento dentro */
+      position: relative;
+      padding-left: 1.5rem; /* Espacio para que el divisor no se solape con el contenido */
+    }
+
+    .divisor-x-corto > *:not(:first-child)::before {
+      content: ''; /* Obligatorio para que se muestre el pseudo-elemento */
+      position: absolute; /* Lo sacamos del flujo normal del documento */
+      
+      /* Posicionamiento del divisor */
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%); /* Truco para centrar verticalmente perfecto */
+
+      /* Estilo del divisor (¡aquí está la magia!) */
+      height: 30px;           /* <<< Altura a la mitad del contenedor */
+      width: 1px;              /* <<< Grosor de 3px, como en divider-x-3 */
+      background-color: #9ca3af; /* Color del divisor */
+      border-radius: 99px;     /* Opcional: para redondear los bordes del divisor */
+    }
+
 .prose-custom {
   font-family: 'Poppins', sans-serif;
   line-height: 1.7; /* Un poco más de aire para mejorar la lectura */
