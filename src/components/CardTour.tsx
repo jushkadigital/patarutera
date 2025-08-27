@@ -29,7 +29,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
 
   if (mode === "grid") {
     return (
-      <Card className="w-full max-w-[435px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[clamp(0px,166vw,1341.2px)] sm:h-[clamp(190.44px,74vw,883.2px)] lg:h-[clamp(190.44px,46vw,883.2px)] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
+      <Card className="w-full max-w-[435px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[clamp(0px,166vw,1341.2px)] sm:h-[clamp(190.44px,74vw,883.2px)] lg:h-[clamp(190.44px,48vw,883.2px)] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         <Link href={`/tours/${unitData.slug}`} className="h-[63%]">
           <div className="relative h-full  w-full overflow-hidden">
             <div className="absolute top-2 left-2 sm:top-4 md:top-3 lg:top-1 sm:left-4 z-10 w-fit">
@@ -63,7 +63,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           </Link>
           {/* miniDescription */}
           <div className="text-[#6a6a6a]">
-            <RichText data={unitData.miniDescription} enableGutter={false} className="h-[clamp(0px,10.07vw,124px)] sm:h-[clamp(0px,6.07vw,124px)] lg:h-[clamp(13.8px,3.3vw,64px)]! !my-1 lg:!my-1 prose-custom-lg  prose-pink" />
+            <RichText data={unitData.miniDescription} enableGutter={false} className="h-[clamp(0px,10.07vw,124px)] sm:h-[clamp(0px,6.07vw,124px)] lg:h-[clamp(13.8px,4.7vw,84px)]! !my-1 lg:!my-1 prose-custom-lg  prose-pink" />
           </div>
 
           <div className="flex flex-row flex-wrap justify-around lg:justify-around items-center sm:items-end mb-0 px-2  gap-0 sm:gap-0  mt-[clamp(0px,2.41vw,24.73px)] lg:mt-[clamp(2.7px,0.6vw,12.8px)]">

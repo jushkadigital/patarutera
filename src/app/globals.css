@@ -1080,10 +1080,11 @@ html{
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
 }
+
 .prose-custom-lg {
   font-family: 'Poppins', sans-serif;
   line-height: 1.7; /* Un poco más de aire para mejorar la lectura */
-  font-size: clamp(3px,0.8vw,15px);   /* Tamaño de fuente base ligeramente más grande */
+  font-size: clamp(0px,1.50vw,27px);   /* Tamaño de fuente base ligeramente más grande */
   color: #333;        /* Color de texto principal más suave que el negro puro */
 }
 
@@ -1218,7 +1219,6 @@ html{
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
 }
-
 
 
 }
