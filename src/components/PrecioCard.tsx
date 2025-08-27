@@ -65,11 +65,11 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
     try {
       // Simulamos una llamada a una API para enviar el correo o guardar en la BD.
 
-    if (typeof window.fbq === 'function' ) {
-      window.fbq('track', 'Lead');
-    }
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'Lead');
+      }
       const cleanedNumber = phoneNumber.replace(/[^0-9]/g, '')
-      const finalMessage =  `Hola soy ${data.nombre} estoy interesado en ${origen}:${title} somos ${data.numberPasajeros} pasajeros , mensaje adicional: ${data.mensaje}`
+      const finalMessage = `Hola soy ${data.nombre} estoy interesado en ${origen}:${title} somos ${data.numberPasajeros} pasajeros , mensaje adicional: ${data.mensaje}`
       // En el objeto enviado, incluimos el 'origen' que viene de las props.
       const encodedMessage = encodeURIComponent(finalMessage)
       const waUrl = `https://wa.me/${cleanedNumber}?text=${encodedMessage}`
@@ -91,13 +91,13 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
 
 
 
-function formatMoney(amount: number, currency: string = "PEN", locale: string = "en-US"): string {
-  return amount.toLocaleString(locale, {
-    currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-}
+  function formatMoney(amount: number, currency: string = "PEN", locale: string = "en-US"): string {
+    return amount.toLocaleString(locale, {
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
 
   return (
     // 5. ESTRUCTURA Y ESTILOS DEL COMPONENTE ADAPTADOS
@@ -108,20 +108,20 @@ function formatMoney(amount: number, currency: string = "PEN", locale: string = 
           <div className="fixed bottom-0 right-0 z-80 w-full">
 
             <Dialog open={open} onOpenChange={setOpen}>
-              <div className={`w-full px-10 bg-[#FFF] ${open ?'hidden' : ''}  border-gray-300 border-t-[0.5px] h-24 flex flex-row justify-center items-center`}>
-              <div className="w-2/3">
-                <div className="text-gray-600"> De: <span className="text-[#25D366] ">S/.{formatMoney(price)} </span></div>
-                <div>{title}</div>
+              <div className={`w-full px-10 bg-[#FFF] ${open ? 'hidden' : ''}  border-gray-300 border-t-[0.5px] h-24 flex flex-row justify-center items-center`}>
+                <div className="w-2/3">
+                  <div className="text-gray-600"> De: <span className="text-[#25D366] ">S/.{formatMoney(price)} </span></div>
+                  <div>{title}</div>
 
-              </div>
-              <DialogTrigger asChild className="w-1/3">
-                <Button className="bg-[#25D366] rounded-full text-white py-7! font-bold text-lg" onClick={()=>setOpen(false)}>
-                  RESERVAR
-                </Button>
-              </DialogTrigger>
+                </div>
+                <DialogTrigger asChild className="w-1/3">
+                  <Button className="bg-[#25D366]  rounded-full text-white xs:py-3! sm:py-7! font-bold text-xs sm:text-lg" onClick={() => setOpen(false)}>
+                    RESERVAR
+                  </Button>
+                </DialogTrigger>
               </div>
 
-              <DialogContent className="">
+              <DialogContent className="pb-0! px-0! mx-0!">
                 <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200">
                   <div className="bg-[#2970b7] text-white text-center py-6 rounded-t-3xl">
                     <h1 className="text-2xl font-bold tracking-wide">{priceTitle}</h1>
@@ -129,13 +129,13 @@ function formatMoney(amount: number, currency: string = "PEN", locale: string = 
                   <div className="text-center">
                     <p className="text-[#2970b7] text-lg mb-2">{prevText}</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-[#2970b7] text-5xl font-bold">S/. {price}</span>
-                      <span className="text-[#a0a0a0] text-lg">/ {nextText}</span>
+                      <span className="text-[#2970b7] text-3xl font-bold">S/. {price}</span>
+                      <span className="text-[#a0a0a0] text-md">/ {nextText}</span>
                     </div>
                     <div className="w-full h-1 bg-[#efba06] mt-4 rounded-full"></div>
                   </div>
 
-                  <div className="p-8 space-y-6">
+                  <div className="p-2 space-y-6">
                     {/* Se utiliza 'handleSubmit' para envolver nuestro 'onSubmit' */}
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                       {/* Campo: Nombre */}
@@ -148,7 +148,7 @@ function formatMoney(amount: number, currency: string = "PEN", locale: string = 
                             required: "El nombre es obligatorio.",
                             minLength: { value: 3, message: "El nombre debe tener al menos 3 caracteres." },
                           })}
-                          className={`w-full pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-full text-gray-700 focus:outline-none transition-colors ${errors.nombre ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
+                          className={`w-full text-md pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-full text-gray-700 focus:outline-none transition-colors ${errors.nombre ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
                             }`}
                         />
                         {errors.nombre && <p className="text-red-500 text-xs mt-1 ml-4">{errors.nombre.message}</p>}
@@ -160,11 +160,11 @@ function formatMoney(amount: number, currency: string = "PEN", locale: string = 
                         <input
                           type="number"
                           placeholder="Numero de Pasajeros"
-                        {...register("numberPasajeros", {
-                          required: "Introduzca el número",
-                          min: { value: 1, message: "Debe ser al menos 1" },
+                          {...register("numberPasajeros", {
+                            required: "Introduzca el número",
+                            min: { value: 1, message: "Debe ser al menos 1" },
                           })}
-                          className={`w-full pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-full text-gray-700 focus:outline-none transition-colors ${errors.numberPasajeros ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
+                          className={`w-full text-md pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-full text-gray-700 focus:outline-none transition-colors ${errors.numberPasajeros ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
                             }`}
                         />
                         {errors.numberPasajeros && <p className="text-red-500 text-xs mt-1 ml-4">{errors.numberPasajeros.message}</p>}
@@ -180,7 +180,7 @@ function formatMoney(amount: number, currency: string = "PEN", locale: string = 
                             required: "El mensaje no puede estar vacío.",
                             maxLength: { value: 500, message: "El mensaje no puede superar los 500 caracteres." },
                           })}
-                          className={`w-full pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-2xl text-gray-700 focus:outline-none transition-colors resize-none ${errors.mensaje ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
+                          className={`w-full text-md! pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-2xl text-gray-700 focus:outline-none transition-colors resize-none ${errors.mensaje ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
                             }`}
                         />
                         {errors.mensaje && <p className="text-red-500 text-xs mt-1 ml-4">{errors.mensaje.message}</p>}
@@ -203,7 +203,7 @@ function formatMoney(amount: number, currency: string = "PEN", locale: string = 
                         className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white text-lg font-bold py-3 rounded-full hover:bg-[#d8a605] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? "ENVIANDO..." : "ENVIAR MENSAJE"}
-                        {!isSubmitting && <SvgWhatsapp size={20}  />}
+                        {!isSubmitting && <SvgWhatsapp size={20} />}
                       </button>
                     </form>
                   </div>
@@ -226,7 +226,7 @@ function formatMoney(amount: number, currency: string = "PEN", locale: string = 
                     size='icon'
                     className="rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90 size-15"
                   >
-                    <SvgWhatsapp size={40} className="size-6"/>
+                    <SvgWhatsapp size={40} className="size-6" />
                     <span className="sr-only">Abrir formulario de contacto</span>
                   </Button>
                 </Link>
@@ -276,9 +276,9 @@ function formatMoney(amount: number, currency: string = "PEN", locale: string = 
                     type="number"
                     placeholder="Numero de Pasajeros"
                     {...register("numberPasajeros", {
-                          required: "Introduzca el número",
-                          min: { value: 1, message: "Debe ser al menos 1" },
-                          })}
+                      required: "Introduzca el número",
+                      min: { value: 1, message: "Debe ser al menos 1" },
+                    })}
                     className={`w-full text-lg lg:text-[clamp(9.5px,0.9vw,17.9px)] pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-full text-gray-700 focus:outline-none transition-colors ${errors.numberPasajeros ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
                       }`}
                   />
