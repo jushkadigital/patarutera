@@ -22,8 +22,8 @@ export const TopHeader = ({ isHome, socialNetworks, email }: Props) => {
 
   return (
     <div className={cn(isHome ? 'h-17 overflow-visible ' : 'bg-[#2970B7]')}>
-      <div className={`flex justify-between py-3 px-[clamp(44px,5.7vw,110px)] items-center`} >
-        <div className='flex flex-row flex-wrap justify-center items-center gap-x-0 md:gap-x-4 lg:gap-x-5 text-[11px]  sm:text-xs lg:text-md text-white'>
+      <div className={`flex justify-between py-3 px-[clamp(21px,7.7vw,44px)]  md:px-[clamp(44px,5.7vw,110px)] items-center`} >
+        <div className='flex flex-row flex-wrap justify-center items-center gap-x-2 md:gap-x-4 lg:gap-x-5 text-[11px]  sm:text-xs lg:text-md text-white'>
           <Mail size={'icon'} className='size-4' color='#fff' />
           {email}
           {
@@ -46,7 +46,7 @@ export const TopHeader = ({ isHome, socialNetworks, email }: Props) => {
           </div>
 
         </div>
-        <div className='flex flex-row justify-center items-center gap-x-2 sm:gap-x-0'>
+        <div className='flex flex-row justify-center items-center gap-x-2 sm:gap-x-4'>
           {
             isMobile ?
               <SvgWhatsapp size={20} />

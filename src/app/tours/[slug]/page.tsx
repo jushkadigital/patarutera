@@ -47,27 +47,27 @@ export default async function TourPage({ params: paramsPromise, searchParams: se
     notFound();
   }
 
-  const { layout, heroTour ,title} = tour; // Assuming tours have layout and heroPageBlocks
+  const { layout, heroTour, title } = tour; // Assuming tours have layout and heroPageBlocks
 
   const schema = TourSchema(tour)
 
 
   return (
     <>
-    <Script type={'application/ld+json'} strategy={'lazyOnload'}>
-    {JSON.stringify(schema)}
-    </Script>
-    <div className="">
-      {draft && <LivePreviewListener />}
-      <div className="flex flex-col-reverse md:flex-col mt-10 md:mt-0">
-      <RenderHero heroBlocks={heroTour} title={title}/>
-      <div className='flex flex-col space-y-10'>
-      <div className='w-full'><h1 className='text-center text-4xl lg:text-[clamp(16.3px,2.6vw,50.72px)]  text-[#2970b7] font-bold italic'>{title}</h1></div>
-      <RenderBlocks blocks={layout} context={{nameCollection: 'tour',title:title}} />
+      <Script type={'application/ld+json'} strategy={'lazyOnload'}>
+        {JSON.stringify(schema)}
+      </Script>
+      <div className="">
+        {draft && <LivePreviewListener />}
+        <div className="flex flex-col md:flex-col mt-10 md:mt-0">
+          <RenderHero heroBlocks={heroTour} title={title} />
+          <div className='flex flex-col space-y-10'>
+            <div className='w-full'><h1 className='text-center text-4xl lg:text-[clamp(16.3px,2.6vw,50.72px)]  text-[#2970b7] font-bold italic'>{title}</h1></div>
+            <RenderBlocks blocks={layout} context={{ nameCollection: 'tour', title: title }} />
+          </div>
+        </div>
+
       </div>
-      </div>
-      
-    </div>
     </>
   );
 }
@@ -79,13 +79,13 @@ const queryTourBySlug = cache(async ({ slug }: { slug: string }) => {
   const result = await data.json();
   return result.docs?.[0] || null;
 });
-export async function generateMetadata({ params:paramsPromise }: Args,parent:ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata({ params: paramsPromise }: Args, parent: ResolvingMetadata): Promise<Metadata> {
 
   console.log('gaa')
-   const { slug ='home' } = await paramsPromise;
-   const page = await queryTourBySlug({slug});
-   return generateMetaPage({doc:page})
-   
+  const { slug = 'home' } = await paramsPromise;
+  const page = await queryTourBySlug({ slug });
+  return generateMetaPage({ doc: page })
+
 }
 
 
