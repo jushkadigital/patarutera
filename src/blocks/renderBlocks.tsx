@@ -21,6 +21,7 @@ import { FormBitrix } from './FormBitrix'
 import { GridBlogs } from './GridBlog'
 import { AdicionalBlock } from './AdicionalBlock'
 import { DataTourBlock } from './DataTour'
+import { TextIconContentBlock } from './TextIconContent'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -37,14 +38,15 @@ const blockComponents = {
   textContent: TextContentBlock,
   beneficios: BeneficiosBlock,
   estadisticas: EstadisticasBlock,
-  gridImages: null,
+  gridImages: GridImages,
   descrPrice: DescrPriceBlock,
   youTubeLinks: YouTubeLinksBlock,
   guiaTour: GuiaTour,
   revistaBlock: RevistaBlock,
   formBitrixBlock: FormBitrix,
   adicionalTour: AdicionalBlock,
-  dataTour: DataTourBlock
+  dataTour: DataTourBlock,
+  txtIconContent: TextIconContentBlock,
 }
 
 

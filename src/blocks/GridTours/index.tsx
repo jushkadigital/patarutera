@@ -13,13 +13,13 @@ interface Props extends GridToursBlockType {
   searchParams?: string
   page?: number
   context?: {
-    nameCollection:string
-  }| null
+    nameCollection: string
+  } | null
 }
 
 export async function GridTours(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
-  const { id, gridColumns, gridStyle:mode  ,destination,category,blockTitle, page, overrideDefaults,searchParams} = props;
+  const { id, gridColumns, gridStyle: mode, destination, category, blockTitle, page, overrideDefaults, searchParams } = props;
 
 
 
@@ -27,29 +27,29 @@ export async function GridTours(props: Props) {
   let tours: CardTourData[] = [];
   let data
   let fetchError = null;
-const params = new URLSearchParams()
+  const params = new URLSearchParams()
 
-const paramsCat = new URLSearchParams()
+  const paramsCat = new URLSearchParams()
 
-    if((destination as Destination)){
-        params.append('where[destinos.name][equals]', (destination as Destination).name)
-    }
+  if ((destination as Destination)) {
+    params.append('where[destinos.name][equals]', (destination as Destination).name)
+  }
 
-    if((category as TourCategory[]).length > 0){
-        paramsCat.append('where[categorias.name][in]', (category as TourCategory[]).map(c => c.name).join(','))
-    }
+  if ((category as TourCategory[]).length > 0) {
+    paramsCat.append('where[categorias.name][in]', (category as TourCategory[]).map(c => c.name).join(','))
+  }
   try {
-    const queryString = params.toString();    
+    const queryString = params.toString();
     const queryStringCat = paramsCat.toString()
     // console.log('grid tours HERE') 
     const pageNumber = page ? `&page=${page}` : ''
-    const response = await fetch(`${BASEURL}/api/tours?limit=${gridColumns }${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}&${queryStringCat}`,{
-    next: { tags: ['tours'] },
+    const response = await fetch(`${BASEURL}/api/tours?limit=${gridColumns}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}&${queryStringCat}`, {
+      next: { tags: ['tours'] },
     });
     if (!response.ok) {
-        // Consider logging the response status and text for more detailed error info
-        // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Consider logging the response status and text for more detailed error info
+      // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
     data = await response.json();
     if (data && data.docs) {
@@ -61,7 +61,7 @@ const paramsCat = new URLSearchParams()
     // throw error;
   }
 
-  const mode2= false
+  const mode2 = false
   // Clases condicionales basadas en la prop 'mode'
   const containerClasses = cn(
     mode
@@ -72,17 +72,17 @@ const paramsCat = new URLSearchParams()
   if (fetchError) {
     return <div className="container mx-auto py-8 text-center text-red-500">{fetchError}</div>;
   }
-  
+
 
   console.log('render.BlockTour')
   return (
     // No hay controles de modo aquí porque es un Server Component
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
       {/* Contenedor condicional */}
-      <Subtitle className="" titleGroup={blockTitle}/>
-      <ToursComponent mode={mode!} tours={tours} rangeSlider={props.rangeSlider}/>
-      {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!} type={'tours'}/>)}
-      
+      <Subtitle className="" titleGroup={blockTitle} />
+      <ToursComponent mode={mode!} tours={tours} rangeSlider={props.rangeSlider} />
+      {overrideDefaults && data.totalPages && (<Pagination page={data.page} totalPages={data.totalPages} searchParams={searchParams!} type={'tours'} />)}
+
     </div>
   );
 }

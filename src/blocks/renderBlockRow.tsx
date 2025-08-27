@@ -13,23 +13,25 @@ import { OfertasBlock } from './OfertasBlock'
 import { RevistaBlock } from './RevistaBlock'
 import { FormBitrix } from './FormBitrix'
 import { YouTubeLinksBlock } from './YoutubeLinksBlock'
+import { TextIconContentBlock } from './TextIconContent'
 
 const blockComponents = {
   gridTours: GridTours,
   mediaBlock: MediaBlock,
   carouselDestination: CarouselDestinos,
-  tikTokLinks:TikTokLinksBlock,
+  tikTokLinks: TikTokLinksBlock,
   postRelationTour: null,
   reconocimientos: null,
   ofertas: OfertasBlock,
   socios: null,
   textContent: TextContentBlock,
   beneficios: BeneficiosBlock,
-  estadisticas:EstadisticasBlock,
+  estadisticas: EstadisticasBlock,
   gridImages: GridImages,
   revistaBlock: RevistaBlock,
   formBitrixBlock: FormBitrix,
-  youTubeLinks: YouTubeLinksBlock
+  youTubeLinks: YouTubeLinksBlock,
+  txtIconContent: TextIconContentBlock
 }
 
 export const RenderBlocksRow: React.FC<{
@@ -40,7 +42,7 @@ export const RenderBlocksRow: React.FC<{
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
-   if (hasBlocks) {
+  if (hasBlocks) {
     return (
       <Fragment>
         {blocks.map((block, index) => {
@@ -62,7 +64,7 @@ export const RenderBlocksRow: React.FC<{
       </Fragment>
     )
   }
-  else{
+  else {
     return <div> No contenido</div>
   }
 

@@ -275,6 +275,7 @@ export interface Page {
     | GridImagesBlockType
     | GridPaquetesBlock
     | FormBitrixBlock
+    | TxtIconContentBlockType
   )[];
   meta?: {
     title?: string | null;
@@ -346,6 +347,7 @@ export interface RowBlock {
       | GridImagesBlockType
       | FormBitrixBlock
       | RevistaBlock
+      | TxtIconContentBlockType
     )[];
     id?: string | null;
   }[]
@@ -587,6 +589,7 @@ export interface BlogCategory {
  * via the `definition` "gridImagesBlockType".
  */
 export interface GridImagesBlockType {
+  blockTitle: TitleGroup;
   typeGrid: 'masonry' | 'overlapping' | 'list' | 'mosaic' | 'grid';
   Image?:
   | {
@@ -760,6 +763,39 @@ export interface RevistaBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'revistaBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TxtIconContentBlockType".
+ */
+export interface TxtIconContentBlockType {
+  /**
+   * Sube una imagen pequeña de icono.
+   */
+  iconImage: number | Media;
+  blockTitle: TitleGroup;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Controls the text alignment of the description content.
+   */
+  descriptionAlignment?: ('left' | 'center' | 'right' | 'justify') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'txtIconContent';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1006,6 +1042,31 @@ export interface GuiaTourBlock {
    * Añade exactamente cuatro secciones, cada uno con texto e icono.
    */
   sectionInfoViaje: {
+    iconText: string;
+    /**
+     * Sube una imagen pequeña de icono.
+     */
+    iconImage: number | Media;
+    contentSection: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  /**
+   * Añade exactamente cuatro secciones, cada uno con texto e icono.
+   */
+  sectionFAQ: {
     iconText: string;
     /**
      * Sube una imagen pequeña de icono.
@@ -1527,6 +1588,7 @@ export interface PagesSelect<T extends boolean = true> {
     gridImages?: T | GridImagesBlockTypeSelect<T>;
     gridPaquetes?: T | GridPaquetesBlockSelect<T>;
     formBitrixBlock?: T | FormBitrixBlockSelect<T>;
+    txtIconContent?: T | TxtIconContentBlockTypeSelect<T>;
   };
   meta?:
   | T
@@ -1589,6 +1651,7 @@ export interface RowBlockSelect<T extends boolean = true> {
       gridImages?: T | GridImagesBlockTypeSelect<T>;
       formBitrixBlock?: T | FormBitrixBlockSelect<T>;
       revistaBlock?: T | RevistaBlockSelect<T>;
+      txtIconContent?: T | TxtIconContentBlockTypeSelect<T>;
     };
     id?: T;
   };
@@ -1763,6 +1826,7 @@ export interface TextContentBlockTypeSelect<T extends boolean = true> {
  * via the `definition` "gridImagesBlockType_select".
  */
 export interface GridImagesBlockTypeSelect<T extends boolean = true> {
+  blockTitle?: T | TitleGroupSelect<T>;
   typeGrid?: T;
   Image?:
   | T
@@ -1795,6 +1859,18 @@ export interface RevistaBlockSelect<T extends boolean = true> {
     url?: T;
     id?: T;
   };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TxtIconContentBlockType_select".
+ */
+export interface TxtIconContentBlockTypeSelect<T extends boolean = true> {
+  iconImage?: T;
+  blockTitle?: T | TitleGroupSelect<T>;
+  description?: T;
+  descriptionAlignment?: T;
   id?: T;
   blockName?: T;
 }
@@ -1965,6 +2041,13 @@ export interface GuiaTourBlockSelect<T extends boolean = true> {
     contentSection?: T;
   };
   sectionInfoViaje?:
+  | T
+  | {
+    iconText?: T;
+    iconImage?: T;
+    contentSection?: T;
+  };
+  sectionFAQ?:
   | T
   | {
     iconText?: T;
@@ -2685,4 +2768,3 @@ export interface TaskSchedulePublish {
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
-
