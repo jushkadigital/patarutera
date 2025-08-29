@@ -21,27 +21,27 @@ export async function DataTourBlock(props: Props) {
           text={`${duration.valueDia} dia ${duration.valueNoche != 0 ? 'y ' + duration.valueNoche + ' noche' : ''}`}
           title={duration.title}
           imgUrl="duration"
-          className="w-44 font-semibold" />
+          className="w-full font-semibold" />
         <DataTourBanner
           text={`${groupSize.value} personas`}
           title={groupSize.title}
           imgUrl="groupSize"
-          className="w-44 font-semibold" />
+          className="w-full font-semibold" />
         <DataTourBanner
           text={`${trad[difficulty]}`}
           title={`Dificultad`}
           imgUrl="difficulty"
-          className="w-44 font-semibold" />
+          className="w-full font-semibold" />
         <DataTourBanner
           text={`${altitud.value} msnm`}
           title={altitud.title}
           imgUrl="altitud"
-          className="w-44 font-semibold" />
+          className="w-full font-semibold" />
         <DataTourBanner
           text={`${idioma.value}`}
           title={idioma.title}
           imgUrl="idioma"
-          className="w-44 font-semibold" />
+          className="w-full col-span-2 sm:col-span-1  font-semibold" />
 
 
 

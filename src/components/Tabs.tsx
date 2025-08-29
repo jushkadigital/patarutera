@@ -8,33 +8,33 @@ import Image from "@/components/PayloadImage"
 import { Media } from "@/cms-types"
 
 interface Tab {
-    id: number
-    label: string
-    icon: Media
-    content: {
-      root: {
+  id: number
+  label: string
+  icon: Media
+  content: {
+    root: {
+      type: string;
+      children: {
         type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
         version: number;
-      };
-      [k: string]: unknown;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
     };
+    [k: string]: unknown;
+  };
 }
 
 interface Props {
-    tabs: Tab[]
+  tabs: Tab[]
 }
-export default function TabsViaje({tabs}:Props) {
+export default function TabsViaje({ tabs }: Props) {
   const [activeTab, setActiveTab] = useState(0)
   console.log(tabs)
-  
+
   return (
     <div className="w-full  mx-auto ">
       <div className=" flex  lg:flex-wrap flex-col lg:flex-row justify-between gap-1">
@@ -42,13 +42,12 @@ export default function TabsViaje({tabs}:Props) {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`relative flex flex-col items-center justify-center p-4 min-w-[230px] border rounded-md transition-all ${
-              activeTab === tab.id ? "border-green-600 bg-white" : "border-gray-200 bg-white hover:bg-gray-50"
-            }`}
+            className={`relative flex flex-col items-center justify-center p-4 min-w-[230px] border rounded-md transition-all ${activeTab === tab.id ? "border-green-600 bg-white" : "border-gray-200 bg-white hover:bg-gray-50"
+              }`}
           >
             <div className="flex justify-center mb-2">
-              <Image media={tab.icon} className="object-cover"/>
-              </div>
+              <Image media={tab.icon} className="object-cover" />
+            </div>
             <span className="text-sm text-[clamp(12.2px,1.2vw,23px)] font-medium">{tab.label}</span>
             {activeTab === tab.id && (
               <motion.div
@@ -60,7 +59,7 @@ export default function TabsViaje({tabs}:Props) {
           </button>
         ))}
       </div>
-      <div className="mt-6 border rounded-lg p-6">
+      <div className="mt-6 border rounded-lg p-0 md:p-3 lg:p-6">
         <motion.div
           key={activeTab}
           initial={{ opacity: 0, y: 10 }}
@@ -68,9 +67,9 @@ export default function TabsViaje({tabs}:Props) {
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
         >
-            <div className="space-y-4">
-              <RichText data={tabs.find((tab) => tab.id === activeTab)?.content!}/>
-            </div>
+          <div className="space-y-4">
+            <RichText data={tabs.find((tab) => tab.id === activeTab)?.content!} className="" />
+          </div>
         </motion.div>
       </div>
     </div>

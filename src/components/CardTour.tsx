@@ -63,7 +63,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           </Link>
           {/* miniDescription */}
           <div className="text-[#6a6a6a]">
-            <RichText data={unitData.miniDescription} enableGutter={false} className="h-[clamp(0px,10.07vw,124px)] sm:h-[clamp(0px,6.07vw,124px)] lg:h-[clamp(13.8px,4.7vw,84px)]! !my-1 lg:!my-1 prose-custom-lg  prose-pink" />
+            <RichText data={unitData.miniDescription} enableGutter={false} className="h-[clamp(0px,10.07vw,124px)] sm:h-[clamp(0px,7.07vw,124px)] lg:h-[clamp(13.8px,4.7vw,84px)]! !my-1 lg:!my-1 prose-custom-lg  prose-pink" />
           </div>
 
           <div className="flex flex-row flex-wrap justify-around lg:justify-around items-center sm:items-end mb-0 px-2  gap-0 sm:gap-0  mt-[clamp(0px,2.41vw,24.73px)] lg:mt-[clamp(2.7px,0.6vw,12.8px)]">
