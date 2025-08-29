@@ -6,6 +6,31 @@ import { MapPin, CheckCircle, Tag, Info, ListTodo } from "lucide-react"
 import RichText from "./RichText"
 import Image from "@/components/PayloadImage"
 import { Media } from "@/cms-types"
+import { Faq } from "./Faq"
+
+type TabAccordeon = {
+
+  arrayData:
+  {
+    id: string
+    title: string
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    }
+  }[]
+}
 
 interface Tab {
   id: number
@@ -25,14 +50,17 @@ interface Tab {
       version: number;
     };
     [k: string]: unknown;
-  };
+
+  } | TabAccordeon;
 }
+
 
 interface Props {
   tabs: Tab[]
 }
 export default function TabsViaje({ tabs }: Props) {
   const [activeTab, setActiveTab] = useState(0)
+  console.log("GAAAAAAAAA")
   console.log(tabs)
 
   return (
@@ -59,7 +87,7 @@ export default function TabsViaje({ tabs }: Props) {
           </button>
         ))}
       </div>
-      <div className="mt-6 border rounded-lg p-0 md:p-3 lg:p-6">
+      <div className="mt-6 border rounded-lg p-0 md:p-2 lg:p-2">
         <motion.div
           key={activeTab}
           initial={{ opacity: 0, y: 10 }}
@@ -68,7 +96,12 @@ export default function TabsViaje({ tabs }: Props) {
           transition={{ duration: 0.2 }}
         >
           <div className="space-y-4">
-            <RichText data={tabs.find((tab) => tab.id === activeTab)?.content!} className="" />
+            {
+              Array.isArray(tabs.find((tab) => tab.id === activeTab)?.content!) ?
+                <Faq tabs={tabs.find((tab) => tab.id === activeTab)?.content! as any} />
+                :
+                <RichText data={tabs.find((tab) => tab.id === activeTab)?.content!} className="" />
+            }
           </div>
         </motion.div>
       </div>

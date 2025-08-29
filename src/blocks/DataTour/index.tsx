@@ -43,8 +43,6 @@ export async function DataTourBlock(props: Props) {
           imgUrl="idioma"
           className="w-full col-span-2 sm:col-span-1  font-semibold" />
 
-
-
       </div>
     </div>
   )

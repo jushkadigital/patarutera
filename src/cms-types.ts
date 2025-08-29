@@ -1047,21 +1047,27 @@ export interface GuiaTourBlock {
      * Sube una imagen pequeña de icono.
      */
     iconImage: number | Media;
-    contentSection: {
-      root: {
-        type: string;
-        children: {
+    arrayData?:
+    | {
+      title?: string | null;
+      content?: {
+        root: {
           type: string;
+          children: {
+            type: string;
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
           version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+        };
+        [k: string]: unknown;
+      } | null;
+      id?: string | null;
+    }[]
+    | null;
   };
   /**
    * Añade exactamente cuatro secciones, cada uno con texto e icono.
@@ -1072,21 +1078,27 @@ export interface GuiaTourBlock {
      * Sube una imagen pequeña de icono.
      */
     iconImage: number | Media;
-    contentSection: {
-      root: {
-        type: string;
-        children: {
+    arrayData?:
+    | {
+      title?: string | null;
+      content?: {
+        root: {
           type: string;
+          children: {
+            type: string;
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
           version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
+        };
+        [k: string]: unknown;
+      } | null;
+      id?: string | null;
+    }[]
+    | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -2045,14 +2057,26 @@ export interface GuiaTourBlockSelect<T extends boolean = true> {
   | {
     iconText?: T;
     iconImage?: T;
-    contentSection?: T;
+    arrayData?:
+    | T
+    | {
+      title?: T;
+      content?: T;
+      id?: T;
+    };
   };
   sectionFAQ?:
   | T
   | {
     iconText?: T;
     iconImage?: T;
-    contentSection?: T;
+    arrayData?:
+    | T
+    | {
+      title?: T;
+      content?: T;
+      id?: T;
+    };
   };
   id?: T;
   blockName?: T;
