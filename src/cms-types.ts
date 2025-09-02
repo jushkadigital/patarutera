@@ -435,6 +435,21 @@ export interface Destination {
   imageDestination?: (number | null) | Media;
   backgroundDestination?: (number | null) | Media;
   carouselItemDestination?: (number | null) | Media;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2165,6 +2180,7 @@ export interface DestinationsSelect<T extends boolean = true> {
   imageDestination?: T;
   backgroundDestination?: T;
   carouselItemDestination?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
 }

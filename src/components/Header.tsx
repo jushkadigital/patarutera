@@ -13,8 +13,9 @@ interface Props {
 }
 
 export const Header = ({ destinations, socialNetworks, email }: Props) => {
+  const allowedPaths = ['/', '/destino']
   const pathname = usePathname();
-  const isHome = pathname === '/';
+  const isHome = allowedPaths.includes(pathname);
 
   return (
     <header className={cn(isHome ? 'h-0 overflow-visible ' : '')}>

@@ -58,32 +58,25 @@ export const Navbar = ({ destinations, isHome, socialNetworks, email }: Props) =
         <NavigationMenu className="hidden md:flex" >
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent  text-white' : 'text-[#2970b7]')}>Destinos</NavigationMenuTrigger>
-              <NavigationMenuContent className="w-full md:w-[250px]">
-                <ul className="grid gap-2 p-2">
-                  {
-                    destinations.map(ele => (
-                      <ListItem
-                        key={ele.name}
-                        title={""}
-                        href={`/tours?destination=${ele.name}&categories=`}
-                        isHome={isHome}
-                        className=""
-                      >
-                        {ele.name}
-                      </ListItem>
+              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
+                <Link href="/destino" >
+                  Destinos
+                </Link>
+              </NavigationMenuLink>
 
-                    ))
-
-                  }
-                </ul>
-              </NavigationMenuContent>
             </NavigationMenuItem>
             {/* Sección 2: Enlace 1 */}
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
                 <Link href="/paquetes?destinations=Ica,Cusco" >
                   Paquetes
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
+                <Link href="/tours?destination=Cusco&categories=" >
+                  Tours
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -120,29 +113,14 @@ export const Navbar = ({ destinations, isHome, socialNetworks, email }: Props) =
                 </Link>
               </SheetClose>
               {/* Destinos con Collapsible */}
-              <Collapsible>
-                <CollapsibleTrigger className="flex w-full items-center justify-center py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b]">
+              <SheetClose asChild>
+                <Link
+                  href="/destino"
+                  className="py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors text-center"
+                >
                   Destinos
-                </CollapsibleTrigger >
-                <CollapsibleContent className="space-y-2 flex-col justify-center items-center">
-                  {destinations?.length > 0 ? (
-                    destinations.map((ele) => (
-                      <SheetClose asChild>
-                        <Link
-                          key={ele.name}
-                          href={`/tours?destination=${ele.name}&categories=`}
-                          className="block py-2 text-lg text-gray-800 hover:text-[#2970b7] transition-colors text-center"
-                        >
-                          {ele.name}
-                        </Link>
-                      </SheetClose>
-                    ))
-                  ) : (
-                    <div className="block py-2 text-sm text-gray-500">No hay destinos disponibles</div>
-                  )}
-                </CollapsibleContent>
-              </Collapsible>
-
+                </Link>
+              </SheetClose>
               {/* Paquetes */}
               <SheetClose asChild>
                 <Link
@@ -150,6 +128,14 @@ export const Navbar = ({ destinations, isHome, socialNetworks, email }: Props) =
                   className="py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors text-center"
                 >
                   Paquetes
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link
+                  href="/tours?destination=Cusco&categories="
+                  className="py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors text-center"
+                >
+                  Tours
                 </Link>
               </SheetClose>
               {/* Blog */}

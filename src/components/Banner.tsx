@@ -1,10 +1,11 @@
 import React from 'react';
-import Image from 'next/image';
+import Image from '@/components/PayloadImage';
 import { BASEURL } from '@/lib/config';
+import { Media } from '@/cms-types';
 
 interface BannerProps {
   title: string;
-  backgroundUrl: string;
+  backgroundUrl: Media;
   className?: string;
 }
 
@@ -16,8 +17,7 @@ const Banner: React.FC<BannerProps> = ({ title, backgroundUrl, className = '' })
     >
       {/* Imagen de fondo absoluta */}
       <Image
-        src={backgroundUrl}
-        alt={title}
+        media={backgroundUrl}
         fill
         className="object-cover object-center absolute inset-0 -z-20"
         priority
