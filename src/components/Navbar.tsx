@@ -27,16 +27,17 @@ const LOGO_URLCOLOR = '/pataruteraLogo.png'; // Reemplaza con la ruta real de tu
 interface Props {
   destinations: Destination[]
   isHome: boolean
+  isTransparent: boolean
   socialNetworks: any[]
   email: string
 }
-export const Navbar = ({ destinations, isHome, socialNetworks, email }: Props) => {
+export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, email }: Props) => {
   //const pathname = usePathname();
   //const isHome = pathname === '/';
 
   const navbarClasses = cn(
     'w-full transition-all duration-300 ease-in-out z-50',
-    isHome
+    isTransparent
       ? 'bg-transparent text-white absolute top-0 left-0 pb-6'
       : 'bg-background text-foreground shadow-sm sticky top-0 pb-4',
   );
@@ -58,7 +59,7 @@ export const Navbar = ({ destinations, isHome, socialNetworks, email }: Props) =
         <NavigationMenu className="hidden md:flex" >
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
+              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : isTransparent ? 'bg-transparent text-[#2970b7]' : 'text-[#2970b7]')}>
                 <Link href="/destino" >
                   Destinos
                 </Link>
@@ -67,14 +68,14 @@ export const Navbar = ({ destinations, isHome, socialNetworks, email }: Props) =
             </NavigationMenuItem>
             {/* Sección 2: Enlace 1 */}
             <NavigationMenuItem>
-              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
+              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : isTransparent ? 'bg-trasparent text-[#2970b7]' : 'text-[#2970b7]')}>
                 <Link href="/paquetes?destinations=Ica,Cusco" >
                   Paquetes
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
+              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : isTransparent ? 'bg-transparent text-[#2970b7]' : 'text-[#2970b7]')}>
                 <Link href="/tours?destination=Cusco&categories=" >
                   Tours
                 </Link>
@@ -84,7 +85,7 @@ export const Navbar = ({ destinations, isHome, socialNetworks, email }: Props) =
 
             {/* Sección 4: Enlace 2 */}
             <NavigationMenuItem>
-              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : 'text-[#2970b7]')}>
+              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : isTransparent ? 'bg-transparent text-[#2970b7]' : 'text-[#2970b7]')}>
                 <Link href="/blog" >
                   Blog
                 </Link>

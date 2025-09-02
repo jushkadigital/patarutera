@@ -15,11 +15,12 @@ interface Props {
 export const Header = ({ destinations, socialNetworks, email }: Props) => {
   const allowedPaths = ['/', '/destino']
   const pathname = usePathname();
-  const isHome = allowedPaths.includes(pathname);
+  const isHome = pathname == '/'
+  const isTransparent = allowedPaths.includes(pathname);
 
   return (
     <header className={cn(isHome ? 'h-0 overflow-visible ' : '')}>
-      <Navbar destinations={destinations} isHome={isHome} socialNetworks={socialNetworks} email={email} />
+      <Navbar destinations={destinations} isHome={isHome} isTransparent={isTransparent} socialNetworks={socialNetworks} email={email} />
     </header>
   );
 }; 
