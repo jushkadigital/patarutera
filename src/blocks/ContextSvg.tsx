@@ -38,11 +38,11 @@ export function ContextSvg({ data }: Props) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               key="box"
-              className="relative w-[400px] h-[200px] md:h-[600px]"
+              className="relative w-[400px] h-[200px] md:h-auto"
             >
               <DestinoPopUp data={val as Destination} />
             </motion.div>
-          ) : <div className="  w-[400px]  ">...</div>}
+          ) : <div className="  w-[400px]  h-[200px] md:h-auto"></div>}
         </AnimatePresence>
       </div>
     </div>

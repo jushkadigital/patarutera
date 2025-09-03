@@ -56,9 +56,9 @@ export default function CardDestino({ unitData, mode = "list" }: CardPostProps) 
   } else {
     // MODO LISTA: Ideal para una vista de lista o más compacta
     return (
-      <Card className="overflow-hidden shadow-lg w-full rounded-3xl flex flex-row h-64 group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25 pt-0">
+      <Card className="overflow-hidden shadow-lg w-full rounded-3xl flex flex-row h-64 group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25 pt-0 pb-0">
         {/* Sección de la Imagen */}
-        <Link href={``} className="w-full md:w-1/3 block h-56 md:h-full">
+        <Link href={``} className="w-full md:w-1/3 block ">
           <div className="relative h-full w-full overflow-hidden">
             <Image
               media={(unitData.featuredImage as Media)}
@@ -71,12 +71,12 @@ export default function CardDestino({ unitData, mode = "list" }: CardPostProps) 
         </Link>
 
         {/* Sección del Contenido */}
-        <div className="w-full md:w-2/3 p-6 flex flex-col">
-          <div className="text-[#6a6a6a] flex-grow mb-4">
+        <div className="w-full md:w-2/3 p-0 flex flex-col">
+          <div className="text-[#6a6a6a] flex-grow mb-0">
             <RichText
               data={unitData.description}
               enableGutter={false}
-              className="prose-custom-lg multi-line-truncate multi-line-truncate-4"
+              className="prose-custom-lg my-0! multi-line-truncate multi-line-truncate-4"
             />
           </div>
 
