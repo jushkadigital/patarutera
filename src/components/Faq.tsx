@@ -23,7 +23,7 @@ export const Faq = ({ tabs }: Props) => {
 
                   </AccordionTrigger>
                   <AccordionContent className="border-2 border-gray-200 rounded-2xl">
-                    <RichText data={ele.content} />
+                    <RichText data={ele.content} className="" />
                   </AccordionContent>
                 </AccordionItem>
 

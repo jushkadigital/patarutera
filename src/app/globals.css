@@ -207,6 +207,9 @@ html{
   padding-left: 0.5rem;
 }
 
+
+
+
 .prose-custom li {
 }
 
@@ -1284,6 +1287,7 @@ html{
 .prose-custom ul,
 .prose-custom ol {
   padding-left: 1rem;
+  list-style: disc;
 }
 
 .prose-custom li {
