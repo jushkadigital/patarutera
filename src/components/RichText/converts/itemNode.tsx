@@ -10,26 +10,26 @@ interface CustomSerializedListItemNode extends SerializedListItemNode {
 }
 
 // Componente simple para renderizar el ícono (puedes usar SVGs, <img> o una librería de íconos)
-function IconSelector(type:string)  {
+function IconSelector(type: string) {
   const classText = 'list_item_with_icon'
   console.log(type)
 
   switch (type) {
     case 'check':
-      return classText+"_check"
+      return classText + "_check"
     case 'nocheck':
-      return classText+"_nocheck"
+      return classText + "_nocheck"
     case 'location':
-      return classText+"_location"
+      return classText + "_location"
     case 'circle':
-      return classText+"_circle"
+      return classText + "_circle"
     default:
       return ''
   }
 };
 
-function hasLineBreaker(statement:string,type:string){
-  switch(type){
+function hasLineBreaker(statement: string, type: string) {
+  switch (type) {
     case 'check':
       return ""
     case 'nocheck':
@@ -48,21 +48,21 @@ export const customListItemConverter: JSXConverters<CustomSerializedListItemNode
     // Accedemos directamente a la propiedad personalizada 'iconType' desde el objeto 'node'
     const { iconType } = node;
 
-    if(iconType){
-      
+    if (iconType) {
+
       return (
-      <li className={`${hasLineBreaker(styles['list_item_with_icon'],iconType)} ${styles[IconSelector(iconType)]}`}>
-        {/* Renderiza el componente de ícono si iconType existe */}
+        <li className={`especial_icon ${hasLineBreaker(styles['list_item_with_icon'], iconType)} ${styles[IconSelector(iconType)]}`}>
+          {/* Renderiza el componente de ícono si iconType existe */}
           {nodesToJSX({ parent: node, nodes: node.children })}
-      </li>
-    );
-    }else{
-return (
-      <li className={`${styles['list_item_with_icon']} `}>
-        {/* Renderiza el componente de ícono si iconType existe */}
+        </li>
+      );
+    } else {
+      return (
+        <li className={`especial_icon ${styles['list_item_with_icon']} `}>
+          {/* Renderiza el componente de ícono si iconType existe */}
           {nodesToJSX({ parent: node, nodes: node.children })}
-      </li>
-    );
+        </li>
+      );
     }
   }
 };

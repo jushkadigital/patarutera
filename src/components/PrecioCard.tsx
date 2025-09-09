@@ -68,6 +68,10 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
       if (typeof window.fbq === 'function') {
         window.fbq('track', 'Lead');
       }
+      if (window.ttq) {
+        window.ttq.track('SubmitForm')
+      }
+
       const cleanedNumber = phoneNumber.replace(/[^0-9]/g, '')
       const finalMessage = `Hola soy ${data.nombre} estoy interesado en ${origen}:${title} somos ${data.numberPasajeros} pasajeros , mensaje adicional: ${data.mensaje}`
       // En el objeto enviado, incluimos el 'origen' que viene de las props.

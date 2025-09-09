@@ -1284,9 +1284,12 @@ html{
 
 /* --- Listas --- */
 
-.prose-custom ul,
-.prose-custom ol {
+.prose-custom ul ,
+.prose-custom ol   {
   padding-left: 1rem;
+}
+.prose-custom ul > :not(.especial_icon),
+.prose-custom ol >  :not(.especial_icon){
   list-style: disc;
 }
 

@@ -11,6 +11,9 @@ const TikTokPixel = () => {
   useEffect(() => {
     if (window.ttq) {
       window.ttq.page();
+      if (pathname.startsWith('/tours/') || pathname.startsWith('/paquetes/')) {
+        window.ttq.track('ViewContent');
+      }
     }
   }, [pathname, searchParams]);
 
