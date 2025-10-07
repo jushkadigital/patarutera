@@ -116,7 +116,6 @@ export default function CustomCarousel({ slides, titleObj }: CustomCarouselProps
                     borderRadius: '2.5rem'
                   }}
                   transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                  as={'div'}
                 >
                   <motion.div className="absolute top-0 left-0 w-full h-full">
                     <FramerImage
