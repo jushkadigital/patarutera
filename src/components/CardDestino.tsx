@@ -21,7 +21,7 @@ export default function CardDestino({ unitData, mode = "list" }: CardPostProps) 
   // MODO GRID: Ideal para mostrar varias tarjetas en una cuadrícula
   if (mode === "grid") {
     return (
-      <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg flex flex-col group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25 pt-0">
+      <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg flex flex-col group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25 pt-0 py-0 gap-0">
         {/* Sección de la Imagen */}
         <Link href={`/blog/${unitData.slug}`} className="h-70">
           <div className="relative h-full w-full overflow-hidden">
@@ -36,7 +36,7 @@ export default function CardDestino({ unitData, mode = "list" }: CardPostProps) 
         </Link>
 
         {/* Sección del Contenido */}
-        <CardContent className="px-6 flex flex-col ">
+        <CardContent className="px-6 ">
           {/* Título */}
 
           {/* Descripción corta */}
@@ -44,7 +44,7 @@ export default function CardDestino({ unitData, mode = "list" }: CardPostProps) 
             <RichText
               data={unitData.description}
               enableGutter={false}
-              className="prose-custom-lg my-0! multi-line-truncate multi-line-truncate-3"
+              className="prose-custom-lg my-0! "
             />
           </div>
 

@@ -16,9 +16,9 @@ function toUppercase(str: string) {
 
 export function ContextSvg({ data }: Props) {
 
-  const [hoverDept, setHoverDept] = useState<string>("Cusco")
+  const [hoverDept, setHoverDept] = useState<string>("Puno")
 
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
 
   const val = data.find(ele => toUppercase(ele.name) == toUppercase(hoverDept))
 
