@@ -92,7 +92,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      First name <span className="text-destructive">*</span>
+                      Nombres<span className="text-destructive">*</span>
                     </FormLabel>
                     <Input placeholder="Josue" {...field} />
                     <FormMessage />
@@ -107,7 +107,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Last name <span className="text-destructive">*</span>
+                      Apellidos <span className="text-destructive">*</span>
                     </FormLabel>
                     <Input placeholder="Cornejo" {...field} />
                     <FormMessage />
@@ -117,35 +117,36 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
             </div>
 
             {/* Country / Region */}
-            <FormField
-              control={form.control}
-              name="country"
-              rules={{ required: "Country is required" }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Country / Region <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="peru">Peru</SelectItem>
-                      <SelectItem value="argentina">Argentina</SelectItem>
-                      <SelectItem value="chile">Chile</SelectItem>
-                      <SelectItem value="colombia">Colombia</SelectItem>
-                      <SelectItem value="mexico">Mexico</SelectItem>
-                      <SelectItem value="spain">Spain</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
 
             {/* Street address and Town / City */}
             <div className="grid gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="country"
+                rules={{ required: "Country is required" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Country / Pais <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="peru">Peru</SelectItem>
+                        <SelectItem value="argentina">Argentina</SelectItem>
+                        <SelectItem value="chile">Chile</SelectItem>
+                        <SelectItem value="colombia">Colombia</SelectItem>
+                        <SelectItem value="mexico">Mexico</SelectItem>
+                        <SelectItem value="spain">Spain</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="streetAddress"
@@ -153,24 +154,9 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Street address <span className="text-destructive">*</span>
+                      Direccion <span className="text-destructive">*</span>
                     </FormLabel>
                     <Input placeholder="Cipreces Versalles" {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="city"
-                rules={{ required: "City is required" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Town / City <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Input placeholder="San Jeronimo" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -179,46 +165,8 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
 
             {/* State / County and Postcode / ZIP */}
             <div className="grid gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="state"
-                rules={{ required: "State is required" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      State / County <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a state" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="cusco">Cusco</SelectItem>
-                        <SelectItem value="lima">Lima</SelectItem>
-                        <SelectItem value="arequipa">Arequipa</SelectItem>
-                        <SelectItem value="piura">Piura</SelectItem>
-                        <SelectItem value="trujillo">Trujillo</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              <FormField
-                control={form.control}
-                name="postcode"
-                rules={{ required: "Postcode is required" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Postcode / ZIP <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Input placeholder="08006" {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
             </div>
 
             {/* Phone and Email */}
@@ -230,7 +178,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Phone <span className="text-destructive">*</span>
+                      Telefono <span className="text-destructive">*</span>
                     </FormLabel>
                     <Input placeholder="935207981" type="tel" {...field} />
                     <FormMessage />
@@ -251,7 +199,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Email address <span className="text-destructive">*</span>
+                      Email <span className="text-destructive">*</span>
                     </FormLabel>
                     <Input placeholder="urgosxd@gmail.com" type="email" {...field} />
                     <FormMessage />
@@ -263,7 +211,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
             {/* Booking Button */}
             <div className="pt-4">
               <Button type="submit" size="lg" className="w-full md:w-auto">
-                Booking
+                Reservar
               </Button>
             </div>
           </form>
