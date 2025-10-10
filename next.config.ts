@@ -16,24 +16,25 @@ const nextConfig: NextConfig = {
     {
       protocol: "https",
       hostname: "cms.patarutera.pe",
-      port:"",
+      port: "",
       pathname: "/**"
     },
     {
       protocol: "https",
       hostname: "cms.patarutera.pe",
-      port:"",
+      port: "",
       pathname: "/**"
     },
     {
       protocol: "https",
       hostname: "cms.patarutera.com",
-      port:"",
+      port: "",
       pathname: "/**"
     }
-  ],
+    ],
   },
-  
+  allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev', '192.168.128.128', '192.168.128.128:4000']
 };
+
 
 export default nextConfig;

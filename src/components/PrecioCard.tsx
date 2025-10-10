@@ -1,6 +1,7 @@
 "use client"
 
 import { Fragment, useState } from "react"
+import { usePathname } from 'next/navigation'
 import { useForm } from "react-hook-form"
 import { User, Mail, MessageSquare, Send, Users } from "lucide-react"
 import { Media } from "@/cms-types"
@@ -9,6 +10,7 @@ import { Button } from "./ui/button"
 import { useMobile } from "@/hooks/useMobile"
 import Link from "next/link"
 import { SvgWhatsapp } from "./IconsSvg"
+import { BookingCard } from "./booking-card"
 
 // 1. INTERFAZ DE DATOS DEL FORMULARIO ACTUALIZADA
 // Se cambian los campos 'fecha' y 'pasajeros' por los que necesitas: 'nombre', 'email', 'mensaje'.
@@ -40,6 +42,7 @@ interface Props {
 export default function FormularioContacto({ priceTitle, prevText, price, nextText, origen, phoneNumber, title }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState("")
+  const pathname = usePathname()
 
   // 3. CONFIGURACIÓN DE REACT-HOOK-FORM ACTUALIZADA
   // Se inicializa el formulario con los nuevos campos y sus valores por defecto.
@@ -242,89 +245,11 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
         isMobile ? " " :
           <div id="formPrice" className=" mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200">
 
-            <div className="bg-[#2970b7] text-white text-center py-6 rounded-t-3xl">
-              <h1 className="text-2xl lg:text-[clamp(16.3px,1.6vw,30.72px)] font-bold tracking-wide">{priceTitle}</h1>
-            </div>
-            <div className="text-center mt-7 lg:mt-3">
-              <p className="text-[#2970b7] text-lg lg:text-[clamp(9.5px,0.9vw,17.9px)] mb-2">{prevText}</p>
-              <div className="flex items-baseline justify-center gap-2">
-                <span className="text-[#2970b7] text-5xl lg:text-[clamp(21.8px,2.1vw,40.96px)] font-bold">S/.{formatMoney(price)}</span>
-                <span className="text-[#a0a0a0] text-lg lg:text-[clamp(7px,0.7vw,14px)]">/ {nextText}</span>
-              </div>
-              <div className="w-full h-1 bg-[#efba06] mt-4 rounded-full"></div>
-            </div>
+            <div className="p-8 space-y-6 relative">
+              {/* Campo: Nombre */}
+              <BookingCard amount={formatMoney(price)} type={origen} slug={pathname} />
 
-            <div className="p-8 space-y-6">
-              {/* Se utiliza 'handleSubmit' para envolver nuestro 'onSubmit' */}
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                {/* Campo: Nombre */}
-                <div className="relative">
-                  <User className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" size={20} />
-                  <input
-                    type="text"
-                    placeholder="Nombre completo"
-                    {...register("nombre", {
-                      required: "El nombre es obligatorio.",
-                      minLength: { value: 3, message: "El nombre debe tener al menos 3 caracteres." },
-                    })}
-                    className={`w-full text-lg lg:text-[clamp(9.5px,0.9vw,17.9px)] pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-full text-gray-700 focus:outline-none transition-colors ${errors.nombre ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
-                      }`}
-                  />
-                  {errors.nombre && <p className="text-red-500 text-xs mt-1 ml-4">{errors.nombre.message}</p>}
-                </div>
-
-                {/* Campo: Email */}
-                <div className="relative">
-                  <Users className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" size={20} />
-                  <input
-                    type="number"
-                    placeholder="Numero de Pasajeros"
-                    {...register("numberPasajeros", {
-                      required: "Introduzca el número",
-                      min: { value: 1, message: "Debe ser al menos 1" },
-                    })}
-                    className={`w-full text-lg lg:text-[clamp(9.5px,0.9vw,17.9px)] pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-full text-gray-700 focus:outline-none transition-colors ${errors.numberPasajeros ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
-                      }`}
-                  />
-                  {errors.numberPasajeros && <p className="text-red-500 text-xs mt-1 ml-4">{errors.numberPasajeros.message}</p>}
-                </div>
-
-                {/* Campo: Mensaje */}
-                <div className="relative">
-                  <MessageSquare className="absolute top-5 left-4 text-gray-400" size={20} />
-                  <textarea
-                    placeholder="Escribe tu mensaje aquí..."
-                    rows={5}
-                    {...register("mensaje", {
-                      required: "El mensaje no puede estar vacío.",
-                      maxLength: { value: 500, message: "El mensaje no puede superar los 500 caracteres." },
-                    })}
-                    className={`w-full text-lg lg:text-[clamp(9.5px,0.9vw,17.9px)] pl-12 pr-4 py-3 bg-gray-50 border-2 rounded-2xl text-gray-700 focus:outline-none transition-colors resize-none ${errors.mensaje ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#2970b7]"
-                      }`}
-                  />
-                  {errors.mensaje && <p className="text-red-500 text-xs mt-1 ml-4">{errors.mensaje.message}</p>}
-                </div>
-
-                {/* Mensaje de Estado (Éxito o Error) */}
-                {submitMessage && (
-                  <div
-                    className={`text-center rounded-lg text-sm ${submitMessage.includes("Error") ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"
-                      }`}
-                  >
-                    {submitMessage}
-                  </div>
-                )}
-
-                {/* Botón de Envío */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white text-lg lg:text-[clamp(13.65px,1.33vw,25.6px)] font-bold py-3 rounded-full hover:bg-[#d8a605] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? "ENVIANDO..." : "ENVIAR MENSAJE"}
-                  {!isSubmitting && <SvgWhatsapp size={20} />}
-                </button>
-              </form>
+              {/* Botón de Envío */}
             </div>
 
 
