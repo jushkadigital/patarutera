@@ -20,8 +20,9 @@ export function BookingCard({ amount, slug, type }: Props) {
 
   amount = amount.replace(/,/g, '').toString()
   const initialDate = React.useMemo(() => {
+
     const d = new Date();
-    d.setDate(d.getDate() + 2);
+    d.setDate(d.getDate() + type == 'tour' ? 1 : 40);
     return d;
   }, []);
 
