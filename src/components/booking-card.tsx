@@ -74,6 +74,7 @@ export function BookingCard({ amount, slug, type }: Props) {
                 <div>
                   <div className="text-[#c41e3a] font-semibold mb-1">Fecha</div>
                 </div>
+                {date?.toLocaleDateString('es-PE')}
                 <ChevronDown className="w-5 h-5 text-muted-foreground" />
               </div>
             </button>
