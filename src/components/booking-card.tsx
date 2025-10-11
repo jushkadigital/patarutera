@@ -75,7 +75,9 @@ export function BookingCard({ amount, slug, type }: Props) {
                 <div>
                   <div className="text-[#c41e3a] font-semibold mb-1">Fecha</div>
                 </div>
-                {date?.toLocaleDateString('es-PE')}
+                <div className='text-gray-700'>
+                  {date?.toLocaleDateString('es-PE')}
+                </div>
                 <ChevronDown className="w-5 h-5 text-muted-foreground" />
               </div>
             </button>
@@ -85,6 +87,7 @@ export function BookingCard({ amount, slug, type }: Props) {
           </PopoverContent>
         </Popover>
 
+        <div className='text-[11px] text-center'> Paquetes son reservados 40 dias antes </div>
         {/* Selector de adultos */}
         <div >
           <div >
