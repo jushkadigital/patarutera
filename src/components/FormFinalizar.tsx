@@ -77,7 +77,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
 
 
   return (
-    <div className="w-full flex flex-row">
+    <div className="w-full flex flex-col md:flex-row justify-center items-center">
       <div className="mx-auto max-w-4xl p-6 w-2/3">
         <h1 className="mb-8 text-2xl font-semibold">Billing details</h1>
 
@@ -217,7 +217,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
           </form>
         </Form>
       </div>
-      <div className="w-1/3">
+      <div className=" w-[90%] md:w-1/3">
         <ReservationCard name={name} amount={Number(amount)} numberPassengers={Number(numberPassengers)} type={type} date={date} image={image} />
       </div>
     </div>

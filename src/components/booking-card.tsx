@@ -68,7 +68,7 @@ export function BookingCard({ amount, slug, type }: Props) {
 
       {/* Selector de fecha */}
       <div className="space-y-4">
-        <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
+        <Popover open={isDateOpen} onOpenChange={setIsDateOpen} modal>
           <PopoverTrigger asChild>
             <button className="w-full text-left p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors">
               <div className="flex items-center justify-between">
@@ -86,8 +86,8 @@ export function BookingCard({ amount, slug, type }: Props) {
         </Popover>
 
         {/* Selector de adultos */}
-        <Popover open={isGuestsOpen} onOpenChange={setIsGuestsOpen}>
-          <PopoverTrigger asChild>
+        <div >
+          <div >
             <button className="w-full text-left p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors">
               <div className="flex items-center justify-between">
                 <div>
@@ -120,39 +120,8 @@ export function BookingCard({ amount, slug, type }: Props) {
                 </div>
               </div>
             </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80 p-4" align="start">
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-semibold mb-2">Adultos</h4>
-                <p className="text-sm text-muted-foreground mb-3">Edad 18 o más</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-semibold">{adults}</span>
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={handleDecrement}
-                      disabled={adults <= 1}
-                      className="rounded-full bg-transparent"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={handleIncrement}
-                      disabled={adults >= 18}
-                      className="rounded-full"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
+          </div>
+        </div>
       </div>
 
       {/* Botón de reserva */}
