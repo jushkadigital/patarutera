@@ -18,11 +18,14 @@ interface Props {
 
 export function BookingCard({ amount, slug, type }: Props) {
 
+  console.log(type)
+
+  const typing = type == 'tour' ? 1 : 40
   amount = amount.replace(/,/g, '').toString()
   const initialDate = React.useMemo(() => {
 
     const d = new Date();
-    d.setDate(d.getDate() + type == 'tour' ? 1 : 40);
+    d.setDate(d.getDate() + typing);
     return d;
   }, []);
 
