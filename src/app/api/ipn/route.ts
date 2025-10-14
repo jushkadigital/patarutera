@@ -40,7 +40,6 @@ export async function POST(request: NextRequest) {
       return Response.json({ error }, { status: 500 });
     }
 
-    return Response.json({ data });
   } catch (error) {
 
   }
@@ -62,7 +61,6 @@ export async function POST(request: NextRequest) {
       return Response.json({ error }, { status: 500 });
     }
 
-    return Response.json({ data });
   } catch (error) {
 
   }
