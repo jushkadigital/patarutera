@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch"
+import * as React from 'react';
+import { Email } from '../../../components/emails/email-template-send';
+import { Resend } from 'resend';
 
 
 export async function POST(request: NextRequest) {
   // const secret = request.headers.get("secret");
+
+  //const resend = new Resend(process.env.RESEND_API_KEY);
   const document = await request.text();
 
   // console.log(document)
@@ -15,8 +20,54 @@ export async function POST(request: NextRequest) {
 
   const finalDivide = divideResponse[1].split("-")[1]
 
+  const emailResponse = data[23].split("=")
 
-  console.log(finalDivide)
+  console.log(emailResponse)
+  /*
+   try {
+     const { data, error } = await resend.emails.send({
+       from: 'ventas@patarutera.pe',
+       to: 'ventas@patarutera.pe',
+       subject: 'Hello world',
+       react: Email() as React.ReactNode,
+       //html: '<div> Hello Next</div>'
+ 
+     });
+ 
+     console.log(error)
+ 
+     if (error) {
+       return Response.json({ error }, { status: 500 });
+     }
+ 
+     return Response.json({ data });
+   } catch (error) {
+ 
+   }
+ 
+ 
+ 
+   try {
+     const { data, error } = await resend.emails.send({
+       from: 'ventas@patarutera.pe',
+       to: 'urgosxd@gmail.com',
+       subject: 'Hello world',
+       react: Email() as React.ReactNode,
+       //html: '<div> Hello Next</div>'
+     });
+ 
+     console.log(error)
+ 
+     if (error) {
+       return Response.json({ error }, { status: 500 });
+     }
+ 
+     return Response.json({ data });
+   } catch (error) {
+ 
+   }
+ 
+ */
   return NextResponse.json({
     "message": "nice",
     "cache": "update"
