@@ -15,7 +15,7 @@ interface Props {
 export function ReservationCard({ name, date, amount, numberPassengers, type, image }: Props) {
   return (
     <div className="space-y-4 pt-5">
-      <h1 className="text-2xl font-semibold mt-5">Su reserva</h1>
+      <h1 className="text-2xl font-semibold">Su reserva</h1>
 
       <Card>
         <CardContent className="p-6 space-y-6">
@@ -42,13 +42,12 @@ export function ReservationCard({ name, date, amount, numberPassengers, type, im
               <span className="font-medium">Fecha:</span> <span className="text-muted-foreground">{date}</span>
             </div>
             <div className="text-sm">
-              <span className="font-medium">Duración:</span> <span className="text-muted-foreground">1 Día</span>
             </div>
           </div>
 
           {/* Reservation Details */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-destructive">Detalles de la reserva</h3>
+            <h3 className="text-lg font-semibold  text-[#2970b7]">Detalles de la reserva</h3>
 
             <div className="text-sm">
               <span className="font-semibold">Adulto:</span> <span>{numberPassengers.toString()} x S/.{amount.toFixed(2)}</span>

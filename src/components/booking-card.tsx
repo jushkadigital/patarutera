@@ -8,6 +8,7 @@ import { ChevronDown, Minus, Plus, Star } from "lucide-react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { CustomCalendar } from "./CustomCalendar"
+import { useMobile } from '@/hooks/useMobile'
 
 interface Props {
   amount: string
@@ -29,6 +30,7 @@ export function BookingCard({ amount, slug, type }: Props) {
     return d;
   }, []);
 
+  const isMobile = useMobile()
 
   const [adults, setAdults] = useState(2)
   const [isDateOpen, setIsDateOpen] = useState(false)
@@ -60,23 +62,23 @@ export function BookingCard({ amount, slug, type }: Props) {
   }
 
   return (
-    <Card className="w-full mx-auto p-6 shadow-lg">
+    <Card className="w-full mx-auto p-6 shadow-lg h-[80vh] md:h-auto">
       {/* Header con precio y rating */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-baseline gap-2">
           <span className="text-muted-foreground text-sm">De:</span>
-          <span className="text-3xl font-bold text-[#c41e3a]">S/.{amount}</span>
+          <span className="text-3xl font-bold text-[#2970b7]">S/.{amount}</span>
         </div>
       </div>
 
       {/* Selector de fecha */}
-      <div className="space-y-4">
+      <div className="space-y-4 w-full">
         <Popover open={isDateOpen} onOpenChange={setIsDateOpen} modal>
           <PopoverTrigger asChild>
-            <button className="w-full text-left p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors">
+            <button className="w-full text-left p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors cursor-pointer">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-[#c41e3a] font-semibold mb-1">Fecha</div>
+                  <div className="text-[#2970b7] font-semibold mb-1">Fecha</div>
                 </div>
                 <div className='text-gray-700'>
                   {date?.toLocaleDateString('es-PE')}
@@ -85,7 +87,7 @@ export function BookingCard({ amount, slug, type }: Props) {
               </div>
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-50 p-0 h-70" align="start">
+          <PopoverContent className="w-[240%] md:w-[170%] p-0 h-[90%]" align="start">
             <CustomCalendar date={date} setDate={setDate} initialDate={initialDate} setIsDateOpen={setIsDateOpen} />
           </PopoverContent>
         </Popover>
@@ -97,7 +99,7 @@ export function BookingCard({ amount, slug, type }: Props) {
             <button className="w-full text-left p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-[#c41e3a] font-semibold mb-1">Adultos</div>
+                  <div className="text-[#2970b7] font-semibold mb-1">Adultos</div>
                   <p className="text-sm text-muted-foreground mb-3">Edad 18 o más</p>
 
                 </div>
@@ -107,18 +109,18 @@ export function BookingCard({ amount, slug, type }: Props) {
                       e.stopPropagation()
                       handleDecrement()
                     }}
-                    className="w-8 h-8 rounded-full border border-border hover:border-foreground transition-colors flex items-center justify-center"
+                    className="w-8 h-8 rounded-full border border-border hover:border-foreground transition-colors flex items-center justify-center cursor-pointer"
                     aria-label="Disminuir adultos"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="text-[#c41e3a] font-semibold min-w-[20px] text-center">{adults}</span>
+                  <span className="text-[#2970b7] font-semibold min-w-[20px] text-center">{adults}</span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
                       handleIncrement()
                     }}
-                    className="w-8 h-8 rounded-full border border-border hover:border-foreground transition-colors flex items-center justify-center"
+                    className="w-8 h-8 rounded-full border border-border hover:border-foreground transition-colors flex items-center justify-center cursor-pointer"
                     aria-label="Aumentar adultos"
                   >
                     <Plus className="w-4 h-4" />
@@ -132,7 +134,7 @@ export function BookingCard({ amount, slug, type }: Props) {
 
       {/* Botón de reserva */}
       <Button
-        className="w-full mt-6 h-14 text-lg font-semibold bg-[#c41e3a] hover:bg-[#a01828] text-white rounded-full shadow-md"
+        className="w-full mt-6 h-14 text-lg font-semibold bg-[#2970b7] hover:bg-[black] text-white rounded-full shadow-md cursor-pointer"
         size="lg"
         onClick={() => HandlerBooking()}
       >

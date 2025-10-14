@@ -11,9 +11,9 @@ import { url } from "inspector"
 import { Media } from "@/cms-types"
 
 type BillingFormValues = {
-  firstName: string
-  lastName: string
+  names: string
   country: string
+  dni: string
   streetAddress: string
   city: string
   state: string
@@ -30,32 +30,53 @@ interface Props {
   image: Media
 }
 
+function normalizarTexto(texto) {
+  if (!texto) return '';
+
+  // 1. Convertir a minúsculas
+  let resultado = texto.toLowerCase();
+
+  // 2. Normalización Unicode (NFD): Descompone los caracteres acentuados.
+  //    Ejemplo: 'á' se convierte en 'a' + '́' (un caracter de acento separado).
+  resultado = resultado.normalize('NFD');
+
+  // 3. Eliminar los caracteres diacríticos (acentos, tildes, etc.)
+  //    El regex /[\u0300-\u036f]/g busca y elimina los códigos Unicode de acentos combinados.
+  resultado = resultado.replace(/[\u0300-\u036f]/g, "");
+
+  // 4. Reemplazo específico de la 'ñ' (obligatorio ya que normalize no la maneja)
+  resultado = resultado.replace(/ñ/g, "n");
+
+  return resultado;
+}
+
+
 export function BillingForm({ name, date, amount, numberPassengers, type, image }: Props) {
   const form = useForm<BillingFormValues>({
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      names: "",
       country: "",
       streetAddress: "",
       city: "",
-      state: "",
-      postcode: "",
       phone: "",
       email: "",
     },
   })
 
   const id = uuidv4()
+
+
+  const passengerName = form.watch("names")
+
   const onSubmit = async (data: BillingFormValues) => {
-    const referiCode = 'PATA'
     const paymentConf = {
       amount: Math.round(Number(amount) * 100),
       currency: "PEN",
       customer: {
-        reference: referiCode,
+        reference: passengerName,
         email: (data.email),
       },
-      orderId: `order-${id}`
+      orderId: `${normalizarTexto(name.replaceAll(" ", ""))}-${new Date().valueOf()}`
     }
     console.log(paymentConf)
     const response = await fetch(`/api/createpayment`, {
@@ -75,11 +96,50 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
     window.location.href = urlPayment
   }
 
+  const phoneCountryOptions = [
+    // EUROPA (España)
+    { value: '+34', label: 'España' },
 
+    // AMÉRICA DEL NORTE
+    { value: '+1', label: 'Estados Unidos y Canadá (+1)' }, // Código unificado +1
+    { value: '+52', label: 'México' },
+    // Códigos de área del Caribe y otros territorios +1
+    { value: '+1-242', label: 'Bahamas' },
+    { value: '+1-767', label: 'Dominica' },
+    { value: '+1-809', label: 'República Dominicana (+1-809, +1-829, +1-849)' },
+    { value: '+1-876', label: 'Jamaica' },
+    { value: '+1-787', label: 'Puerto Rico (+1-787, +1-939)' },
+    { value: '+1-868', label: 'Trinidad y Tobago' },
+    { value: '+1-340', label: 'Islas Vírgenes de EE. UU.' },
+
+    // AMÉRICA CENTRAL
+    { value: '+501', label: 'Belice' },
+    { value: '+502', label: 'Guatemala' },
+    { value: '+503', label: 'El Salvador' },
+    { value: '+504', label: 'Honduras' },
+    { value: '+505', label: 'Nicaragua' },
+    { value: '+506', label: 'Costa Rica' },
+    { value: '+507', label: 'Panamá' },
+
+    // AMÉRICA DEL SUR
+    { value: '+54', label: 'Argentina' },
+    { value: '+55', label: 'Brasil' },
+    { value: '+56', label: 'Chile' },
+    { value: '+57', label: 'Colombia' },
+    { value: '+51', label: 'Perú' },
+    { value: '+591', label: 'Bolivia' },
+    { value: '+593', label: 'Ecuador' },
+    { value: '+595', label: 'Paraguay' },
+    { value: '+598', label: 'Uruguay' },
+    { value: '+58', label: 'Venezuela' },
+
+  ];
+
+  const countryCodeValue = form.watch("country");
   return (
-    <div className="w-full flex flex-col md:flex-row justify-center items-center">
-      <div className="mx-auto max-w-4xl p-6 w-2/3">
-        <h1 className="mb-8 text-2xl font-semibold">Billing details</h1>
+    <div className="w-full flex flex-col md:flex-row justify-center items-center lg:items-start">
+      <div className="mx-auto  p-6 w-[80%] lg:w-2/3">
+        <h1 className="mb-8 text-2xl font-semibold">Datos del Pasajero</h1>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -87,8 +147,8 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
             <div className="grid gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="firstName"
-                rules={{ required: "First name is required" }}
+                name="names"
+                rules={{ required: "Nombres requeridos" }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
@@ -99,21 +159,21 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
-                name="lastName"
-                rules={{ required: "Last name is required" }}
+                name="dni"
+                rules={{ required: "DNI o Pasaporte requerido" }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Apellidos <span className="text-destructive">*</span>
+                      DNI o Pasaporte<span className="text-destructive">*</span>
                     </FormLabel>
-                    <Input placeholder="Cornejo" {...field} />
+                    <Input type="number" placeholder=".." {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
             </div>
 
             {/* Country / Region */}
@@ -124,7 +184,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
               <FormField
                 control={form.control}
                 name="country"
-                rules={{ required: "Country is required" }}
+                rules={{ required: "Pais es requerido" }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
@@ -132,15 +192,11 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a country" />
+                        <SelectValue placeholder="Selecciona un Pais" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="peru">Peru</SelectItem>
-                        <SelectItem value="argentina">Argentina</SelectItem>
-                        <SelectItem value="chile">Chile</SelectItem>
-                        <SelectItem value="colombia">Colombia</SelectItem>
-                        <SelectItem value="mexico">Mexico</SelectItem>
-                        <SelectItem value="spain">Spain</SelectItem>
+                        {phoneCountryOptions.map((ele) => (
+                          <SelectItem value={ele.value}>{ele.label}</SelectItem>))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -150,7 +206,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
               <FormField
                 control={form.control}
                 name="streetAddress"
-                rules={{ required: "Street address is required" }}
+                rules={{ required: "Direccion de domicilio requirido" }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
@@ -175,15 +231,43 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                 control={form.control}
                 name="phone"
                 rules={{ required: "Phone is required" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Telefono <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Input placeholder="935207981" type="tel" {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const prefix = countryCodeValue + " " || '';
+
+                  // 2. Combina el valor que se debe mostrar en el Input: [prefijo + valor actual del campo]
+                  const displayValue = prefix + (field.value || '');
+
+                  // 3. Define la función onChange para asegurar que solo se guarde el número
+                  const handlePhoneChange = (e) => {
+                    let newValue = e.target.value;
+
+                    // Intenta eliminar el prefijo del código de país para obtener solo el número.
+                    // Esto evita que el prefijo sea guardado si ya está en la entrada.
+                    if (prefix && newValue.startsWith(prefix)) {
+                      newValue = newValue.substring(prefix.length);
+                    }
+                    // Llama a la función onChange de React Hook Form con solo el número.
+                    field.onChange(newValue);
+                  }
+                  return (
+                    <FormItem>
+                      <FormLabel>
+                        Telefono <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <Input
+                        placeholder="935207981"
+                        type="tel"
+                        // Usa el valor combinado para mostrar el prefijo
+                        value={displayValue}
+                        // Usa la función personalizada para limpiar el prefijo antes de guardar
+                        onChange={handlePhoneChange}
+                        onBlur={field.onBlur} // Importante mantener el onBlur
+                        name={field.name}     // Importante mantener el name
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )
+                }}
               />
 
               <FormField
@@ -210,14 +294,14 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
 
             {/* Booking Button */}
             <div className="pt-4">
-              <Button type="submit" size="lg" className="w-full md:w-auto">
+              <Button type="submit" size="lg" className="w-full md:w-auto bg-[#2970b7] hover:bg-[black] cursor-pointer">
                 Reservar
               </Button>
             </div>
           </form>
         </Form>
       </div>
-      <div className=" w-[90%] md:w-1/3">
+      <div className="w-[80%] md:w-1/3">
         <ReservationCard name={name} amount={Number(amount)} numberPassengers={Number(numberPassengers)} type={type} date={date} image={image} />
       </div>
     </div>

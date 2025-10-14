@@ -64,7 +64,7 @@ export default async function Page({ params: paramsPromise, searchParams: search
 
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col md:w-[97%]">
       <BillingForm name={title} date={dateBooking} amount={Number(amount)} numberPassengers={Number(numberPassengers)} type={type} image={meta.image} />
     </div>
   );

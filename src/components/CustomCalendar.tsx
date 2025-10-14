@@ -24,7 +24,7 @@ export const CustomCalendar = ({ date, setDate, initialDate, setIsDateOpen }: Pr
         setDate(date)
         setIsDateOpen(prev => false)
       }}
-      className="rounded-md border shadow-sm  w-full h-full"
+      className="rounded-md border shadow-sm  w-full h-full scale-100"
       captionLayout="dropdown"
     />
   )
