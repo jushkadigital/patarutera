@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
   const emailResponse = data[23].split("=")
 
-  console.log(emailResponse)
+  console.log(decodeURIComponent(emailResponse[1]))
   /*
    try {
      const { data, error } = await resend.emails.send({
