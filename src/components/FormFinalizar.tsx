@@ -76,7 +76,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
         reference: passengerName,
         email: (data.email),
       },
-      orderId: `${normalizarTexto(name.replaceAll(" ", ""))}-${new Date().valueOf()}`
+      orderId: `order-${new Date().valueOf()}`
     }
     console.log(paymentConf)
     const response = await fetch(`/api/createpayment`, {
