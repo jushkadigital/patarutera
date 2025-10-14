@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
   const finalDivide = divideResponse[1].split("-")[1]
 
 
-  console.log()
+  console.log(finalDivide)
   return NextResponse.json({
     "message": "nice",
     "cache": "update"
