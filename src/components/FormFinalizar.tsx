@@ -70,7 +70,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
 
   const onSubmit = async (data: BillingFormValues) => {
     const paymentConf = {
-      amount: Math.round(Number(amount) * 100),
+      amount: Math.round(numberPassengers * Number(amount) * 100),
       currency: "PEN",
       customer: {
         reference: passengerName,
