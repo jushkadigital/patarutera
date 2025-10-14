@@ -154,7 +154,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                     <FormLabel>
                       Nombres<span className="text-destructive">*</span>
                     </FormLabel>
-                    <Input placeholder="Josue" {...field} />
+                    <Input placeholder="Nombres y Apellidos" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -212,7 +212,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                     <FormLabel>
                       Direccion <span className="text-destructive">*</span>
                     </FormLabel>
-                    <Input placeholder="Cipreces Versalles" {...field} />
+                    <Input placeholder="Av o Calle" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -255,7 +255,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                         Telefono <span className="text-destructive">*</span>
                       </FormLabel>
                       <Input
-                        placeholder="935207981"
+                        placeholder="Numero de Telefono"
                         type="tel"
                         // Usa el valor combinado para mostrar el prefijo
                         value={displayValue}
@@ -285,7 +285,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                     <FormLabel>
                       Email <span className="text-destructive">*</span>
                     </FormLabel>
-                    <Input placeholder="urgosxd@gmail.com" type="email" {...field} />
+                    <Input placeholder="Email" type="email" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
