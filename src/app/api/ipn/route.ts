@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'ventas@patarutera.pe',
+      from: 'ventas2@patarutera.pe',
       to: 'ventas@patarutera.pe',
       subject: 'Hello world',
       react: Email() as React.ReactNode,
@@ -34,7 +34,6 @@ export async function POST(request: NextRequest) {
 
     });
 
-    console.log(error)
 
     if (error) {
       return Response.json({ error }, { status: 500 });
@@ -55,7 +54,6 @@ export async function POST(request: NextRequest) {
       //html: '<div> Hello Next</div>'
     });
 
-    console.log(error)
 
     if (error) {
       return Response.json({ error }, { status: 500 });
