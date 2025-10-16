@@ -28,6 +28,7 @@ interface Props {
   numberPassengers: number
   type: string
   image: Media
+  id: string
 }
 
 function normalizarTexto(texto) {
@@ -51,7 +52,7 @@ function normalizarTexto(texto) {
 }
 
 
-export function BillingForm({ name, date, amount, numberPassengers, type, image }: Props) {
+export function BillingForm({ name, date, amount, numberPassengers, type, image, id }: Props) {
   const form = useForm<BillingFormValues>({
     defaultValues: {
       names: "",
@@ -63,7 +64,6 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
     },
   })
 
-  const id = uuidv4()
 
 
   const passengerName = form.watch("names")
@@ -73,10 +73,13 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
       amount: Math.round(numberPassengers * Number(amount) * 100),
       currency: "PEN",
       customer: {
-        reference: passengerName,
+        reference: data.names,
         email: (data.email),
+        billingDetails: {
+          cellPhoneNumber: data.phone,
+        }
       },
-      orderId: `order-${new Date().valueOf()}`
+      orderId: `${type}-${id}-${new Date().valueOf()}`
     }
     console.log(paymentConf)
     const response = await fetch(`/api/createpayment`, {
