@@ -276,6 +276,7 @@ export async function POST(request: NextRequest) {
       //html: '<div> Hello Next</div>'
     });
 
+    console.log(data)
 
     if (error) {
       return Response.json({ error }, { status: 500 });
