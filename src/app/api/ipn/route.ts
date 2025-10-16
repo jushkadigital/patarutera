@@ -59,23 +59,6 @@ export async function POST(request: NextRequest) {
   const getAmount = Number(decodeURIComponent(amountResponse[1])) / 100
   const getPhone = (decodeURIComponent(phoneResponse[1]))
 
-  try {
-    const { data, error } = await resend.emails.send({
-      from: 'ventas2@patarutera.pe',
-      to: 'ventas@patarutera.pe',
-      subject: 'Hello world',
-      html: '<div> Hello Next</div>'
-
-    });
-
-
-    if (error) {
-      return Response.json({ error }, { status: 500 });
-    }
-
-  } catch (error) {
-
-  }
 
   let idCrmDealAdd
   let idContact
@@ -267,15 +250,17 @@ export async function POST(request: NextRequest) {
 
   console.log(title)
   console.log(meta)
+
   try {
     const { data, error } = await resend.emails.send({
       from: 'ventas@patarutera.pe',
       to: getEmail,
-      subject: 'Hello world',
+      subject: 'Pata Rutera',
       react: Email(getName, [{ image: meta.image, name: title, date: new Date().toISOString(), travelers: 3, price: getAmount.toFixed(2) }]) as React.ReactNode,
       //html: '<div> Hello Next</div>'
     });
 
+    console.log(error)
     console.log(data)
 
     if (error) {
