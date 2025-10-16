@@ -67,6 +67,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
 
 
   const passengerName = form.watch("names")
+  const countryCodeValue = form.watch("country");
 
   const onSubmit = async (data: BillingFormValues) => {
     const paymentConf = {
@@ -76,7 +77,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
         reference: data.names,
         email: (data.email),
         billingDetails: {
-          cellPhoneNumber: data.phone,
+          cellPhoneNumber: countryCodeValue + ' ' + data.phone,
         }
       },
       orderId: `${type}-${id}-${new Date().valueOf()}`
@@ -138,7 +139,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
 
   ];
 
-  const countryCodeValue = form.watch("country");
+
   return (
     <div className="w-full flex flex-col md:flex-row justify-center items-center lg:items-start">
       <div className="mx-auto  p-6 w-[80%] lg:w-2/3">
