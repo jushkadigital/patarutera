@@ -64,8 +64,7 @@ export async function POST(request: NextRequest) {
       from: 'ventas2@patarutera.pe',
       to: 'ventas@patarutera.pe',
       subject: 'Hello world',
-      react: Email() as React.ReactNode,
-      //html: '<div> Hello Next</div>'
+      html: '<div> Hello Next</div>'
 
     });
 
@@ -273,7 +272,7 @@ export async function POST(request: NextRequest) {
       from: 'ventas@patarutera.pe',
       to: getEmail,
       subject: 'Hello world',
-      react: Email() as React.ReactNode,
+      react: Email(getName, [{ image: meta.image, name: title, date: new Date().toISOString(), travelers: 3, price: getAmount.toFixed(2) }]) as React.ReactNode,
       //html: '<div> Hello Next</div>'
     });
 

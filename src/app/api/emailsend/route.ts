@@ -10,9 +10,9 @@ export async function POST() {
   try {
     const { data, error } = await resend.emails.send({
       from: 'ventas@patarutera.pe',
-      to: 'ventas@patarutera.pe',
+      to: 'urgosxd@gmail.com',
       subject: 'Hello world',
-      react: Email() as React.ReactNode,
+      react: Email('patita', [{ image: '' }]) as React.ReactNode,
       //html: '<div> Hello Next</div>'
     });
 

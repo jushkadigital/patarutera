@@ -14,24 +14,11 @@ import {
 } from "@react-email/components"
 
 import * as React from "react";
-
+import Image from "next/image";
+import PayloadImage from '@/components/PayloadImage';
 export function Email(
   customerName = "Rutera",
-  items = [
-    {
-      name: "Pata Rutera Clásica",
-      date: "04/12/2025",
-      price: 138,
-      image: "https://placeholder.svg?height=60&width=60&query=pata+rutera+clasica",
-    },
-    {
-      name: "Perro Caliente Clásico",
-      date: "04/12/2025",
-      price: 108,
-      image: "https://placeholder.svg?height=60&width=60&query=perro+caliente",
-    },
-  ],
-  logoUrl = "https://placeholder.svg?height=50&width=120&query=pata+rutera+logo",
+  items: any,
 ) {
   const total = items.reduce((sum, item) => sum + item.price, 0)
 
@@ -43,7 +30,7 @@ export function Email(
         <Container style={container}>
           {/* Logo */}
           <Section style={logoSection}>
-            <Img src={logoUrl} alt="PATA RUTERA" style={logo} />
+            <Image src={"/pataLogo.png"} alt="Logo" fill className={" object-cover"} />
           </Section>
 
           {/* Main Heading */}
@@ -60,25 +47,43 @@ export function Email(
           <Heading style={subheading}>¡Nos vemos muy pronto {customerName}!</Heading>
 
           {/* Order Details Section */}
+
           <Section style={orderSection}>
             <Text style={orderTitle}>Detalles del Tour</Text>
 
-            {items.map((item, index) => (
-              <Row key={index} style={itemRow}>
-                <Column style={imageColumn}>
-                  <Img src={item.image} alt={item.name} style={itemImage} />
-                </Column>
-                <Column style={detailsColumn}>
-                  <Text style={itemName}>{item.name}</Text>
-                  <Text style={itemDate}>{item.date}</Text>
-                </Column>
-                <Column style={priceColumn}>
-                  <Text style={itemPrice}>S/ {item.price}</Text>
-                </Column>
-              </Row>
-            ))}
+            <table style={table}>
+              <thead>
+                <tr>
+                  <th style={tableHeader}>Tour</th>
+                  <th style={tableHeader}>Nombre</th>
+                  <th style={tableHeader}>Fecha</th>
+                  <th style={tableHeader}>Viajeros</th>
+                  <th style={tableHeader}>Precio</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => (
+                  <tr key={index} style={tableRow}>
+                    <td style={tableCell}>
+                      <PayloadImage media={item.image} style={itemImage} />
+                    </td>
+                    <td style={tableCell}>
+                      <Text style={itemName}>{item.name}</Text>
+                    </td>
+                    <td style={tableCell}>
+                      <Text style={itemDate}>{item.date}</Text>
+                    </td>
+                    <td style={tableCellCenter}>
+                      <Text style={itemTravelers}>{item.travelers}</Text>
+                    </td>
+                    <td style={tableCellRight}>
+                      <Text style={itemPrice}>S/ {item.price}</Text>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </Section>
-
           {/* CTA Button */}
           <Section style={buttonSection}>
             <Button style={button} href="#">
@@ -169,30 +174,16 @@ const imageColumn = {
   verticalAlign: "middle" as const,
 }
 
-const itemImage = {
-  width: "60px",
-  height: "60px",
-  borderRadius: "8px",
-  objectFit: "cover" as const,
-}
+
 
 const detailsColumn = {
   verticalAlign: "middle" as const,
   paddingLeft: "15px",
 }
 
-const itemName = {
-  color: "#2d3748",
-  fontSize: "14px",
-  fontWeight: "600",
-  margin: "0 0 5px",
-}
 
-const itemDate = {
-  color: "#a0aec0",
-  fontSize: "12px",
-  margin: "0",
-}
+
+
 
 const priceColumn = {
   verticalAlign: "middle" as const,
@@ -200,17 +191,9 @@ const priceColumn = {
   width: "80px",
 }
 
-const itemPrice = {
-  color: "#3182ce",
-  fontSize: "16px",
-  fontWeight: "700",
-  margin: "0",
-}
 
-const buttonSection = {
-  textAlign: "center" as const,
-  margin: "30px 0",
-}
+
+
 
 const button = {
   backgroundColor: "#3182ce",
@@ -229,4 +212,78 @@ const footer = {
   fontSize: "12px",
   textAlign: "center" as const,
   margin: "30px 0 0",
+}
+
+const table = {
+  width: "100%",
+  borderCollapse: "collapse" as const,
+}
+
+const tableHeader = {
+  backgroundColor: "#e2e8f0",
+  color: "#4a5568",
+  fontSize: "12px",
+  fontWeight: "600",
+  padding: "10px",
+  textAlign: "left" as const,
+  borderBottom: "2px solid #cbd5e0",
+}
+
+const tableRow = {
+  borderBottom: "1px solid #e2e8f0",
+}
+
+const tableCell = {
+  padding: "12px 10px",
+  verticalAlign: "middle" as const,
+}
+
+const tableCellCenter = {
+  padding: "12px 10px",
+  verticalAlign: "middle" as const,
+  textAlign: "center" as const,
+}
+
+const tableCellRight = {
+  padding: "12px 10px",
+  verticalAlign: "middle" as const,
+  textAlign: "right" as const,
+}
+
+const itemImage = {
+  width: "60px",
+  height: "60px",
+  borderRadius: "8px",
+  objectFit: "cover" as const,
+}
+
+const itemName = {
+  color: "#2d3748",
+  fontSize: "14px",
+  fontWeight: "600",
+  margin: "0",
+}
+
+const itemDate = {
+  color: "#718096",
+  fontSize: "12px",
+  margin: "0",
+}
+
+const itemTravelers = {
+  color: "#2d3748",
+  fontSize: "14px",
+  margin: "0",
+}
+
+const itemPrice = {
+  color: "#3182ce",
+  fontSize: "16px",
+  fontWeight: "700",
+  margin: "0",
+}
+
+const buttonSection = {
+  textAlign: "center" as const,
+  margin: "30px 0",
 }
