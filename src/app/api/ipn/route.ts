@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
   const data = document.split("&")
 
   console.log(data)
+  console.log(`https://pdscorporation.bitrix24.es/rest/${process.env.BITRIX_AUTH}/${process.env.BITRIX_API_KEY}/crm.deal.add.json`)
 
   const divideResponse = data[22].split("=")
 
