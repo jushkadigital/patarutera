@@ -3,7 +3,32 @@ import fetch from "node-fetch"
 import * as React from 'react';
 import { Email } from '../../../components/emails/email-template-send';
 import { Resend } from 'resend';
+import { BASEURL } from "@/lib/config";
 
+const queryTourById = async ({ id }: { id: string }) => {
+  // La URL cambia para buscar directamente por ID: ${BASEURL}/api/tours/${id}
+  const data = await fetch(`${BASEURL}/api/tours/${id}?depth=3&draft=false`);
+  const result = await data.json();
+
+  // Si la búsqueda por ID es exitosa, el resultado es el documento directamente, 
+  // no está dentro de un array 'docs'.
+  // Es mejor incluir un chequeo de errores si la API de Payload lo proporciona.
+  // Por simplicidad, retornamos el resultado que debería ser el tour o un error si no se encuentra.
+  return result || null;
+};
+
+
+const queryPaqueteById = async ({ id }: { id: string }) => {
+  // La URL cambia para buscar directamente por ID: ${BASEURL}/api/tours/${id}
+  const data = await fetch(`${BASEURL}/api/paquetes/${id}?depth=3&draft=false`);
+  const result = await data.json();
+
+  // Si la búsqueda por ID es exitosa, el resultado es el documento directamente, 
+  // no está dentro de un array 'docs'.
+  // Es mejor incluir un chequeo de errores si la API de Payload lo proporciona.
+  // Por simplicidad, retornamos el resultado que debería ser el tour o un error si no se encuentra.
+  return result || null;
+};
 
 export async function POST(request: NextRequest) {
   // const secret = request.headers.get("secret");
@@ -19,7 +44,7 @@ export async function POST(request: NextRequest) {
 
   const divideResponse = data[22].split("=")
 
-  const finalDivide = divideResponse[1].split("-")[1]
+  const finalDivide = divideResponse[1].split("-")
 
   const emailResponse = data[23].split("=")
 
@@ -27,10 +52,12 @@ export async function POST(request: NextRequest) {
 
   const amountResponse = data[0].split("=")
 
+  const phoneResponse = data[25].split("=")
 
   const getEmail = (decodeURIComponent(emailResponse[1]))
   const getName = (decodeURIComponent(nameResponse[1]))
   const getAmount = Number(decodeURIComponent(amountResponse[1])) / 100
+  const getPhone = (decodeURIComponent(phoneResponse[1]))
 
   try {
     const { data, error } = await resend.emails.send({
@@ -132,7 +159,7 @@ export async function POST(request: NextRequest) {
             EXPORT: "Y",
             PHONE: [
               {
-                VALUE: "+12333333555",
+                VALUE: getPhone,
                 VALUE_TYPE: "WORK"
               }
             ],
@@ -227,6 +254,20 @@ export async function POST(request: NextRequest) {
 
   }
 
+  let page
+
+  if (finalDivide[0] == 'tour') {
+    page = queryTourById({ id: finalDivide[1] })
+  }
+  else {
+    page = queryPaqueteById({ id: finalDivide[1] })
+  }
+
+  const { id, title, meta } = page
+
+
+  console.log(title)
+  console.log(meta)
   try {
     const { data, error } = await resend.emails.send({
       from: 'ventas@patarutera.pe',
