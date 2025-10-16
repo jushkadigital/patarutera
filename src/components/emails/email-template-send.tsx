@@ -16,11 +16,17 @@ import {
 import * as React from "react";
 import Image from "next/image";
 import PayloadImage from '@/components/PayloadImage';
-export function Email(
+
+interface Props {
+  customerName?: string
+  items: any
+}
+
+export function Email({
   customerName = "Rutera",
-  items: any,
+  items
+}: Props
 ) {
-  const total = items.reduce((sum, item) => sum + item.price, 0)
 
   return (
     <Html>
@@ -30,7 +36,7 @@ export function Email(
         <Container style={container}>
           {/* Logo */}
           <Section style={logoSection}>
-            <Image src={"/pataLogo.png"} alt="Logo" fill className={" object-cover"} />
+            <Img src={"https://www.patarutera.pe/pataLogo.png"} alt="Logo" style={logo} />
           </Section>
 
           {/* Main Heading */}
@@ -62,10 +68,11 @@ export function Email(
                 </tr>
               </thead>
               <tbody>
+
                 {items.map((item, index) => (
                   <tr key={index} style={tableRow}>
                     <td style={tableCell}>
-                      <PayloadImage media={item.image} style={itemImage} />
+                      <Img src={item.image} alt="log" style={itemImage} />
                     </td>
                     <td style={tableCell}>
                       <Text style={itemName}>{item.name}</Text>

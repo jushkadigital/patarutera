@@ -256,12 +256,9 @@ export async function POST(request: NextRequest) {
       from: 'ventas@patarutera.pe',
       to: getEmail,
       subject: 'Pata Rutera',
-      react: Email(getName, [{ image: meta.image, name: title, date: new Date().toISOString(), travelers: 3, price: getAmount.toFixed(2) }]) as React.ReactNode,
+      react: Email({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: new Date().toISOString().split('T')[0], travelers: 3, price: getAmount.toFixed(2) }] }) as React.ReactNode,
       //html: '<div> Hello Next</div>'
     });
-
-    console.log(error)
-    console.log(data)
 
     if (error) {
       return Response.json({ error }, { status: 500 });
