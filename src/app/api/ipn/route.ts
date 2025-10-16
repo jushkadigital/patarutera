@@ -256,10 +256,10 @@ export async function POST(request: NextRequest) {
   let page
 
   if (finalDivide[0] == 'tour') {
-    page = queryTourById({ id: finalDivide[1] })
+    page = await queryTourById({ id: finalDivide[1] })
   }
   else {
-    page = queryPaqueteById({ id: finalDivide[1] })
+    page = await queryPaqueteById({ id: finalDivide[1] })
   }
 
   const { id, title, meta } = page
