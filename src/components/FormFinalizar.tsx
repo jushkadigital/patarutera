@@ -78,7 +78,9 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
         email: (data.email),
         billingDetails: {
           cellPhoneNumber: countryCodeValue + ' ' + data.phone,
-          identityCode: numberPassengers
+          identityCode: data.dni,
+          state: data.country,
+          district: numberPassengers
         }
       },
       orderId: `${type}-${id}-${new Date().valueOf()}`

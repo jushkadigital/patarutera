@@ -54,10 +54,19 @@ export async function POST(request: NextRequest) {
 
   const phoneResponse = data[25].split("=")
 
+  const dniResponse = data[26].split("=")
+
+  const countryResponse = data[27].split("=")
+
+  const numberPassengersResponse = data[28].split("=")
+
   const getEmail = (decodeURIComponent(emailResponse[1]))
   const getName = (decodeURIComponent(nameResponse[1]))
   const getAmount = Number(decodeURIComponent(amountResponse[1])) / 100
   const getPhone = (decodeURIComponent(phoneResponse[1]))
+  const getDni = (decodeURIComponent(dniResponse[1]))
+  const getCountry = (decodeURIComponent(countryResponse[1]))
+  const getNumberPassengers = Number(decodeURIComponent(numberPassengersResponse[1]))
 
 
   let idCrmDealAdd
@@ -210,7 +219,7 @@ export async function POST(request: NextRequest) {
           FIELDS: {
             UF_CRM_1739024172525: "",
             UF_CRM_1721244482250: "Hello world!",
-            UF_CRM_1651640867: "Gaaaaaaaaaaaaaa"
+            UF_CRM_1651640867: `Líder de Grupo Nombre: [${getName} ] F. de Nac.: [No se incluyo] Doc.: [DNI] N°: [${getDni}] Nacionalidad: [${getCountry}] Género: [M]`
           },
           PARAMS: {
             REGISTER_SONET_EVENT: "N",
@@ -256,7 +265,7 @@ export async function POST(request: NextRequest) {
       from: 'ventas@patarutera.pe',
       to: getEmail,
       subject: 'Pata Rutera',
-      react: Email({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: new Date().toISOString().split('T')[0], travelers: 3, price: getAmount.toFixed(2) }] }) as React.ReactNode,
+      react: Email({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: new Date().toISOString().split('T')[0], travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2) }] }) as React.ReactNode,
       //html: '<div> Hello Next</div>'
     });
 
