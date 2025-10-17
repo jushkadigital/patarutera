@@ -52,13 +52,13 @@ export async function POST(request: NextRequest) {
 
   const amountResponse = data[0].split("=")
 
-  const phoneResponse = data[25].split("=")
+  const phoneResponse = data[26].split("=")
 
-  const dniResponse = data[26].split("=")
+  const dniResponse = data[28].split("=")
 
   const countryResponse = data[27].split("=")
 
-  const numberPassengersResponse = data[28].split("=")
+  const numberPassengersResponse = data[25].split("=")
 
   const getEmail = (decodeURIComponent(emailResponse[1]))
   const getName = (decodeURIComponent(nameResponse[1]))
