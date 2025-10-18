@@ -31,25 +31,6 @@ interface Props {
   id: string
 }
 
-function normalizarTexto(texto) {
-  if (!texto) return '';
-
-  // 1. Convertir a minúsculas
-  let resultado = texto.toLowerCase();
-
-  // 2. Normalización Unicode (NFD): Descompone los caracteres acentuados.
-  //    Ejemplo: 'á' se convierte en 'a' + '́' (un caracter de acento separado).
-  resultado = resultado.normalize('NFD');
-
-  // 3. Eliminar los caracteres diacríticos (acentos, tildes, etc.)
-  //    El regex /[\u0300-\u036f]/g busca y elimina los códigos Unicode de acentos combinados.
-  resultado = resultado.replace(/[\u0300-\u036f]/g, "");
-
-  // 4. Reemplazo específico de la 'ñ' (obligatorio ya que normalize no la maneja)
-  resultado = resultado.replace(/ñ/g, "n");
-
-  return resultado;
-}
 
 
 export function BillingForm({ name, date, amount, numberPassengers, type, image, id }: Props) {
@@ -80,7 +61,8 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
           cellPhoneNumber: countryCodeValue + ' ' + data.phone,
           identityCode: data.dni,
           state: data.country,
-          district: numberPassengers
+          district: numberPassengers,
+          city: date
         }
       },
       orderId: `${type}-${id}-${new Date().valueOf()}`
