@@ -22,7 +22,7 @@ interface Props {
   items: any
 }
 
-export function Email({
+export function EmailRecieve({
   customerName,
   items
 }: Props
@@ -31,7 +31,7 @@ export function Email({
   return (
     <Html>
       <Head />
-      <Preview>Tu reserva fue confirmada - PATA RUTERA</Preview>
+      <Preview>Reserva confirmada - PATA RUTERA</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo */}
@@ -40,58 +40,30 @@ export function Email({
           </Section>
 
           {/* Main Heading */}
-          <Heading style={heading}>TU RESERVA FUE CONFIRMADA</Heading>
+          <Heading style={heading}>Confirmacian de la Reserva</Heading>
 
           {/* Description Text */}
           <Text style={description}>
-            Hola {customerName}, gracias por realizar tu compra con nosotros, estamos felices de que hayas decidido
-            unirte a nuestra experiencia. Queremos que sepas que estamos preparando todo para que vivas una experiencia
-            inolvidable.
-          </Text>
+            Usted tiene una nueva reserva de {items[0].name}. Este es un aviso de confirmacion de reserva, por lo que no se requiere alguna informacion </Text>
 
           {/* Subheading */}
-          <Heading style={subheading}>¡Nos vemos muy pronto {customerName}!</Heading>
+          <Heading style={subheading}>Detalles de la Reserva</Heading>
 
           {/* Order Details Section */}
 
           <Section style={orderSection}>
+            <Text style={orderTitle}>Detalles del Tour: {items[0].name}</Text>
             <Text style={orderTitle}>Detalles del Tour</Text>
-
-            <table style={table}>
-              <thead>
-                <tr>
-                  <th style={tableHeader}>Tour</th>
-                  <th style={tableHeader}>Nombre</th>
-                  <th style={tableHeader}>Fecha</th>
-                  <th style={tableHeader}>Viajeros</th>
-                  <th style={tableHeader}>Precio</th>
-                </tr>
-              </thead>
-              <tbody>
-
-                {items.map((item, index) => (
-                  <tr key={index} style={tableRow}>
-                    <td style={tableCell}>
-                      <Img src={item.image} alt="log" style={itemImage} />
-                    </td>
-                    <td style={tableCell}>
-                      <Text style={itemName}>{item.name}</Text>
-                    </td>
-                    <td style={tableCell}>
-                      <Text style={itemDate}>{item.date}</Text>
-                    </td>
-                    <td style={tableCellCenter}>
-                      <Text style={itemTravelers}>{item.travelers}</Text>
-                    </td>
-                    <td style={tableCellRight}>
-                      <Text style={itemPrice}>S/ {item.price}</Text>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <Text style={orderTitle}>Detalles del Tour</Text>
+            <Text style={orderTitle}>Detalles del Tour</Text>
+            <Text style={orderTitle}>Detalles del Tour</Text>
+            <Text style={orderTitle}>Detalles del Tour</Text>
+            <Text style={orderTitle}>Detalles del Tour</Text>
+            <Text style={orderTitle}>Detalles del Tour</Text>
           </Section>
           {/* CTA Button */}
+
+          {/* Footer */}
           <Text style={footer}>Agradecemos tu confianza</Text>
         </Container>
       </Body>

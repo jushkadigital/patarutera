@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch"
 import * as React from 'react';
-import { Email } from '../../../components/emails/email-template-send';
+import { Email } from '@/components/emails/email-template-send';
 import { Resend } from 'resend';
 import { BASEURL } from "@/lib/config";
+import { EmailRecieve } from "@/components/emails/email-template-recieve";
 
 const queryTourById = async ({ id }: { id: string }) => {
   // La URL cambia para buscar directamente por ID: ${BASEURL}/api/tours/${id}
@@ -261,7 +262,22 @@ export async function POST(request: NextRequest) {
   catch (err) {
 
   }
+  try {
+    const { data, error } = await resend.emails.send({
+      from: 'ventas@patarutera.pe',
+      to: 'soportepatarutera.com@gmail.com',
+      subject: 'Pata Rutera',
+      react: EmailRecieve({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: new Date().toISOString().split('T')[0], travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2) }] }) as React.ReactNode,
+      //html: '<div> Hello Next</div>'
+    });
 
+    if (error) {
+      return Response.json({ error }, { status: 500 });
+    }
+
+  } catch (error) {
+
+  }
 
   try {
     const { data, error } = await resend.emails.send({
