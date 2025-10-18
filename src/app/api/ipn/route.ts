@@ -211,14 +211,31 @@ export async function POST(request: NextRequest) {
 
   }
 
+  let page
+
+  if (finalDivide[0] == 'tour') {
+    page = await queryTourById({ id: finalDivide[1] })
+  }
+  else {
+    page = await queryPaqueteById({ id: finalDivide[1] })
+  }
+
+  const { id, title, meta, priceGeneral } = page
+
+
+  console.log(title)
+  console.log(meta)
+
+
+
   try {
     const response = await fetch(`https://pdscorporation.bitrix24.es/rest/${process.env.BITRIX_AUTH}/${process.env.BITRIX_API_KEY}/crm.deal.update.json`, {
       body: JSON.stringify(
         {
           ID: idCrmDealAdd,
           FIELDS: {
-            UF_CRM_1739024172525: "",
-            UF_CRM_1721244482250: "Hello world!",
+            UF_CRM_1661869816: `Número: \u0022${getNumberPassengers}\u0022 | Edades: \u002200\u0022`,
+            UF_CRM_1651694652233: `Servicio: Tours:  \r\n ${title}:  ${priceGeneral} SOLES`,
             UF_CRM_1651640867: `Líder de Grupo Nombre: [${getName} ] F. de Nac.: [No se incluyo] Doc.: [DNI] N°: [${getDni}] Nacionalidad: [${getCountry}] Género: [M]`
           },
           PARAMS: {
@@ -245,20 +262,6 @@ export async function POST(request: NextRequest) {
 
   }
 
-  let page
-
-  if (finalDivide[0] == 'tour') {
-    page = await queryTourById({ id: finalDivide[1] })
-  }
-  else {
-    page = await queryPaqueteById({ id: finalDivide[1] })
-  }
-
-  const { id, title, meta } = page
-
-
-  console.log(title)
-  console.log(meta)
 
   try {
     const { data, error } = await resend.emails.send({
