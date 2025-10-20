@@ -9,7 +9,8 @@ import { ReservationCard } from "./ReservationCard"
 import { v4 as uuidv4 } from 'uuid'
 import { url } from "inspector"
 import { Media } from "@/cms-types"
-
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 type BillingFormValues = {
   names: string
   country: string
@@ -20,6 +21,7 @@ type BillingFormValues = {
   postcode: string
   phone: string
   email: string
+  hasHotel: boolean
 }
 interface Props {
   name: string
@@ -42,6 +44,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
       city: "",
       phone: "",
       email: "",
+      hasHotel: false
     },
   })
 
@@ -49,6 +52,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
 
   const passengerName = form.watch("names")
   const countryCodeValue = form.watch("country");
+  const hasHotelValue = form.watch("hasHotel");
 
   const onSubmit = async (data: BillingFormValues) => {
     const paymentConf = {
@@ -62,8 +66,12 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
           identityCode: data.dni,
           state: data.country,
           district: numberPassengers,
-          city: date
+          address: data.hasHotel ? data.streetAddress : null
+        },
+        shippingDetails: {
+          city: date,
         }
+
       },
       orderId: `${type}-${id}-${new Date().valueOf()}`
     }
@@ -194,18 +202,43 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
               />
               <FormField
                 control={form.control}
-                name="streetAddress"
-                rules={{ required: "Direccion de domicilio requirido" }}
+                name="hasHotel"
+                rules={{
+                }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Direccion <span className="text-destructive">*</span>
+                      Tienes Hotel
                     </FormLabel>
-                    <Input placeholder="Av o Calle" {...field} />
+                    <div className="flex flex-row">
+                      <Checkbox id="terms" checked={field.value} onCheckedChange={field.onChange} />
+                      <Label htmlFor="terms">Si tengo la direccion de mi hotel</Label>
+                    </div>
                     <FormMessage />
+                    {hasHotelValue &&
+                      <FormField
+                        control={form.control}
+                        name="streetAddress"
+                        rules={{ required: "Direccion de domicilio requirido" }}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Direccion <span className="text-destructive">*</span>
+                            </FormLabel>
+                            <Input placeholder="Av o Calle" {...field} />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                    }
                   </FormItem>
                 )}
               />
+
+
+
+
             </div>
 
             {/* State / County and Postcode / ZIP */}
@@ -279,6 +312,9 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
                   </FormItem>
                 )}
               />
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+
             </div>
 
             {/* Booking Button */}
