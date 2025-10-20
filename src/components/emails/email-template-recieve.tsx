@@ -28,6 +28,7 @@ export function EmailRecieve({
 }: Props
 ) {
 
+
   return (
     <Html>
       <Head />
