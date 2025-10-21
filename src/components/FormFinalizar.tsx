@@ -64,14 +64,13 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
         billingDetails: {
           cellPhoneNumber: countryCodeValue + ' ' + data.phone,
           identityCode: data.dni,
-          state: data.country,
+          state: phoneCountryOptions.find(ele => ele.value == data.country)!.label,
           district: numberPassengers,
           address: data.hasHotel ? data.streetAddress : "-"
         },
         shippingDetails: {
           city: date,
         }
-
       },
       orderId: `${type}-${id}-${new Date().valueOf()}`
     }

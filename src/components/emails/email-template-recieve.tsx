@@ -53,12 +53,13 @@ export function EmailRecieve({
           {/* Order Details Section */}
 
           <Section style={orderSection}>
-            <Text style={orderTitle}>Nombre del pasajero: {items[0].name}</Text>
+            <Text style={orderTitle}>Nombre del pasajero: {customerName}</Text>
             <Text style={orderTitle}>Fecha de Salida: {items[0].date} </Text>
             <Text style={orderTitle}>Numero de Pasajeros: {items[0].travelers} </Text>
             <Text style={orderTitle}>Precio Total: {items[0].price}</Text>
             <Text style={orderTitle}>Ubicacion de Recojo: {items[0].address}</Text>
             <Text style={orderTitle}>Pais: {items[0].country}</Text>
+            <Text style={orderTitle}>Phone: {items[0].phone}</Text>
             <Text style={orderTitle}>Fecha de compra: {items[0].dateBuy}</Text>
           </Section>
           {/* CTA Button */}
