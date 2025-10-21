@@ -237,7 +237,6 @@ export async function POST(request: NextRequest) {
     const month = parseInt(parts[1], 10) - 1; // 👈 CRITICAL: Month is 0-indexed (9 for October)
     const day = parseInt(parts[0], 10);
 
-    console.log(PlainText({ data: block.sectionItinerario.contentSection }))
     const newDate = new Date(year, month, day);
     const response = await fetch(`https://pdscorporation.bitrix24.es/rest/${process.env.BITRIX_AUTH}/${process.env.BITRIX_API_KEY}/crm.deal.update.json`, {
       body: JSON.stringify(
@@ -247,7 +246,8 @@ export async function POST(request: NextRequest) {
             UF_CRM_1661869816: `Número: \u0022${getNumberPassengers}\u0022 | Edades: \u002200\u0022 `,
             UF_CRM_1651694652233: `Servicio: Tours:  \r\n ${title}:  ${priceGeneral} SOLES TOTAL: ${getNumberPassengers * priceGeneral}`,
             UF_CRM_1651640867: `Líder de Grupo Nombre: [${getName} ] F. de Nac.: [No se incluyo] Doc.: [DNI] N°: [${getDni}] Nacionalidad: [${getCountry}] Género: [M]`,
-            UF_CRM_6096A4861F934: `${newDate.toISOString()}`
+            UF_CRM_6096A4861F934: `${newDate.toISOString()}`,
+            UF_CRM_1623883646: `${PlainText({ data: block.sectionItinerario.contentSection })}`
           },
           PARAMS: {
             REGISTER_SONET_EVENT: "N",

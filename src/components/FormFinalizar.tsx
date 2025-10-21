@@ -66,7 +66,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
           identityCode: data.dni,
           state: data.country,
           district: numberPassengers,
-          address: data.hasHotel ? data.streetAddress : null
+          address: data.hasHotel ? data.streetAddress : "-"
         },
         shippingDetails: {
           city: date,
