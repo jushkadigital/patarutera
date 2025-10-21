@@ -249,6 +249,7 @@ export async function POST(request: NextRequest) {
             UF_CRM_1651694652233: `Servicio: Tours:  \r\n ${title}:  ${priceGeneral} SOLES`,
             UF_CRM_1651640867: `Líder de Grupo Nombre: [${getName} ] F. de Nac.: [No se incluyo] Doc.: [DNI] N°: [${getDni}] Nacionalidad: [${getCountry}] Género: [M]`,
             UF_CRM_6096A4861F934: `${newDate.toISOString()}`
+
           },
           PARAMS: {
             REGISTER_SONET_EVENT: "N",
