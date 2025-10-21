@@ -92,7 +92,7 @@ export default function RichText(props: Props) {
   )
 }
 
-export async function PlainText(props: Props) {
+export function PlainText(props: Props) {
 
   const plaintext = convertLexicalToPlaintext({ data: props.data })
   return plaintext

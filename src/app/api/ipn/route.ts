@@ -227,7 +227,6 @@ export async function POST(request: NextRequest) {
   const { id, title, meta, priceGeneral, layout } = page
 
 
-  console.log(layout.find(ele => ele.blockType == 'guiaTour'))
   const block = layout.find(ele => ele.blockType == 'guiaTour')
 
 
