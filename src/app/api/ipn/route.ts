@@ -53,16 +53,17 @@ export async function POST(request: NextRequest) {
 
   const amountResponse = data[0].split("=")
 
-  const phoneResponse = data[26].split("=")
+  const phoneResponse = data[27].split("=")
 
-  const dniResponse = data[28].split("=")
+  const dniResponse = data[29].split("=")
 
-  const countryResponse = data[27].split("=")
+  const countryResponse = data[28].split("=")
 
-  const numberPassengersResponse = data[25].split("=")
+  const numberPassengersResponse = data[26].split("=")
 
-  const dateResponse = data[29].split("=")
+  const dateResponse = data[30].split("=")
 
+  const adressRespose = data[25].split("=")
 
   const getEmail = (decodeURIComponent(emailResponse[1]))
   const getName = (decodeURIComponent(nameResponse[1]))
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest) {
   const getCountry = (decodeURIComponent(countryResponse[1]))
   const getNumberPassengers = Number(decodeURIComponent(numberPassengersResponse[1]))
   const getDate = decodeURIComponent(dateResponse[1])
+  const getAdress = decodeURIComponent(adressRespose[1])
 
 
   let idCrmDealAdd
@@ -247,7 +249,8 @@ export async function POST(request: NextRequest) {
             UF_CRM_1651694652233: `Servicio: Tours:  \r\n ${title}:  ${priceGeneral} SOLES TOTAL: ${getNumberPassengers * priceGeneral}`,
             UF_CRM_1651640867: `Líder de Grupo Nombre: [${getName} ] F. de Nac.: [No se incluyo] Doc.: [DNI] N°: [${getDni}] Nacionalidad: [${getCountry}] Género: [M]`,
             UF_CRM_6096A4861F934: `${newDate.toISOString()}`,
-            UF_CRM_1623883646: `${PlainText({ data: block.sectionItinerario.contentSection })}`
+            UF_CRM_1623883646: `${PlainText({ data: block.sectionItinerario.contentSection })}`,
+            UF_CRM_1605585481: `Lugar de recojo en Cusco : ${getAdress}`
           },
           PARAMS: {
             REGISTER_SONET_EVENT: "N",
