@@ -61,6 +61,9 @@ export async function POST(request: NextRequest) {
 
   const numberPassengersResponse = data[25].split("=")
 
+  const dateResponse = data[29].split("=")
+
+
   const getEmail = (decodeURIComponent(emailResponse[1]))
   const getName = (decodeURIComponent(nameResponse[1]))
   const getAmount = Number(decodeURIComponent(amountResponse[1])) / 100
@@ -68,6 +71,7 @@ export async function POST(request: NextRequest) {
   const getDni = (decodeURIComponent(dniResponse[1]))
   const getCountry = (decodeURIComponent(countryResponse[1]))
   const getNumberPassengers = Number(decodeURIComponent(numberPassengersResponse[1]))
+  const getDate = decodeURIComponent(dateResponse[1])
 
 
   let idCrmDealAdd
@@ -230,6 +234,12 @@ export async function POST(request: NextRequest) {
 
 
   try {
+    const parts = getDate.split("/")
+    const year = parseInt(parts[2], 10);
+    const month = parseInt(parts[1], 10) - 1; // 👈 CRITICAL: Month is 0-indexed (9 for October)
+    const day = parseInt(parts[0], 10);
+
+    const newDate = new Date(year, month, day);
     const response = await fetch(`https://pdscorporation.bitrix24.es/rest/${process.env.BITRIX_AUTH}/${process.env.BITRIX_API_KEY}/crm.deal.update.json`, {
       body: JSON.stringify(
         {
@@ -237,7 +247,8 @@ export async function POST(request: NextRequest) {
           FIELDS: {
             UF_CRM_1661869816: `Número: \u0022${getNumberPassengers}\u0022 | Edades: \u002200\u0022`,
             UF_CRM_1651694652233: `Servicio: Tours:  \r\n ${title}:  ${priceGeneral} SOLES`,
-            UF_CRM_1651640867: `Líder de Grupo Nombre: [${getName} ] F. de Nac.: [No se incluyo] Doc.: [DNI] N°: [${getDni}] Nacionalidad: [${getCountry}] Género: [M]`
+            UF_CRM_1651640867: `Líder de Grupo Nombre: [${getName} ] F. de Nac.: [No se incluyo] Doc.: [DNI] N°: [${getDni}] Nacionalidad: [${getCountry}] Género: [M]`,
+            UF_CRM_6096A4861F934: `${newDate.toISOString()}`
           },
           PARAMS: {
             REGISTER_SONET_EVENT: "N",
@@ -267,7 +278,7 @@ export async function POST(request: NextRequest) {
       from: 'ventas@patarutera.pe',
       to: 'soportepatarutera.com@gmail.com',
       subject: 'Pata Rutera',
-      react: EmailRecieve({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: new Date().toISOString().split('T')[0], travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2) }] }) as React.ReactNode,
+      react: EmailRecieve({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: getDate, travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2) }] }) as React.ReactNode,
       //html: '<div> Hello Next</div>'
     });
 
@@ -284,7 +295,7 @@ export async function POST(request: NextRequest) {
       from: 'ventas@patarutera.pe',
       to: getEmail,
       subject: 'Pata Rutera',
-      react: Email({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: new Date().toISOString().split('T')[0], travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2) }] }) as React.ReactNode,
+      react: Email({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: getDate, travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2) }] }) as React.ReactNode,
       //html: '<div> Hello Next</div>'
     });
 
