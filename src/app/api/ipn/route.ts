@@ -280,7 +280,7 @@ export async function POST(request: NextRequest) {
       from: 'ventas@patarutera.pe',
       to: 'soportepatarutera.com@gmail.com',
       subject: 'Pata Rutera',
-      react: EmailRecieve({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: getDate, travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2), address: getAdress, dateBuy: new Date().toISOString().split("T")[0] }] }) as React.ReactNode,
+      react: EmailRecieve({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: getDate, travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2), address: getAdress, dateBuy: new Date().toISOString().split("T")[0], country: getCountry }] }) as React.ReactNode,
       //html: '<div> Hello Next</div>'
     });
 
