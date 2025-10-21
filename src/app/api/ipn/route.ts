@@ -226,7 +226,7 @@ export async function POST(request: NextRequest) {
     page = await queryPaqueteById({ id: finalDivide[1] })
   }
 
-  const { id, title, meta, priceGeneral, layout } = page
+  const { title, meta, priceGeneral, layout } = page
 
 
   const block = layout.find(ele => ele.blockType == 'guiaTour')
