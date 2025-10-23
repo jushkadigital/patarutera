@@ -4,7 +4,7 @@ import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { BASEURL } from '@/lib/config';
 import { DestinosPage } from '@/specialPages/destinosPage';
 import { PaquetesPage } from '@/specialPages/paquetesPage';
-import {  generateMetaPage } from '@/utilities/generateMeta';
+import { generateMetaPage } from '@/utilities/generateMeta';
 import { Metadata, ResolvingMetadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -38,12 +38,12 @@ export async function generateStaticParams() {
   const params = pages.docs
     ?.filter((doc: any) => {
       return doc.slug !== 'home'
-    }).filter((ele)=>ele.slug !== null)
+    }).filter((ele) => ele.slug !== null)
     .map(({ slug }: any) => {
       return { slug }
     })
 
-    console.log(params)
+  console.log(params)
   return params || [];
 }
 
@@ -66,7 +66,7 @@ export default async function Page({ params: paramsPromise, searchParams: search
   console.log(resolvedParams)
   const searchParams = await searchParamsPromise;
   const { slug = 'home' } = resolvedParams;
-  console.log(draft,'draft')
+  console.log(draft, 'draft')
   console.log('Slug:', slug);
   // console.log('Maps to Component:', mapsToComponent);
 
@@ -74,9 +74,9 @@ export default async function Page({ params: paramsPromise, searchParams: search
   // --- 3. Conditionally Render Special Component or Standard Layout ---
   if (slugsEspeciales.includes(slug)) {
     const SpecialComponent = specialPageComponents[slug];
-    
+
     // You might still want to fetch some common page data or specific data for the special component
-    page = await queryPageBySlug({ slug }); 
+    page = await queryPageBySlug({ slug });
     if (!page) {
       notFound();
     }
@@ -92,33 +92,33 @@ export default async function Page({ params: paramsPromise, searchParams: search
       notFound();
     }
 
-    const { layout,heroPageBlocks } = page;
+    const { layout, heroPageBlocks } = page;
     // console.log(layout);
 
     return (
       <div className="flex flex-col space-y-10">
-         {draft&&<LivePreviewListener />}
+        {draft && <LivePreviewListener />}
         <RenderHero heroBlocks={heroPageBlocks} />
         <div className={"flex flex-col space-y-10 lg:space-y-14"} >
-        <RenderBlocks blocks={layout} />
+          <RenderBlocks blocks={layout} />
         </div>
       </div>
     );
   }
 }
-export async function generateMetadata({ params:paramsPromise }: Args,parent:ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata({ params: paramsPromise }: Args, parent: ResolvingMetadata): Promise<Metadata> {
 
   console.log('gaa')
-   const { slug ='home' } = await paramsPromise;
-   const page = await queryPageBySlug({slug});
-   return generateMetaPage({doc:page})
-   
- } 
+  const { slug = 'home' } = await paramsPromise;
+  const page = await queryPageBySlug({ slug });
+  return generateMetaPage({ doc: page })
+
+}
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
   console.log(slug)
-  console.log(draft,'draftQuery')
+  console.log(draft, 'draftQuery')
   const data = await fetch(`${BASEURL}/api/pages?limit=1&where[slug][equals]=${slug}&depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
   const result = await data.json();
   // console.log('queryBY');
@@ -126,4 +126,4 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   return result.docs?.[0] || null;
 });
 // Optional: Metadata for the page
- 
+

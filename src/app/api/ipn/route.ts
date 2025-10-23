@@ -1,9 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch"
+import * as React from 'react';
+import { Email } from '@/components/emails/email-template-send';
+import { Resend } from 'resend';
+import { BASEURL } from "@/lib/config";
+import { EmailRecieve } from "@/components/emails/email-template-recieve";
+import { PlainText } from "@/components/RichText";
 
+const queryTourById = async ({ id }: { id: string }) => {
+  // La URL cambia para buscar directamente por ID: ${BASEURL}/api/tours/${id}
+  const data = await fetch(`${BASEURL}/api/tours/${id}?depth=3&draft=false`);
+  const result = await data.json();
+
+  // Si la búsqueda por ID es exitosa, el resultado es el documento directamente, 
+  // no está dentro de un array 'docs'.
+  // Es mejor incluir un chequeo de errores si la API de Payload lo proporciona.
+  // Por simplicidad, retornamos el resultado que debería ser el tour o un error si no se encuentra.
+  return result || null;
+};
+
+
+const queryPaqueteById = async ({ id }: { id: string }) => {
+  // La URL cambia para buscar directamente por ID: ${BASEURL}/api/tours/${id}
+  const data = await fetch(`${BASEURL}/api/paquetes/${id}?depth=3&draft=false`);
+  const result = await data.json();
+
+  // Si la búsqueda por ID es exitosa, el resultado es el documento directamente, 
+  // no está dentro de un array 'docs'.
+  // Es mejor incluir un chequeo de errores si la API de Payload lo proporciona.
+  // Por simplicidad, retornamos el resultado que debería ser el tour o un error si no se encuentra.
+  return result || null;
+};
 
 export async function POST(request: NextRequest) {
   // const secret = request.headers.get("secret");
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const document = await request.text();
 
   // console.log(document)
@@ -13,10 +45,270 @@ export async function POST(request: NextRequest) {
 
   const divideResponse = data[22].split("=")
 
-  const finalDivide = divideResponse[1].split("-")[1]
+  const finalDivide = divideResponse[1].split("-")
+
+  const emailResponse = data[23].split("=")
+
+  const nameResponse = data[24].split("=")
+
+  const amountResponse = data[0].split("=")
+
+  const phoneResponse = data[27].split("=")
+
+  const dniResponse = data[29].split("=")
+
+  const countryResponse = data[28].split("=")
+
+  const numberPassengersResponse = data[26].split("=")
+
+  const dateResponse = data[30].split("=")
+
+  const adressRespose = data[25].split("=")
+
+  const getEmail = (decodeURIComponent(emailResponse[1]))
+  const getName = (decodeURIComponent(nameResponse[1]))
+  const getAmount = Number(decodeURIComponent(amountResponse[1])) / 100
+  const getPhone = (decodeURIComponent(phoneResponse[1]))
+  const getDni = (decodeURIComponent(dniResponse[1]))
+  const getCountry = (decodeURIComponent(countryResponse[1]))
+  const getNumberPassengers = Number(decodeURIComponent(numberPassengersResponse[1]))
+  const getDate = decodeURIComponent(dateResponse[1])
+  const getAdress = decodeURIComponent(adressRespose[1])
 
 
-  console.log()
+  let idCrmDealAdd
+  let idContact
+  try {
+    const day = 60 * 60 * 24 * 1000;
+    const nowCrmDealAdd = new Date();
+    const after10Days = new Date(nowCrmDealAdd.getTime() + 10 * day);
+    const response = await fetch(`https://pdscorporation.bitrix24.es/rest/${process.env.BITRIX_AUTH}/${process.env.BITRIX_API_KEY}/crm.deal.add.json`, {
+      body: JSON.stringify(
+        {
+          FIELDS: {
+            TITLE: `Pagado desde la web Pata Rutera. Pasajero: ${getName}`,
+            TYPE_ID: 1,
+            CATEGORY_ID: 39,
+            STAGE_ID: "C39:PREPARATION",
+            IS_RECURRING: "N",
+            IS_RETURN_CUSTOMER: "Y",
+            IS_REPEATED_APPROACH: "Y",
+            PROBABILITY: 99,
+            CURRENCY_ID: "PEN",
+            OPPORTUNITY: getAmount.toFixed(2),
+            IS_MANUAL_OPPORTUNITY: "Y",
+            TAX_VALUE: 0,
+            COMPANY_ID: null,
+            BEGINDATE: nowCrmDealAdd.toISOString(),
+            CLOSEDATE: after10Days.toISOString(),
+            OPENED: "Y",
+            CLOSED: "N",
+            COMMENTS: "Creado desde la API",
+            SOURCE_ID: "REPEAT_SALE",
+            SOURCE_DESCRIPTION: "Additional information about the source",
+            ADDITIONAL_INFO: "Additional information",
+            UTM_SOURCE: "source",
+            UTM_MEDIUM: "null",
+            PARENT_ID_1220: null,
+            UF_CRM_1721244482250: "Hello world!"
+          },
+          UF_CRM_1651640867: "Líder de Grupo Nombre: [Nombres y Apellidos] F. de Nac.: [11/03/0000] Doc.: [Pasaporte] [DNI] [CE] N°: [72717990] Nacionalidad: [Costarricense]  Género:  [M] [F]",
+          UF_CRM_1739024172525: "Lunes a PDS: Mañana : 10am -13pm Tarde 14:pm - 19:30 pm Viernes: Mañana 08 am - 12:30pm tarde 13:30pm 17:30pm sabado: Mañana 08am -13:30 pm",
+          UF_CRM_1661869816: "Número: \u002200\u0022 | Edades: \u002201-05\u0022 ",
+          PARAMS: {
+            REGISTER_SONET_EVENT: "N"
+          }
+        }
+      ),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: "POST"
+    })
+
+    if (!response.ok) {
+      return Response.json({ error: 'error bitrix24 crm.deal.add' }, { status: 500 });
+    }
+
+    const dataCrmDealAdd = await response.json() as { result: string }
+
+    idCrmDealAdd = dataCrmDealAdd['result']
+
+  }
+  catch (err) {
+
+  }
+
+  try {
+    const response = await fetch(`https://pdscorporation.bitrix24.es/rest/${process.env.BITRIX_AUTH}/${process.env.BITRIX_API_KEY}/crm.contact.add.json`, {
+      body: JSON.stringify(
+        {
+          FIELDS: {
+            NAME: getName,
+            PHOTO: null,
+            BIRTHDATE: "",
+            TYPE_ID: 3,
+            SOURCE_ID: "WEB",
+            SOURCE_DESCRIPTION: "*Additional information about the source*",
+            POST: "Administrator",
+            COMMENTS: "Creado desde api",
+            OPENED: "Y",
+            EXPORT: "Y",
+            PHONE: [
+              {
+                VALUE: getPhone,
+                VALUE_TYPE: "WORK"
+              }
+            ],
+            EMAIL: [
+              {
+                VALUE: getEmail,
+                VALUE_TYPE: "WORK"
+              }
+            ]
+          }
+
+        }
+      ),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: "POST"
+    })
+
+    if (!response.ok) {
+      return Response.json({ error: 'error bitrix24 crm.contact.add' }, { status: 500 });
+    }
+
+    const data = await response.json() as { result: string }
+
+    idContact = data['result']
+  }
+  catch (err) {
+
+  }
+
+
+  try {
+    const response = await fetch(`https://pdscorporation.bitrix24.es/rest/${process.env.BITRIX_AUTH}/${process.env.BITRIX_API_KEY}/crm.deal.contact.add.json`, {
+      body: JSON.stringify(
+        {
+          ID: idCrmDealAdd,
+          FIELDS: {
+            CONTACT_ID: idContact
+          },
+        }
+      ),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: "POST"
+    })
+
+    if (!response.ok) {
+      return Response.json({ error: 'error bitrix24 crm.deal.contact.add' }, { status: 500 });
+    }
+
+    const dataCrmDealAdd = await response.json() as { result: string }
+
+
+  }
+  catch (err) {
+
+  }
+
+  let page
+
+  if (finalDivide[0] == 'tour') {
+    page = await queryTourById({ id: finalDivide[1] })
+  }
+  else {
+    page = await queryPaqueteById({ id: finalDivide[1] })
+  }
+
+  const { title, meta, priceGeneral, layout } = page
+
+
+  const block = layout.find(ele => ele.blockType == 'guiaTour')
+
+
+
+  try {
+    const parts = getDate.split("/")
+    const year = parseInt(parts[2], 10);
+    const month = parseInt(parts[1], 10) - 1; // 👈 CRITICAL: Month is 0-indexed (9 for October)
+    const day = parseInt(parts[0], 10);
+
+    const newDate = new Date(year, month, day);
+    const response = await fetch(`https://pdscorporation.bitrix24.es/rest/${process.env.BITRIX_AUTH}/${process.env.BITRIX_API_KEY}/crm.deal.update.json`, {
+      body: JSON.stringify(
+        {
+          ID: idCrmDealAdd,
+          FIELDS: {
+            UF_CRM_1661869816: `Número: \u0022${getNumberPassengers}\u0022 | Edades: \u002200\u0022 `,
+            UF_CRM_1651694652233: `Servicio: Tours:  \r\n ${title}:  ${priceGeneral} SOLES TOTAL: ${getNumberPassengers * priceGeneral}`,
+            UF_CRM_1651640867: `Líder de Grupo Nombre: [${getName} ] F. de Nac.: [No se incluyo] Doc.: [DNI] N°: [${getDni}] Nacionalidad: [${getCountry}] Género: [M]`,
+            UF_CRM_6096A4861F934: `${newDate.toISOString()}`,
+            UF_CRM_1623883646: `${PlainText({ data: block.sectionItinerario.contentSection })}`,
+            UF_CRM_1605585481: `Lugar de recojo en Cusco : ${getAdress}`
+          },
+          PARAMS: {
+            REGISTER_SONET_EVENT: "N",
+            REGISTER_HISTORY_EVENT: "N"
+          }
+        }
+      ),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: "POST"
+    })
+
+    if (!response.ok) {
+      return Response.json({ error: 'error bitrix24 crm.deal.update' }, { status: 500 });
+    }
+
+    const dataCrmDealAdd = await response.json() as { result: string }
+
+
+  }
+  catch (err) {
+
+  }
+  try {
+    const { data, error } = await resend.emails.send({
+      from: 'ventas@patarutera.pe',
+      to: 'soportepatarutera.com@gmail.com',
+      subject: 'Pata Rutera',
+      react: EmailRecieve({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: getDate, travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2), address: getAdress, dateBuy: new Date().toISOString().split("T")[0], country: getCountry, phone: getPhone }] }) as React.ReactNode,
+      //html: '<div> Hello Next</div>'
+    });
+
+    if (error) {
+      return Response.json({ error }, { status: 500 });
+    }
+
+  } catch (error) {
+
+  }
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: 'ventas@patarutera.pe',
+      to: getEmail,
+      subject: 'Pata Rutera',
+      react: Email({ customerName: getName, items: [{ image: meta.image.sizes.square.url, name: title, date: getDate, travelers: getNumberPassengers.toString(), price: getAmount.toFixed(2) }] }) as React.ReactNode,
+      //html: '<div> Hello Next</div>'
+    });
+
+    if (error) {
+      return Response.json({ error }, { status: 500 });
+    }
+
+  } catch (error) {
+
+  }
+
   return NextResponse.json({
     "message": "nice",
     "cache": "update"

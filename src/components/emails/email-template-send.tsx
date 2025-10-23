@@ -1,0 +1,289 @@
+import {
+  Body,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Img,
+  Preview,
+  Section,
+  Text,
+  Button,
+  Row,
+  Column,
+} from "@react-email/components"
+
+import * as React from "react";
+import Image from "next/image";
+import PayloadImage from '@/components/PayloadImage';
+
+interface Props {
+  customerName: string
+  items: any
+}
+
+export function Email({
+  customerName,
+  items
+}: Props
+) {
+
+  return (
+    <Html>
+      <Head />
+      <Preview>Tu reserva fue confirmada - PATA RUTERA</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          {/* Logo */}
+          <Section style={logoSection}>
+            <Img src={"https://www.patarutera.pe/pataLogo.png"} alt="Logo" style={logo} />
+          </Section>
+
+          {/* Main Heading */}
+          <Heading style={heading}>TU RESERVA FUE CONFIRMADA</Heading>
+
+          {/* Description Text */}
+          <Text style={description}>
+            Hola {customerName}, gracias por realizar tu compra con nosotros, estamos felices de que hayas decidido
+            unirte a nuestra experiencia. Queremos que sepas que estamos preparando todo para que vivas una experiencia
+            inolvidable.
+          </Text>
+
+          {/* Subheading */}
+          <Heading style={subheading}>¡Nos vemos muy pronto {customerName}!</Heading>
+
+          {/* Order Details Section */}
+
+          <Section style={orderSection}>
+            <Text style={orderTitle}>Detalles del Tour</Text>
+
+            <table style={table}>
+              <thead>
+                <tr>
+                  <th style={tableHeader}>Tour</th>
+                  <th style={tableHeader}>Nombre</th>
+                  <th style={tableHeader}>Fecha</th>
+                  <th style={tableHeader}>Viajeros</th>
+                  <th style={tableHeader}>Precio</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                {items.map((item, index) => (
+                  <tr key={index} style={tableRow}>
+                    <td style={tableCell}>
+                      <Img src={item.image} alt="log" style={itemImage} />
+                    </td>
+                    <td style={tableCell}>
+                      <Text style={itemName}>{item.name}</Text>
+                    </td>
+                    <td style={tableCell}>
+                      <Text style={itemDate}>{item.date}</Text>
+                    </td>
+                    <td style={tableCellCenter}>
+                      <Text style={itemTravelers}>{item.travelers}</Text>
+                    </td>
+                    <td style={tableCellRight}>
+                      <Text style={itemPrice}>S/ {item.price}</Text>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Section>
+          {/* CTA Button */}
+          <Text style={footer}>Agradecemos tu confianza</Text>
+        </Container>
+      </Body>
+    </Html>
+
+  )
+}
+
+// Styles
+const main = {
+  backgroundColor: "#f6f6f6",
+  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+}
+
+const container = {
+  backgroundColor: "#ffffff",
+  margin: "0 auto",
+  padding: "40px 20px",
+  maxWidth: "600px",
+}
+
+const logoSection = {
+  textAlign: "center" as const,
+  marginBottom: "30px",
+}
+
+const logo = {
+  margin: "0 auto",
+  height: "50px",
+}
+
+const heading = {
+  color: "#4a5568",
+  fontSize: "20px",
+  fontWeight: "700",
+  textAlign: "center" as const,
+  margin: "30px 0 20px",
+  letterSpacing: "0.5px",
+}
+
+const description = {
+  color: "#718096",
+  fontSize: "14px",
+  lineHeight: "1.6",
+  textAlign: "center" as const,
+  margin: "0 0 30px",
+  padding: "0 20px",
+}
+
+const subheading = {
+  color: "#4a5568",
+  fontSize: "18px",
+  fontWeight: "600",
+  textAlign: "center" as const,
+  margin: "30px 0 20px",
+}
+
+const orderSection = {
+  backgroundColor: "#f7fafc",
+  borderRadius: "8px",
+  padding: "20px",
+  margin: "20px 0",
+}
+
+const orderTitle = {
+  color: "#4a5568",
+  fontSize: "14px",
+  fontWeight: "600",
+  margin: "0 0 15px",
+}
+
+const itemRow = {
+  marginBottom: "15px",
+  borderBottom: "1px solid #e2e8f0",
+  paddingBottom: "15px",
+}
+
+const imageColumn = {
+  width: "70px",
+  verticalAlign: "middle" as const,
+}
+
+
+
+const detailsColumn = {
+  verticalAlign: "middle" as const,
+  paddingLeft: "15px",
+}
+
+
+
+
+
+const priceColumn = {
+  verticalAlign: "middle" as const,
+  textAlign: "right" as const,
+  width: "80px",
+}
+
+
+
+
+
+const button = {
+  backgroundColor: "#3182ce",
+  borderRadius: "25px",
+  color: "#ffffff",
+  fontSize: "14px",
+  fontWeight: "600",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  display: "inline-block",
+  padding: "12px 40px",
+}
+
+const footer = {
+  color: "#a0aec0",
+  fontSize: "12px",
+  textAlign: "center" as const,
+  margin: "30px 0 0",
+}
+
+const table = {
+  width: "100%",
+  borderCollapse: "collapse" as const,
+}
+
+const tableHeader = {
+  backgroundColor: "#e2e8f0",
+  color: "#4a5568",
+  fontSize: "12px",
+  fontWeight: "600",
+  padding: "10px",
+  textAlign: "left" as const,
+  borderBottom: "2px solid #cbd5e0",
+}
+
+const tableRow = {
+  borderBottom: "1px solid #e2e8f0",
+}
+
+const tableCell = {
+  padding: "12px 10px",
+  verticalAlign: "middle" as const,
+}
+
+const tableCellCenter = {
+  padding: "12px 10px",
+  verticalAlign: "middle" as const,
+  textAlign: "center" as const,
+}
+
+const tableCellRight = {
+  padding: "12px 10px",
+  verticalAlign: "middle" as const,
+  textAlign: "right" as const,
+}
+
+const itemImage = {
+  width: "60px",
+  height: "60px",
+  borderRadius: "8px",
+  objectFit: "cover" as const,
+}
+
+const itemName = {
+  color: "#2d3748",
+  fontSize: "14px",
+  fontWeight: "600",
+  margin: "0",
+}
+
+const itemDate = {
+  color: "#718096",
+  fontSize: "12px",
+  margin: "0",
+}
+
+const itemTravelers = {
+  color: "#2d3748",
+  fontSize: "14px",
+  margin: "0",
+}
+
+const itemPrice = {
+  color: "#3182ce",
+  fontSize: "16px",
+  fontWeight: "700",
+  margin: "0",
+}
+
+const buttonSection = {
+  textAlign: "center" as const,
+  margin: "30px 0",
+}

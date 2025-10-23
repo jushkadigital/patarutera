@@ -9,7 +9,8 @@ import { ReservationCard } from "./ReservationCard"
 import { v4 as uuidv4 } from 'uuid'
 import { url } from "inspector"
 import { Media } from "@/cms-types"
-
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 type BillingFormValues = {
   names: string
   country: string
@@ -20,6 +21,7 @@ type BillingFormValues = {
   postcode: string
   phone: string
   email: string
+  hasHotel: boolean
 }
 interface Props {
   name: string
@@ -28,30 +30,12 @@ interface Props {
   numberPassengers: number
   type: string
   image: Media
-}
-
-function normalizarTexto(texto) {
-  if (!texto) return '';
-
-  // 1. Convertir a minúsculas
-  let resultado = texto.toLowerCase();
-
-  // 2. Normalización Unicode (NFD): Descompone los caracteres acentuados.
-  //    Ejemplo: 'á' se convierte en 'a' + '́' (un caracter de acento separado).
-  resultado = resultado.normalize('NFD');
-
-  // 3. Eliminar los caracteres diacríticos (acentos, tildes, etc.)
-  //    El regex /[\u0300-\u036f]/g busca y elimina los códigos Unicode de acentos combinados.
-  resultado = resultado.replace(/[\u0300-\u036f]/g, "");
-
-  // 4. Reemplazo específico de la 'ñ' (obligatorio ya que normalize no la maneja)
-  resultado = resultado.replace(/ñ/g, "n");
-
-  return resultado;
+  id: string
 }
 
 
-export function BillingForm({ name, date, amount, numberPassengers, type, image }: Props) {
+
+export function BillingForm({ name, date, amount, numberPassengers, type, image, id }: Props) {
   const form = useForm<BillingFormValues>({
     defaultValues: {
       names: "",
@@ -60,23 +44,35 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
       city: "",
       phone: "",
       email: "",
+      hasHotel: false
     },
   })
 
-  const id = uuidv4()
 
 
   const passengerName = form.watch("names")
+  const countryCodeValue = form.watch("country");
+  const hasHotelValue = form.watch("hasHotel");
 
   const onSubmit = async (data: BillingFormValues) => {
     const paymentConf = {
       amount: Math.round(numberPassengers * Number(amount) * 100),
       currency: "PEN",
       customer: {
-        reference: passengerName,
+        reference: data.names,
         email: (data.email),
+        billingDetails: {
+          cellPhoneNumber: countryCodeValue + ' ' + data.phone,
+          identityCode: data.dni,
+          state: phoneCountryOptions.find(ele => ele.value == data.country)!.label,
+          district: numberPassengers,
+          address: data.hasHotel ? data.streetAddress : "-"
+        },
+        shippingDetails: {
+          city: date,
+        }
       },
-      orderId: `${normalizarTexto(name.replaceAll(" ", ""))}-${new Date().valueOf()}`
+      orderId: `${type}-${id}-${new Date().valueOf()}`
     }
     console.log(paymentConf)
     const response = await fetch(`/api/createpayment`, {
@@ -135,7 +131,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
 
   ];
 
-  const countryCodeValue = form.watch("country");
+
   return (
     <div className="w-full flex flex-col md:flex-row justify-center items-center lg:items-start">
       <div className="mx-auto  p-6 w-[80%] lg:w-2/3">
@@ -154,7 +150,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                     <FormLabel>
                       Nombres<span className="text-destructive">*</span>
                     </FormLabel>
-                    <Input placeholder="Josue" {...field} />
+                    <Input placeholder="Nombres y Apellidos" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -205,18 +201,43 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
               />
               <FormField
                 control={form.control}
-                name="streetAddress"
-                rules={{ required: "Direccion de domicilio requirido" }}
+                name="hasHotel"
+                rules={{
+                }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Direccion <span className="text-destructive">*</span>
+                      Tienes Hotel
                     </FormLabel>
-                    <Input placeholder="Cipreces Versalles" {...field} />
+                    <div className="flex flex-row">
+                      <Checkbox id="terms" checked={field.value} onCheckedChange={field.onChange} />
+                      <Label htmlFor="terms">Si tengo la direccion de mi hotel</Label>
+                    </div>
                     <FormMessage />
+                    {hasHotelValue &&
+                      <FormField
+                        control={form.control}
+                        name="streetAddress"
+                        rules={{ required: "Direccion de domicilio requirido" }}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Direccion <span className="text-destructive">*</span>
+                            </FormLabel>
+                            <Input placeholder="Av o Calle" {...field} />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                    }
                   </FormItem>
                 )}
               />
+
+
+
+
             </div>
 
             {/* State / County and Postcode / ZIP */}
@@ -255,7 +276,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                         Telefono <span className="text-destructive">*</span>
                       </FormLabel>
                       <Input
-                        placeholder="935207981"
+                        placeholder="Numero de Telefono"
                         type="tel"
                         // Usa el valor combinado para mostrar el prefijo
                         value={displayValue}
@@ -285,11 +306,14 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image 
                     <FormLabel>
                       Email <span className="text-destructive">*</span>
                     </FormLabel>
-                    <Input placeholder="urgosxd@gmail.com" type="email" {...field} />
+                    <Input placeholder="Email" type="email" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
               />
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+
             </div>
 
             {/* Booking Button */}

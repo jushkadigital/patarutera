@@ -42,7 +42,7 @@ export function TourHero(props: Props) {
       <div className=" mx-auto md:mx-0 w-[100%] md:w-[40%] flex flex-row justify-center items-center order-none">
         <Carousel className="">
           {carContent!.carImages!.map((item) => (
-            <div className="w-[clamp(140px,33vw,840px)] h-[clamp(140px,33vw,840px)] relative rounded-2xl overflow-hidden">
+            <div className="w-[clamp(140px,33vw,840px)] aspect-square relative rounded-2xl overflow-hidden">
               <Image media={(item.image as Media)} fill className="h-full w-full object-cover" />
             </div>
           ))}

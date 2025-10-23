@@ -46,22 +46,10 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
 
   // 3. CONFIGURACIÓN DE REACT-HOOK-FORM ACTUALIZADA
   // Se inicializa el formulario con los nuevos campos y sus valores por defecto.
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<FormData>({
-    defaultValues: {
-      nombre: "",
-      numberPasajeros: 1,
-      mensaje: "",
-    },
-  })
 
   // 4. ÚNICA FUNCIÓN DE ENVÍO
   // Se reemplazan 'onSubmitReserva' y 'onSubmitCarrito' por una sola función 'onSubmit'.
-  const onSubmit = async (data: FormData) => {
+  const handleSubmit = async () => {
     setIsSubmitting(true)
     setSubmitMessage("")
 
@@ -76,13 +64,12 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
       }
 
       const cleanedNumber = phoneNumber.replace(/[^0-9]/g, '')
-      const finalMessage = `Hola soy ${data.nombre} estoy interesado en ${origen}:${title} somos ${data.numberPasajeros} pasajeros , mensaje adicional: ${data.mensaje}`
+      const finalMessage = `Hola deseo informacion sobre ${origen}:${title}  `
       // En el objeto enviado, incluimos el 'origen' que viene de las props.
       const encodedMessage = encodeURIComponent(finalMessage)
       const waUrl = `https://wa.me/${cleanedNumber}?text=${encodedMessage}`
       window.open(waUrl, '_blank')
       setSubmitMessage("¡Mensaje enviado exitosamente! Gracias por contactarnos.")
-      reset() // Limpiamos el formulario después del envío.
 
     } catch (error) {
       console.error("Error al enviar el formulario:", error)
@@ -112,44 +99,54 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
     <Fragment>
       {
         isMobile ?
-          <div className="fixed bottom-0 right-0 z-80 w-full">
+          <>
+            <div className="fixed bottom-0 right-0 z-80 w-full">
 
-            <Dialog open={open} onOpenChange={setOpen}>
-              <div className={`w-full px-10 bg-[#FFF] ${open ? 'hidden' : ''}  border-gray-300 border-t-[0.5px] h-24 flex flex-row justify-center items-center`}>
-                <div className="w-2/3">
-                  <div className="text-gray-600"> De: <span className="text-[#25D366] ">S/.{formatMoney(price)} </span></div>
-                  <div>{title}</div>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <div className={`w-full px-10 bg-[#FFF] ${open ? 'hidden' : ''}  border-gray-300 border-t-[0.5px] h-24 flex flex-row justify-center items-center`}>
+                  <div className="w-2/3">
+                    <div className="text-gray-600"> De: <span className="text-[#25D366] ">S/.{formatMoney(price)} </span></div>
+                    <div>{title}</div>
 
+                  </div>
+                  <DialogTrigger asChild className="w-1/3">
+                    <Button className="bg-[#25D366]  rounded-full text-white xs:py-3! sm:py-7! font-bold text-xs sm:text-lg" onClick={() => setOpen(false)}>
+                      RESERVAR
+                    </Button>
+                  </DialogTrigger>
                 </div>
-                <DialogTrigger asChild className="w-1/3">
-                  <Button className="bg-[#25D366]  rounded-full text-white xs:py-3! sm:py-7! font-bold text-xs sm:text-lg" onClick={() => setOpen(false)}>
-                    RESERVAR
-                  </Button>
-                </DialogTrigger>
-              </div>
 
-              <DialogContent className="pb-0! px-0! mx-0!">
+                <DialogContent className="pb-0! px-0! mx-0!">
 
-                <BookingCard amount={formatMoney(price)} type={origen} slug={pathname} />
-              </DialogContent>
-            </Dialog>
-          </div>
+                  <BookingCard amount={formatMoney(price)} type={origen} slug={pathname} />
+                </DialogContent>
+              </Dialog>
+            </div>
+            <div className="fixed bottom-30 right-6 z-50">
+
+              <Button
+                size='icon'
+                className="bg-[#25D366] rounded-full size-10 cursor-pointer"
+                onClick={() => handleSubmit()}
+                asChild
+              >
+                <SvgWhatsapp size={20} className="size-5" />
+              </Button>
+            </div>
+          </>
           :
-          <div className="fixed bottom-6 right-6 z-50">
+          <div className="fixed bottom-20 right-20 z-50">
 
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
-                <Link href={'#formPrice'}>
-                  <Button
-                    size='icon'
-                    className="rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90 size-15"
-                  >
-                    <SvgWhatsapp size={40} className="size-6" />
-                    <span className="sr-only">Abrir formulario de contacto</span>
-                  </Button>
-                </Link>
-              </DialogTrigger>
-            </Dialog>
+            <Button
+              size='icon'
+              className="bg-[#25D366] rounded-full size-10 cursor-pointer"
+              onClick={() => handleSubmit()}
+              asChild
+            >
+              <SvgWhatsapp size={20} className="size-5" />
+            </Button>
+
+
           </div>
       }
       {
