@@ -50,8 +50,8 @@ export function TourHero(props: Props) {
 
       </div>
       <div className="md:w-[60%] flex flex-row justify-center items-center order-last md:order-none">
-        <div className="h-[clamp(125px,32vw,614px)] w-[clamp(140px,43.3vw,832px)]  relative rounded-2xl overflow-hidden">
-          <Image media={(ImageContent.image as Media)} fill className=" h-full w-full object-cover" />
+        <div className="w-[clamp(140px,43.3vw,832px)] aspect-[4/3] relative rounded-2xl overflow-hidden">
+          <Image media={(ImageContent.image as Media)} fill className="h-full w-full object-cover" />
         </div>
       </div>
     </div>
