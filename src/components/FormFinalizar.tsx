@@ -1,5 +1,5 @@
 "use client"
-
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -21,7 +21,7 @@ type BillingFormValues = {
   postcode: string
   phone: string
   email: string
-  hasHotel: boolean
+  hotel: string
 }
 interface Props {
   name: string
@@ -44,7 +44,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
       city: "",
       phone: "",
       email: "",
-      hasHotel: false
+      hotel: "Plaza de Armas de Cusco",
     },
   })
 
@@ -52,7 +52,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
 
   const passengerName = form.watch("names")
   const countryCodeValue = form.watch("country");
-  const hasHotelValue = form.watch("hasHotel");
+  const hotelStatus = form.watch("hotel");
 
   const onSubmit = async (data: BillingFormValues) => {
     const paymentConf = {
@@ -66,7 +66,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
           identityCode: data.dni,
           state: phoneCountryOptions.find(ele => ele.value == data.country)!.label,
           district: numberPassengers,
-          address: data.hasHotel ? data.streetAddress : "-"
+          address: data.streetAddress
         },
         shippingDetails: {
           city: date,
@@ -201,41 +201,60 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
               />
               <FormField
                 control={form.control}
-                name="hasHotel"
+                name="hotel"
                 rules={{
                 }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Tienes Hotel
+                      Recojo
                     </FormLabel>
-                    <div className="flex flex-row">
-                      <Checkbox id="terms" checked={field.value} onCheckedChange={field.onChange} />
-                      <Label htmlFor="terms">Si tengo la direccion de mi hotel</Label>
-                    </div>
-                    <FormMessage />
-                    {hasHotelValue &&
-                      <FormField
-                        control={form.control}
-                        name="streetAddress"
-                        rules={{ required: "Direccion de domicilio requirido" }}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Direccion <span className="text-destructive">*</span>
-                            </FormLabel>
-                            <Input placeholder="Av o Calle" {...field} />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    <RadioGroup onValueChange={(e) => {
+                      field.onChange(e)
+                      if (e !== "otro") {
+                        form.setValue("streetAddress", e)
+                      } else {
+                        form.setValue("streetAddress", "")
+                      }
+                    }} value={field.value}>
+                      <div className="flex items-center gap-3">
+                        <RadioGroupItem value="Plaza de Armas de Cusco" id="r1" />
+                        <Label htmlFor="r1">Plaza de Armas de Cusco</Label>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <RadioGroupItem value="Plaza Regocijos" id="r2" />
+                        <Label htmlFor="r2">Plaza Regocijos</Label>
+                      </div>
+                      <div className="flex flex-col  gap-3">
+                        <div className="flex items-center gap-3">
 
-                    }
+                          <RadioGroupItem value="otro" id="r3" />
+                          <Label htmlFor="r3">Otra Ubicacion</Label>
+                        </div>
+                        {field.value == 'otro' &&
+                          <FormField
+                            control={form.control}
+                            name="streetAddress"
+                            rules={{ required: "Direccion de domicilio requirido" }}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>
+                                  Direccion <span className="text-destructive">*</span>
+                                </FormLabel>
+                                <Input placeholder="Av o Calle" {...field} />
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                        }
+                      </div>
+                    </RadioGroup>
+                    <FormMessage />
+
                   </FormItem>
                 )}
               />
-
-
 
 
             </div>
