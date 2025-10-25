@@ -14,11 +14,13 @@ interface Props {
 
 export const CustomCalendar = ({ date, setDate, initialDate, setIsDateOpen }: Props) => {
 
-
+  const fiveYearsFromNow = new Date(initialDate.getFullYear() + 5, initialDate.getMonth(), initialDate.getDate());
   return (
     <Calendar
       disabled={{ before: initialDate }}
       mode="single"
+      startMonth={initialDate}
+      endMonth={fiveYearsFromNow}
       selected={date}
       onSelect={(date?: Date) => {
         setDate(date)
