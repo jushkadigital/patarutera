@@ -859,6 +859,7 @@ export interface Tour {
     | RevistaBlock
     | AdicionalTourBlock
     | DataTourBlock
+    | MapBlockType
   )[]
   | null;
   featuredImage: number | Media;
@@ -1176,6 +1177,19 @@ export interface DataTourBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'dataTour';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlockType".
+ */
+export interface MapBlockType {
+  blockTitle: TitleGroup;
+  ImageContent: {
+    image: number | Media;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mapBlock';
 }
 /**
  * Ofertas especiales de Tours
@@ -1958,6 +1972,7 @@ export interface ToursSelect<T extends boolean = true> {
     revistaBlock?: T | RevistaBlockSelect<T>;
     adicionalTour?: T | AdicionalTourBlockSelect<T>;
     dataTour?: T | DataTourBlockSelect<T>;
+    mapBlock?: T | MapBlockTypeSelect<T>;
   };
   featuredImage?: T;
   miniDescription?: T;
@@ -2142,6 +2157,20 @@ export interface DataTourBlockSelect<T extends boolean = true> {
   | {
     title?: T;
     value?: T;
+  };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlockType_select".
+ */
+export interface MapBlockTypeSelect<T extends boolean = true> {
+  blockTitle?: T | TitleGroupSelect<T>;
+  ImageContent?:
+  | T
+  | {
+    image?: T;
   };
   id?: T;
   blockName?: T;
@@ -2808,3 +2837,7 @@ export interface TaskSchedulePublish {
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
+export interface Auth {
+  [k: string]: unknown;
+}
+

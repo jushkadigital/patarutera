@@ -85,6 +85,15 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
     if (!response.ok) {
       throw new Error('Error al enviar el formulario');
     }
+
+    if (typeof window.fbq === 'function') {
+      window.fbq('track', 'InitiateCheckout');
+      window.fbq('track', 'AddPaymentInfo');
+    }
+    if (window.ttq) {
+      window.ttq.track('AddPaymentInfo')
+      window.ttq.track('InitiateCheckout')
+    }
     const result = await response.json();
     console.log((result))
     const urlPayment = JSON.parse(result.message).answer.paymentURL

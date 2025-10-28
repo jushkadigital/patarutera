@@ -22,6 +22,7 @@ import { GridBlogs } from './GridBlog'
 import { AdicionalBlock } from './AdicionalBlock'
 import { DataTourBlock } from './DataTour'
 import { TextIconContentBlock } from './TextIconContent'
+import { MapsBlock } from './MapsBlock'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -47,6 +48,7 @@ const blockComponents = {
   adicionalTour: AdicionalBlock,
   dataTour: DataTourBlock,
   txtIconContent: TextIconContentBlock,
+  mapBlock: MapsBlock
 }
 
 

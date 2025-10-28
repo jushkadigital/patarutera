@@ -34,7 +34,7 @@ export function RevistaBlock(props: Props) {
           <div className="flex flex-row">
             {
               revistasLinks && revistasLinks.map(ele =>
-                <Button className="w-44 bg-white mx-auto">
+                <Button className="bg-white mx-auto rounded-2xl border-1 border-gray-300 p-5">
                   <Link href={ele.url} className=" flex items-center text-gray-500">
                     Descargar Brouchere
                     <ChevronRight />
