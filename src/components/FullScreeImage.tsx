@@ -57,8 +57,9 @@ export function FullscreenImage({ src, alt, width = 600, height = 400, className
     setIsFullscreen(false)
   }
 
+  const iisMobile = useMobile({ breakpoint: 1020 })
 
-  return isMobile && (
+  return iisMobile && (
     <>
       {/* Imagen normal */}
       <div className={cn("relative cursor-pointer", className)}>
