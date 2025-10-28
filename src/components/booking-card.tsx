@@ -73,7 +73,7 @@ export function BookingCard({ amount, slug, type }: Props) {
 
       {/* Selector de fecha */}
       <div className="space-y-4 w-full">
-        <Popover open={isDateOpen} >
+        <Popover open={isDateOpen} modal>
           <PopoverTrigger asChild onClick={() => setIsDateOpen(!isDateOpen)} >
             <button className="w-full text-left p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors cursor-pointer">
               <div className="flex items-center justify-between">
@@ -87,7 +87,7 @@ export function BookingCard({ amount, slug, type }: Props) {
               </div>
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200%] md:w-[150%] xl:w-[200%] p-0" align="start">
+          <PopoverContent className="w-[200%] md:w-[150%] xl:w-[200%] p-0 h-auto" align="start">
             <CustomCalendar date={date} setDate={setDate} initialDate={initialDate} setIsDateOpen={setIsDateOpen} />
           </PopoverContent>
         </Popover>
