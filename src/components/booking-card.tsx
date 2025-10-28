@@ -73,8 +73,8 @@ export function BookingCard({ amount, slug, type }: Props) {
 
       {/* Selector de fecha */}
       <div className="space-y-4 w-full">
-        <Popover open={isDateOpen} onOpenChange={setIsDateOpen} modal>
-          <PopoverTrigger asChild>
+        <Popover open={isDateOpen} modal>
+          <PopoverTrigger asChild onClick={() => setIsDateOpen(!isDateOpen)}>
             <button className="w-full text-left p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors cursor-pointer">
               <div className="flex items-center justify-between">
                 <div>
