@@ -87,7 +87,7 @@ export function BookingCard({ amount, slug, type }: Props) {
               </div>
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-80" >
+          <PopoverContent className="w-80 h-100" >
             <CustomCalendar date={date} setDate={setDate} initialDate={initialDate} setIsDateOpen={setIsDateOpen} />
           </PopoverContent>
         </Popover>
