@@ -142,7 +142,7 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
               {/* Blog */}
               <SheetClose asChild>
                 <Link
-                  href="/blogs"
+                  href="/posts"
                   className="py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors text-center"
                 >
                   Blog
