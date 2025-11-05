@@ -86,7 +86,7 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
             {/* Sección 4: Enlace 2 */}
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : isTransparent ? 'bg-transparent text-[#2970b7]' : 'text-[#2970b7]')}>
-                <Link href="/blog" >
+                <Link href="/posts" >
                   Blog
                 </Link>
               </NavigationMenuLink>

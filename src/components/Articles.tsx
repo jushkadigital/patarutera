@@ -9,16 +9,16 @@ import RichText from "./RichText"
 import { useMobile } from "@/hooks/useMobile"
 
 
-export type CardPostData = Pick<Post, 'id' | 'title'| 'description' | 'featuredImage' |  'slug' >
+export type CardPostData = Pick<Post, 'id' | 'title' | 'description' | 'featuredImage' | 'slug'>
 
 interface ArticleTopProps {
   article: CardPostData
 }
 
-const ArticleCardTop = ({ article }:ArticleTopProps) => {
+const ArticleCardTop = ({ article }: ArticleTopProps) => {
   return (
     <Card className="bg-[#ffffff] rounded-xl shadow-lg overflow-hidden flex flex-col group hover:shadow-xl transition-shadow duration-300 py-0">
-      <Link href={`/blog/${article.slug}`} className="block">
+      <Link href={`/posts/${article.slug}`} className="block">
         <div className="relative w-full h-80 lg:h-[clamp(0px,18vw,345px)] overflow-hidden">
           <Image
             media={(article.featuredImage as Media)}
@@ -33,12 +33,12 @@ const ArticleCardTop = ({ article }:ArticleTopProps) => {
         {article.description && (
           <CardContent className="pt-0">
             <CardDescription className="text-sm text-[#000000] leading-relaxed">
-              <RichText data={article.description} className="custom-prose-lg"/>
+              <RichText data={article.description} className="custom-prose-lg" />
             </CardDescription>
 
-      <Link href={`/blog/${article.slug}`} className="block">
-            <Button variant='ghost' className="cursor-pointer text-[#2970B7]">Ver mas</Button>
-      </Link>
+            <Link href={`/posts/${article.slug}`} className="block">
+              <Button variant='ghost' className="cursor-pointer text-[#2970B7]">Ver mas</Button>
+            </Link>
           </CardContent>
         )}
       </Link>
@@ -59,10 +59,10 @@ const ArticleEntry: React.FC<ArticleEntryProps> = ({
   size = "large",
   className = "",
 }) => {
-  
+
   const isMobile = useMobile()
 
-  if (isMobile){
+  if (isMobile) {
     size = 'large'
   }
 
@@ -74,7 +74,7 @@ const ArticleEntry: React.FC<ArticleEntryProps> = ({
   return (
     <Card className={`bg-transparent border-none shadow-none flex ${flexDirection} items-center my-8 ${className} py-0`}>
       <Link
-        href={`/blog/${article.slug}`}
+        href={`/posts/${article.slug}`}
         className={`relative block group ${imageSizeClass}  rounded-xl overflow-hidden`}
       >
         <Image
@@ -85,15 +85,15 @@ const ArticleEntry: React.FC<ArticleEntryProps> = ({
       <CardContent className={`${textContainerClass} flex flex-col justify-center p-6`}>
         <CardHeader className="p-0 pb-3 sm:pb-4">
           <CardTitle className={`${titleSizeClass} font-semibold text-[#2970b7] hover:text-blue-700 transition-colors leading-tight  multi-line-truncate multi-line-truncate-2`}>
-            <Link href={`/blog/${article.slug}`}>{article.title}</Link>
+            <Link href={`/posts/${article.slug}`}>{article.title}</Link>
           </CardTitle>
         </CardHeader>
         <CardDescription className="text-sm text-[#000000] leading-relaxed">
-              <RichText data={article.description} className="custom-prose-lg !my-1"/>
-            </CardDescription>
-        <Link href={`/blog/${article.slug}`} className="block">
-            <Button variant='ghost' className="cursor-pointer">Ver mas</Button>
-      </Link>
+          <RichText data={article.description} className="custom-prose-lg !my-1" />
+        </CardDescription>
+        <Link href={`/posts/${article.slug}`} className="block">
+          <Button variant='ghost' className="cursor-pointer">Ver mas</Button>
+        </Link>
       </CardContent>
     </Card>
   )
