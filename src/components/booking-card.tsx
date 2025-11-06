@@ -42,7 +42,7 @@ export function BookingCard({ amount, slug, type }: Props) {
   }
 
   const handleDecrement = () => {
-    setAdults((prev) => Math.max(prev - 1, 1))
+    setAdults((prev) => Math.max(prev - 1, 2))
   }
   const router = useRouter()
   const HandlerBooking = () => {
