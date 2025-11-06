@@ -17,13 +17,13 @@ interface CardPostProps {
 }
 
 export default function CardPost({ unitData, mode = "list" }: CardPostProps) {
-  
+
   // MODO GRID: Ideal para mostrar varias tarjetas en una cuadrícula
   if (mode === "grid") {
     return (
       <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-3xl shadow-lg flex flex-col group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         {/* Sección de la Imagen */}
-        <Link href={`/blog/${unitData.slug}`} className="block h-56">
+        <Link href={`/posts/${unitData.slug}`} className="block h-56">
           <div className="relative h-full w-full overflow-hidden">
             <Image
               media={unitData.featuredImage as Media}
@@ -38,24 +38,24 @@ export default function CardPost({ unitData, mode = "list" }: CardPostProps) {
         {/* Sección del Contenido */}
         <CardContent className="p-6 flex flex-col flex-grow">
           {/* Título */}
-          <Link href={`/blog/${unitData.slug}`}>
+          <Link href={`/posts/${unitData.slug}`}>
             <h2 className="text-xl font-bold text-[#2970b7] leading-tight multi-line-truncate multi-line-truncate-2 mb-2 h-14">
               {unitData.title}
             </h2>
           </Link>
-          
+
           {/* Descripción corta */}
           <div className="text-[#6a6a6a] flex-grow">
-            <RichText 
-              data={unitData.description} 
-              enableGutter={false} 
+            <RichText
+              data={unitData.description}
+              enableGutter={false}
               className="prose-custom-lg multi-line-truncate multi-line-truncate-3"
             />
           </div>
 
           {/* Botón */}
           <div className="mt-4 flex justify-end">
-            <Link href={`/blog/${unitData.slug}`}>
+            <Link href={`/posts/${unitData.slug}`}>
               <Button className="bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold py-2 px-5 rounded-full text-base">
                 Leer Más
               </Button>
@@ -64,12 +64,12 @@ export default function CardPost({ unitData, mode = "list" }: CardPostProps) {
         </CardContent>
       </Card>
     )
-  } else { 
+  } else {
     // MODO LISTA: Ideal para una vista de lista o más compacta
     return (
       <Card className="overflow-hidden shadow-lg w-full rounded-3xl flex flex-col md:flex-row md:h-64 group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         {/* Sección de la Imagen */}
-        <Link href={`/blog/${unitData.slug}`} className="w-full md:w-1/3 block h-56 md:h-full">
+        <Link href={`/posts/${unitData.slug}`} className="w-full md:w-1/3 block h-56 md:h-full">
           <div className="relative h-full w-full overflow-hidden">
             <Image
               media={(unitData.featuredImage as Media)}
@@ -83,22 +83,22 @@ export default function CardPost({ unitData, mode = "list" }: CardPostProps) {
 
         {/* Sección del Contenido */}
         <div className="w-full md:w-2/3 p-6 flex flex-col">
-          <Link href={`/blog/${unitData.slug}`}>
+          <Link href={`/posts/${unitData.slug}`}>
             <h2 className="text-2xl font-bold text-[#2970b7] leading-tight mb-2 multi-line-truncate multi-line-truncate-2">
               {unitData.title}
             </h2>
           </Link>
-          
+
           <div className="text-[#6a6a6a] flex-grow mb-4">
-            <RichText 
-              data={unitData.description} 
-              enableGutter={false} 
+            <RichText
+              data={unitData.description}
+              enableGutter={false}
               className="prose-custom-lg multi-line-truncate multi-line-truncate-4"
             />
           </div>
-          
+
           <div className="mt-auto flex justify-end">
-            <Link href={`/blog/${unitData.slug}`}>
+            <Link href={`/posts/${unitData.slug}`}>
               <Button className="bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold py-2 px-5 rounded-full text-base">
                 Leer Más
               </Button>
