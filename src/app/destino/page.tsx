@@ -18,9 +18,9 @@ export default async function Page(props: Props) {
     <div className="relative h-[100vh] md:h-[110vh]">
       <Image src={'/backgroundDestinoPage.png'} fill alt='bg-mercator' />
 
-      <div className="absolute inset-0 w-full h-full">
-        <div className="h-20"></div>
-        <div className="flex justify-center items-center">
+      <div className="absolute inset-0 w-full h-full flex justify-center">
+        <div className="flex justify-center items-center mt-20 2xl:mt-0">
+
           <ContextSvg data={data.docs} />
         </div>
       </div>

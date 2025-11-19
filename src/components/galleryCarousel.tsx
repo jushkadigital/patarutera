@@ -2,21 +2,21 @@ import { Media } from "@/cms-types"
 import Image from "@/components/PayloadImage"
 
 type image = {
-    src:Media,
+  src: Media,
 }
 
 
 interface Props {
-    images: image[]
+  images: image[]
 }
 
-export  function GalleryCarousel({images}:Props) {
+export function GalleryCarousel({ images }: Props) {
   // Array de imágenes de ejemplo (máximo 7)
 
   return (
     <div className="w-full  p-3 my-5">
       {/* Contenedor principal con flex row */}
-      <div className="w-full flex flex-row gap-2 sm:gap-3 md:gap-4 justify-center ">
+      <div className="w-full flex flex-row gap-4 sm:gap-6 md:gap-15 justify-center ">
         {images.map((image, index) => (
           <div
             key={index}
