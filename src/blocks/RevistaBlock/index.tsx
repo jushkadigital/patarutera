@@ -35,7 +35,7 @@ export function RevistaBlock(props: Props) {
             {
               revistasLinks && revistasLinks.map(ele =>
                 <Button className="bg-white mx-auto rounded-2xl border-1 border-gray-300 p-5">
-                  <Link href={ele.url} className=" flex items-center text-gray-500">
+                  <Link target="_blank" rel="noopener noreferrer" href={ele.url} className=" flex items-center text-gray-500">
                     Descargar Brouchere
                     <ChevronRight />
                   </Link>

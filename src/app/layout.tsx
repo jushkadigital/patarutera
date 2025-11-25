@@ -19,10 +19,7 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-export const metadata: Metadata = {
-  title: "Patarutera - Your Next Adventure Awaits",
-  description: "Discover amazing tours, insightful blog posts, and information about our travel agency.",
-};
+
 
 function assertIsDefined<T>(value: T): asserts value is NonNullable<T> {
   if (value === undefined || value === null) {

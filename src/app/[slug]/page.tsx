@@ -1,6 +1,7 @@
 import { RenderBlocks } from '@/blocks/renderBlocks';
 import { RenderHero } from '@/blocks/renderHeros';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
+import { HomeToursSchema } from '@/components/Schema';
 import { BASEURL } from '@/lib/config';
 import { DestinosPage } from '@/specialPages/destinosPage';
 import { PaquetesPage } from '@/specialPages/paquetesPage';
@@ -95,14 +96,26 @@ export default async function Page({ params: paramsPromise, searchParams: search
     const { layout, heroPageBlocks } = page;
     // console.log(layout);
 
+    const idToursElected = [15, 13, 14, 17]
+    const idPaquetesElected = [49]
+
+    const toursGet = await Promise.all(idToursElected.map(ele => queryTourById({ id: ele })))
+    const paquetesGet = await Promise.all(idPaquetesElected.map(ele => queryPaqueteById({ id: ele })))
+
+    const eTours = (toursGet.map(ele => ({ ...ele, type: "tour" })))
+    const ePaquetes = (paquetesGet.map(ele => ({ ...ele, type: "paquete" })))
+
     return (
-      <div className="flex flex-col space-y-10">
-        {draft && <LivePreviewListener />}
-        <RenderHero heroBlocks={heroPageBlocks} />
-        <div className={"flex flex-col space-y-10 lg:space-y-14"} >
-          <RenderBlocks blocks={layout} />
+      <>
+        {slug == "home" && HomeToursSchema({ page: eTours.concat(ePaquetes) })}
+        <div className="flex flex-col space-y-10">
+          {draft && <LivePreviewListener />}
+          <RenderHero heroBlocks={heroPageBlocks} />
+          <div className={"flex flex-col space-y-10 lg:space-y-14"} >
+            <RenderBlocks blocks={layout} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }
@@ -114,6 +127,22 @@ export async function generateMetadata({ params: paramsPromise }: Args, parent: 
   return generateMetaPage({ doc: page })
 
 }
+
+const queryTourById = cache(async ({ id }: { id: number }) => {
+  const { isEnabled: draft } = await draftMode();
+  // Fetch a single tour by slug. Adjust depth as needed for tour data.
+  const data = await fetch(`${BASEURL}/api/tours?limit=1&where[id][equals]=${id}&depth=2&draft=${draft}`);
+  const result = await data.json();
+  return result.docs?.[0] || null;
+});
+
+const queryPaqueteById = cache(async ({ id }: { id: number }) => {
+  const { isEnabled: draft } = await draftMode();
+  // Fetch a single tour by slug. Adjust depth as needed for tour data.
+  const data = await fetch(`${BASEURL}/api/paquetes?limit=1&where[id][equals]=${id}&depth=2&draft=${draft}`);
+  const result = await data.json();
+  return result.docs?.[0] || null;
+});
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
