@@ -4,6 +4,10 @@ import "../globals.css";
 import { cn } from "@/lib/utils";
 import { Header } from "@/components/Header";
 import { BASEURL } from "@/lib/config";
+import { auth, signIn } from "@/lib/auth";
+import { HeaderLogin } from "@/components/HeaderLogin";
+import { SignIn } from "@/components/LoginKeycloak";
+import { redirect } from "next/navigation";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -24,6 +28,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
+  const session = await auth();
+  if (!session) {
+    redirect("/api/auth/login")
+  }
 
 
   return (
@@ -33,7 +41,7 @@ export default async function RootLayout({
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body className="min-h-screen flex flex-col">
-        GAAAAAAAAAAA
+        <HeaderLogin session={session} />
         {children}
       </body>
     </html>

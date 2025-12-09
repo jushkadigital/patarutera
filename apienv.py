@@ -1,10 +1,15 @@
 import requests
 import json
 
-API_URL = "http://172.17.0.1:8081/clients"
+API_URL = "http://172.17.0.1:8081/api/iam/clients"
 ENV_FILE = ".env"
 
-TARGET_VARS = ["AUTH_KEYCLOAK_ID", "AUTH_KEYCLOAK_SECRET", "AUTH_KEYCLOAK_REALM"]
+TARGET_VARS = [
+    "AUTH_KEYCLOAK_ID",
+    "NEXT_PUBLIC_AUTH_KEYCLOAK_ID",
+    "AUTH_KEYCLOAK_SECRET",
+    "AUTH_KEYCLOAK_REALM",
+]
 
 
 def main():
@@ -19,7 +24,7 @@ def main():
 
     data = response.json()
 
-    data2 = data.get("dashboard-client")
+    data2 = data.get("frontend-client")
     client_id = data2.get("id")
     client_secret = data2.get("secret")
     realm = "quarkus"

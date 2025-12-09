@@ -4,6 +4,7 @@ import { SvgFacebook, SvgInstagram, SvgTiktok, SvgWhatsapp } from "./IconsSvg"
 import { Button } from './ui/button';
 import { Heart, ShoppingCart, CircleUserRound, Mail } from 'lucide-react'
 import { useMobile } from '@/hooks/useMobile';
+import Link from 'next/link';
 
 interface Props {
   socialNetworks: any[]
@@ -64,8 +65,10 @@ export const TopHeader = ({ isHome, socialNetworks, email }: Props) => {
               <CircleUserRound size={'icon'} className='size-5' />
             </Button>
             :
-            <Button className='text-[#2970B7] rounded-2xl bg-white uppercase font-bold sm:text-xs lg:text-md' >
-              Iniciar Sesion
+            <Button className='text-[#2970B7] rounded-2xl bg-white uppercase font-bold sm:text-xs lg:text-md' asChild>
+              <Link href={"/dashboard"} >
+                Iniciar Sesion
+              </Link>
             </Button>
           }
 
