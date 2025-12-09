@@ -39,9 +39,9 @@ export function ImageCuadroLink({ backgroundImage, link, text }: Props) {
             size="sm"
             className="text-white hover:text-white hover:bg-white/10 text-sm font-semibold p-2"
           >
-            <Link href={link} className=" flex items-center">
+            <Link target="_blank" rel="noopener noreferrer" href={link} className=" flex items-center">
               {text}
-              <ArrowRight/>
+              <ArrowRight />
             </Link>
           </Button>
         </div>
