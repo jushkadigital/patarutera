@@ -173,7 +173,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
                     <FormLabel>
                       DNI o Pasaporte<span className="text-destructive">*</span>
                     </FormLabel>
-                    <Input type="number" placeholder=".." {...field} />
+                    <Input type="text" placeholder=".." {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
