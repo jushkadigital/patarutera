@@ -47,7 +47,6 @@ export const RenderBlocksRow: React.FC<{
       <Fragment>
         {blocks.map((block, index) => {
           const { blockType } = block
-          console.log(blockType)
           if (blockType && blockType in blockComponents) {
             const Block = blockComponents[blockType]
 

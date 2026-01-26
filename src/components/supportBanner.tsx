@@ -1,6 +1,6 @@
 'use client'
 import { Media } from "@/cms-types"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib2/utils"
 import { User } from "lucide-react"
 import Image from "@/components/PayloadImage"
 

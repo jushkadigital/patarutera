@@ -12,7 +12,6 @@ interface CustomSerializedListItemNode extends SerializedListItemNode {
 // Componente simple para renderizar el ícono (puedes usar SVGs, <img> o una librería de íconos)
 function IconSelector(type: string) {
   const classText = 'list_item_with_icon'
-  console.log(type)
 
   switch (type) {
     case 'check':

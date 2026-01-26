@@ -21,8 +21,6 @@ const trad = {
 }
 
 export default function CardPaquete({unitData, mode='list'}: CardPaqueteProps) {
-  console.log("render card")
-  console.log(unitData)
 
   if (mode === "grid") {
     return (

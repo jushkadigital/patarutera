@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Email } from '../../../components/emails/email-template-send';
 import { Resend } from 'resend';
-import { BASEURL } from '@/lib/config';
+import { BASEURL } from '@/lib2/config';
 
 const queryTourById = async ({ id }: { id: string }) => {
   // La URL cambia para buscar directamente por ID: ${BASEURL}/api/tours/${id}
@@ -23,8 +23,6 @@ export async function POST() {
 
   const { id, title, meta } = page
 
-  console.log(title)
-  console.log(meta)
 
   try {
     const { data, error } = await resend.emails.send({
@@ -35,7 +33,6 @@ export async function POST() {
       //html: '<div> Hello Next</div>'
     });
 
-    console.log(error)
 
     if (error) {
       return Response.json({ error }, { status: 500 });

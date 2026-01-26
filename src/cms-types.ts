@@ -1,3 +1,4 @@
+
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -158,12 +159,25 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: number;
+  id: string;
+  emailVerified?: string | null;
+  name?: string | null;
+  image?: string | null;
   avatar?: (number | null) | Media;
   roles?: ('admin' | 'editor' | 'user')[] | null;
-  name?: string | null;
+  accounts?:
+  | {
+    provider: string;
+    providerAccountId: string;
+    type: 'oidc' | 'oauth' | 'email' | 'webauthn';
+    id?: string | null;
+  }[]
+  | null;
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -285,7 +299,7 @@ export interface Page {
     image?: (number | null) | Media;
     description?: string | null;
   };
-  createdBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -530,7 +544,7 @@ export interface Post {
     image?: (number | null) | Media;
     description?: string | null;
   };
-  createdBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
   categories?: (number | BlogCategory)[] | null;
   publishedDate?: string | null;
   slug?: string | null;
@@ -905,7 +919,11 @@ export interface Tour {
    * Destinos a los que pertenece este tour.
    */
   destinos?: (number | null) | Destination;
-  createdBy?: (number | null) | User;
+  /**
+   * ID vinculado en Medusa E-commerce
+   */
+  medusaId?: string | null;
+  createdBy?: (string | null) | User;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -1275,7 +1293,7 @@ export interface Paquete {
    * Destinos a los que pertenece este tour.
    */
   destinos?: (number | Destination)[] | null;
-  createdBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -1404,7 +1422,7 @@ export interface PayloadLockedDocument {
   document?:
   | ({
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   } | null)
   | ({
     relationTo: 'media';
@@ -1449,7 +1467,7 @@ export interface PayloadLockedDocument {
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -1462,7 +1480,7 @@ export interface PayloadPreference {
   id: number;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   key?: string | null;
   value?:
@@ -1493,11 +1511,25 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  id?: T;
+  emailVerified?: T;
+  name?: T;
+  image?: T;
   avatar?: T;
   roles?: T;
-  name?: T;
+  accounts?:
+  | T
+  | {
+    provider?: T;
+    providerAccountId?: T;
+    type?: T;
+    id?: T;
+  };
   updatedAt?: T;
   createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -1993,6 +2025,7 @@ export interface ToursSelect<T extends boolean = true> {
   priceGeneral?: T;
   categorias?: T;
   destinos?: T;
+  medusaId?: T;
   createdBy?: T;
   publishedAt?: T;
   slug?: T;
@@ -2523,7 +2556,7 @@ export interface TouP {
     image?: (number | null) | Media;
     description?: string | null;
   };
-  createdBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
   publishedAt?: string | null;
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
@@ -2561,7 +2594,7 @@ export interface PacP {
     image?: (number | null) | Media;
     description?: string | null;
   };
-  createdBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
   publishedAt?: string | null;
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
@@ -2597,7 +2630,7 @@ export interface BlogP {
     image?: (number | null) | Media;
     description?: string | null;
   };
-  createdBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
   publishedAt?: string | null;
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
@@ -2829,7 +2862,7 @@ export interface TaskSchedulePublish {
       value: number | Paquete;
     } | null);
     global?: ('touP' | 'pacP' | 'blogP') | null;
-    user?: (number | null) | User;
+    user?: (string | null) | User;
   };
   output?: unknown;
 }
@@ -2840,4 +2873,6 @@ export interface TaskSchedulePublish {
 export interface Auth {
   [k: string]: unknown;
 }
+
+
 

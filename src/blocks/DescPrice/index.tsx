@@ -4,18 +4,19 @@ import PrecioCardComponent from "@/components/PrecioCard";
 import RichText from "@/components/RichText";
 import { Subtitle } from "@/components/Subtitle";
 import { getCachedGlobal } from "@/utilities/getGlobals";
+import { HttpTypes } from "@medusajs/types";
 
 interface Props extends DescrPriceBlockType {
   context?: {
     nameCollection: string
     title: string
+    medusaId: HttpTypes.StoreProduct
   } | null
 }
 
 export async function DescrPriceBlock(props: Props) {
   const { blockTitle, leftColumn, rightColumn, context } = props
   const footerData: Footer = await getCachedGlobal('footer', 1)()
-  console.log(footerData)
 
   let phoneNumber = ""
   if (!footerData.navItems) {
@@ -48,7 +49,7 @@ export async function DescrPriceBlock(props: Props) {
           </div>
         </div>
         <div className="w-[60%] mx-auto lg:mx-0 lg:w-[35%] sm:mt-10 lg:mt-0">
-          <PrecioCardComponent priceTitle={rightColumn.priceTitle!} prevText={rightColumn.prevText!} price={rightColumn.price!} nextText={rightColumn.nextText!} paymentForm={rightColumn.paymentForm} origen={context!.nameCollection} phoneNumber={phoneNumber} title={context!.title} />
+          <PrecioCardComponent priceTitle={rightColumn.priceTitle!} prevText={rightColumn.prevText!} price={rightColumn.price!} nextText={rightColumn.nextText!} paymentForm={rightColumn.paymentForm} origen={context!.nameCollection} phoneNumber={phoneNumber} title={context!.title} medusaId={context!.medusaId} />
         </div>
 
 

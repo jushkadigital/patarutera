@@ -1,7 +1,7 @@
 'use client'
 import { useSharedState } from "@/hooks/sharedContextDestinos";
 import CardPaquete, { CardPaqueteData } from "./cardPaquete"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib2/utils";
 import { useMobile } from "@/hooks/useMobile";
 
 interface Props {
@@ -22,9 +22,6 @@ function isNumberInRange(numberToCheck: number, range: [number, number]): boolea
       : 'flex flex-col space-y-4 md:space-y-6 mx-auto w-[90%]'
   );
 
-  console.log(priceOne)
-  console.log(rangeSlider)
-  console.log(paquetes)
 
   const responsive = useMobile({breakpoint:480})
     return (

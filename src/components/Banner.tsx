@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from '@/components/PayloadImage';
-import { BASEURL } from '@/lib/config';
+import { BASEURL } from '@/lib2/config';
 import { Media } from '@/cms-types';
 
 interface BannerProps {
@@ -10,7 +10,6 @@ interface BannerProps {
 }
 
 const Banner: React.FC<BannerProps> = ({ title, backgroundUrl, className = '' }) => {
-  console.log(backgroundUrl)
   return (
     <div
       className={`relative w-full h-[50vh] flex items-center justify-center text-white overflow-hidden ${className}`}

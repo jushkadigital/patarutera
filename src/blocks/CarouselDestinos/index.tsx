@@ -1,6 +1,6 @@
 import { CarouselDestinationBlock, Media } from "@/cms-types";
 import CarouselDestinosComponent from "@/components/Carousel2Destinos";
-import { BASEURL } from "@/lib/config";
+import { BASEURL } from "@/lib2/config";
 type Props = CarouselDestinationBlock
 
 

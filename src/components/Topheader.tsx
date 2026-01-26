@@ -1,18 +1,25 @@
 'use client'
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib2/utils';
+import { signIn } from "next-auth/react";
 import { SvgFacebook, SvgInstagram, SvgTiktok, SvgWhatsapp } from "./IconsSvg"
 import { Button } from './ui/button';
 import { Heart, ShoppingCart, CircleUserRound, Mail } from 'lucide-react'
 import { useMobile } from '@/hooks/useMobile';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import LocalizedClientLink from '@modules/common/components/localized-client-link';
+import CartButton from '@modules/layout/components/cart-button';
+import { StoreCart } from '@medusajs/types';
+import CartDropdown from '@modules/layout/components/cart-dropdown';
 
 interface Props {
   socialNetworks: any[]
   email: string
   isHome: boolean
+  cart: StoreCart | null
 }
 
-export const TopHeader = ({ isHome, socialNetworks, email }: Props) => {
+export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
   const networkName = {
     facebook: SvgFacebook,
     instagram: SvgInstagram,
@@ -20,6 +27,7 @@ export const TopHeader = ({ isHome, socialNetworks, email }: Props) => {
   }
 
   const isMobile = useMobile({ breakpoint: 610 })
+
 
   return (
     <div className={cn(isHome ? 'h-17 overflow-visible ' : 'bg-[#2970B7]')}>
@@ -66,14 +74,29 @@ export const TopHeader = ({ isHome, socialNetworks, email }: Props) => {
             </Button>
             :
             <Button className='text-[#2970B7] rounded-2xl bg-white uppercase font-bold sm:text-xs lg:text-md' asChild>
-              <Link href={"/dashboard"} >
-                Iniciar Sesion
-              </Link>
+              <button
+                onClick={() => signIn("keycloak", { callbackUrl: "/account" })} // "keycloak" debe coincidir con el ID en tu [...nextauth]
+                className="btn-primary"
+              >
+                Iniciar Sesión con Keycloak
+              </button>
             </Button>
           }
 
           <Button variant='ghost' className={`${isMobile ? 'p-0!' : ''}`}><Heart size={'icon'} className='size-5' color='#fff' /></Button>
-          <Button variant='ghost' className={`${isMobile ? 'p-0!' : ''}`}><ShoppingCart size={'icon'} className='size-5' color='#fff' /></Button>
+
+          <Suspense
+            fallback={
+              <LocalizedClientLink
+                className="hover:text-ui-fg-base flex gap-2"
+                href="/cart"
+                data-testid="nav-cart-link"
+              > <ShoppingCart size={'icon'} className='size-5' color='#fff' />
+              </LocalizedClientLink>
+            }
+          >
+            <CartDropdown cart={cart} />
+          </Suspense>
         </div>
       </div>
 

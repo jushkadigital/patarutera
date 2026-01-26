@@ -35,7 +35,6 @@ interface LeftPanelSearch {
 
 
 export function LeftPanelSearch({ categories, title, destinations }: LeftPanelSearch) {
-  console.log(destinations)
   const isMobile = useMobile({ breakpoint: 1024 })
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   return (

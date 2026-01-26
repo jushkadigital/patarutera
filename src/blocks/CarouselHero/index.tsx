@@ -3,13 +3,12 @@ import { BannerCarousel } from "@/components/BannerCarousel";
 import { Carousel } from "@/components/Carousel";
 import { TourSearchBoxHorizontal } from "@/components/leftPanelSearch";
 import { CarouselItem } from "@/components/ui/carousel";
-import { BASEURL } from "@/lib/config";
+import { BASEURL } from "@/lib2/config";
 interface Props extends CarouselHeroPage{
 
 }
 
 export async function CarouselHero(props: Props) {
-  console.log('HERE')
   const destinationsRequest = await fetch(`${BASEURL}/api/destinations`)
   const destinationsData = await destinationsRequest.json()
   const destinations = destinationsData.docs

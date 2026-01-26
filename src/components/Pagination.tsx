@@ -29,12 +29,9 @@ export const Pagination: React.FC<{
 }> = (props) => {
   const router = useRouter()
 
-  console.log(props.searchParams)
 
   const { className, page, totalPages, type } = props
 
-  console.log("TOTAL PAGES")
-  console.log(totalPages)
   const hasNextPage = page < totalPages
   const hasPrevPage = page > 1
 

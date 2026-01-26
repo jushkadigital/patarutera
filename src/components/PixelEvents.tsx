@@ -17,7 +17,6 @@ export default function PixelEvents() {
       return;
     }
     if (PIXEL_ID && typeof window.fbq === 'function') {
-      console.log(PIXEL_ID)
       window.fbq('init', PIXEL_ID);
       window.fbq.loaded = false
       setIsPixelInitialized(true);

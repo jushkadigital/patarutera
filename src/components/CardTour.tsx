@@ -9,7 +9,12 @@ import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import RichText from "./RichText"
 
-export type CardTourData = Pick<Tour, 'id' | 'title' | 'miniDescription' | 'featuredImage' | 'Desde' | 'price' | 'Person desc' | 'iconMaxPassengers' | 'maxPassengers' | 'iconDifficulty' | 'difficulty' | 'slug' | 'destinos'>
+export type CardTourData = Pick<Tour, 'id' | 'title' | 'miniDescription' | 'featuredImage' | 'Desde' | 'price' | 'Person desc' | 'iconMaxPassengers' | 'maxPassengers' | 'iconDifficulty' | 'difficulty' | 'slug' | 'destinos' | 'medusaId'> & {
+  priceMedusa: {
+    amount: number;
+    currency: string;
+  } | null;
+};
 
 
 interface CardTourProps {
@@ -24,7 +29,6 @@ const trad = {
 }
 
 export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
-  console.log("render card")
 
 
   if (mode === "grid") {
@@ -72,7 +76,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
               <p className="text-[#6a6a6a]  text-[clamp(13.28px,3.2vw,33.84px)]  sm:text-[clamp(5.68px,1.5vw,33.84px)] lg:text-[clamp(3.5px,0.86vw,16.64px)] ">{unitData.Desde}</p>
               <div className="flex items-baseline justify-center sm:justify-start">
                 {/* price */}
-                <span className="text-[#2970b7] text-[clamp(0px,6.76vw,69.25px)] sm:text-[clamp(0px,2.76vw,69.25px)]  lg:text-[clamp(7.78px,1.86vw,35.84px)] font-bold">S/. {unitData.price}</span>
+                <span className="text-[#2970b7] text-[clamp(0px,6.76vw,69.25px)] sm:text-[clamp(0px,2.76vw,69.25px)]  lg:text-[clamp(7.78px,1.86vw,35.84px)] font-bold">S/. {unitData.medusaId ? unitData.priceMedusa?.amount : unitData.price}</span>
               </div>
               {/* Person desc */}
               <p className="text-[#6a6a6a] text-[clamp(0px,2.65vw,27.2px)] sm:text-[clamp(0px,1.15vw,27.2px)] lg:text-[clamp(3.03px,0.7vw,14.08px)]">{unitData["Person desc"]}</p>
@@ -179,7 +183,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
             <div className="mb-4 sm:mb-6 text-center">
               <p className="text-[#6a6a6a] text-sm mb-1 text-[#6a6a6a]  text-[clamp(13.28px,3.2vw,33.84px)]  sm:text-[clamp(5.68px,1.5vw,33.84px)] lg:text-[clamp(3.5px,0.86vw,16.64px)] ">{unitData.Desde}</p>
               <div className="flex items-baseline justify-center">
-                <span className="text-[#2970b7] text-3xl sm:text-4xl font-bold text-[#2970b7] text-[clamp(0px,6.76vw,69.25px)] sm:text-[clamp(0px,2.76vw,69.25px)]  lg:text-[clamp(7.78px,1.86vw,35.84px)] font-bold">S/. {unitData.price}</span>
+                <span className="text-[#2970b7] text-3xl sm:text-4xl font-bold text-[#2970b7] text-[clamp(0px,6.76vw,69.25px)] sm:text-[clamp(0px,2.76vw,69.25px)]  lg:text-[clamp(7.78px,1.86vw,35.84px)] font-bold">S/.{unitData.medusaId ? unitData.priceMedusa?.amount : unitData.price}</span>
               </div>
               <p className="text-[#6a6a6a] text-sm text-[#6a6a6a] text-[clamp(0px,2.65vw,27.2px)] sm:text-[clamp(0px,1.15vw,27.2px)] lg:text-[clamp(3.03px,0.7vw,14.08px)]">{unitData["Person desc"]}</p>
             </div>
@@ -221,7 +225,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
             </div>
           </div>
 
-          <Link href={`/tours/${unitData.slug}`} className="w-full flex justify-center">
+          <Link href={`/pe/tours/${unitData.slug}`} className="w-full flex justify-center">
             <Button className="w-fit h-fit bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold  py-[clamp(0px,1.20vw,12.36px)] sm:py-[clamp(0px,0.70vw,12.36px)] lg:py-[clamp(1.38px,0.3vw,6.4px)] px-[clamp(0px,2.89vw,29.68px)]  sm:px-[clamp(0px,1.49vw,29.68px)] lg:px-[clamp(3.31px,0.8vw,15.36px)]  text-[clamp(0px,3.86vw,39.57px)] sm:text-[clamp(0px,1.86vw,39.57px)] lg:text-[clamp(4.4px,1vw,20.48px)] rounded-full cursor-pointer ">
               Ver Detalles
             </Button>

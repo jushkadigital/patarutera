@@ -3,7 +3,7 @@ import { CarouselConditional } from "@/components/CarouselConditional";
 import { GalleryCarousel } from "@/components/galleryCarousel";
 import InfiniteImageCarousel from "@/components/infinity-image-carousel";
 import { Subtitle } from "@/components/Subtitle";
-import { BASEURL } from "@/lib/config";
+import { BASEURL } from "@/lib2/config";
 
 interface Props extends SociosBlockType {
 context?: {

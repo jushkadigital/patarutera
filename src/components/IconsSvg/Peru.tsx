@@ -24,7 +24,6 @@ function capitalizeString(str: string): string {
   // Obtiene el resto del string, sin la primera letra.
   const restOfString = str.slice(1).toLowerCase();
   // Combina la primera letra capitalizada con el resto del string.
-  console.log(firstChar)
   return firstChar + restOfString;
 }
 

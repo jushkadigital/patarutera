@@ -1,5 +1,5 @@
 import { Paquete, Tour } from '@/cms-types'
-import { BASEURL } from '@/lib/config'
+import { BASEURL } from '@/lib2/config'
 import { getServerSideURL } from '@/utilities/getURL'
 import type {MetadataRoute} from 'next'
 

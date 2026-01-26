@@ -1,6 +1,6 @@
 import { EstadisticasBlockType } from "@/cms-types";
 import RichText from "@/components/RichText";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib2/utils";
 
 interface Props extends EstadisticasBlockType {
   context?: {
@@ -16,7 +16,6 @@ export async function EstadisticasBlock(props: Props) {
   } as React.CSSProperties;
 
   const classessBox = cn('text-white', 'p-1 lg:p-2', 'rounded-lg', 'text-center', `bg-[var(--bg-color)]`)
-  console.log(estadisticasText.colorBox)
 
   return (
     <div className="flex flex-col justify-center items-center h-full hidden lg:flex">

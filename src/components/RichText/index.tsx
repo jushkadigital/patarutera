@@ -40,8 +40,6 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
 }
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => {
-  console.log('hereJSX')
-  console.log(defaultConverters)
   return ({
     ...defaultConverters,
     ...LinkJSXConverter({ internalDocToHref }),
@@ -73,7 +71,6 @@ type Props = {
 
 export default function RichText(props: Props) {
   const { className, enableProse = true, enableGutter = true, ...rest } = props
-  console.log(props.data)
 
   return (
     <ConvertRichText

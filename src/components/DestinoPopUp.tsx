@@ -12,7 +12,6 @@ interface Props {
 
 export const DestinoPopUp = ({ data }: Props) => {
 
-  console.log(data)
 
   const newValue = {
     id: data.id,

@@ -36,8 +36,6 @@ export function RegistrationForm({ submitUrl = "/api/register", session }: Regis
     setIsSubmitting(true)
     setSubmitStatus("idle")
 
-    console.log("REGIS TOKKEN")
-    console.log(session.accessToken)
     try {
       const response = await fetch(submitUrl, {
         method: "POST",
@@ -53,7 +51,6 @@ export function RegistrationForm({ submitUrl = "/api/register", session }: Regis
       }
 
       const respuesta = await response.text()
-      console.log(respuesta)
 
       setSubmitStatus("success")
       router.refresh()

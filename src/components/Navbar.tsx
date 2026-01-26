@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib2/utils';
 
 import {
   NavigationMenu,
@@ -20,6 +20,7 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from './ui/sheet';
 import { Menu } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { TopHeader } from './Topheader';
+import { StoreCart } from '@medusajs/types';
 
 // Asume que tienes un logo en esta ruta, o reemplázalo
 const LOGO_URL = '/pataruteraLogoWhite.png'; // Reemplaza con la ruta real de tu logo
@@ -30,8 +31,9 @@ interface Props {
   isTransparent: boolean
   socialNetworks: any[]
   email: string
+  cart: StoreCart | null
 }
-export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, email }: Props) => {
+export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, email, cart }: Props) => {
   //const pathname = usePathname();
   //const isHome = pathname === '/';
 
@@ -43,14 +45,13 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
   );
 
 
-  console.log(destinations)
 
   return (
     <nav className={navbarClasses}>
-      <TopHeader socialNetworks={socialNetworks} email={email} isHome={isHome} />
+      <TopHeader socialNetworks={socialNetworks} email={email} isHome={isHome} cart={cart} />
       <div className=" mx-auto flex items-center justify-around px-4">
         {/* Sección 1: Logo */}
-        <Link href="/" className="flex items-center space-x-2">
+        <Link href="/pe" className="flex items-center space-x-2">
           <Image src={isHome ? LOGO_URL : LOGO_URLCOLOR} alt="Logo" width={200} height={200} className={cn('w-[150px] lg:w-[200px]')} />
         </Link>
         <div></div>
@@ -60,7 +61,7 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : isTransparent ? 'bg-transparent text-[#2970b7]' : 'text-[#2970b7]')}>
-                <Link href="/destino" >
+                <Link href="/pe/destino" >
                   Destinos
                 </Link>
               </NavigationMenuLink>
@@ -69,14 +70,14 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
             {/* Sección 2: Enlace 1 */}
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : isTransparent ? 'bg-trasparent text-[#2970b7]' : 'text-[#2970b7]')}>
-                <Link href="/paquetes?destinations=Ica,Cusco" >
+                <Link href="/pe/paquetes?destinations=Ica,Cusco" >
                   Paquetes
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : isTransparent ? 'bg-transparent text-[#2970b7]' : 'text-[#2970b7]')}>
-                <Link href="/tours?destination=Cusco&categories=" >
+                <Link href="/pe/tours?destination=Cusco&categories=" >
                   Tours
                 </Link>
               </NavigationMenuLink>
@@ -86,7 +87,7 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
             {/* Sección 4: Enlace 2 */}
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), isHome ? 'bg-transparent text-white' : isTransparent ? 'bg-transparent text-[#2970b7]' : 'text-[#2970b7]')}>
-                <Link href="/posts" >
+                <Link href="/pe/posts" >
                   Blog
                 </Link>
               </NavigationMenuLink>
@@ -116,7 +117,7 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
               {/* Destinos con Collapsible */}
               <SheetClose asChild>
                 <Link
-                  href="/destino"
+                  href="/pe/destino"
                   className="py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors text-center"
                 >
                   Destinos
@@ -125,7 +126,7 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
               {/* Paquetes */}
               <SheetClose asChild>
                 <Link
-                  href="/paquetes?destinations=Ica,Cusco"
+                  href="/pe/paquetes?destinations=Ica,Cusco"
                   className="py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors text-center"
                 >
                   Paquetes
@@ -133,7 +134,7 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
               </SheetClose>
               <SheetClose asChild>
                 <Link
-                  href="/tours?destination=Cusco&categories="
+                  href="/pe/tours?destination=Cusco&categories="
                   className="py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors text-center"
                 >
                   Tours
@@ -142,7 +143,7 @@ export const Navbar = ({ destinations, isHome, isTransparent, socialNetworks, em
               {/* Blog */}
               <SheetClose asChild>
                 <Link
-                  href="/posts"
+                  href="/pe/posts"
                   className="py-2 text-3xl font-semibold text-[#2970b7] hover:text-[#1e5a9b] transition-colors text-center"
                 >
                   Blog

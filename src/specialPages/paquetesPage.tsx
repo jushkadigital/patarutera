@@ -5,7 +5,7 @@ import { MediaBlock } from '../blocks/MediaBlock'
 import { GridTours } from '../blocks/GridTours'
 import { RowBlock } from '../blocks/RowBlock'
 import { BannerBlock } from '@/blocks/Banner'
-import { BASEURL } from '@/lib/config'
+import { BASEURL } from '@/lib2/config'
 import { RenderHero } from '@/blocks/renderHeros'
 import { LeftPanelSearchPaquete } from '@/components/leftSearchPanelPaquetes'
 import { GridPaquetes } from '@/blocks/GridPaquetes'
@@ -46,7 +46,6 @@ export async function PaquetesPage(props: {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const { destinations } = props.searchParams
-  console.log(destinations)
   const destinationRequest = await fetch(`${BASEURL}/api/destinations?where[name][in]=${destinations}`)
   const destinationDataPre = await destinationRequest.json()
   const destinationData = destinationDataPre.docs
@@ -95,7 +94,6 @@ export async function PaquetesPage(props: {
           <Fragment>
               {hasBlocks && blocks.slice(1).map((block, index) => {
           const { blockType } = block
-          console.log(blockType)
           if (blockType && blockType in blockComponents) {
             const Block = blockComponents[blockType]
 

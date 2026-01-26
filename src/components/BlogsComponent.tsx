@@ -1,5 +1,5 @@
 'use client'
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib2/utils";
 import { useMobile } from "@/hooks/useMobile";
 import CardPost, { CardPostData } from "./CardPost";
 
@@ -17,7 +17,6 @@ export function BlogsComponent({posts,mode}:Props){
 
 
   const responsive = useMobile({breakpoint:480})
-  console.log(posts)
 
     return (
         <div className={containerClasses}>

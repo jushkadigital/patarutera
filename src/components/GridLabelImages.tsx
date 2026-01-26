@@ -52,7 +52,6 @@ export default function ComponentGrid({ items, layout = "grid" }: ComponentGridP
   const renderMasonryLayout = () => {
     const heights = ["h-64", "h-80", "h-72", "h-96"]
     const colorsBackground = ['#2970B7','#3EAE64','#79368C']
-    console.log('MASON')
     return (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-5 space-y-4">
         {validItems.map((item, index) => {

@@ -60,8 +60,6 @@ interface Props {
 }
 export default function TabsViaje({ tabs }: Props) {
   const [activeTab, setActiveTab] = useState(0)
-  console.log("GAAAAAAAAA")
-  console.log(tabs)
 
   return (
     <div className="w-full  mx-auto ">

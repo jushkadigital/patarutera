@@ -1,7 +1,7 @@
 'use client'
 import { useSharedState } from "@/hooks/sharedContextDestinos";
 import CardTour, { CardTourData } from "./CardTour"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib2/utils";
 import { useMobile } from "@/hooks/useMobile";
 
 interface Props {
@@ -22,8 +22,6 @@ export function ToursComponent({ tours, rangeSlider, mode }: Props) {
       : 'flex flex-col space-y-4 md:space-y-6 mx-auto w-[90%]'
   );
 
-  console.log(priceOne)
-  console.log(rangeSlider)
 
 
   const responsive = useMobile({ breakpoint: 480 })

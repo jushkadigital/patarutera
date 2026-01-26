@@ -13,7 +13,6 @@ context?: {
 export async function FormBitrix(props: Props) {
     const {trackingCode} = props
 
-    console.log(props)
     return (
                 <div className="w-full ">    
                 <BitrixFormLoader/>

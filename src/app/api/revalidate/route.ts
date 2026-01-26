@@ -7,10 +7,8 @@ const REVALIDATE_TOKEN = process.env.REVALIDATE_TOKEN;
 
 export async function POST(request: NextRequest) {
   
-  console.log("API REVALIDATEEEE")
   const body = await request.json();
   const secretFromBody = body.secret;
-  console.log("REVALIDANDO")
   if (!REVALIDATE_TOKEN) {
     console.error('REVALIDATE_TOKEN no está configurado en las variables de entorno.');
     return NextResponse.json({ message: 'Token de revalidación no configurado en el servidor.' }, { status: 500 });
@@ -24,7 +22,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Token de revalidación inválido.' }, { status: 401 });
   }
 
-  console.log("REVALIDANDON")
   const pathsToRevalidate: string[] | undefined = body.paths;
   const tagsToRevalidate: string[] | undefined = body.tags;
 

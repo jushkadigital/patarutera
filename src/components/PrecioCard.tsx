@@ -11,6 +11,7 @@ import { useMobile } from "@/hooks/useMobile"
 import Link from "next/link"
 import { SvgWhatsapp } from "./IconsSvg"
 import { BookingCard } from "./booking-card"
+import { HttpTypes } from "@medusajs/types"
 
 // 1. INTERFAZ DE DATOS DEL FORMULARIO ACTUALIZADA
 // Se cambian los campos 'fecha' y 'pasajeros' por los que necesitas: 'nombre', 'email', 'mensaje'.
@@ -37,9 +38,10 @@ interface Props {
   origen: string // Por ejemplo: "Página de Contacto", "Tour a Machu Picchu", etc.
   phoneNumber: string
   title: string
+  medusaId: HttpTypes.StoreProduct
 }
 
-export default function FormularioContacto({ priceTitle, prevText, price, nextText, origen, phoneNumber, title }: Props) {
+export default function FormularioContacto({ priceTitle, prevText, price, nextText, origen, phoneNumber, title, medusaId }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState("")
   const pathname = usePathname()
@@ -118,7 +120,7 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
 
                 <DialogContent className="pb-0! px-0! mx-0!">
 
-                  <BookingCard amount={formatMoney(price)} type={origen} slug={pathname} />
+                  <BookingCard amount={formatMoney(price)} type={origen} slug={pathname} medusaId={medusaId} />
                 </DialogContent>
               </Dialog>
             </div>
@@ -155,7 +157,7 @@ export default function FormularioContacto({ priceTitle, prevText, price, nextTe
 
             <div className="p-8 space-y-6 relative">
               {/* Campo: Nombre */}
-              <BookingCard amount={formatMoney(price)} type={origen} slug={pathname} />
+              <BookingCard amount={formatMoney(price)} type={origen} slug={pathname} medusaId={medusaId} />
 
               {/* Botón de Envío */}
             </div>

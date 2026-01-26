@@ -6,8 +6,8 @@ import { Pagination } from '@/components/Pagination';
 import { Subtitle } from '@/components/Subtitle';
 import { ToursComponent } from '@/components/ToursComponent';
 import { useSharedState } from '@/hooks/sharedContextDestinos';
-import { BASEURL } from '@/lib/config';
-import { cn } from '@/lib/utils';
+import { BASEURL } from '@/lib2/config';
+import { cn } from '@/lib2/utils';
 
 // Añadir 'mode' a las Props
 interface Props extends GridBlogsBlock {
@@ -24,21 +24,18 @@ export async function GridBlogs(props: Props) {
 
 
 
-  console.log(mode)
   let posts:any[] = [];
   let data
   let fetchError = null;
   
   if(populateBy === 'collection'){
   const paramsCat = new URLSearchParams()
-  console.log(categories)
   if((categories as BlogCategory[]).length > 0){
         paramsCat.append('where[categories.name][in]', (categories as BlogCategory[]).map(c => c.name).join(','))
     }
   try {
     
     const queryStringCat = paramsCat.toString()
-    console.log(queryStringCat)
   const pageNumber = page ? `&page=${page}` : ''
    const response = await fetch(`${BASEURL}/api/posts?limit=${limit}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[description]=true&${queryStringCat}`);
     if (!response.ok) {
@@ -50,8 +47,6 @@ export async function GridBlogs(props: Props) {
     if (data && data.docs) {
       posts = data.docs;
     }
-    console.log(data)
-    console.log(data.totalPages)
   } catch (error) {
     console.error("Error fetching tours:", error);
     // Podrías también lanzar el error para que un ErrorBoundary superior lo capture si es necesario
@@ -78,7 +73,6 @@ export async function GridBlogs(props: Props) {
     return <div className="container mx-auto py-8 text-center text-red-500">{fetchError}</div>;
   }
   
-  console.log(data)
 
   return (
     // No hay controles de modo aquí porque es un Server Component

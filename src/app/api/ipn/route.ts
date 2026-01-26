@@ -3,7 +3,7 @@ import fetch from "node-fetch"
 import * as React from 'react';
 import { Email } from '@/components/emails/email-template-send';
 import { Resend } from 'resend';
-import { BASEURL } from "@/lib/config";
+import { BASEURL } from "@/lib2/config";
 import { EmailRecieve } from "@/components/emails/email-template-recieve";
 import { PlainText } from "@/components/RichText";
 
@@ -38,10 +38,8 @@ export async function POST(request: NextRequest) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const document = await request.text();
 
-  // console.log(document)
   const data = document.split("&")
 
-  console.log(data)
 
   const divideResponse = data[22].split("=")
 
@@ -322,7 +320,6 @@ export async function POST(request: NextRequest) {
 
 
   // const paymentDataIPN = document
-  //   console.log("IPN:", paymentDataIPN);
   //   /* Retrieve the IPN content */
   //   const formAnswer = paymentDataIPN["kr-answer"];
   //   const hash = paymentDataIPN["kr-hash"];
@@ -344,7 +341,6 @@ export async function POST(request: NextRequest) {
   //   const orderId = formAnswer.orderDetails.orderId;
   //   const transactionUUID = transaction.uuid;
 
-  //   console.log(orderStatus)
   // const data = await createFormToken(document)
 
   // This will revalidate any URL that matches the provided page file on the next page visit.

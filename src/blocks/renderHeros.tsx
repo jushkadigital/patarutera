@@ -15,7 +15,6 @@ const blocks = {
 export const RenderHero: React.FC<{heroBlocks:Page['heroPageBlocks']}> = (props) => {
 
     const hasBlocks = props.heroBlocks && Array.isArray(props.heroBlocks) && props.heroBlocks.length > 0
-    console.log(hasBlocks)
     if (hasBlocks) {
   const HeroToRender = blocks[props.heroBlocks![0].blockType]
   

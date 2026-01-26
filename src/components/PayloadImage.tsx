@@ -60,7 +60,6 @@ export default function PayloadImage({ media, className,sources = [
  const fallback =
   isValidImageObject(image) ? image! : getMaxSizeNotNull(media.sizes!)
 
-  console.log(fallback)
 
   return (
     <picture>

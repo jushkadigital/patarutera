@@ -1,6 +1,6 @@
 import type { StaticImageData } from 'next/image'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib2/utils'
 import React from 'react'
 
 import type { MediaBlock as MediaBlockProps } from '@/cms-types'

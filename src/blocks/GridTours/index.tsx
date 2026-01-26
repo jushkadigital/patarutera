@@ -4,8 +4,9 @@ import { Pagination } from '@/components/Pagination';
 import { Subtitle } from '@/components/Subtitle';
 import { ToursComponent } from '@/components/ToursComponent';
 import { useSharedState } from '@/hooks/sharedContextDestinos';
-import { BASEURL } from '@/lib/config';
-import { cn } from '@/lib/utils';
+import { BASEURL } from '@/lib2/config';
+import { cn, mergeToursWithPrices } from '@/lib2/utils';
+import { listProductsWithSort } from '@lib/data/products';
 
 // Añadir 'mode' a las Props
 interface Props extends GridToursBlockType {
@@ -23,7 +24,6 @@ export async function GridTours(props: Props) {
 
 
 
-  console.log(mode)
   let tours: CardTourData[] = [];
   let data
   let fetchError = null;
@@ -41,9 +41,8 @@ export async function GridTours(props: Props) {
   try {
     const queryString = params.toString();
     const queryStringCat = paramsCat.toString()
-    // console.log('grid tours HERE') 
     const pageNumber = page ? `&page=${page}` : ''
-    const response = await fetch(`${BASEURL}/api/tours?limit=${gridColumns}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}&${queryStringCat}`, {
+    const response = await fetch(`${BASEURL}/api/tours?limit=${gridColumns}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&select[medusaId]=true&${queryString}&${queryStringCat}`, {
       next: { tags: ['tours'] },
     });
     if (!response.ok) {
@@ -60,7 +59,6 @@ export async function GridTours(props: Props) {
     // Podrías también lanzar el error para que un ErrorBoundary superior lo capture si es necesario
     // throw error;
   }
-
   const mode2 = false
   // Clases condicionales basadas en la prop 'mode'
   const containerClasses = cn(
@@ -73,14 +71,36 @@ export async function GridTours(props: Props) {
     return <div className="container mx-auto py-8 text-center text-red-500">{fetchError}</div>;
   }
 
+  const skus = tours.map(ele => ele.medusaId)
 
-  console.log('render.BlockTour')
+
+  const pageNumber = 1
+  const sortBy = "created_at"
+  const queryParams = {
+    limit: 12,
+    order: sortBy,
+    id: skus.filter(Boolean)
+  }
+  const countryCode = 'pe'
+
+  let {
+    response: { products, count },
+  } = await listProductsWithSort({
+    page: pageNumber,
+    queryParams,
+    sortBy,
+    countryCode,
+  })
+
+
+  const toursWithPrice = mergeToursWithPrices(tours, products);
+
   return (
     // No hay controles de modo aquí porque es un Server Component
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
       {/* Contenedor condicional */}
       <Subtitle className="" titleGroup={blockTitle} />
-      <ToursComponent mode={mode!} tours={tours} rangeSlider={props.rangeSlider} />
+      <ToursComponent mode={mode!} tours={toursWithPrice} rangeSlider={props.rangeSlider} />
       {overrideDefaults && data.totalPages && (<Pagination page={data.page} totalPages={data.totalPages} searchParams={searchParams!} type={'tours'} />)}
 
     </div>

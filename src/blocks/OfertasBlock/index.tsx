@@ -1,8 +1,8 @@
 import type { Destination, Media, Oferta, OfertasBlock as OfertasBlockType, Tour, TourCategory } from '@/cms-types';
 import CardTour, { CardTourData } from '@/components/CardTour';
 import { Subtitle } from '@/components/Subtitle';
-import { BASEURL } from '@/lib/config';
-import { cn } from '@/lib/utils';
+import { BASEURL } from '@/lib2/config';
+import { cn } from '@/lib2/utils';
 import GridComponent from "@/components/GridLabelImages";
 import { OfertaCardComponent } from '@/components/OfertaCard';
 

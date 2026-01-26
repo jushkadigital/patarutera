@@ -1,5 +1,5 @@
 import { TitleGroup } from "@/cms-types"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib2/utils"
 
 interface SubtitleProps {
   className?: string

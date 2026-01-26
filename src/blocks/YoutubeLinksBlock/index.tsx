@@ -18,7 +18,6 @@ export function YouTubeLinksBlock(props: Props) {
   const { videoLinks, blockTitle } = props
 
   const isMobile = useMobile()
-  console.log("IM HEREE")
   return (
     <div className="w-full ">
       <Subtitle titleGroup={blockTitle} />

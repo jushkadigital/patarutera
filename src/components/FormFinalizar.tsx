@@ -74,7 +74,6 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
       },
       orderId: `${type}-${id}-${new Date().valueOf()}`
     }
-    console.log(paymentConf)
     const response = await fetch(`/api/createpayment`, {
       method: 'POST',
       headers: {
@@ -95,9 +94,7 @@ export function BillingForm({ name, date, amount, numberPassengers, type, image,
       window.ttq.track('InitiateCheckout')
     }
     const result = await response.json();
-    console.log((result))
     const urlPayment = JSON.parse(result.message).answer.paymentURL
-    console.log((urlPayment))
     window.location.href = urlPayment
   }
 

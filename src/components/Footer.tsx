@@ -14,8 +14,6 @@ export default async function FooterBlock({destination}:Props) {
   const redes = await getCachedGlobal('redesNegocio',1)()
 
   const navItems = footerData?.navItems || []
-  console.log(navItems)
-  console.log(redes)
 
 
   const networkName = {

@@ -16,15 +16,13 @@ function toUppercase(str: string) {
 
 export function ContextSvg({ data }: Props) {
 
-  const [hoverDept, setHoverDept] = useState<string>("Puno")
+  const [hoverDept, setHoverDept] = useState<string>("Cusco")
 
   const [isVisible, setIsVisible] = useState(true)
 
-  const val = data.find(ele => toUppercase(ele.name) == toUppercase(hoverDept))
+  const val = data.filter(Boolean).find(ele => toUppercase(ele.name) == toUppercase(hoverDept))
 
-  const currentsRegions = data.map(ele => toUppercase(ele.name))
-  console.log(currentsRegions)
-  console.log(val)
+  const currentsRegions = data.filter(Boolean).map(ele => toUppercase(ele.name))
 
   return (
     <div className="flex flex-col md:flex-row">

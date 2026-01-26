@@ -5,7 +5,7 @@ import { MediaBlock } from '../blocks/MediaBlock'
 import { GridTours } from '../blocks/GridTours'
 import { RowBlock } from '../blocks/RowBlock'
 import { BannerBlock } from '@/blocks/Banner'
-import { BASEURL } from '@/lib/config'
+import { BASEURL } from '@/lib2/config'
 import { RenderHero } from '@/blocks/renderHeros'
 
 import { LeftPanelSearch } from '@/components/leftPanelSearch'
@@ -96,7 +96,6 @@ export async function DestinosPage(props: {
           <Fragment>
               {hasBlocks && blocks.slice(1).map((block, index) => {
           const { blockType } = block
-          console.log(blockType)
           if (blockType && blockType in blockComponents) {
             const Block = blockComponents[blockType]
 

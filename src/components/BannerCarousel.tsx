@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { BASEURL } from '@/lib/config';
+import { BASEURL } from '@/lib2/config';
 
 interface BannerProps {
   title: string;
@@ -10,7 +10,6 @@ interface BannerProps {
 }
 
 export const BannerCarousel: React.FC<BannerProps> = ({ title, backgroundUrl,alt, className = '' }) => {
-  console.log(backgroundUrl)
   return (
     <div
       className={`relative w-full h-[90vh]  flex items-center justify-center text-white overflow-hidden ${className}`}

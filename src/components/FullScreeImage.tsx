@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { X } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib2/utils"
 import { useMobile } from "@/hooks/useMobile"
 
 interface FullscreenImageProps {

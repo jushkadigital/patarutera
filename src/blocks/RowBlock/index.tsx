@@ -1,8 +1,8 @@
 import type { RowBlock, RowBlock as RowBlockType } from '@/cms-types'
 import CardTour from '@/components/CardTour'
-import { BASEURL } from '@/lib/config'
+import { BASEURL } from '@/lib2/config'
 import { RenderBlocksRow } from '../renderBlockRow'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib2/utils'
 
 interface Props extends RowBlockType {
 context?: {

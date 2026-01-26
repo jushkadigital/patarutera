@@ -23,6 +23,7 @@ import { AdicionalBlock } from './AdicionalBlock'
 import { DataTourBlock } from './DataTour'
 import { TextIconContentBlock } from './TextIconContent'
 import { MapsBlock } from './MapsBlock'
+import { HttpTypes } from '@medusajs/types'
 
 const blockComponents = {
   gridTours: GridTours,
@@ -55,7 +56,7 @@ const blockComponents = {
 
 export const RenderBlocks: React.FC<{
   blocks: Page['layout'][0][] | NonNullable<Tour['layout']>[0][] | Paquete['layout'][0][],
-  context?: { nameCollection: string, title: string }
+  context?: { nameCollection: string, title: string, medusaId: HttpTypes.StoreProduct }
 }> = (props) => {
   const { blocks } = props
 
@@ -68,7 +69,6 @@ export const RenderBlocks: React.FC<{
       <Fragment>
         {blocks.map((block, index) => {
           const { blockType } = block
-          console.log(blockType)
           if (blockType && blockType in blockComponents) {
             const Block = blockComponents[blockType]
             if (Block) {
