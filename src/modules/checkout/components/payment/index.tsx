@@ -43,12 +43,12 @@ const Payment = ({
     activeSession?.provider_id ?? "",
   );
   const [isInitializingPayment, setIsInitializingPayment] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0);
 
   useEffect(() => {
-    console.log("selectedPaymentMethod changed to:", selectedPaymentMethod);
-    console.log("activeSession updated:", activeSession);
-    console.log("activeSession?.data:", activeSession?.data);
-  }, [selectedPaymentMethod, activeSession]);
+    console.log("Payment component - activeSession updated:", activeSession);
+    console.log("Payment component - forceUpdate:", forceUpdate);
+  }, [activeSession, forceUpdate]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -57,27 +57,76 @@ const Payment = ({
   const isOpen = searchParams.get("step") === "payment";
 
   const setPaymentMethod = async (method: string) => {
+    console.log("🎯 setPaymentMethod called with:", method);
+    console.log("isIzipay(method):", isIzipay(method));
+    console.log("cart:", cart);
+    console.log("cart?.id:", cart?.id);
+    console.log("cart?.payment_collection:", cart?.payment_collection);
+    console.log(
+      "cart?.payment_collection?.payment_sessions:",
+      cart?.payment_collection?.payment_sessions,
+    );
+
     setError(null);
     setSelectedPaymentMethod(method);
 
     if (isIzipay(method) && cart) {
-      console.log("Initializing iZipay payment session...");
+      console.log("✅ iZipay selected, initializing payment session...");
       setIsInitializingPayment(true);
-      try {
-        await initiatePaymentSession(cart, {
-          provider_id: method,
-        });
-        console.log("iZipay payment session initialized");
-      } catch (err: unknown) {
-        console.error("Failed to initialize iZipay payment session:", err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to initialize payment session",
-        );
-      } finally {
-        setIsInitializingPayment(false);
-      }
+
+      let retries = 0;
+      const maxRetries = 3;
+
+      const tryInitiate = async () => {
+        try {
+          console.log(
+            `📤 Attempt ${retries + 1}/${maxRetries} to initiate payment session...`,
+          );
+          console.log(
+            "📤 Calling initiatePaymentSession with provider_id:",
+            method,
+          );
+
+          const result = await initiatePaymentSession(cart, {
+            provider_id: method,
+          });
+
+          console.log("✅ initiatePaymentSession completed successfully!");
+          console.log("Result:", result);
+          console.log("Result type:", typeof result);
+          console.log("Result keys:", Object.keys(result || {}));
+
+          // Wait a bit for the cart to update
+          console.log("⏳ Waiting 500ms for cart to update...");
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
+          console.log("🔄 Triggering force update...");
+          setForceUpdate((prev) => prev + 1);
+
+          setIsInitializingPayment(false);
+        } catch (err: unknown) {
+          console.error(`❌ Attempt ${retries + 1} failed:`, err);
+
+          retries++;
+
+          if (retries < maxRetries) {
+            console.log(`🔄 Retrying in 1 second...`);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await tryInitiate();
+          } else {
+            console.error("❌ All retries failed");
+            const errorMessage =
+              err instanceof Error
+                ? err.message
+                : "Failed to initialize payment session";
+            console.error("Error details:", errorMessage);
+            setError(errorMessage);
+            setIsInitializingPayment(false);
+          }
+        }
+      };
+
+      await tryInitiate();
     }
   };
 
@@ -127,6 +176,61 @@ const Payment = ({
 
   return (
     <div className="bg-white">
+      {/* Debug info */}
+      {process.env.NODE_ENV === "development" && (
+        <div className="bg-gray-100 p-4 mb-4 text-xs border border-gray-300">
+          <div className="font-bold mb-2">Payment Component Debug Info:</div>
+          <div>activeSession: {JSON.stringify(activeSession, null, 2)}</div>
+          <div>selectedPaymentMethod: {selectedPaymentMethod}</div>
+          <div>isInitializingPayment: {isInitializingPayment}</div>
+          <div>cart?.id: {cart?.id}</div>
+          <div>
+            cart?.payment_collection?.payment_sessions:
+            {JSON.stringify(
+              cart?.payment_collection?.payment_sessions,
+              null,
+              2,
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              console.log("🔄 Force update triggered");
+              setForceUpdate((prev) => prev + 1);
+            }}
+            className="mt-2 px-3 py-1 bg-blue-500 text-white rounded mr-2"
+          >
+            Force Update
+          </button>
+          {isIzipay(selectedPaymentMethod) && (
+            <button
+              type="button"
+              onClick={async () => {
+                console.log("🧪 Manual iZipay payment session initialization");
+                setIsInitializingPayment(true);
+                try {
+                  const result = await initiatePaymentSession(cart!, {
+                    provider_id: selectedPaymentMethod,
+                  });
+                  console.log("✅ Manual init result:", result);
+                  setForceUpdate((prev) => prev + 1);
+                } catch (err: any) {
+                  console.error("❌ Manual init failed:", err);
+                  setError(
+                    err.message || "Failed to initialize payment session",
+                  );
+                } finally {
+                  setIsInitializingPayment(false);
+                }
+              }}
+              className="mt-2 px-3 py-1 bg-green-500 text-white rounded"
+            >
+              Manual Init iZipay
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -191,13 +295,23 @@ const Payment = ({
                             {paymentInfoMap[paymentMethod.id]?.icon}
                           </span>
                         </div>
-                        <IzipayContainer
-                          paymentProviderId={paymentMethod.id}
-                          selectedPaymentOptionId={selectedPaymentMethod}
-                          handleSubmitAction={handleSubmit}
-                          cart={cart || undefined}
-                          paymentSessionData={activeSession?.data}
-                        />
+                        {isInitializingPayment &&
+                        selectedPaymentMethod === paymentMethod.id ? (
+                          <div className="flex items-center justify-center py-4">
+                            <Spinner className="animate-spin mr-2" />
+                            <Text className="text-ui-fg-subtle text-sm">
+                              Initializing payment session...
+                            </Text>
+                          </div>
+                        ) : (
+                          <IzipayContainer
+                            paymentProviderId={paymentMethod.id}
+                            selectedPaymentOptionId={selectedPaymentMethod}
+                            handleSubmitAction={handleSubmit}
+                            cart={cart || undefined}
+                            paymentSessionData={activeSession?.data}
+                          />
+                        )}
                       </RadioGroupOption>
                     ) : (
                       <PaymentContainer
@@ -225,9 +339,7 @@ const Payment = ({
             disabled={!selectedPaymentMethod}
             data-testid="submit-payment-button"
           >
-            {!activeSession && isStripeLike(selectedPaymentMethod)
-              ? " Enter card details"
-              : "Continue to review"}
+            Continue to review
           </Button>
         </div>
 
