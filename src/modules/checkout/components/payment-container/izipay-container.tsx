@@ -287,6 +287,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
 
     const loadData = async () => {
       const paymentInfo = await createPayment()
+      console.log(paymentInfo)
       const checkout = await loadCheckoutForm({
         ...paymentInfo,
         onPaymentComplete: (response) => {
