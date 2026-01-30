@@ -26,7 +26,8 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
   disabled = false,
   children,
 }) => {
-  const isDevelopment = process.env.NODE_ENV === "development"
+  //const isDevelopment = process.env.NODE_ENV === "development"
+  const isDevelopment = true
 
   return (
     <RadioGroupOption

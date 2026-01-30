@@ -31,6 +31,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
           <Table.Row className="text-ui-fg-subtle txt-medium-plus">
             <Table.HeaderCell className="!pl-0">Item</Table.HeaderCell>
             <Table.HeaderCell></Table.HeaderCell>
+            <Table.HeaderCell></Table.HeaderCell>
             <Table.HeaderCell className="!pr-0 text-right">
               Total
             </Table.HeaderCell>
