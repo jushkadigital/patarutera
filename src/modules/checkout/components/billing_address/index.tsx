@@ -1,31 +1,50 @@
-import { HttpTypes } from "@medusajs/types"
-import Input from "@modules/common/components/input"
-import React, { useState } from "react"
-import CountrySelect from "../country-select"
+import { HttpTypes } from "@medusajs/types";
+import Input from "@modules/common/components/input";
+import React, { useState } from "react";
+import CountrySelect from "../country-select";
 
 const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
   const [formData, setFormData] = useState<any>({
-    "billing_address.first_name": cart?.billing_address?.first_name || "",
-    "billing_address.last_name": cart?.billing_address?.last_name || "",
-    "billing_address.address_1": cart?.billing_address?.address_1 || "",
+    "billing_address.first_name":
+      cart?.billing_address?.first_name ||
+      cart?.shipping_address?.first_name ||
+      "",
+    "billing_address.last_name":
+      cart?.billing_address?.last_name ||
+      cart?.shipping_address?.last_name ||
+      "",
+    "billing_address.address_1":
+      cart?.billing_address?.address_1 ||
+      cart?.shipping_address?.address_1 ||
+      "",
     "billing_address.company": cart?.billing_address?.company || "",
-    "billing_address.postal_code": cart?.billing_address?.postal_code || "",
-    "billing_address.city": cart?.billing_address?.city || "",
-    "billing_address.country_code": cart?.billing_address?.country_code || "",
-    "billing_address.province": cart?.billing_address?.province || "",
-    "billing_address.phone": cart?.billing_address?.phone || "",
-  })
+    "billing_address.postal_code":
+      cart?.billing_address?.postal_code ||
+      cart?.shipping_address?.postal_code ||
+      "",
+    "billing_address.city":
+      cart?.billing_address?.city || cart?.shipping_address?.city || "",
+    "billing_address.country_code":
+      cart?.billing_address?.country_code ||
+      cart?.shipping_address?.country_code ||
+      cart?.region?.countries?.[0]?.iso_2 ||
+      "",
+    "billing_address.province":
+      cart?.billing_address?.province || cart?.shipping_address?.province || "",
+    "billing_address.phone":
+      cart?.billing_address?.phone || cart?.shipping_address?.phone || "",
+  });
 
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLInputElement | HTMLSelectElement
-    >
+    >,
   ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -80,6 +99,8 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           autoComplete="address-level2"
           value={formData["billing_address.city"]}
           onChange={handleChange}
+          required
+          data-testid="billing-city-input"
         />
         <CountrySelect
           name="billing_address.country_code"
@@ -104,11 +125,12 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           autoComplete="tel"
           value={formData["billing_address.phone"]}
           onChange={handleChange}
+          required
           data-testid="billing-phone-input"
         />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BillingAddress
+export default BillingAddress;

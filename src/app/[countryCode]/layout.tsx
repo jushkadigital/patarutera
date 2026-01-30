@@ -1,17 +1,17 @@
-import PixelEvents from "@/components/PixelEvents"
-import TikTokPixel from "@/components/PixelTiktok"
-import { getBaseURL } from "@lib/util/env"
-import { GoogleTagManager } from "@next/third-parties/google"
-import { Metadata } from "next"
-import Script from "next/script"
-import { Suspense } from "react"
+import PixelEvents from "@/components/PixelEvents";
+import TikTokPixel from "@/components/PixelTiktok";
+import { getBaseURL } from "@lib/util/env";
+import { GoogleTagManager } from "@next/third-parties/google";
+import { Metadata } from "next";
+import Script from "next/script";
+import { Suspense } from "react";
 import "../globals.css";
-import SessionProvider from "@/providers/session-provider"
-import MedusaSynchronizer from "@/components/medusa-synchronizer"
+import SessionProvider from "@/providers/session-provider";
+import MedusaSynchronizer from "@/components/medusa-synchronizer";
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
-}
+};
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
@@ -21,10 +21,6 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <GoogleTagManager gtmId="G-6XPFF81QJW" />
-      <Script
-        src="https://sandbox-checkout.izipay.pe/payments/v1/js/index.js"
-        strategy="lazyOnload"
-      />
       <body className="min-h-screen flex flex-col">
         <Script
           id="fb-pixel-script"
@@ -56,11 +52,11 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 ttq.load('D305TJ3C77U1O98E1P9G');
 ttq.page();
 }(window, document, 'ttq');
-`
+`,
           }}
         />
         {props.children}
       </body>
     </html>
-  )
+  );
 }

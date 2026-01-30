@@ -1,109 +1,103 @@
-"use client"
+"use client";
 
-import { RadioGroup } from "@headlessui/react"
-import { isIzipay, isStripeLike, paymentInfoMap } from "@lib/constants"
-import { initiatePaymentSession } from "@lib/data/cart"
-import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
-import { Button, Container, Heading, Text, clx } from "@medusajs/ui"
-import ErrorMessage from "@modules/checkout/components/error-message"
-import PaymentContainer, {
-  StripeCardContainer,
-} from "@modules/checkout/components/payment-container"
-import Divider from "@modules/common/components/divider"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
-import { IzipayContainer } from "../payment-container/izipay-container"
+import { RadioGroup, Radio as RadioGroupOption } from "@headlessui/react";
+import { isIzipay, isStripeLike, paymentInfoMap } from "@lib/constants";
+import { initiatePaymentSession } from "@lib/data/cart";
+import { CheckCircleSolid, CreditCard } from "@medusajs/icons";
+import { HttpTypes } from "@medusajs/types";
+import { Button, Container, Heading, Text, clx } from "@medusajs/ui";
+import ErrorMessage from "@modules/checkout/components/error-message";
+import PaymentContainer from "@modules/checkout/components/payment-container";
+import Divider from "@modules/common/components/divider";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { IzipayContainer } from "../payment-container/izipay-container";
+import Radio from "@modules/common/components/radio";
 
 const Payment = ({
   cart,
   availablePaymentMethods,
 }: {
-  cart: any
-  availablePaymentMethods: any[]
+  cart: HttpTypes.StoreCart | null;
+  availablePaymentMethods: HttpTypes.StorePaymentProvider[];
 }) => {
-  const activeSession = cart.payment_collection?.payment_sessions?.find(
-    (paymentSession: any) => paymentSession.status === "pending"
-  )
+  console.log("Payment component mounted");
+  console.log("availablePaymentMethods:", availablePaymentMethods);
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [cardBrand, setCardBrand] = useState<string | null>(null)
-  const [cardComplete, setCardComplete] = useState(false)
+  const activeSession = cart?.payment_collection?.payment_sessions?.find(
+    (paymentSession: HttpTypes.StorePaymentSession) =>
+      paymentSession.status === "pending",
+  );
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
-    activeSession?.provider_id ?? ""
-  )
+    activeSession?.provider_id ?? "",
+  );
 
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+  useEffect(() => {
+    console.log("selectedPaymentMethod:", selectedPaymentMethod);
+  }, [selectedPaymentMethod]);
 
-  const isOpen = searchParams.get("step") === "payment"
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const isOpen = searchParams.get("step") === "payment";
 
   const setPaymentMethod = async (method: string) => {
-    setError(null)
-    setSelectedPaymentMethod(method)
-    if (isIzipay(method)) {
+    setError(null);
+    setSelectedPaymentMethod(method);
+    if (isIzipay(method) && cart) {
       await initiatePaymentSession(cart, {
         provider_id: method,
-      })
+      });
     }
-  }
+  };
 
-  const paidByGiftcard =
-    cart?.gift_cards && cart?.gift_cards?.length > 0 && cart?.total === 0
-
-  const paymentReady =
-    (activeSession || paidByGiftcard)
+  const paymentReady = activeSession;
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
+      const params = new URLSearchParams(searchParams);
+      params.set(name, value);
 
-      return params.toString()
+      return params.toString();
     },
-    [searchParams]
-  )
+    [searchParams],
+  );
 
   const handleEdit = () => {
     router.push(pathname + "?" + createQueryString("step", "payment"), {
       scroll: false,
-    })
-  }
+    });
+  };
 
   const handleSubmit = async () => {
-    setIsLoading(true)
-    try {
-      const shouldInputCard =
-        isIzipay(selectedPaymentMethod) && !activeSession
+    if (!cart) {
+      return;
+    }
 
+    setIsLoading(true);
+    try {
       const checkActiveSession =
-        activeSession?.provider_id === selectedPaymentMethod
+        activeSession?.provider_id === selectedPaymentMethod;
 
       if (!checkActiveSession) {
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
-        })
+        });
       }
-
-      if (!shouldInputCard) {
-        return router.push(
-          pathname + "?" + createQueryString("step", "review"),
-          {
-            scroll: false,
-          }
-        )
-      }
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    setError(null)
-  }, [isOpen])
+    setError(null);
+  }, [isOpen]);
 
   return (
     <div className="bg-white">
@@ -115,7 +109,7 @@ const Payment = ({
             {
               "opacity-50 pointer-events-none select-none":
                 !isOpen && !paymentReady,
-            }
+            },
           )}
         >
           Payment
@@ -135,7 +129,7 @@ const Payment = ({
       </div>
       <div>
         <div className={isOpen ? "block" : "hidden"}>
-          {!paidByGiftcard && availablePaymentMethods?.length && (
+          {availablePaymentMethods?.length && (
             <>
               <RadioGroup
                 value={selectedPaymentMethod}
@@ -144,14 +138,41 @@ const Payment = ({
                 {availablePaymentMethods.map((paymentMethod) => (
                   <div key={paymentMethod.id}>
                     {isIzipay(paymentMethod.id) ? (
-                      <IzipayContainer
-                        paymentProviderId={paymentMethod.id}
-                        selectedPaymentOptionId={selectedPaymentMethod}
-                        paymentInfoMap={paymentInfoMap}
-                        handleSubmitAction={handleSubmit}
-                        // Pasamos la data de la sesión activa para obtener el formToken
-                        paymentSessionData={activeSession?.data}
-                      />
+                      <RadioGroupOption
+                        key={paymentMethod.id}
+                        value={paymentMethod.id}
+                        className={clx(
+                          "flex flex-col gap-y-2 text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                          {
+                            "border-ui-border-interactive":
+                              selectedPaymentMethod === paymentMethod.id,
+                          },
+                        )}
+                      >
+                        <div className="flex items-center justify-between ">
+                          <div className="flex items-center gap-x-4">
+                            <Radio
+                              checked={
+                                selectedPaymentMethod === paymentMethod.id
+                              }
+                            />
+                            <Text className="text-base-regular">
+                              {paymentInfoMap[paymentMethod.id]?.title ||
+                                paymentMethod.id}
+                            </Text>
+                          </div>
+                          <span className="justify-self-end text-ui-fg-base">
+                            {paymentInfoMap[paymentMethod.id]?.icon}
+                          </span>
+                        </div>
+                        <IzipayContainer
+                          paymentProviderId={paymentMethod.id}
+                          selectedPaymentOptionId={selectedPaymentMethod}
+                          handleSubmitAction={handleSubmit}
+                          cart={cart || undefined}
+                          paymentSessionData={activeSession?.data}
+                        />
+                      </RadioGroupOption>
                     ) : (
                       <PaymentContainer
                         paymentInfoMap={paymentInfoMap}
@@ -165,20 +186,6 @@ const Payment = ({
             </>
           )}
 
-          {paidByGiftcard && (
-            <div className="flex flex-col w-1/3">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
-              </Text>
-              <Text
-                className="txt-medium text-ui-fg-subtle"
-                data-testid="payment-method-summary"
-              >
-                Gift card
-              </Text>
-            </div>
-          )}
-
           <ErrorMessage
             error={error}
             data-testid="payment-method-error-message"
@@ -189,10 +196,7 @@ const Payment = ({
             className="mt-6"
             onClick={handleSubmit}
             isLoading={isLoading}
-            disabled={
-              (isStripeLike(selectedPaymentMethod) && !cardComplete) ||
-              (!selectedPaymentMethod && !paidByGiftcard)
-            }
+            disabled={!selectedPaymentMethod}
             data-testid="submit-payment-button"
           >
             {!activeSession && isStripeLike(selectedPaymentMethod)
@@ -229,32 +233,16 @@ const Payment = ({
                       <CreditCard />
                     )}
                   </Container>
-                  <Text>
-                    {isStripeLike(selectedPaymentMethod) && cardBrand
-                      ? cardBrand
-                      : "Another step will appear"}
-                  </Text>
+                  <Text>Another step will appear</Text>
                 </div>
               </div>
-            </div>
-          ) : paidByGiftcard ? (
-            <div className="flex flex-col w-1/3">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
-              </Text>
-              <Text
-                className="txt-medium text-ui-fg-subtle"
-                data-testid="payment-method-summary"
-              >
-                Gift card
-              </Text>
             </div>
           ) : null}
         </div>
       </div>
       <Divider className="mt-8" />
     </div>
-  )
-}
+  );
+};
 
-export default Payment
+export default Payment;
