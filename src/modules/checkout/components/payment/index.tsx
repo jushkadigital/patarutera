@@ -13,6 +13,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { IzipayContainer } from "../payment-container/izipay-container";
 import Radio from "@modules/common/components/radio";
+import Spinner from "@modules/common/icons/spinner";
 
 const Payment = ({
   cart,
@@ -34,6 +35,7 @@ const Payment = ({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? "",
   );
+  const [isInitializingPayment, setIsInitializingPayment] = useState(false);
 
   useEffect(() => {
     console.log("selectedPaymentMethod:", selectedPaymentMethod);
@@ -48,10 +50,25 @@ const Payment = ({
   const setPaymentMethod = async (method: string) => {
     setError(null);
     setSelectedPaymentMethod(method);
+
     if (isIzipay(method) && cart) {
-      await initiatePaymentSession(cart, {
-        provider_id: method,
-      });
+      console.log("Initializing iZipay payment session...");
+      setIsInitializingPayment(true);
+      try {
+        await initiatePaymentSession(cart, {
+          provider_id: method,
+        });
+        console.log("iZipay payment session initialized");
+      } catch (err: unknown) {
+        console.error("Failed to initialize iZipay payment session:", err);
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to initialize payment session",
+        );
+      } finally {
+        setIsInitializingPayment(false);
+      }
     }
   };
 
@@ -165,13 +182,24 @@ const Payment = ({
                             {paymentInfoMap[paymentMethod.id]?.icon}
                           </span>
                         </div>
-                        <IzipayContainer
-                          paymentProviderId={paymentMethod.id}
-                          selectedPaymentOptionId={selectedPaymentMethod}
-                          handleSubmitAction={handleSubmit}
-                          cart={cart || undefined}
-                          paymentSessionData={activeSession?.data}
-                        />
+                        {/* Only render IzipayContainer if payment session is initialized */}
+                        {activeSession?.provider_id === paymentMethod.id &&
+                        activeSession?.data ? (
+                          <IzipayContainer
+                            paymentProviderId={paymentMethod.id}
+                            selectedPaymentOptionId={selectedPaymentMethod}
+                            handleSubmitAction={handleSubmit}
+                            cart={cart || undefined}
+                            paymentSessionData={activeSession.data}
+                          />
+                        ) : selectedPaymentMethod === paymentMethod.id ? (
+                          <div className="flex items-center justify-center py-8">
+                            <Spinner className="animate-spin mr-2" />
+                            <Text className="text-ui-fg-subtle text-sm">
+                              Initializing payment session...
+                            </Text>
+                          </div>
+                        ) : null}
                       </RadioGroupOption>
                     ) : (
                       <PaymentContainer
