@@ -117,7 +117,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
   const hasInitializedRef = useRef(false);
   const isMountedRef = useRef(false);
 
-  // Track when the container is mounted in DOM
+  // Track when container is mounted in DOM
   useEffect(() => {
     if (isSelected) {
       isMountedRef.current = true;
@@ -174,6 +174,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
     }
 
     const initializePayment = async () => {
+      console.log("🚀 initializePayment START");
       isInitializingRef.current = true;
       setLoading(true);
       setSdkError(null);
@@ -181,18 +182,25 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
       try {
         console.log("Starting iZipay initialization...");
         console.log("paymentSessionData:", paymentSessionData);
+        console.log("cart:", cart);
 
         if (!paymentSessionData) {
-          console.warn("Payment session data not available");
+          console.error("❌ paymentSessionData is null/undefined");
           throw new Error(
             "Payment session data is not available. Please try selecting the payment method again.",
           );
         }
 
         const { publicKey, amount } = paymentSessionData;
+        console.log(
+          "Extracted from paymentSessionData - publicKey:",
+          publicKey,
+          "amount:",
+          amount,
+        );
 
         if (!publicKey || !amount) {
-          console.warn("Missing publicKey or amount in paymentSessionData:", {
+          console.error("❌ Missing publicKey or amount:", {
             publicKey,
             amount,
           });
@@ -201,9 +209,15 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
           );
         }
 
+        console.log("✅ Payment session data validated");
         console.log("Loading payment token...");
         const { transactionId, orderNumber, currentTimeUnix } =
           getDataOrderDynamic();
+        console.log("Generated dynamic data:", {
+          transactionId,
+          orderNumber,
+          currentTimeUnix,
+        });
 
         const { requestSource } = defaultPaymentConfig;
 
@@ -218,20 +232,31 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
             locale: "es-PE",
           }),
         };
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              transactionId: transactionId,
-              "x-publishable-api-key":
-                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-            },
-            body: JSON.stringify(paymentData),
-          },
+        console.log("📤 About to send payment data:", paymentData);
+        console.log(
+          "🔗 Backend URL:",
+          process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL,
         );
+        console.log(
+          "🔑 Publishable key:",
+          process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
+        );
+
+        const fullUrl = `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`;
+        console.log("🌐 Full request URL:", fullUrl);
+
+        console.log("⏳ Calling fetch...");
+        const response = await fetch(fullUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            transactionId: transactionId,
+            "x-publishable-api-key":
+              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+          },
+          body: JSON.stringify(paymentData),
+        });
+        console.log("✅ Fetch completed, response status:", response.status);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -259,7 +284,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
           throw new Error("Payment container ref is null");
         }
 
-        // Verify the element is actually in the DOM
+        // Verify element is actually in DOM
         if (!document.body.contains(containerRef.current)) {
           console.error("Container is not in DOM");
           throw new Error("Payment container is not in DOM");
