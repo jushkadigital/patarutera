@@ -4,7 +4,7 @@ import { auth } from "@/lib2/auth"
 export default auth((req) => {
   // --- ZONA DE DEBUG ---
   const isLoggedIn = !!req.auth
-  const medusaCookieName = "connect.sid" // Confirma que este sea el nombre
+  const medusaCookieName = "_medusa_jwt" // Confirma que este sea el nombre
   const medusaCookie = req.cookies.get(medusaCookieName)
   const { pathname } = req.nextUrl
 
@@ -13,6 +13,7 @@ export default auth((req) => {
     console.log(`[MIDDLEWARE] Ruta: ${pathname}`)
     console.log(`   > NextAuth Logged: ${isLoggedIn}`)
     console.log(`   > Medusa Cookie (${medusaCookieName}): ${medusaCookie ? "✅ Existe" : "❌ Falta"}`)
+    console.log("CTM")
   }
   // ---------------------
 
@@ -20,7 +21,7 @@ export default auth((req) => {
   if (isLoggedIn && !medusaCookie) {
 
     // Evitar bucle infinito en la ruta de sync
-    if (pathname.startsWith("/api/auth/medusa-sync")) {
+    if (pathname.startsWith("/favicon") || pathname.startsWith("/_next") || pathname.startsWith("/api/auth")) {
       console.log("   > Dejando pasar a ruta de sync...")
       return NextResponse.next()
     }

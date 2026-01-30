@@ -1,4 +1,3 @@
-
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -1293,6 +1292,10 @@ export interface Paquete {
    * Destinos a los que pertenece este tour.
    */
   destinos?: (number | Destination)[] | null;
+  /**
+   * ID vinculado en Medusa E-commerce
+   */
+  medusaId?: string | null;
   createdBy?: (string | null) | User;
   publishedAt?: string | null;
   slug?: string | null;
@@ -2340,6 +2343,7 @@ export interface PaquetesSelect<T extends boolean = true> {
   };
   priceGeneral?: T;
   destinos?: T;
+  medusaId?: T;
   createdBy?: T;
   publishedAt?: T;
   slug?: T;
@@ -2873,6 +2877,5 @@ export interface TaskSchedulePublish {
 export interface Auth {
   [k: string]: unknown;
 }
-
 
 

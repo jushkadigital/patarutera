@@ -90,7 +90,7 @@ export const retrieveCustomer3 = async (): Promise<HttpTypes.StoreCustomer | nul
   }
 }
 
-export const retrieveCustomer = async (): Promise<HttpTypes.StoreCustomer | null> => {
+export const retrieveCustomer6 = async (): Promise<HttpTypes.StoreCustomer | null> => {
   try {
     const cookieStore = await cookies()
 
@@ -132,6 +132,33 @@ export const retrieveCustomer = async (): Promise<HttpTypes.StoreCustomer | null
     return null
   }
 }
+export const retrieveCustomer =
+  async (): Promise<HttpTypes.StoreCustomer | null> => {
+    const authHeaders = await getAuthHeaders()
+
+    if (!authHeaders) return null
+
+    const headers = {
+      ...authHeaders,
+    }
+
+    const next = {
+      ...(await getCacheOptions("customers")),
+    }
+
+    return await sdk.client
+      .fetch<{ customer: HttpTypes.StoreCustomer }>(`/store/customers/me`, {
+        method: "GET",
+        query: {
+          fields: "*orders",
+        },
+        headers,
+        next,
+        cache: "force-cache",
+      })
+      .then(({ customer }) => customer)
+      .catch(() => null)
+  }
 export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
   const headers = {
     ...(await getAuthHeaders()),

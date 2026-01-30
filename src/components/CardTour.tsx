@@ -34,7 +34,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
   if (mode === "grid") {
     return (
       <Card className="w-full max-w-[435px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[clamp(0px,166vw,1341.2px)] sm:h-[clamp(190.44px,74vw,883.2px)] lg:h-[clamp(190.44px,48vw,883.2px)] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
-        <Link href={`/tours/${unitData.slug}`} className="h-[63%]">
+        <Link href={`/pe/tours/${unitData.slug}`} className="h-[63%]">
           <div className="relative h-full  w-full overflow-hidden">
             <div className="absolute top-2 left-2 sm:top-4 md:top-3 lg:top-1 sm:left-4 z-10 w-fit">
               <Badge variant="outline" className="bg-white  py-[clamp(1.3px,0.9vw,4.56px)] sm:py-[clamp(1.3px,0.6vw,4.56px)] lg:py-[clamp(1.3px,0.4vw,4.56px)] px-[clamp(0px,1.92vw,10.24px)]  lg:px-[clamp(3.31px,0.8vw,15.16px)]  rounded-full border-0  ">
@@ -58,7 +58,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
         {/* Content section */}
         <CardContent className="px-4 sm:px-6 h-[37%]">
           {/* title */}
-          <Link href={`/tours/${unitData.slug}`}>
+          <Link href={`/pe/tours/${unitData.slug}`}>
             <div className="flex justify-center items-center h-[clamp(0px,10.89vw,111.6px)] sm:h-[clamp(0px,3.19vw,111.6px)] lg:h-[clamp(12px,3vw,57.6px)]">
               <h2 className="text-[#2970b7] text-[clamp(0px,4.83vw,49.46px)]  sm:text-[clamp(5.96px,1.9vw,24.96px)] lg:text-[clamp(5.52px,1.3vw,25.6px)] font-bold text-center leading-tight  multi-line-truncate multi-line-truncate-2">
                 {unitData.title}
@@ -121,7 +121,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           </div>
           <div className="w-full flex flex-row mt-[clamp(0px,4.1vw,42.04px)] sm:mt-[clamp(0px,1.5vw,42.04px)] lg:mt-[clamp(4.6px,1.13vw,21.76px)]">
             <div className="w-1/2"></div>
-            <Link href={`/tours/${unitData.slug}`} className="w-full flex justify-center cursor-pointer w-1/2">
+            <Link href={`/pe/tours/${unitData.slug}`} className="w-full flex justify-center cursor-pointer w-1/2">
               <Button className="w-fit h-fit bg-[#3eae64] hover:bg-[#35a058] text-white font-semibold  py-[clamp(0px,1.20vw,12.36px)] sm:py-[clamp(0px,0.70vw,12.36px)] lg:py-[clamp(1.38px,0.3vw,6.4px)] px-[clamp(0px,2.89vw,29.68px)]  sm:px-[clamp(0px,1.49vw,29.68px)] lg:px-[clamp(3.31px,0.8vw,15.36px)]  text-[clamp(0px,3.86vw,39.57px)] sm:text-[clamp(0px,1.86vw,39.57px)] lg:text-[clamp(4.4px,1vw,20.48px)] rounded-full cursor-pointer ">
                 Ver Detalles
               </Button>
@@ -139,7 +139,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
       <Card className="overflow-hidden gap-1! shadow-lg w-full rounded-3xl flex flex-row py-0 md:h-[clamp(191px,25.66vw,558px)] lg:h-[clamp(191px,18.66vw,358px)]  group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
         {/* Section 1: Image */}
 
-        <Link href={`/tours/${unitData.slug}`} className="w-1/3">
+        <Link href={`/pe/tours/${unitData.slug}`} className="w-1/3">
           <div className=" relative h-full  overflow-hidden">
             <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
 
@@ -165,7 +165,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
 
         {/* Section 2: Title and Description */}
         <div className="w-1/3 p-4 sm:p-2 flex flex-col justify-center gap-y-3 md:border-r border-gray-100">
-          <Link href={`/tours/${unitData.slug}`}>
+          <Link href={`/pe/tours/${unitData.slug}`}>
             <div className="flex justify-center items-center min-h-15">
               <h2 className="text-[#2970b7] text-2xl sm:text-[clamp(13.65px,2.3vw,25.6px)] md:text-[clamp(13.65px,2.3vw,25.6px)] lg:text-[clamp(13.65px,1.3vw,25.6px)] font-bold text-center leading-tight  multi-line-truncate multi-line-truncate-2">
                 {unitData.title}

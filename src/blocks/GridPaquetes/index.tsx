@@ -7,7 +7,8 @@ import { Subtitle } from '@/components/Subtitle';
 import { ToursComponent } from '@/components/ToursComponent';
 import { useSharedState } from '@/hooks/sharedContextDestinos';
 import { BASEURL } from '@/lib2/config';
-import { cn } from '@/lib2/utils';
+import { cn, mergeToursWithPrices } from '@/lib2/utils';
+import { listProductsWithSort } from '@lib/data/products';
 
 // Añadir 'mode' a las Props
 interface Props extends GridPaqueteBlockType {
@@ -18,30 +19,30 @@ interface Props extends GridPaqueteBlockType {
 
 export async function GridPaquetes(props: Props) {
   // Usar la prop 'mode', con 'grid' como default
-  const { id, gridColumns, gridStyle:mode  ,destination,blockTitle,searchParams,page,overrideDefaults} = props;
+  const { id, gridColumns, gridStyle: mode, destination, blockTitle, searchParams, page, overrideDefaults } = props;
 
 
 
   let data
   let paquetes: CardPaqueteData[] = [];
   let fetchError = null;
-const params = new URLSearchParams()
+  const params = new URLSearchParams()
 
 
-    if((destination as Destination[])){
-        params.append('where[destinos.name][in]', (destination as Destination[]).map(c => c.name).join(','))
-    }
+  if ((destination as Destination[])) {
+    params.append('where[destinos.name][in]', (destination as Destination[]).map(c => c.name).join(','))
+  }
 
   try {
-    const queryString = params.toString();    
-  const pageNumber = page ? `&page=${page}` : ''
-   const response = await fetch(`${BASEURL}/api/paquetes?limit=${gridColumns}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}`);
+    const queryString = params.toString();
+    const pageNumber = page ? `&page=${page}` : ''
+    const response = await fetch(`${BASEURL}/api/paquetes?limit=${gridColumns}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}`);
     if (!response.ok) {
-        // Consider logging the response status and text for more detailed error info
-        // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Consider logging the response status and text for more detailed error info
+      // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-     data = await response.json();
+    data = await response.json();
     if (data && data.docs) {
       paquetes = data.docs;
     }
@@ -51,7 +52,7 @@ const params = new URLSearchParams()
     // throw error;
   }
 
-  const mode2= false
+  const mode2 = false
   // Clases condicionales basadas en la prop 'mode'
   const containerClasses = cn(
     mode
@@ -62,16 +63,40 @@ const params = new URLSearchParams()
   if (fetchError) {
     return <div className="container mx-auto py-8 text-center text-red-500">{fetchError}</div>;
   }
-  
+
+  const skus = paquetes.map(ele => ele.medusaId)
+
+
+  const pageNumber = 1
+  const sortBy = "created_at"
+  const queryParams = {
+    limit: 12,
+    order: sortBy,
+    id: skus.filter(Boolean)
+  }
+  const countryCode = 'pe'
+
+  let {
+    response: { products, count },
+  } = await listProductsWithSort({
+    page: pageNumber,
+    queryParams,
+    sortBy,
+    countryCode,
+  })
+
+
+  const paquetesWithPrice = mergeToursWithPrices(paquetes, products);
+
 
   return (
     // No hay controles de modo aquí porque es un Server Component
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
       {/* Contenedor condicional */}
-      <Subtitle className="" titleGroup={blockTitle}/>
-      <PaquetesComponent mode={mode!} paquetes={paquetes} rangeSlider={props.rangeSlider}/>
-      
-      {overrideDefaults && data.totalPages &&( <Pagination page={data.page}  totalPages={data.totalPages} searchParams={searchParams!} type={'paquetes'}/>)}
+      <Subtitle className="" titleGroup={blockTitle} />
+      <PaquetesComponent mode={mode!} paquetes={paquetesWithPrice} rangeSlider={props.rangeSlider} />
+
+      {overrideDefaults && data.totalPages && (<Pagination page={data.page} totalPages={data.totalPages} searchParams={searchParams!} type={'paquetes'} />)}
     </div>
   );
 }
