@@ -21,6 +21,10 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <GoogleTagManager gtmId="G-6XPFF81QJW" />
+      <Script
+        src="https://sandbox-checkout.izipay.pe/payments/v1/js/index.js"
+        strategy="lazyOnload"
+      />
       <body className="min-h-screen flex flex-col">
         <Script
           id="fb-pixel-script"

@@ -10,10 +10,7 @@ export default function CheckoutLayout({
 }) {
   return (
     <div className="w-full bg-white relative small:min-h-screen">
-      <Script
-        src="https://sandbox-checkout.izipay.pe/payments/v1/js/index.js"
-        strategy="beforeInteractive"
-      />
+
       <div className="h-16 bg-white border-b ">
         <nav className="flex h-full items-center content-container justify-between">
           <LocalizedClientLink
