@@ -47,7 +47,7 @@ const IZIPAY_SDK_URL =
 declare global {
   interface Window {
     Izipay?: {
-      new(config: { config: Record<string, unknown> }): {
+      new (config: { config: Record<string, unknown> }): {
         LoadForm: (options: {
           authorization: string;
           keyRSA: string;
@@ -129,16 +129,27 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
 
   // Single unified effect for initialization
   useEffect(() => {
+    console.log("=== iZipay useEffect triggered ===");
+    console.log("isSelected:", isSelected);
+    console.log("isLoaded:", isLoaded);
+    console.log("paymentSessionData:", paymentSessionData);
+    console.log("isMountedRef.current:", isMountedRef.current);
+    console.log("isInitializingRef.current:", isInitializingRef.current);
+    console.log("hasInitializedRef.current:", hasInitializedRef.current);
+
     // Reset when not selected
     if (!isSelected) {
+      console.log("Not selected, resetting...");
       setIsInitialized(false);
       setSdkError(null);
       hasInitializedRef.current = false;
+      setLoading(false);
       return;
     }
 
     // Check if SDK is loaded
     if (!isLoaded) {
+      console.log("SDK not loaded yet, waiting...");
       return;
     }
 
@@ -154,6 +165,14 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
       return;
     }
 
+    // Check if payment session data is available
+    if (!paymentSessionData) {
+      console.warn("Payment session data not available yet, waiting...");
+      // Don't set error, just wait for paymentSessionData to be available
+      setLoading(false);
+      return;
+    }
+
     const initializePayment = async () => {
       isInitializingRef.current = true;
       setLoading(true);
@@ -161,15 +180,25 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
 
       try {
         console.log("Starting iZipay initialization...");
+        console.log("paymentSessionData:", paymentSessionData);
 
         if (!paymentSessionData) {
-          throw new Error("Missing payment session data");
+          console.warn("Payment session data not available");
+          throw new Error(
+            "Payment session data is not available. Please try selecting the payment method again.",
+          );
         }
 
         const { publicKey, amount } = paymentSessionData;
 
         if (!publicKey || !amount) {
-          throw new Error("Missing payment session data");
+          console.warn("Missing publicKey or amount in paymentSessionData:", {
+            publicKey,
+            amount,
+          });
+          throw new Error(
+            "Missing required payment data (publicKey or amount). Please try again.",
+          );
         }
 
         console.log("Loading payment token...");
@@ -271,18 +300,18 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
               cardToken: "",
             },
             billing: {
-              "firstName": "Lucho",
-              "lastName": "Torres",
-              "email": "luchotorres@izipay.pe",
-              "street": "Av. Jorge Chávez 275",
-              "city": "Lima",
-              "state": "Lima",
-              "country": "PE",
-              "postalCode": "15000",
-              "phoneNumber": "989897960",
-              "documentType": "DNI",
-              "document": "12345678",
-              "companyName": ""
+              firstName: "Lucho",
+              lastName: "Torres",
+              email: "luchotorres@izipay.pe",
+              street: "Av. Jorge Chávez 275",
+              city: "Lima",
+              state: "Lima",
+              country: "PE",
+              postalCode: "15000",
+              phoneNumber: "989897960",
+              documentType: "DNI",
+              document: "12345678",
+              companyName: "",
             },
             shipping: {
               firstName: cart?.shipping_address?.first_name || "",
@@ -395,47 +424,48 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
 
   return (
     <>
-      {isSelected && !isInitialized && !loadError && !sdkError && (
+      {isSelected && !isInitialized && (
         <div className="w-full mt-4">
-          {loading && (
+          {loading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <Spinner className="animate-spin mb-4" />
               <Text className="text-ui-fg-subtle text-sm">
                 Loading payment form...
               </Text>
             </div>
-          )}
+          ) : sdkError ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Text className="text-ui-fg-error text-sm mb-2">{sdkError}</Text>
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover text-sm"
+              >
+                Retry
+              </button>
+            </div>
+          ) : loadError ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Text className="text-ui-fg-error text-sm mb-2">{loadError}</Text>
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover text-sm"
+              >
+                Retry
+              </button>
+            </div>
+          ) : !paymentSessionData ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <Spinner className="animate-spin mb-4" />
+              <Text className="text-ui-fg-subtle text-sm">
+                Initializing payment session...
+              </Text>
+            </div>
+          ) : null}
         </div>
       )}
-      {isSelected && loadError && !sdkError && (
-        <div className="w-full mt-4">
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Text className="text-ui-fg-error text-sm mb-2">{loadError}</Text>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover text-sm"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      )}
-      {isSelected && sdkError && (
-        <div className="w-full mt-4">
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Text className="text-ui-fg-error text-sm mb-2">{sdkError}</Text>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover text-sm"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      )}
-      {/* Always render the container when selected */}
+      {/* Always render container when selected */}
       {isSelected && (
         <div
           id="izipay-checkout-container"
