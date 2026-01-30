@@ -47,7 +47,7 @@ const IZIPAY_SDK_URL =
 declare global {
   interface Window {
     Izipay?: {
-      new(config: { config: Record<string, unknown> }): {
+      new (config: { config: Record<string, unknown> }): {
         LoadForm: (options: {
           authorization: string;
           keyRSA: string;
@@ -121,6 +121,42 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
   useEffect(() => {
     if (isSelected) {
       isMountedRef.current = true;
+
+      // Test endpoint
+      const testEndpoint = async () => {
+        try {
+          console.log("🧪 Testing iZipay endpoint...");
+          const testUrl = `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`;
+          console.log("Test URL:", testUrl);
+
+          const testData = {
+            requestSource: "test",
+            orderNumber: "test-order",
+            merchantCode: "4004353",
+            publicKey: "test",
+            amount: "1.00",
+          };
+
+          const response = await fetch(testUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              transactionId: "test-transaction",
+              "x-publishable-api-key":
+                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+            },
+            body: JSON.stringify(testData),
+          });
+
+          console.log("✅ Test endpoint response status:", response.status);
+          const data = await response.json();
+          console.log("Test endpoint response data:", data);
+        } catch (error: any) {
+          console.error("❌ Test endpoint failed:", error);
+        }
+      };
+
+      testEndpoint();
     }
     return () => {
       isMountedRef.current = false;
@@ -486,6 +522,50 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
               <Text className="text-ui-fg-subtle text-sm">
                 Initializing payment session...
               </Text>
+              {/* Debug button to test endpoint */}
+              <button
+                type="button"
+                onClick={async () => {
+                  console.log("🧪 Manual test of iZipay endpoint...");
+                  try {
+                    const testUrl = `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`;
+                    console.log("Manual test URL:", testUrl);
+
+                    const testData = {
+                      requestSource: "manual-test",
+                      orderNumber: "manual-test-order",
+                      merchantCode: "4004353",
+                      publicKey: "test",
+                      amount: "1.00",
+                    };
+
+                    const response = await fetch(testUrl, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        transactionId: "manual-test-transaction",
+                        "x-publishable-api-key":
+                          process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+                      },
+                      body: JSON.stringify(testData),
+                    });
+
+                    console.log(
+                      "✅ Manual test response status:",
+                      response.status,
+                    );
+                    const data = await response.json();
+                    console.log("Manual test response data:", data);
+                    alert(`Test successful! Status: ${response.status}`);
+                  } catch (error: any) {
+                    console.error("❌ Manual test failed:", error);
+                    alert(`Test failed: ${error.message}`);
+                  }
+                }}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+              >
+                Test Endpoint
+              </button>
             </div>
           ) : null}
         </div>

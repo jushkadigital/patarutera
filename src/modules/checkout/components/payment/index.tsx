@@ -30,6 +30,13 @@ const Payment = ({
       paymentSession.status === "pending",
   );
 
+  console.log("Payment component - activeSession:", activeSession);
+  console.log(
+    "Payment component - activeSession?.provider_id:",
+    activeSession?.provider_id,
+  );
+  console.log("Payment component - activeSession?.data:", activeSession?.data);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
@@ -38,8 +45,10 @@ const Payment = ({
   const [isInitializingPayment, setIsInitializingPayment] = useState(false);
 
   useEffect(() => {
-    console.log("selectedPaymentMethod:", selectedPaymentMethod);
-  }, [selectedPaymentMethod]);
+    console.log("selectedPaymentMethod changed to:", selectedPaymentMethod);
+    console.log("activeSession updated:", activeSession);
+    console.log("activeSession?.data:", activeSession?.data);
+  }, [selectedPaymentMethod, activeSession]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -182,24 +191,13 @@ const Payment = ({
                             {paymentInfoMap[paymentMethod.id]?.icon}
                           </span>
                         </div>
-                        {/* Only render IzipayContainer if payment session is initialized */}
-                        {activeSession?.provider_id === paymentMethod.id &&
-                        activeSession?.data ? (
-                          <IzipayContainer
-                            paymentProviderId={paymentMethod.id}
-                            selectedPaymentOptionId={selectedPaymentMethod}
-                            handleSubmitAction={handleSubmit}
-                            cart={cart || undefined}
-                            paymentSessionData={activeSession.data}
-                          />
-                        ) : selectedPaymentMethod === paymentMethod.id ? (
-                          <div className="flex items-center justify-center py-8">
-                            <Spinner className="animate-spin mr-2" />
-                            <Text className="text-ui-fg-subtle text-sm">
-                              Initializing payment session...
-                            </Text>
-                          </div>
-                        ) : null}
+                        <IzipayContainer
+                          paymentProviderId={paymentMethod.id}
+                          selectedPaymentOptionId={selectedPaymentMethod}
+                          handleSubmitAction={handleSubmit}
+                          cart={cart || undefined}
+                          paymentSessionData={activeSession?.data}
+                        />
                       </RadioGroupOption>
                     ) : (
                       <PaymentContainer
