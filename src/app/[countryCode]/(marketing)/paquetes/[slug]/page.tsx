@@ -7,6 +7,8 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
   const paquetesRequest = await fetch(`${BASEURL}/api/paquetes?depth=0&limit=1000&draft=false&select[slug]=true`); // Fetch tour slugs
   const paquetes = await paquetesRequest.json();

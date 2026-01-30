@@ -12,6 +12,8 @@ import { notFound } from 'next/navigation';
 import Script from 'next/script';
 import { cache } from 'react';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
   const toursRequest = await fetch(`${BASEURL}/api/tours?depth=0&limit=1000&draft=false&select[slug]=true`); // Fetch tour slugs
   const tours = await toursRequest.json();
