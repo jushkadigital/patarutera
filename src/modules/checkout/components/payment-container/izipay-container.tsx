@@ -47,7 +47,7 @@ const IZIPAY_SDK_URL =
 declare global {
   interface Window {
     Izipay?: {
-      new(config: { config: Record<string, unknown> }): {
+      new (config: { config: Record<string, unknown> }): {
         LoadForm: (options: {
           authorization: string;
           keyRSA: string;
@@ -117,64 +117,17 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
   const hasInitializedRef = useRef(false);
   const isMountedRef = useRef(false);
 
-  // Track when container is mounted in DOM
   useEffect(() => {
     if (isSelected) {
       isMountedRef.current = true;
-
-      // Test endpoint
-      const testEndpoint = async () => {
-        try {
-          console.log("🧪 Testing iZipay endpoint...");
-          const testUrl = `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`;
-          console.log("Test URL:", testUrl);
-
-          const testData = {
-            requestSource: "test",
-            orderNumber: "test-order",
-            merchantCode: "4004353",
-            publicKey: "test",
-            amount: "1.00",
-          };
-
-          const response = await fetch(testUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              transactionId: "test-transaction",
-              "x-publishable-api-key":
-                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-            },
-            body: JSON.stringify(testData),
-          });
-
-          console.log("✅ Test endpoint response status:", response.status);
-          const data = await response.json();
-          console.log("Test endpoint response data:", data);
-        } catch (error: any) {
-          console.error("❌ Test endpoint failed:", error);
-        }
-      };
-
     }
     return () => {
       isMountedRef.current = false;
     };
   }, [isSelected]);
 
-  // Single unified effect for initialization
   useEffect(() => {
-    console.log("=== iZipay useEffect triggered ===");
-    console.log("isSelected:", isSelected);
-    console.log("isLoaded:", isLoaded);
-    console.log("paymentSessionData:", paymentSessionData);
-    console.log("isMountedRef.current:", isMountedRef.current);
-    console.log("isInitializingRef.current:", isInitializingRef.current);
-    console.log("hasInitializedRef.current:", hasInitializedRef.current);
-
-    // Reset when not selected
     if (!isSelected) {
-      console.log("Not selected, resetting...");
       setIsInitialized(false);
       setSdkError(null);
       hasInitializedRef.current = false;
@@ -182,77 +135,45 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
       return;
     }
 
-    // Check if SDK is loaded
     if (!isLoaded) {
-      console.log("SDK not loaded yet, waiting...");
       return;
     }
 
-    // Wait for container to be mounted in DOM
     if (!isMountedRef.current) {
-      console.log("Waiting for container to mount...");
       return;
     }
 
-    // Prevent multiple initializations
     if (isInitializingRef.current || hasInitializedRef.current) {
-      console.log("Already initializing or initialized, skipping...");
       return;
     }
 
-    // Check if payment session data is available
     if (!paymentSessionData) {
-      console.warn("Payment session data not available yet, waiting...");
-      // Don't set error, just wait for paymentSessionData to be available
       setLoading(false);
       return;
     }
 
     const initializePayment = async () => {
-      console.log("🚀 initializePayment START");
       isInitializingRef.current = true;
       setLoading(true);
       setSdkError(null);
 
       try {
-        console.log("Starting iZipay initialization...");
-        console.log("paymentSessionData:", paymentSessionData);
-        console.log("cart:", cart);
-
         if (!paymentSessionData) {
-          console.error("❌ paymentSessionData is null/undefined");
           throw new Error(
             "Payment session data is not available. Please try selecting the payment method again.",
           );
         }
 
         const { publicKey, amount } = paymentSessionData;
-        console.log(
-          "Extracted from paymentSessionData - publicKey:",
-          publicKey,
-          "amount:",
-          amount,
-        );
 
         if (!publicKey || !amount) {
-          console.error("❌ Missing publicKey or amount:", {
-            publicKey,
-            amount,
-          });
           throw new Error(
             "Missing required payment data (publicKey or amount). Please try again.",
           );
         }
 
-        console.log("✅ Payment session data validated");
-        console.log("Loading payment token...");
         const { transactionId, orderNumber, currentTimeUnix } =
           getDataOrderDynamic();
-        console.log("Generated dynamic data:", {
-          transactionId,
-          orderNumber,
-          currentTimeUnix,
-        });
 
         const { requestSource } = defaultPaymentConfig;
 
@@ -267,20 +188,9 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
             locale: "es-PE",
           }),
         };
-        console.log("📤 About to send payment data:", paymentData);
-        console.log(
-          "🔗 Backend URL:",
-          process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL,
-        );
-        console.log(
-          "🔑 Publishable key:",
-          process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
-        );
 
         const fullUrl = `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`;
-        console.log("🌐 Full request URL:", fullUrl);
 
-        console.log("⏳ Calling fetch...");
         const response = await fetch(fullUrl, {
           method: "POST",
           headers: {
@@ -291,7 +201,6 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
           },
           body: JSON.stringify(paymentData),
         });
-        console.log("✅ Fetch completed, response status:", response.status);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -307,25 +216,17 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
         }
 
         const sessionToken = data.response.token;
-        console.log("Payment token loaded successfully");
 
-        // Wait for DOM to be ready with more time
         await new Promise((resolve) => setTimeout(resolve, 300));
 
-        console.log("Checking if container is in DOM...");
-        // Use ref instead of getElementById
         if (!containerRef.current) {
-          console.error("Container ref is null");
           throw new Error("Payment container ref is null");
         }
 
-        // Verify element is actually in DOM
         if (!document.body.contains(containerRef.current)) {
-          console.error("Container is not in DOM");
           throw new Error("Payment container is not in DOM");
         }
 
-        console.log("Container is in DOM, creating iZipay config...");
         const iziConfig = {
           config: {
             transactionId: transactionId,
@@ -440,11 +341,9 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
           throw new Error("Izipay SDK not loaded");
         }
 
-        console.log("Creating Izipay instance...");
         const checkout = new Izipay({ config: iziConfig.config });
         containerRef.current = checkout as unknown as HTMLDivElement;
 
-        console.log("Loading payment form...");
         checkout.LoadForm({
           authorization: sessionToken,
           keyRSA: "RSA",
@@ -452,7 +351,6 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
             status: string;
             message?: string;
           }) => {
-            console.log("Payment callback:", response);
             if (response.status === "SUCCESS") {
             } else {
               setSdkError(response.message || "Payment failed");
@@ -464,9 +362,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
 
         setIsInitialized(true);
         hasInitializedRef.current = true;
-        console.log("iZipay initialization completed successfully");
       } catch (error: unknown) {
-        console.error("Failed to initialize iZipay:", error);
         setSdkError(
           error instanceof Error
             ? error.message
@@ -521,55 +417,10 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
               <Text className="text-ui-fg-subtle text-sm">
                 Initializing payment session...
               </Text>
-              {/* Debug button to test endpoint */}
-              <button
-                type="button"
-                onClick={async () => {
-                  console.log("🧪 Manual test of iZipay endpoint...");
-                  try {
-                    const testUrl = `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`;
-                    console.log("Manual test URL:", testUrl);
-
-                    const testData = {
-                      requestSource: "manual-test",
-                      orderNumber: "manual-test-order",
-                      merchantCode: "4004353",
-                      publicKey: "test",
-                      amount: "1.00",
-                    };
-
-                    const response = await fetch(testUrl, {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                        transactionId: "manual-test-transaction",
-                        "x-publishable-api-key":
-                          process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-                      },
-                      body: JSON.stringify(testData),
-                    });
-
-                    console.log(
-                      "✅ Manual test response status:",
-                      response.status,
-                    );
-                    const data = await response.json();
-                    console.log("Manual test response data:", data);
-                    alert(`Test successful! Status: ${response.status}`);
-                  } catch (error: any) {
-                    console.error("❌ Manual test failed:", error);
-                    alert(`Test failed: ${error.message}`);
-                  }
-                }}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
-              >
-                Test Endpoint
-              </button>
             </div>
           ) : null}
         </div>
       )}
-      {/* Always render container when selected */}
       {isSelected && (
         <div
           id="izipay-checkout-container"
