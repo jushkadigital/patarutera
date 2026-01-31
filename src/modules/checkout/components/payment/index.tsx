@@ -48,7 +48,27 @@ const Payment = ({
   useEffect(() => {
     console.log("Payment component - activeSession updated:", activeSession);
     console.log("Payment component - forceUpdate:", forceUpdate);
-  }, [activeSession, forceUpdate]);
+    console.log(
+      "Payment component - cart?.payment_collection:",
+      cart?.payment_collection,
+    );
+    console.log(
+      "Payment component - cart?.payment_collection?.payment_sessions:",
+      cart?.payment_collection?.payment_sessions,
+    );
+    console.log("Payment component - cart object changed:", {
+      cartId: cart?.id,
+      cartUpdatedAt: cart?.updated_at,
+      hasPaymentCollection: !!cart?.payment_collection,
+      hasPaymentSessions: !!(
+        cart?.payment_collection?.payment_sessions?.length === 0
+      ),
+      paymentSessionsCount: cart?.payment_collection?.payment_sessions?.length,
+      pendingSession: cart?.payment_collection?.payment_sessions?.find(
+        (ps: any) => ps.status === "pending",
+      ),
+    });
+  }, [activeSession, forceUpdate, cart]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
