@@ -25,7 +25,15 @@ const Payment = ({
   console.log("Payment component mounted");
   console.log("availablePaymentMethods:", availablePaymentMethods);
 
-  const activeSession = cart?.payment_collection?.payment_sessions?.find(
+  const [isInitializingPayment, setIsInitializingPayment] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0);
+  const [updatedCart, setUpdatedCart] = useState<HttpTypes.StoreCart | null>(
+    null,
+  );
+
+  const activeSession = (
+    updatedCart || cart
+  )?.payment_collection?.payment_sessions?.find(
     (paymentSession: HttpTypes.StorePaymentSession) =>
       paymentSession.status === "pending",
   );
@@ -42,33 +50,12 @@ const Payment = ({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? "",
   );
-  const [isInitializingPayment, setIsInitializingPayment] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(0);
 
   useEffect(() => {
     console.log("Payment component - activeSession updated:", activeSession);
-    console.log("Payment component - forceUpdate:", forceUpdate);
-    console.log(
-      "Payment component - cart?.payment_collection:",
-      cart?.payment_collection,
-    );
-    console.log(
-      "Payment component - cart?.payment_collection?.payment_sessions:",
-      cart?.payment_collection?.payment_sessions,
-    );
-    console.log("Payment component - cart object changed:", {
-      cartId: cart?.id,
-      cartUpdatedAt: cart?.updated_at,
-      hasPaymentCollection: !!cart?.payment_collection,
-      hasPaymentSessions: !!(
-        cart?.payment_collection?.payment_sessions?.length === 0
-      ),
-      paymentSessionsCount: cart?.payment_collection?.payment_sessions?.length,
-      pendingSession: cart?.payment_collection?.payment_sessions?.find(
-        (ps: any) => ps.status === "pending",
-      ),
-    });
-  }, [activeSession, forceUpdate, cart]);
+    console.log("Payment component - updatedCart:", updatedCart);
+    console.log("Payment component - cart:", cart);
+  }, [activeSession, updatedCart, cart]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -107,7 +94,8 @@ const Payment = ({
             method,
           );
 
-          const result = await initiatePaymentSession(cart, {
+          const currentCart = updatedCart || cart;
+          const result = await initiatePaymentSession(currentCart, {
             provider_id: method,
           });
 
@@ -139,13 +127,11 @@ const Payment = ({
             })),
           );
 
-          // Wait a bit for cart to update
-          console.log("⏳ Waiting 500ms for cart to update...");
-          await new Promise((resolve) => setTimeout(resolve, 500));
-
-          console.log("🔄 Triggering force update...");
-          setForceUpdate((prev) => prev + 1);
-
+          // Don't force update - use the updated cart immediately
+          console.log(
+            "✓ Payment session created, using updated cart immediately...",
+          );
+          setUpdatedCart(result as HttpTypes.StoreCart);
           setIsInitializingPayment(false);
         } catch (err: unknown) {
           console.error(`❌ Attempt ${retries + 1} failed:`, err);
