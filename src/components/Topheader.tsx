@@ -89,7 +89,7 @@ export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
             fallback={
               <LocalizedClientLink
                 className="hover:text-ui-fg-base flex gap-2"
-                href="/cart"
+                href="/pe/cart"
                 data-testid="nav-cart-link"
               > <ShoppingCart size={'icon'} className='size-5' color='#fff' />
               </LocalizedClientLink>

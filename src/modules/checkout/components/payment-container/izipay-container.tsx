@@ -156,7 +156,6 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
         }
       };
 
-      testEndpoint();
     }
     return () => {
       isMountedRef.current = false;

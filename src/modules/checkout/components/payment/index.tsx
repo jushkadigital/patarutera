@@ -9,11 +9,10 @@ import { Button, Container, Heading, Text, clx } from "@medusajs/ui";
 import ErrorMessage from "@modules/checkout/components/error-message";
 import PaymentContainer from "@modules/checkout/components/payment-container";
 import Divider from "@modules/common/components/divider";
+import Radio from "@modules/common/components/radio";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { IzipayContainer } from "../payment-container/izipay-container";
-import Radio from "@modules/common/components/radio";
-import Spinner from "@modules/common/icons/spinner";
 
 const Payment = ({
   cart,
@@ -22,40 +21,16 @@ const Payment = ({
   cart: HttpTypes.StoreCart | null;
   availablePaymentMethods: HttpTypes.StorePaymentProvider[];
 }) => {
-  console.log("Payment component mounted");
-  console.log("availablePaymentMethods:", availablePaymentMethods);
-
-  const [isInitializingPayment, setIsInitializingPayment] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(0);
-  const [updatedCart, setUpdatedCart] = useState<HttpTypes.StoreCart | null>(
-    null,
-  );
-
-  const activeSession = (
-    updatedCart || cart
-  )?.payment_collection?.payment_sessions?.find(
+  const activeSession = cart?.payment_collection?.payment_sessions?.find(
     (paymentSession: HttpTypes.StorePaymentSession) =>
       paymentSession.status === "pending",
   );
-
-  console.log("Payment component - activeSession:", activeSession);
-  console.log(
-    "Payment component - activeSession?.provider_id:",
-    activeSession?.provider_id,
-  );
-  console.log("Payment component - activeSession?.data:", activeSession?.data);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? "",
   );
-
-  useEffect(() => {
-    console.log("Payment component - activeSession updated:", activeSession);
-    console.log("Payment component - updatedCart:", updatedCart);
-    console.log("Payment component - cart:", cart);
-  }, [activeSession, updatedCart, cart]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -64,98 +39,13 @@ const Payment = ({
   const isOpen = searchParams.get("step") === "payment";
 
   const setPaymentMethod = async (method: string) => {
-    console.log("🎯 setPaymentMethod called with:", method);
-    console.log("isIzipay(method):", isIzipay(method));
-    console.log("cart:", cart);
-    console.log("cart?.id:", cart?.id);
-    console.log("cart?.payment_collection:", cart?.payment_collection);
-    console.log(
-      "cart?.payment_collection?.payment_sessions:",
-      cart?.payment_collection?.payment_sessions,
-    );
-
     setError(null);
     setSelectedPaymentMethod(method);
 
     if (isIzipay(method) && cart) {
-      console.log("✅ iZipay selected, initializing payment session...");
-      setIsInitializingPayment(true);
-
-      let retries = 0;
-      const maxRetries = 3;
-
-      const tryInitiate = async () => {
-        try {
-          console.log(
-            `📤 Attempt ${retries + 1}/${maxRetries} to initiate payment session...`,
-          );
-          console.log(
-            "📤 Calling initiatePaymentSession with provider_id:",
-            method,
-          );
-
-          const currentCart = updatedCart || cart;
-          const result = await initiatePaymentSession(currentCart, {
-            provider_id: method,
-          });
-
-          console.log("✅ initiatePaymentSession completed successfully!");
-          console.log("Result:", result);
-          console.log("Result type:", typeof result);
-          console.log("Result keys:", Object.keys(result || {}));
-          console.log("Result.payment_collection:", result?.payment_collection);
-          console.log(
-            "Result.payment_collection?.payment_sessions:",
-            result?.payment_collection?.payment_sessions,
-          );
-          console.log(
-            "Result.payment_collection?.payment_sessions length:",
-            result?.payment_collection?.payment_sessions?.length,
-          );
-
-          // Check if payment sessions exist
-          const paymentSessions =
-            result?.payment_collection?.payment_sessions || [];
-          console.log("Payment sessions found:", paymentSessions);
-          console.log(
-            "Payment sessions details:",
-            paymentSessions.map((ps: any) => ({
-              id: ps.id,
-              provider_id: ps.provider_id,
-              status: ps.status,
-              data: ps.data,
-            })),
-          );
-
-          // Don't force update - use the updated cart immediately
-          console.log(
-            "✓ Payment session created, using updated cart immediately...",
-          );
-          setUpdatedCart(result as HttpTypes.StoreCart);
-          setIsInitializingPayment(false);
-        } catch (err: unknown) {
-          console.error(`❌ Attempt ${retries + 1} failed:`, err);
-
-          retries++;
-
-          if (retries < maxRetries) {
-            console.log(`🔄 Retrying in 1 second...`);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            await tryInitiate();
-          } else {
-            console.error("❌ All retries failed");
-            const errorMessage =
-              err instanceof Error
-                ? err.message
-                : "Failed to initialize payment session";
-            console.error("Error details:", errorMessage);
-            setError(errorMessage);
-            setIsInitializingPayment(false);
-          }
-        }
-      };
-
-      await tryInitiate();
+      await initiatePaymentSession(cart, {
+        provider_id: method,
+      });
     }
   };
 
@@ -165,7 +55,6 @@ const Payment = ({
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams);
       params.set(name, value);
-
       return params.toString();
     },
     [searchParams],
@@ -205,61 +94,6 @@ const Payment = ({
 
   return (
     <div className="bg-white">
-      {/* Debug info */}
-      {process.env.NODE_ENV === "development" && (
-        <div className="bg-gray-100 p-4 mb-4 text-xs border border-gray-300">
-          <div className="font-bold mb-2">Payment Component Debug Info:</div>
-          <div>activeSession: {JSON.stringify(activeSession, null, 2)}</div>
-          <div>selectedPaymentMethod: {selectedPaymentMethod}</div>
-          <div>isInitializingPayment: {isInitializingPayment}</div>
-          <div>cart?.id: {cart?.id}</div>
-          <div>
-            cart?.payment_collection?.payment_sessions:
-            {JSON.stringify(
-              cart?.payment_collection?.payment_sessions,
-              null,
-              2,
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              console.log("🔄 Force update triggered");
-              setForceUpdate((prev) => prev + 1);
-            }}
-            className="mt-2 px-3 py-1 bg-blue-500 text-white rounded mr-2"
-          >
-            Force Update
-          </button>
-          {isIzipay(selectedPaymentMethod) && (
-            <button
-              type="button"
-              onClick={async () => {
-                console.log("🧪 Manual iZipay payment session initialization");
-                setIsInitializingPayment(true);
-                try {
-                  const result = await initiatePaymentSession(cart!, {
-                    provider_id: selectedPaymentMethod,
-                  });
-                  console.log("✅ Manual init result:", result);
-                  setForceUpdate((prev) => prev + 1);
-                } catch (err: any) {
-                  console.error("❌ Manual init failed:", err);
-                  setError(
-                    err.message || "Failed to initialize payment session",
-                  );
-                } finally {
-                  setIsInitializingPayment(false);
-                }
-              }}
-              className="mt-2 px-3 py-1 bg-green-500 text-white rounded"
-            >
-              Manual Init iZipay
-            </button>
-          )}
-        </div>
-      )}
-
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -297,18 +131,18 @@ const Payment = ({
                 {availablePaymentMethods.map((paymentMethod) => (
                   <div key={paymentMethod.id}>
                     {isIzipay(paymentMethod.id) ? (
-                      <RadioGroupOption
-                        key={paymentMethod.id}
-                        value={paymentMethod.id}
-                        className={clx(
-                          "flex flex-col gap-y-2 text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
-                          {
-                            "border-ui-border-interactive":
-                              selectedPaymentMethod === paymentMethod.id,
-                          },
-                        )}
-                      >
-                        <div className="flex items-center justify-between ">
+                      <>
+                        <RadioGroupOption
+                          key={paymentMethod.id}
+                          value={paymentMethod.id}
+                          className={clx(
+                            "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                            {
+                              "border-ui-border-interactive":
+                                selectedPaymentMethod === paymentMethod.id,
+                            },
+                          )}
+                        >
                           <div className="flex items-center gap-x-4">
                             <Radio
                               checked={
@@ -323,16 +157,8 @@ const Payment = ({
                           <span className="justify-self-end text-ui-fg-base">
                             {paymentInfoMap[paymentMethod.id]?.icon}
                           </span>
-                        </div>
-                        {isInitializingPayment &&
-                        selectedPaymentMethod === paymentMethod.id ? (
-                          <div className="flex items-center justify-center py-4">
-                            <Spinner className="animate-spin mr-2" />
-                            <Text className="text-ui-fg-subtle text-sm">
-                              Initializing payment session...
-                            </Text>
-                          </div>
-                        ) : (
+                        </RadioGroupOption>
+                        {selectedPaymentMethod === paymentMethod.id && (
                           <IzipayContainer
                             paymentProviderId={paymentMethod.id}
                             selectedPaymentOptionId={selectedPaymentMethod}
@@ -341,7 +167,7 @@ const Payment = ({
                             paymentSessionData={activeSession?.data}
                           />
                         )}
-                      </RadioGroupOption>
+                      </>
                     ) : (
                       <PaymentContainer
                         paymentInfoMap={paymentInfoMap}
