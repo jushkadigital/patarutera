@@ -168,15 +168,16 @@ const Payment = ({
                             {paymentInfoMap[paymentMethod.id]?.icon}
                           </span>
                         </RadioGroupOption>
-                        {selectedPaymentMethod === paymentMethod.id && (
-                          <IzipayContainer
-                            paymentProviderId={paymentMethod.id}
-                            selectedPaymentOptionId={selectedPaymentMethod}
-                            handleSubmitAction={handleSubmit}
-                            cart={cart || undefined}
-                            paymentSessionData={activeSession?.data}
-                          />
-                        )}
+                        {selectedPaymentMethod === paymentMethod.id &&
+                          activeSession && (
+                            <IzipayContainer
+                              paymentProviderId={paymentMethod.id}
+                              selectedPaymentOptionId={selectedPaymentMethod}
+                              handleSubmitAction={handleSubmit}
+                              cart={cart || undefined}
+                              paymentSessionData={activeSession.data}
+                            />
+                          )}
                       </>
                     ) : (
                       <PaymentContainer
