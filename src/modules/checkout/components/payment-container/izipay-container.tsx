@@ -112,11 +112,12 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
   const [sdkError, setSdkError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const checkoutRef = useRef<any>(null);
   const isInitializingRef = useRef(false);
   const hasInitializedRef = useRef(false);
   const isMountedRef = useRef(false);
 
-  // Track when the container is mounted in DOM
+  // Track when container is mounted in DOM
   useEffect(() => {
     if (isSelected) {
       isMountedRef.current = true;
@@ -149,25 +150,27 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
     selectedPaymentOptionId,
   ]);
 
-  // Single unified effect for initialization
+  // Main initialization effect
   useEffect(() => {
-    // Reset when not selected
     if (!isSelected) {
       setIsInitialized(false);
       setSdkError(null);
       hasInitializedRef.current = false;
+      if (checkoutRef.current) {
+        checkoutRef.current = null;
+      }
       return;
     }
 
-    // Check if SDK is loaded
     if (!isLoaded) {
-      console.log("Waiting for container to mount...");
       return;
     }
 
-    // Prevent multiple initializations
+    if (!isMountedRef.current) {
+      return;
+    }
+
     if (isInitializingRef.current || hasInitializedRef.current) {
-      console.log("Already initializing or initialized, skipping...");
       return;
     }
 
@@ -177,21 +180,10 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
       setSdkError(null);
 
       try {
-        console.log("=== iZipay Container Props ===");
-        console.log("isSelected:", isSelected);
-        console.log("isLoaded:", isLoaded);
-        console.log("paymentSessionData:", paymentSessionData);
-        console.log("paymentSessionData type:", typeof paymentSessionData);
-        console.log(
-          "paymentSessionData keys:",
-          paymentSessionData ? Object.keys(paymentSessionData) : "null",
-        );
-        console.log("cart:", cart);
-        console.log("paymentProviderId:", paymentProviderId);
-        console.log("selectedPaymentOptionId:", selectedPaymentOptionId);
+        console.log("Starting iZipay initialization...");
 
         if (!paymentSessionData) {
-          console.error("❌ paymentSessionData is null/undefined");
+          console.error("paymentSessionData is null/undefined");
           throw new Error("Missing payment session data");
         }
 
@@ -200,18 +192,12 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
           amount?: string | number;
         };
 
-        console.log("Extracted data:");
-        console.log("publicKey:", publicKey);
-        console.log("amount:", amount);
-
         if (!publicKey || !amount) {
           throw new Error("Missing payment session data");
         }
 
-        console.log("Loading payment token...");
         const { transactionId, orderNumber, currentTimeUnix } =
           getDataOrderDynamic();
-
         const { requestSource } = defaultPaymentConfig;
 
         const paymentData = {
@@ -254,25 +240,17 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
         }
 
         const sessionToken = data.response.token;
-        console.log("Payment token loaded successfully");
 
-        // Wait for DOM to be ready with more time
         await new Promise((resolve) => setTimeout(resolve, 300));
 
-        console.log("Checking if container is in DOM...");
-        // Use ref instead of getElementById
         if (!containerRef.current) {
-          console.error("Container ref is null");
           throw new Error("Payment container ref is null");
         }
 
-        // Verify the element is actually in the DOM
         if (!document.body.contains(containerRef.current)) {
-          console.error("Container is not in DOM");
           throw new Error("Payment container is not in DOM");
         }
 
-        console.log("Container is in DOM, creating iZipay config...");
         const iziConfig = {
           config: {
             transactionId: transactionId,
@@ -389,7 +367,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
 
         console.log("Creating Izipay instance...");
         const checkout = new Izipay({ config: iziConfig.config });
-        containerRef.current = checkout as unknown as HTMLDivElement;
+        checkoutRef.current = checkout;
 
         console.log("Loading payment form...");
         checkout.LoadForm({
@@ -427,7 +405,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
     };
 
     initializePayment();
-  }, [isSelected, isLoaded, paymentSessionData, cart, handleSubmitAction]);
+  }, [isSelected, isLoaded, paymentSessionData]);
 
   return (
     <>

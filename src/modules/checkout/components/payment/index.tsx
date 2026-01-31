@@ -2,7 +2,7 @@
 
 import { RadioGroup, Radio as RadioGroupOption } from "@headlessui/react";
 import { isIzipay, isStripeLike, paymentInfoMap } from "@lib/constants";
-import { initiatePaymentSession } from "@lib/data/localCart";
+import { initiatePaymentSession } from "@lib/data/cart";
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons";
 import { HttpTypes } from "@medusajs/types";
 import { Button, Container, Heading, Text, clx } from "@medusajs/ui";
@@ -10,39 +10,21 @@ import ErrorMessage from "@modules/checkout/components/error-message";
 import PaymentContainer from "@modules/checkout/components/payment-container";
 import Divider from "@modules/common/components/divider";
 import Radio from "@modules/common/components/radio";
-import Spinner from "@modules/common/icons/spinner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { IzipayContainer } from "../payment-container/izipay-container";
-import { retrieveCart } from "@lib/data/localCart";
 
 const Payment = ({
-  localCart: propCart,
+  cart,
   availablePaymentMethods,
 }: {
-  localCart: HttpTypes.StoreCart | null;
+  cart: HttpTypes.StoreCart | null;
   availablePaymentMethods: HttpTypes.StorePaymentProvider[];
 }) => {
-  const [isFetchingCart, setIsFetchingCart] = useState(false);
-  const [localCart, setLocalCart] = useState<HttpTypes.StoreCart | null>(
-    propCart,
-  );
-
-  const activeSession = localCart?.payment_collection?.payment_sessions?.find(
+  const activeSession = cart?.payment_collection?.payment_sessions?.find(
     (paymentSession: HttpTypes.StorePaymentSession) =>
       paymentSession.status === "pending",
   );
-
-  console.log("=== Payment Component Render ===");
-  console.log("propCart:", propCart);
-  console.log("localCart:", localCart);
-  console.log("localCart.payment_collection:", localCart?.payment_collection);
-  console.log(
-    "localCart.payment_collection?.payment_sessions:",
-    localCart?.payment_collection?.payment_sessions,
-  );
-  console.log("activeSession:", activeSession);
-  console.log("activeSession.data:", activeSession?.data);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,74 +38,18 @@ const Payment = ({
 
   const isOpen = searchParams.get("step") === "payment";
 
-  const setPaymentMethod = useCallback(
-    async (method: string) => {
-      setError(null);
-      setSelectedPaymentMethod(method);
+  const setPaymentMethod = async (method: string) => {
+    setError(null);
+    setSelectedPaymentMethod(method);
 
-      if (isIzipay(method) && localCart) {
-        console.log("🔄 setPaymentMethod called with:", method);
-        console.log("📦 Cart before session init:", localCart);
+    if (isIzipay(method) && cart) {
+      await initiatePaymentSession(cart, {
+        provider_id: method,
+      });
+    }
+  };
 
-        await initiatePaymentSession(localCart, {
-          provider_id: method,
-        });
-
-        setIsFetchingCart(true);
-        console.log("🔄 Fetching updated localCart...");
-
-        try {
-          const updatedCart = await fetch(
-            `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${localCart.id}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                "x-publishable-api-key":
-                  process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-              },
-            },
-          );
-
-          if (updatedCart.ok) {
-            const data = await updatedCart.json();
-            console.log("📦 Updated localCart received:", data.localCart);
-            console.log(
-              "📦 Updated localCart payment_collection:",
-              data.localCart?.payment_collection,
-            );
-
-            if (data.localCart?.payment_collection?.payment_sessions) {
-              console.log(
-                "📦 Payment sessions in updated localCart:",
-                data.localCart.payment_collection.payment_sessions,
-              );
-            }
-
-            if (data.localCart?.payment_collection?.payment_sessions) {
-              const session =
-                data.localCart.payment_collection.payment_sessions.find(
-                  (s) => s.provider_id === method && s.status === "pending",
-                );
-              console.log("📦 Active session:", session?.data);
-            }
-
-            setLocalCart(data.localCart);
-          } else {
-            console.error(
-              "❌ Failed to fetch updated localCart:",
-              updatedCart.status,
-            );
-          }
-        } catch (error) {
-          console.error("❌ Error fetching updated localCart:", error);
-        } finally {
-          setIsFetchingCart(false);
-        }
-      }
-    },
-    [localCart],
-  );
+  const paymentReady = activeSession;
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -141,7 +67,7 @@ const Payment = ({
   };
 
   const handleSubmit = async () => {
-    if (!localCart) {
+    if (!cart) {
       return;
     }
 
@@ -151,7 +77,7 @@ const Payment = ({
         activeSession?.provider_id === selectedPaymentMethod;
 
       if (!checkActiveSession) {
-        await initiatePaymentSession(localCart, {
+        await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
         });
       }
@@ -175,32 +101,24 @@ const Payment = ({
             "flex flex-row text-3xl-regular gap-x-2 items-baseline",
             {
               "opacity-50 pointer-events-none select-none":
-                !isOpen && !localCart?.payment_collection?.payment_sessions,
+                !isOpen && !paymentReady,
             },
           )}
         >
           Payment
-          {!isOpen &&
-            localCart?.payment_collection?.payment_sessions &&
-            localCart.payment_collection.payment_sessions.some(
-              (session) => session.status === "pending",
-            ) && <CheckCircleSolid />}
+          {!isOpen && paymentReady && <CheckCircleSolid />}
         </Heading>
-        {!isOpen &&
-          localCart?.payment_collection?.payment_sessions &&
-          localCart.payment_collection.payment_sessions.some(
-            (session) => session.status === "pending",
-          ) && (
-            <Text>
-              <button
-                onClick={handleEdit}
-                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-                data-testid="edit-payment-button"
-              >
-                Edit
-              </button>
-            </Text>
-          )}
+        {!isOpen && paymentReady && (
+          <Text>
+            <button
+              onClick={handleEdit}
+              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              data-testid="edit-payment-button"
+            >
+              Edit
+            </button>
+          </Text>
+        )}
       </div>
       <div>
         <div className={isOpen ? "block" : "hidden"}>
@@ -240,38 +158,15 @@ const Payment = ({
                             {paymentInfoMap[paymentMethod.id]?.icon}
                           </span>
                         </RadioGroupOption>
-                        {selectedPaymentMethod === paymentMethod.id &&
-                          isFetchingCart && (
-                            <div className="w-full mt-4 flex items-center justify-center py-12">
-                              <Spinner className="animate-spin mb-4" />
-                              <Text className="text-ui-fg-subtle text-sm">
-                                Initializing payment session...
-                              </Text>
-                            </div>
-                          )}
-                        {selectedPaymentMethod === paymentMethod.id &&
-                          !isFetchingCart &&
-                          localCart?.payment_collection?.payment_sessions &&
-                          localCart.payment_collection.payment_sessions.some(
-                            (session) =>
-                              session.provider_id === selectedPaymentMethod &&
-                              session.status === "pending",
-                          ) && (
-                            <IzipayContainer
-                              paymentProviderId={paymentMethod.id}
-                              selectedPaymentOptionId={selectedPaymentMethod}
-                              handleSubmitAction={handleSubmit}
-                              localCart={localCart || undefined}
-                              paymentSessionData={
-                                localCart.payment_collection.payment_sessions.find(
-                                  (session) =>
-                                    session.provider_id ===
-                                      selectedPaymentMethod &&
-                                    session.status === "pending",
-                                )?.data
-                              }
-                            />
-                          )}
+                        {selectedPaymentMethod === paymentMethod.id && (
+                          <IzipayContainer
+                            paymentProviderId={paymentMethod.id}
+                            selectedPaymentOptionId={selectedPaymentMethod}
+                            handleSubmitAction={handleSubmit}
+                            cart={cart || undefined}
+                            paymentSessionData={activeSession?.data}
+                          />
+                        )}
                       </>
                     ) : (
                       <PaymentContainer
@@ -304,12 +199,7 @@ const Payment = ({
         </div>
 
         <div className={isOpen ? "hidden" : "block"}>
-          {localCart &&
-          localCart?.payment_collection?.payment_sessions &&
-          localCart.payment_collection.payment_sessions.some(
-            (session) => session.status === "pending",
-          ) &&
-          activeSession ? (
+          {cart && paymentReady && activeSession ? (
             <div className="flex items-start gap-x-1 w-full">
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
