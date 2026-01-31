@@ -75,7 +75,7 @@ export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
             :
             <Button className='text-[#2970B7] rounded-2xl bg-white uppercase font-bold sm:text-xs lg:text-md' asChild>
               <button
-                onClick={() => signIn("keycloak", { callbackUrl: "/account" })} // "keycloak" debe coincidir con el ID en tu [...nextauth]
+                onClick={() => signIn("keycloak")} // "keycloak" debe coincidir con el ID en tu [...nextauth]
                 className="btn-primary"
               >
                 Iniciar Sesión con Keycloak
