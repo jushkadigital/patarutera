@@ -107,7 +107,7 @@ export const Navbar = ({
                       : "text-[#2970b7]",
                 )}
               >
-                <Link href="/pe/paquetes?destinations=Ica,Cusco">Paquetes</Link>
+                <Link href="/pe/paquetes?destinations=Ica,Cusco">Paquetes UNO</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
