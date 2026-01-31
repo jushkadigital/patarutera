@@ -9,13 +9,14 @@ import {
   setupEventHandlers,
 } from "../izipay/config";
 import { myConvertToLocale } from "@lib/util/money";
+import { initiatePaymentSession } from "@lib/data/cart";
 
 type IzipayContainerProps = {
   paymentProviderId: string;
   selectedPaymentOptionId: string | null;
-  paymentSessionData?: Record<string, unknown>;
   handleSubmitAction: () => Promise<void>;
   cart?: {
+    id?: string;
     billing_address?: {
       first_name?: string;
       last_name?: string;
@@ -102,7 +103,6 @@ const useIzipaySDK = () => {
 export const IzipayContainer: React.FC<IzipayContainerProps> = ({
   paymentProviderId,
   selectedPaymentOptionId,
-  paymentSessionData,
   handleSubmitAction,
   cart,
 }) => {
@@ -111,6 +111,10 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
   const [isInitialized, setIsInitialized] = useState(false);
   const [sdkError, setSdkError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [paymentSessionData, setPaymentSessionData] = useState<
+    Record<string, unknown> | undefined
+  >(undefined);
+  const [isSessionCreated, setIsSessionCreated] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const checkoutRef = useRef<any>(null);
   const isInitializingRef = useRef(false);
@@ -127,10 +131,59 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
     };
   }, [isSelected]);
 
+  // Create payment session and fetch updated cart
+  useEffect(() => {
+    if (!isSelected || !cart?.id || isSessionCreated) {
+      return;
+    }
+
+    const createSession = async () => {
+      console.log("Creating payment session for:", paymentProviderId);
+      setLoading(true);
+
+      try {
+        await initiatePaymentSession(cart as any, {
+          provider_id: paymentProviderId,
+        });
+
+        const updatedCart = await fetch(
+          `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-publishable-api-key":
+                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+            },
+          },
+        );
+
+        if (updatedCart.ok) {
+          const data = await updatedCart.json();
+          const session = data.cart?.payment_collection?.payment_sessions?.find(
+            (s: any) =>
+              s.provider_id === paymentProviderId && s.status === "pending",
+          );
+          if (session?.data) {
+            setPaymentSessionData(session.data);
+            setIsSessionCreated(true);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to create payment session:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    createSession();
+  }, [isSelected, cart, paymentProviderId, isSessionCreated]);
+
   useEffect(() => {
     console.log("=== iZipay Container Props ===");
     console.log("isSelected:", isSelected);
     console.log("isLoaded:", isLoaded);
+    console.log("isSessionCreated:", isSessionCreated);
     console.log("paymentSessionData:", paymentSessionData);
     console.log("paymentSessionData type:", typeof paymentSessionData);
     console.log(
@@ -144,6 +197,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
   }, [
     isSelected,
     isLoaded,
+    isSessionCreated,
     paymentSessionData,
     cart,
     paymentProviderId,
@@ -152,7 +206,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
 
   // Main initialization effect
   useEffect(() => {
-    if (!isSelected) {
+    if (!isSelected || !isSessionCreated) {
       setIsInitialized(false);
       setSdkError(null);
       hasInitializedRef.current = false;
@@ -171,6 +225,10 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
     }
 
     if (isInitializingRef.current || hasInitializedRef.current) {
+      return;
+    }
+
+    if (!paymentSessionData) {
       return;
     }
 
@@ -405,13 +463,28 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
     };
 
     initializePayment();
-  }, [isSelected, isLoaded, paymentSessionData]);
+  }, [
+    isSelected,
+    isLoaded,
+    isSessionCreated,
+    paymentSessionData,
+    cart,
+    handleSubmitAction,
+    paymentProviderId,
+  ]);
 
   return (
     <>
       {isSelected && !isInitialized && (
         <div className="w-full mt-4">
-          {loading ? (
+          {!isSessionCreated && loading ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <Spinner className="animate-spin mb-4" />
+              <Text className="text-ui-fg-subtle text-sm">
+                Initializing payment session...
+              </Text>
+            </div>
+          ) : isSessionCreated && loading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <Spinner className="animate-spin mb-4" />
               <Text className="text-ui-fg-subtle text-sm">
@@ -440,7 +513,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
                 Retry
               </button>
             </div>
-          ) : !paymentSessionData ? (
+          ) : !paymentSessionData && isSessionCreated ? (
             <div className="flex flex-col items-center justify-center py-12">
               <Spinner className="animate-spin mb-4" />
               <Text className="text-ui-fg-subtle text-sm">
@@ -450,7 +523,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
           ) : null}
         </div>
       )}
-      {isSelected && (
+      {isSelected && isSessionCreated && (
         <div
           id="izipay-checkout-container"
           ref={containerRef}

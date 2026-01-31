@@ -39,20 +39,9 @@ const Payment = ({
 
   const isOpen = searchParams.get("step") === "payment";
 
-  const [isSessionCreated, setIsSessionCreated] = useState(false);
-
   const setPaymentMethod = async (method: string) => {
     setError(null);
     setSelectedPaymentMethod(method);
-
-    if (isIzipay(method) && cart) {
-      console.log("Creating payment session for:", method);
-      await initiatePaymentSession(cart, {
-        provider_id: method,
-      });
-
-      setIsSessionCreated(true);
-    }
   };
 
   const paymentReady = activeSession;
@@ -164,27 +153,14 @@ const Payment = ({
                             {paymentInfoMap[paymentMethod.id]?.icon}
                           </span>
                         </RadioGroupOption>
-                        {selectedPaymentMethod === paymentMethod.id &&
-                          isIzipay(paymentMethod.id) &&
-                          !isSessionCreated && (
-                            <div className="w-full mt-4 flex items-center justify-center py-12">
-                              <Spinner className="animate-spin mb-4" />
-                              <Text className="text-ui-fg-subtle text-sm">
-                                Initializing payment session...
-                              </Text>
-                            </div>
-                          )}
-                        {selectedPaymentMethod === paymentMethod.id &&
-                          isSessionCreated &&
-                          activeSession?.data && (
-                            <IzipayContainer
-                              paymentProviderId={paymentMethod.id}
-                              selectedPaymentOptionId={selectedPaymentMethod}
-                              handleSubmitAction={handleSubmit}
-                              cart={cart || undefined}
-                              paymentSessionData={activeSession.data}
-                            />
-                          )}
+                        {selectedPaymentMethod === paymentMethod.id && (
+                          <IzipayContainer
+                            paymentProviderId={paymentMethod.id}
+                            selectedPaymentOptionId={selectedPaymentMethod}
+                            handleSubmitAction={handleSubmit}
+                            cart={cart || undefined}
+                          />
+                        )}
                       </>
                     ) : (
                       <PaymentContainer
