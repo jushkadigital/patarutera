@@ -10,6 +10,7 @@ import ErrorMessage from "@modules/checkout/components/error-message";
 import PaymentContainer from "@modules/checkout/components/payment-container";
 import Divider from "@modules/common/components/divider";
 import Radio from "@modules/common/components/radio";
+import Spinner from "@modules/common/icons/spinner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { IzipayContainer } from "../payment-container/izipay-container";
@@ -38,6 +39,8 @@ const Payment = ({
 
   const isOpen = searchParams.get("step") === "payment";
 
+  const [isSessionCreated, setIsSessionCreated] = useState(false);
+
   const setPaymentMethod = async (method: string) => {
     setError(null);
     setSelectedPaymentMethod(method);
@@ -48,43 +51,7 @@ const Payment = ({
         provider_id: method,
       });
 
-      console.log("Fetching updated cart to get payment session...");
-      try {
-        const updatedCart = await fetch(
-          `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "x-publishable-api-key":
-                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-            },
-          },
-        );
-
-        if (updatedCart.ok) {
-          const data = await updatedCart.json();
-          console.log("Updated cart:", data.cart);
-          console.log(
-            "Payment sessions:",
-            data.cart?.payment_collection?.payment_sessions,
-          );
-
-          if (data.cart?.payment_collection?.payment_sessions) {
-            const session = data.cart.payment_collection.payment_sessions.find(
-              (s: any) => s.provider_id === method && s.status === "pending",
-            );
-            console.log("Active payment session:", session);
-            console.log("Payment session data:", session?.data);
-          }
-
-          window.location.reload();
-        } else {
-          console.error("Failed to fetch updated cart:", updatedCart.status);
-        }
-      } catch (error) {
-        console.error("Error fetching updated cart:", error);
-      }
+      setIsSessionCreated(true);
     }
   };
 
@@ -197,15 +164,27 @@ const Payment = ({
                             {paymentInfoMap[paymentMethod.id]?.icon}
                           </span>
                         </RadioGroupOption>
-                        {selectedPaymentMethod === paymentMethod.id && (
-                          <IzipayContainer
-                            paymentProviderId={paymentMethod.id}
-                            selectedPaymentOptionId={selectedPaymentMethod}
-                            handleSubmitAction={handleSubmit}
-                            cart={cart || undefined}
-                            paymentSessionData={activeSession?.data}
-                          />
-                        )}
+                        {selectedPaymentMethod === paymentMethod.id &&
+                          isIzipay(paymentMethod.id) &&
+                          !isSessionCreated && (
+                            <div className="w-full mt-4 flex items-center justify-center py-12">
+                              <Spinner className="animate-spin mb-4" />
+                              <Text className="text-ui-fg-subtle text-sm">
+                                Initializing payment session...
+                              </Text>
+                            </div>
+                          )}
+                        {selectedPaymentMethod === paymentMethod.id &&
+                          isSessionCreated &&
+                          activeSession?.data && (
+                            <IzipayContainer
+                              paymentProviderId={paymentMethod.id}
+                              selectedPaymentOptionId={selectedPaymentMethod}
+                              handleSubmitAction={handleSubmit}
+                              cart={cart || undefined}
+                              paymentSessionData={activeSession.data}
+                            />
+                          )}
                       </>
                     ) : (
                       <PaymentContainer
