@@ -43,13 +43,23 @@ const Payment = ({
     setSelectedPaymentMethod(method);
 
     if (isIzipay(method) && cart) {
+      console.log("🔄 setPaymentMethod called with:", method);
+      console.log("📦 Cart before session init:", cart);
       await initiatePaymentSession(cart, {
         provider_id: method,
       });
+      console.log("📦 Cart after session init:", cart);
     }
   };
 
   const paymentReady = activeSession;
+
+  useEffect(() => {
+    console.log("=== Payment Component Update ===");
+    console.log("cart:", cart);
+    console.log("activeSession:", activeSession);
+    console.log("activeSession.data:", activeSession?.data);
+  }, [cart, activeSession, selectedPaymentMethod]);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {

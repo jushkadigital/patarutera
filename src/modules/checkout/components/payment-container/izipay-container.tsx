@@ -137,6 +137,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
       paymentSessionData ? Object.keys(paymentSessionData) : "null",
     );
     console.log("cart:", cart);
+    console.log("cart.id:", (cart as any)?.id);
     console.log("paymentProviderId:", paymentProviderId);
     console.log("selectedPaymentOptionId:", selectedPaymentOptionId);
   }, [
