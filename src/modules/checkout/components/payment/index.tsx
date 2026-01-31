@@ -95,8 +95,31 @@ const Payment = ({
           console.log("Result:", result);
           console.log("Result type:", typeof result);
           console.log("Result keys:", Object.keys(result || {}));
+          console.log("Result.payment_collection:", result?.payment_collection);
+          console.log(
+            "Result.payment_collection?.payment_sessions:",
+            result?.payment_collection?.payment_sessions,
+          );
+          console.log(
+            "Result.payment_collection?.payment_sessions length:",
+            result?.payment_collection?.payment_sessions?.length,
+          );
 
-          // Wait a bit for the cart to update
+          // Check if payment sessions exist
+          const paymentSessions =
+            result?.payment_collection?.payment_sessions || [];
+          console.log("Payment sessions found:", paymentSessions);
+          console.log(
+            "Payment sessions details:",
+            paymentSessions.map((ps: any) => ({
+              id: ps.id,
+              provider_id: ps.provider_id,
+              status: ps.status,
+              data: ps.data,
+            })),
+          );
+
+          // Wait a bit for cart to update
           console.log("⏳ Waiting 500ms for cart to update...");
           await new Promise((resolve) => setTimeout(resolve, 500));
 
