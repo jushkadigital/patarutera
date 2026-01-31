@@ -10,9 +10,9 @@ import ErrorMessage from "@modules/checkout/components/error-message";
 import PaymentContainer from "@modules/checkout/components/payment-container";
 import Divider from "@modules/common/components/divider";
 import Radio from "@modules/common/components/radio";
+import Spinner from "@modules/common/icons/spinner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { cartQueryKeys } from "@lib/query-keys";
 import { IzipayContainer } from "../payment-container/izipay-container";
 
 const Payment = ({
@@ -22,6 +22,7 @@ const Payment = ({
   cart: HttpTypes.StoreCart | null;
   availablePaymentMethods: HttpTypes.StorePaymentProvider[];
 }) => {
+  const [isFetchingCart, setIsFetchingCart] = useState(false);
   const activeSession = cart?.payment_collection?.payment_sessions?.find(
     (paymentSession: HttpTypes.StorePaymentSession) =>
       paymentSession.status === "pending",
@@ -56,10 +57,42 @@ const Payment = ({
     if (isIzipay(method) && cart) {
       console.log("🔄 setPaymentMethod called with:", method);
       console.log("📦 Cart before session init:", cart);
+
       await initiatePaymentSession(cart, {
         provider_id: method,
       });
-      console.log("📦 Cart after session init:", cart);
+
+      setIsFetchingCart(true);
+      console.log("🔄 Fetching updated cart...");
+
+      try {
+        const updatedCart = await fetch(
+          `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-publishable-api-key":
+                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+            },
+          },
+        );
+
+        if (updatedCart.ok) {
+          const data = await updatedCart.json();
+          console.log("📦 Updated cart received:", data.cart);
+          console.log(
+            "📦 Updated cart payment_collection:",
+            data.cart?.payment_collection,
+          );
+        } else {
+          console.error("❌ Failed to fetch updated cart:", updatedCart.status);
+        }
+      } catch (error) {
+        console.error("❌ Error fetching updated cart:", error);
+      } finally {
+        setIsFetchingCart(false);
+      }
     }
   };
 
@@ -180,6 +213,16 @@ const Payment = ({
                           </span>
                         </RadioGroupOption>
                         {selectedPaymentMethod === paymentMethod.id &&
+                          isFetchingCart && (
+                            <div className="w-full mt-4 flex items-center justify-center py-12">
+                              <Spinner className="animate-spin mb-4" />
+                              <Text className="text-ui-fg-subtle text-sm">
+                                Initializing payment session...
+                              </Text>
+                            </div>
+                          )}
+                        {selectedPaymentMethod === paymentMethod.id &&
+                          !isFetchingCart &&
                           activeSession && (
                             <IzipayContainer
                               paymentProviderId={paymentMethod.id}
