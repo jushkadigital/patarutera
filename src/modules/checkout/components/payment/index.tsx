@@ -12,6 +12,7 @@ import Divider from "@modules/common/components/divider";
 import Radio from "@modules/common/components/radio";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { cartQueryKeys } from "@lib/query-keys";
 import { IzipayContainer } from "../payment-container/izipay-container";
 
 const Payment = ({
@@ -25,6 +26,16 @@ const Payment = ({
     (paymentSession: HttpTypes.StorePaymentSession) =>
       paymentSession.status === "pending",
   );
+
+  console.log("=== Payment Component Render ===");
+  console.log("cart:", cart);
+  console.log("cart.payment_collection:", cart?.payment_collection);
+  console.log(
+    "cart.payment_collection?.payment_sessions:",
+    cart?.payment_collection?.payment_sessions,
+  );
+  console.log("activeSession:", activeSession);
+  console.log("activeSession.data:", activeSession?.data);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
