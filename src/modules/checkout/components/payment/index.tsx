@@ -85,6 +85,13 @@ const Payment = ({
             "📦 Updated cart payment_collection:",
             data.cart?.payment_collection,
           );
+
+          if (data.cart?.payment_collection?.payment_sessions) {
+            console.log(
+              "📦 Payment sessions in updated cart:",
+              data.cart.payment_collection.payment_sessions,
+            );
+          }
         } else {
           console.error("❌ Failed to fetch updated cart:", updatedCart.status);
         }
@@ -97,6 +104,7 @@ const Payment = ({
   };
 
   const paymentReady = activeSession;
+  const needsIzipayInit = isIzipay(selectedPaymentMethod) && isFetchingCart;
 
   useEffect(() => {
     console.log("=== Payment Component Update ===");
@@ -223,13 +231,25 @@ const Payment = ({
                           )}
                         {selectedPaymentMethod === paymentMethod.id &&
                           !isFetchingCart &&
-                          activeSession && (
+                          cart?.payment_collection?.payment_sessions &&
+                          cart.payment_collection.payment_sessions.some(
+                            (session) =>
+                              session.provider_id === selectedPaymentMethod &&
+                              session.status === "pending",
+                          ) && (
                             <IzipayContainer
                               paymentProviderId={paymentMethod.id}
                               selectedPaymentOptionId={selectedPaymentMethod}
                               handleSubmitAction={handleSubmit}
                               cart={cart || undefined}
-                              paymentSessionData={activeSession.data}
+                              paymentSessionData={
+                                cart.payment_collection.payment_sessions.find(
+                                  (session) =>
+                                    session.provider_id ===
+                                      selectedPaymentMethod &&
+                                    session.status === "pending",
+                                )?.data
+                              }
                             />
                           )}
                       </>
