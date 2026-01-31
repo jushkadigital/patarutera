@@ -50,61 +50,72 @@ const Payment = ({
 
   const isOpen = searchParams.get("step") === "payment";
 
-  const setPaymentMethod = async (method: string) => {
-    setError(null);
-    setSelectedPaymentMethod(method);
+  const setPaymentMethod = useCallback(
+    async (method: string) => {
+      setError(null);
+      setSelectedPaymentMethod(method);
 
-    if (isIzipay(method) && cart) {
-      console.log("🔄 setPaymentMethod called with:", method);
-      console.log("📦 Cart before session init:", cart);
+      if (isIzipay(method) && cart) {
+        console.log("🔄 setPaymentMethod called with:", method);
+        console.log("📦 Cart before session init:", cart);
 
-      await initiatePaymentSession(cart, {
-        provider_id: method,
-      });
+        await initiatePaymentSession(cart, {
+          provider_id: method,
+        });
 
-      setIsFetchingCart(true);
-      console.log("🔄 Fetching updated cart...");
+        setIsFetchingCart(true);
+        console.log("🔄 Fetching updated cart...");
 
-      try {
-        const updatedCart = await fetch(
-          `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "x-publishable-api-key":
-                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+        try {
+          const updatedCart = await fetch(
+            `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "x-publishable-api-key":
+                  process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+              },
             },
-          },
-        );
-
-        if (updatedCart.ok) {
-          const data = await updatedCart.json();
-          console.log("📦 Updated cart received:", data.cart);
-          console.log(
-            "📦 Updated cart payment_collection:",
-            data.cart?.payment_collection,
           );
 
-          if (data.cart?.payment_collection?.payment_sessions) {
+          if (updatedCart.ok) {
+            const data = await updatedCart.json();
+            console.log("📦 Updated cart received:", data.cart);
             console.log(
-              "📦 Payment sessions in updated cart:",
-              data.cart.payment_collection.payment_sessions,
+              "📦 Updated cart payment_collection:",
+              data.cart?.payment_collection,
+            );
+
+            if (data.cart?.payment_collection?.payment_sessions) {
+              console.log(
+                "📦 Payment sessions in updated cart:",
+                data.cart.payment_collection.payment_sessions,
+              );
+            }
+
+            if (data.cart?.payment_collection?.payment_sessions) {
+              const session =
+                data.cart.payment_collection.payment_sessions.find(
+                  (s) => s.provider_id === method && s.status === "pending",
+                );
+              console.log("📦 Active session:", session?.data);
+            }
+          } else {
+            console.error(
+              "❌ Failed to fetch updated cart:",
+              updatedCart.status,
             );
           }
-        } else {
-          console.error("❌ Failed to fetch updated cart:", updatedCart.status);
+        } catch (error) {
+          console.error("❌ Error fetching updated cart:", error);
+        } finally {
+          setIsFetchingCart(false);
         }
-      } catch (error) {
-        console.error("❌ Error fetching updated cart:", error);
-      } finally {
-        setIsFetchingCart(false);
       }
-    }
-  };
-
-  const paymentReady = activeSession;
-  const needsIzipayInit = isIzipay(selectedPaymentMethod) && isFetchingCart;
+    },
+    [cart],
+  );
 
   useEffect(() => {
     console.log("=== Payment Component Update ===");
@@ -163,24 +174,32 @@ const Payment = ({
             "flex flex-row text-3xl-regular gap-x-2 items-baseline",
             {
               "opacity-50 pointer-events-none select-none":
-                !isOpen && !paymentReady,
+                !isOpen && !cart?.payment_collection?.payment_sessions,
             },
           )}
         >
           Payment
-          {!isOpen && paymentReady && <CheckCircleSolid />}
+          {!isOpen &&
+            cart?.payment_collection?.payment_sessions &&
+            cart.payment_collection.payment_sessions.some(
+              (session) => session.status === "pending",
+            ) && <CheckCircleSolid />}
         </Heading>
-        {!isOpen && paymentReady && (
-          <Text>
-            <button
-              onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-              data-testid="edit-payment-button"
-            >
-              Edit
-            </button>
-          </Text>
-        )}
+        {!isOpen &&
+          cart?.payment_collection?.payment_sessions &&
+          cart.payment_collection.payment_sessions.some(
+            (session) => session.status === "pending",
+          ) && (
+            <Text>
+              <button
+                onClick={handleEdit}
+                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+                data-testid="edit-payment-button"
+              >
+                Edit
+              </button>
+            </Text>
+          )}
       </div>
       <div>
         <div className={isOpen ? "block" : "hidden"}>
@@ -284,7 +303,12 @@ const Payment = ({
         </div>
 
         <div className={isOpen ? "hidden" : "block"}>
-          {cart && paymentReady && activeSession ? (
+          {cart &&
+          cart?.payment_collection?.payment_sessions &&
+          cart.payment_collection.payment_sessions.some(
+            (session) => session.status === "pending",
+          ) &&
+          activeSession ? (
             <div className="flex items-start gap-x-1 w-full">
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
