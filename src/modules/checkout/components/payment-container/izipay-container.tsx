@@ -47,7 +47,7 @@ const IZIPAY_SDK_URL =
 declare global {
   interface Window {
     Izipay?: {
-      new (config: { config: Record<string, unknown> }): {
+      new(config: { config: Record<string, unknown> }): {
         LoadForm: (options: {
           authorization: string;
           keyRSA: string;
@@ -117,6 +117,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
   const hasInitializedRef = useRef(false);
   const isMountedRef = useRef(false);
 
+  // Track when the container is mounted in DOM
   useEffect(() => {
     if (isSelected) {
       isMountedRef.current = true;
@@ -126,29 +127,30 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
     };
   }, [isSelected]);
 
+  // Single unified effect for initialization
   useEffect(() => {
+    // Reset when not selected
     if (!isSelected) {
       setIsInitialized(false);
       setSdkError(null);
       hasInitializedRef.current = false;
-      setLoading(false);
       return;
     }
 
+    // Check if SDK is loaded
     if (!isLoaded) {
       return;
     }
 
+    // Wait for container to be mounted in DOM
     if (!isMountedRef.current) {
+      console.log("Waiting for container to mount...");
       return;
     }
 
+    // Prevent multiple initializations
     if (isInitializingRef.current || hasInitializedRef.current) {
-      return;
-    }
-
-    if (!paymentSessionData) {
-      setLoading(false);
+      console.log("Already initializing or initialized, skipping...");
       return;
     }
 
@@ -158,20 +160,19 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
       setSdkError(null);
 
       try {
+        console.log("Starting iZipay initialization...");
+
         if (!paymentSessionData) {
-          throw new Error(
-            "Payment session data is not available. Please try selecting the payment method again.",
-          );
+          throw new Error("Missing payment session data");
         }
 
         const { publicKey, amount } = paymentSessionData;
 
         if (!publicKey || !amount) {
-          throw new Error(
-            "Missing required payment data (publicKey or amount). Please try again.",
-          );
+          throw new Error("Missing payment session data");
         }
 
+        console.log("Loading payment token...");
         const { transactionId, orderNumber, currentTimeUnix } =
           getDataOrderDynamic();
 
@@ -189,18 +190,19 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
           }),
         };
 
-        const fullUrl = `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`;
-
-        const response = await fetch(fullUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            transactionId: transactionId,
-            "x-publishable-api-key":
-              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              transactionId: transactionId,
+              "x-publishable-api-key":
+                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+            },
+            body: JSON.stringify(paymentData),
           },
-          body: JSON.stringify(paymentData),
-        });
+        );
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -216,17 +218,25 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
         }
 
         const sessionToken = data.response.token;
+        console.log("Payment token loaded successfully");
 
+        // Wait for DOM to be ready with more time
         await new Promise((resolve) => setTimeout(resolve, 300));
 
+        console.log("Checking if container is in DOM...");
+        // Use ref instead of getElementById
         if (!containerRef.current) {
+          console.error("Container ref is null");
           throw new Error("Payment container ref is null");
         }
 
+        // Verify the element is actually in the DOM
         if (!document.body.contains(containerRef.current)) {
+          console.error("Container is not in DOM");
           throw new Error("Payment container is not in DOM");
         }
 
+        console.log("Container is in DOM, creating iZipay config...");
         const iziConfig = {
           config: {
             transactionId: transactionId,
@@ -261,18 +271,18 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
               cardToken: "",
             },
             billing: {
-              firstName: "Lucho",
-              lastName: "Torres",
-              email: "luchotorres@izipay.pe",
-              street: "Av. Jorge Chávez 275",
-              city: "Lima",
-              state: "Lima",
-              country: "PE",
-              postalCode: "15000",
-              phoneNumber: "989897960",
-              documentType: "DNI",
-              document: "12345678",
-              companyName: "",
+              "firstName": "Lucho",
+              "lastName": "Torres",
+              "email": "luchotorres@izipay.pe",
+              "street": "Av. Jorge Chávez 275",
+              "city": "Lima",
+              "state": "Lima",
+              "country": "PE",
+              "postalCode": "15000",
+              "phoneNumber": "989897960",
+              "documentType": "DNI",
+              "document": "12345678",
+              "companyName": ""
             },
             shipping: {
               firstName: cart?.shipping_address?.first_name || "",
@@ -341,9 +351,11 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
           throw new Error("Izipay SDK not loaded");
         }
 
+        console.log("Creating Izipay instance...");
         const checkout = new Izipay({ config: iziConfig.config });
         containerRef.current = checkout as unknown as HTMLDivElement;
 
+        console.log("Loading payment form...");
         checkout.LoadForm({
           authorization: sessionToken,
           keyRSA: "RSA",
@@ -351,6 +363,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
             status: string;
             message?: string;
           }) => {
+            console.log("Payment callback:", response);
             if (response.status === "SUCCESS") {
             } else {
               setSdkError(response.message || "Payment failed");
@@ -362,7 +375,9 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
 
         setIsInitialized(true);
         hasInitializedRef.current = true;
+        console.log("iZipay initialization completed successfully");
       } catch (error: unknown) {
+        console.error("Failed to initialize iZipay:", error);
         setSdkError(
           error instanceof Error
             ? error.message
@@ -380,47 +395,47 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
 
   return (
     <>
-      {isSelected && !isInitialized && (
+      {isSelected && !isInitialized && !loadError && !sdkError && (
         <div className="w-full mt-4">
-          {loading ? (
+          {loading && (
             <div className="flex flex-col items-center justify-center py-12">
               <Spinner className="animate-spin mb-4" />
               <Text className="text-ui-fg-subtle text-sm">
                 Loading payment form...
               </Text>
             </div>
-          ) : sdkError ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Text className="text-ui-fg-error text-sm mb-2">{sdkError}</Text>
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover text-sm"
-              >
-                Retry
-              </button>
-            </div>
-          ) : loadError ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Text className="text-ui-fg-error text-sm mb-2">{loadError}</Text>
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover text-sm"
-              >
-                Retry
-              </button>
-            </div>
-          ) : !paymentSessionData ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <Spinner className="animate-spin mb-4" />
-              <Text className="text-ui-fg-subtle text-sm">
-                Initializing payment session...
-              </Text>
-            </div>
-          ) : null}
+          )}
         </div>
       )}
+      {isSelected && loadError && !sdkError && (
+        <div className="w-full mt-4">
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <Text className="text-ui-fg-error text-sm mb-2">{loadError}</Text>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover text-sm"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
+      {isSelected && sdkError && (
+        <div className="w-full mt-4">
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <Text className="text-ui-fg-error text-sm mb-2">{sdkError}</Text>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover text-sm"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Always render the container when selected */}
       {isSelected && (
         <div
           id="izipay-checkout-container"
