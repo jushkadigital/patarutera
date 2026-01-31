@@ -2,7 +2,7 @@
 
 import { RadioGroup, Radio as RadioGroupOption } from "@headlessui/react";
 import { isIzipay, isStripeLike, paymentInfoMap } from "@lib/constants";
-import { initiatePaymentSession } from "@lib/data/cart";
+import { initiatePaymentSession } from "@lib/data/localCart";
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons";
 import { HttpTypes } from "@medusajs/types";
 import { Button, Container, Heading, Text, clx } from "@medusajs/ui";
@@ -14,26 +14,32 @@ import Spinner from "@modules/common/icons/spinner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { IzipayContainer } from "../payment-container/izipay-container";
+import { retrieveCart } from "@lib/data/localCart";
 
 const Payment = ({
-  cart,
+  localCart: propCart,
   availablePaymentMethods,
 }: {
-  cart: HttpTypes.StoreCart | null;
+  localCart: HttpTypes.StoreCart | null;
   availablePaymentMethods: HttpTypes.StorePaymentProvider[];
 }) => {
   const [isFetchingCart, setIsFetchingCart] = useState(false);
-  const activeSession = cart?.payment_collection?.payment_sessions?.find(
+  const [localCart, setLocalCart] = useState<HttpTypes.StoreCart | null>(
+    propCart,
+  );
+
+  const activeSession = localCart?.payment_collection?.payment_sessions?.find(
     (paymentSession: HttpTypes.StorePaymentSession) =>
       paymentSession.status === "pending",
   );
 
   console.log("=== Payment Component Render ===");
-  console.log("cart:", cart);
-  console.log("cart.payment_collection:", cart?.payment_collection);
+  console.log("propCart:", propCart);
+  console.log("localCart:", localCart);
+  console.log("localCart.payment_collection:", localCart?.payment_collection);
   console.log(
-    "cart.payment_collection?.payment_sessions:",
-    cart?.payment_collection?.payment_sessions,
+    "localCart.payment_collection?.payment_sessions:",
+    localCart?.payment_collection?.payment_sessions,
   );
   console.log("activeSession:", activeSession);
   console.log("activeSession.data:", activeSession?.data);
@@ -55,20 +61,20 @@ const Payment = ({
       setError(null);
       setSelectedPaymentMethod(method);
 
-      if (isIzipay(method) && cart) {
+      if (isIzipay(method) && localCart) {
         console.log("🔄 setPaymentMethod called with:", method);
-        console.log("📦 Cart before session init:", cart);
+        console.log("📦 Cart before session init:", localCart);
 
-        await initiatePaymentSession(cart, {
+        await initiatePaymentSession(localCart, {
           provider_id: method,
         });
 
         setIsFetchingCart(true);
-        console.log("🔄 Fetching updated cart...");
+        console.log("🔄 Fetching updated localCart...");
 
         try {
           const updatedCart = await fetch(
-            `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}`,
+            `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${localCart.id}`,
             {
               method: "GET",
               headers: {
@@ -81,48 +87,43 @@ const Payment = ({
 
           if (updatedCart.ok) {
             const data = await updatedCart.json();
-            console.log("📦 Updated cart received:", data.cart);
+            console.log("📦 Updated localCart received:", data.localCart);
             console.log(
-              "📦 Updated cart payment_collection:",
-              data.cart?.payment_collection,
+              "📦 Updated localCart payment_collection:",
+              data.localCart?.payment_collection,
             );
 
-            if (data.cart?.payment_collection?.payment_sessions) {
+            if (data.localCart?.payment_collection?.payment_sessions) {
               console.log(
-                "📦 Payment sessions in updated cart:",
-                data.cart.payment_collection.payment_sessions,
+                "📦 Payment sessions in updated localCart:",
+                data.localCart.payment_collection.payment_sessions,
               );
             }
 
-            if (data.cart?.payment_collection?.payment_sessions) {
+            if (data.localCart?.payment_collection?.payment_sessions) {
               const session =
-                data.cart.payment_collection.payment_sessions.find(
+                data.localCart.payment_collection.payment_sessions.find(
                   (s) => s.provider_id === method && s.status === "pending",
                 );
               console.log("📦 Active session:", session?.data);
             }
+
+            setLocalCart(data.localCart);
           } else {
             console.error(
-              "❌ Failed to fetch updated cart:",
+              "❌ Failed to fetch updated localCart:",
               updatedCart.status,
             );
           }
         } catch (error) {
-          console.error("❌ Error fetching updated cart:", error);
+          console.error("❌ Error fetching updated localCart:", error);
         } finally {
           setIsFetchingCart(false);
         }
       }
     },
-    [cart],
+    [localCart],
   );
-
-  useEffect(() => {
-    console.log("=== Payment Component Update ===");
-    console.log("cart:", cart);
-    console.log("activeSession:", activeSession);
-    console.log("activeSession.data:", activeSession?.data);
-  }, [cart, activeSession, selectedPaymentMethod]);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -140,7 +141,7 @@ const Payment = ({
   };
 
   const handleSubmit = async () => {
-    if (!cart) {
+    if (!localCart) {
       return;
     }
 
@@ -150,7 +151,7 @@ const Payment = ({
         activeSession?.provider_id === selectedPaymentMethod;
 
       if (!checkActiveSession) {
-        await initiatePaymentSession(cart, {
+        await initiatePaymentSession(localCart, {
           provider_id: selectedPaymentMethod,
         });
       }
@@ -174,20 +175,20 @@ const Payment = ({
             "flex flex-row text-3xl-regular gap-x-2 items-baseline",
             {
               "opacity-50 pointer-events-none select-none":
-                !isOpen && !cart?.payment_collection?.payment_sessions,
+                !isOpen && !localCart?.payment_collection?.payment_sessions,
             },
           )}
         >
           Payment
           {!isOpen &&
-            cart?.payment_collection?.payment_sessions &&
-            cart.payment_collection.payment_sessions.some(
+            localCart?.payment_collection?.payment_sessions &&
+            localCart.payment_collection.payment_sessions.some(
               (session) => session.status === "pending",
             ) && <CheckCircleSolid />}
         </Heading>
         {!isOpen &&
-          cart?.payment_collection?.payment_sessions &&
-          cart.payment_collection.payment_sessions.some(
+          localCart?.payment_collection?.payment_sessions &&
+          localCart.payment_collection.payment_sessions.some(
             (session) => session.status === "pending",
           ) && (
             <Text>
@@ -250,8 +251,8 @@ const Payment = ({
                           )}
                         {selectedPaymentMethod === paymentMethod.id &&
                           !isFetchingCart &&
-                          cart?.payment_collection?.payment_sessions &&
-                          cart.payment_collection.payment_sessions.some(
+                          localCart?.payment_collection?.payment_sessions &&
+                          localCart.payment_collection.payment_sessions.some(
                             (session) =>
                               session.provider_id === selectedPaymentMethod &&
                               session.status === "pending",
@@ -260,9 +261,9 @@ const Payment = ({
                               paymentProviderId={paymentMethod.id}
                               selectedPaymentOptionId={selectedPaymentMethod}
                               handleSubmitAction={handleSubmit}
-                              cart={cart || undefined}
+                              localCart={localCart || undefined}
                               paymentSessionData={
-                                cart.payment_collection.payment_sessions.find(
+                                localCart.payment_collection.payment_sessions.find(
                                   (session) =>
                                     session.provider_id ===
                                       selectedPaymentMethod &&
@@ -303,9 +304,9 @@ const Payment = ({
         </div>
 
         <div className={isOpen ? "hidden" : "block"}>
-          {cart &&
-          cart?.payment_collection?.payment_sessions &&
-          cart.payment_collection.payment_sessions.some(
+          {localCart &&
+          localCart?.payment_collection?.payment_sessions &&
+          localCart.payment_collection.payment_sessions.some(
             (session) => session.status === "pending",
           ) &&
           activeSession ? (
