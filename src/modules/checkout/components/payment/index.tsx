@@ -43,9 +43,48 @@ const Payment = ({
     setSelectedPaymentMethod(method);
 
     if (isIzipay(method) && cart) {
+      console.log("Creating payment session for:", method);
       await initiatePaymentSession(cart, {
         provider_id: method,
       });
+
+      console.log("Fetching updated cart to get payment session...");
+      try {
+        const updatedCart = await fetch(
+          `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-publishable-api-key":
+                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+            },
+          },
+        );
+
+        if (updatedCart.ok) {
+          const data = await updatedCart.json();
+          console.log("Updated cart:", data.cart);
+          console.log(
+            "Payment sessions:",
+            data.cart?.payment_collection?.payment_sessions,
+          );
+
+          if (data.cart?.payment_collection?.payment_sessions) {
+            const session = data.cart.payment_collection.payment_sessions.find(
+              (s: any) => s.provider_id === method && s.status === "pending",
+            );
+            console.log("Active payment session:", session);
+            console.log("Payment session data:", session?.data);
+          }
+
+          window.location.reload();
+        } else {
+          console.error("Failed to fetch updated cart:", updatedCart.status);
+        }
+      } catch (error) {
+        console.error("Error fetching updated cart:", error);
+      }
     }
   };
 
