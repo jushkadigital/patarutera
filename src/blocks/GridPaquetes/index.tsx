@@ -1,102 +1,252 @@
-import type { Destination, GridPaquetesBlock as GridPaqueteBlockType, Paquete } from '@/cms-types';
-import { CardPaqueteData } from '@/components/cardPaquete';
-import CardTour, { CardTourData } from '@/components/CardTour';
-import { Pagination } from '@/components/Pagination';
-import { PaquetesComponent } from '@/components/PaquetesComponent';
-import { Subtitle } from '@/components/Subtitle';
-import { ToursComponent } from '@/components/ToursComponent';
-import { useSharedState } from '@/hooks/sharedContextDestinos';
-import { BASEURL } from '@/lib2/config';
-import { cn, mergeToursWithPrices } from '@/lib2/utils';
-import { listProductsWithSort } from '@lib/data/products';
+import type {
+  Destination,
+  GridPaquetesBlock as GridPaquetesBlockType,
+} from "@/cms-types";
+import { CardPaqueteData } from "@/components/cardPaquete";
+import { Pagination } from "@/components/Pagination";
+import { Subtitle } from "@/components/Subtitle";
+import { PaquetesComponent } from "@/components/PaquetesComponent";
 
-// Añadir 'mode' a las Props
-interface Props extends GridPaqueteBlockType {
-  rangeSlider?: boolean
-  searchParams?: string
-  page?: number
+import { listProducts } from "@/lib/data/products";
+import { HttpTypes } from "@medusajs/types";
+
+interface Props extends GridPaquetesBlockType {
+  rangeSlider?: boolean;
+  searchParams?: string;
+  page?: number;
+  selectedCategories?: string[];
+  context?: {
+    nameCollection: string;
+  } | null;
+  countryCode?: string;
+}
+
+
+
+type MeiliSearchResponse = {
+  hits?: MeiliPaqueteItem[];
+  estimatedTotalHits?: number;
+};
+
+type MeiliPaqueteItem = {
+  id: number;
+  title?: string;
+  slug?: string;
+  image?: string;
+  description?: unknown;
+  categories?: string[];
+  destination?: string;
+  price?: number;
+  currency?: string;
+  medusa_id?: string;
+};
+
+type LexicalDescription = NonNullable<CardPaqueteData["miniDescription"]>;
+
+function isLexicalDescription(value: unknown): value is LexicalDescription {
+  return typeof value === "object" && value !== null && "root" in value;
+}
+
+function getDescriptionText(value: unknown): string | null {
+  if (typeof value === "string") {
+    return value.trim() || null;
+  }
+
+  return null;
+}
+
+function mapMeiliPaqueteToCardPaqueteData(
+  paquete: MeiliPaqueteItem,
+  productsMap: Record<string, HttpTypes.StoreProduct> = {},
+): CardPaqueteData {
+  const product = paquete.medusa_id ? productsMap[paquete.medusa_id] : null;
+  const priceMedusa = product?.variants?.[0]?.calculated_price
+    ? {
+        amount: product.variants[0].calculated_price.calculated_amount ?? 0,
+        currency: product.variants[0].calculated_price.currency_code ?? "PEN",
+      }
+    : null;
+
+  return {
+    id: paquete.id,
+    title: paquete.title ?? "Paquete en Cusco",
+    slug: paquete.slug ?? `paquete-${paquete.id}`,
+    miniDescription: isLexicalDescription(paquete.description)
+      ? paquete.description
+      : null,
+    descriptionText: getDescriptionText(paquete.description),
+    meiliImage: paquete.image ?? "/backgroundDestinoPage.png",
+    destinationName: paquete.destination ?? "Cusco",
+    price: typeof paquete.price === "number" ? paquete.price : 299,
+    medusaId: paquete.medusa_id ?? null,
+    Desde: "Desde",
+    "Person desc": "Por persona",
+    maxPassengers: 18,
+    difficulty: "easy",
+    iconDifficulty: null,
+    iconMaxPassengers: null,
+    priceMedusa: priceMedusa,
+  };
+}
+
+
+function sanitizeCategories(categories?: string[]): string[] {
+  if (!categories) return [];
+
+  return categories.map((value) => value.trim()).filter(Boolean);
+}
+
+function escapeFilterValue(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
+async function searchPaquetesFromMeilisearch({
+  destinationName,
+  categories,
+  page,
+  limit,
+}: {
+  destinationName?: string;
+  categories: string[];
+  page: number;
+  limit: number;
+}): Promise<{ paquetes: MeiliPaqueteItem[]; totalDocs: number }> {
+  const host = process.env.MEILISEARCH_HOST;
+  const apiKey = process.env.MEILISEARCH_API_KEY;
+
+  if (!host || !apiKey) {
+    return { paquetes: [], totalDocs: 0 };
+  }
+
+  const filters: string[] = [];
+
+  if (destinationName) {
+    filters.push(`destination = "${escapeFilterValue(destinationName)}"`);
+  }
+
+  if (categories.length > 0) {
+    const categoriesFilter = categories
+      .map(
+        (categoryName) => `categories = "${escapeFilterValue(categoryName)}"`,
+      )
+      .join(" OR ");
+
+    filters.push(`(${categoriesFilter})`);
+  }
+
+  const offset = (page - 1) * limit;
+
+  const response = await fetch(`${host}/indexes/paquetes/search`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      q: "",
+      filter: filters.length > 0 ? filters.join(" AND ") : undefined,
+      limit,
+      offset,
+    }),
+    next: { tags: ["paquetes"] },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Meilisearch request failed with status ${response.status}`,
+    );
+  }
+
+  const result: MeiliSearchResponse = await response.json();
+  const paquetes = Array.isArray(result.hits) ? result.hits : [];
+
+  return {
+    paquetes,
+    totalDocs: result.estimatedTotalHits ?? paquetes.length,
+  };
 }
 
 export async function GridPaquetes(props: Props) {
-  // Usar la prop 'mode', con 'grid' como default
-  const { id, gridColumns, gridStyle: mode, destination, blockTitle, searchParams, page, overrideDefaults } = props;
+  const {
+    gridColumns,
+    gridStyle: mode,
+    destination,
+    page,
+    overrideDefaults,
+    searchParams,
+    selectedCategories,
+    countryCode = "pe",
+  } = props;
 
+  const paquetesPerPage = gridColumns ?? 6;
+  const currentPage = page ?? 1;
+  const destinationName = (destination as Destination | undefined)?.name;
 
+  const categoriesToFilter = sanitizeCategories(selectedCategories ?? []);
 
-  let data
-  let paquetes: CardPaqueteData[] = [];
-  let fetchError = null;
-  const params = new URLSearchParams()
+  const meiliResult = await searchPaquetesFromMeilisearch({
+    destinationName,
+    categories: categoriesToFilter,
+    page: currentPage,
+    limit: paquetesPerPage,
+  });
 
-
-  if ((destination as Destination[])) {
-    params.append('where[destinos.name][in]', (destination as Destination[]).map(c => c.name).join(','))
-  }
-
-  try {
-    const queryString = params.toString();
-    const pageNumber = page ? `&page=${page}` : ''
-    const response = await fetch(`${BASEURL}/api/paquetes?limit=${gridColumns}${pageNumber}&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true&${queryString}`);
-    if (!response.ok) {
-      // Consider logging the response status and text for more detailed error info
-      // console.error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    data = await response.json();
-    if (data && data.docs) {
-      paquetes = data.docs;
-    }
-  } catch (error) {
-    console.error("Error fetching paquetes:", error);
-    // Podrías también lanzar el error para que un ErrorBoundary superior lo capture si es necesario
-    // throw error;
-  }
-
-  const mode2 = false
-  // Clases condicionales basadas en la prop 'mode'
-  const containerClasses = cn(
-    mode
-      ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6'
-      : 'flex flex-col space-y-4 md:space-y-6 mx-auto w-[90%]'
+  const totalPages = Math.max(
+    1,
+    Math.ceil(meiliResult.totalDocs / paquetesPerPage),
   );
 
-  if (fetchError) {
-    return <div className="container mx-auto py-8 text-center text-red-500">{fetchError}</div>;
+  const medusaIds = meiliResult.paquetes
+    .map((p) => p.medusa_id)
+    .filter((id): id is string => !!id);
+
+  let productsMap: Record<string, HttpTypes.StoreProduct> = {};
+
+  if (medusaIds.length > 0 && countryCode) {
+    try {
+      const {
+        response: { products },
+      } = await listProducts({
+        countryCode,
+        queryParams: {
+          id: medusaIds,
+          limit: medusaIds.length,
+        },
+      });
+
+      productsMap = products.reduce(
+        (acc, product) => {
+          acc[product.id] = product;
+          return acc;
+        },
+        {} as Record<string, HttpTypes.StoreProduct>,
+      );
+    } catch (error) {
+      console.error("Error fetching Medusa products:", error);
+    }
   }
 
-  const skus = paquetes.map(ele => ele.medusaId)
-
-
-  const pageNumber = 1
-  const sortBy = "created_at"
-  const queryParams = {
-    limit: 12,
-    order: sortBy,
-    id: skus.filter(Boolean)
-  }
-  const countryCode = 'pe'
-
-  let {
-    response: { products, count },
-  } = await listProductsWithSort({
-    page: pageNumber,
-    queryParams,
-    sortBy,
-    countryCode,
-  })
-
-
-  const paquetesWithPrice = mergeToursWithPrices(paquetes, products);
+  const paquetes = meiliResult.paquetes.map((p) =>
+    mapMeiliPaqueteToCardPaqueteData(p, productsMap),
+  );
 
 
   return (
-    // No hay controles de modo aquí porque es un Server Component
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
-      {/* Contenedor condicional */}
-      <Subtitle className="" titleGroup={blockTitle} />
-      <PaquetesComponent mode={mode!} paquetes={paquetesWithPrice} rangeSlider={props.rangeSlider} />
-
-      {overrideDefaults && data.totalPages && (<Pagination page={data.page} totalPages={data.totalPages} searchParams={searchParams!} type={'paquetes'} />)}
+      <Subtitle className="" titleGroup={props.blockTitle} />
+      <PaquetesComponent
+        mode={Boolean(mode)}
+        paquetes={paquetes}
+        rangeSlider={props.rangeSlider}
+      />
+      {overrideDefaults && totalPages > 1 && (
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          searchParams={searchParams ?? ""}
+          type={"paquetes"}
+        />
+      )}
     </div>
   );
 }

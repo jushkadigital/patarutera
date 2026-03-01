@@ -1,5 +1,5 @@
 'use client'
-import { Media, TourHerocarB } from "@/cms-types";
+import { Media, TourHerocarB, PaqueteHerocar } from "@/cms-types";
 import { BannerCarousel } from "@/components/BannerCarousel";
 import { Carousel } from "@/components/Carousel";
 import { CarouselItem } from "@/components/ui/carousel";
@@ -8,9 +8,7 @@ import Image from "@/components/PayloadImage"
 import { useMobile } from "@/hooks/useMobile";
 
 
-interface Props extends TourHerocarB {
-
-}
+type Props = TourHerocarB | PaqueteHerocar
 //return <div className="flex flex-col md:flex-row w-full md:px-[clamp(102px,10vw,192px)] md:mb-10">
 export function TourHero(props: Props) {
   const { carContent, ImageContent } = props
