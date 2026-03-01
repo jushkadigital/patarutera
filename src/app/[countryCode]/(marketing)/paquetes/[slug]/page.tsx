@@ -97,7 +97,7 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
                 medusaId: pricedProduct,
               }}
               countryCode={countryCode}
-          </div>
+            />
         </div>
       </div>
     </>
