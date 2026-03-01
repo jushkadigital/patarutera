@@ -45,11 +45,6 @@ interface Props {
   params: Promise<{ countryCode: string }>;
 }
 
-function parseSelectedCategories(
-  searchParams: Promise<{
-    [key: string]: string | string[] | undefined;
-  }>;
-}
 
 function parseSelectedCategories(
   value: string | string[] | undefined,
@@ -69,8 +64,6 @@ function parseSelectedCategories(
 export default async function Page(props: Props) {
   const params = await props.searchParams;
   const { countryCode } = await props.params;
-  const { destinations, page: pageParam } = params;
-  const params = await props.searchParams;
   const { destinations, page: pageParam } = params;
   const selectedCategories = parseSelectedCategories(params.categories);
   const currentPage = Number(pageParam) || 1;
@@ -149,30 +142,6 @@ export default async function Page(props: Props) {
             <LeftPanelSearchPaquete destinations={destinationsFinal} />
           </div>
           <div className="w-full lg:w-3/4">
-          <div className="w-full lg:w-3/4">
-            <GridPaquetes
-              {...(blocks[0] as GridPaquetesBlock)}
-              gridColumns={6}
-              destination={destinationData}
-              gridStyle={false}
-              rangeSlider={true}
-              searchParams={queryString}
-              page={currentPage}
-              selectedCategories={selectedCategories}
-              overrideDefaults={true}
-              countryCode={countryCode}
-            />
-          </div>
-              {...(blocks[0] as GridPaquetesBlock)}
-              gridColumns={6}
-              destination={destinationData}
-              gridStyle={false}
-              rangeSlider={true}
-              searchParams={queryString}
-              page={currentPage}
-              selectedCategories={selectedCategories}
-              overrideDefaults={true}
-            />
           </div>
         </div>
       </SharedStateProvider>

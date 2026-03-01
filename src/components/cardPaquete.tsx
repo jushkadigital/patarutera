@@ -105,16 +105,6 @@ function getPrice(unitData: CardPaqueteData): number {
 
   return STATIC_FALLBACK.price;
 }
-  if (typeof unitData.price === "number") {
-    return unitData.price;
-  }
-
-  if (typeof unitData.priceMedusa?.amount === "number") {
-    return unitData.priceMedusa.amount;
-  }
-
-  return STATIC_FALLBACK.price;
-}
 
 function getDifficulty(unitData: CardPaqueteData): keyof typeof trad {
   if (unitData.difficulty && unitData.difficulty in trad) {

@@ -34,9 +34,6 @@ type PaquetePageParams = {
   // Add any other params specific to paquetes if needed
 };
 
-  slug?: string;
-  // Add any other params specific to paquetes if needed
-};
 
 type Args = {
   params: Promise<PaquetePageParams>;
@@ -48,15 +45,6 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
   const resolvedParams = await paramsPromise;
   const { slug, countryCode } = resolvedParams;
 
-  if (!slug) {
-
-  const { isEnabled: draft } = await draftMode();
-  const resolvedParams = await paramsPromise;
-  const { slug } = resolvedParams;
-
-  if (!slug) {
-    notFound(); // Should be handled by Next.js routing if slug is missing, but good practice
-  }
 
   const paquete = await queryPaqueteBySlug({ slug: slug });
 
@@ -66,11 +54,6 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
 
   const pricedProduct = await listProducts({
     countryCode: countryCode || "pe", // O la variable que tengas para el país
-    queryParams: {
-      id: paquete.medusaId, // <--- AQUÍ USAS LA VARIABLE DIRECTAMENTE
-    },
-
-    countryCode: "pe", // O la variable que tengas para el país
     queryParams: {
       id: paquete.medusaId, // <--- AQUÍ USAS LA VARIABLE DIRECTAMENTE
     },
@@ -114,15 +97,6 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
                 medusaId: pricedProduct,
               }}
               countryCode={countryCode}
-            />
-
-              blocks={layout}
-              context={{
-                nameCollection: "paquete",
-                title: title,
-                medusaId: pricedProduct,
-              }}
-            />
           </div>
         </div>
       </div>

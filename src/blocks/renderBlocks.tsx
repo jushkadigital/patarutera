@@ -59,10 +59,6 @@ export const RenderBlocks: React.FC<{
   context?: { nameCollection: string, title: string, medusaId: HttpTypes.StoreProduct },
   countryCode?: string
 }> = (props) => {
-
-  blocks: Page['layout'][0][] | NonNullable<Tour['layout']>[0][] | Paquete['layout'][0][],
-  context?: { nameCollection: string, title: string, medusaId: HttpTypes.StoreProduct }
-}> = (props) => {
   const { blocks } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
@@ -80,11 +76,6 @@ export const RenderBlocks: React.FC<{
               return (
                 <div className={!NoPadding.includes(blockType) ? 'w-full px-[clamp(25px,6.6vw,155px)] lg:px-[clamp(136px,13.33vw,256px)]' : 'w-full'} key={index}>
                   <Block {...block} disableInnerContainer context={props.context} countryCode={props.countryCode} />
-                </div>
-              )
-
-                <div className={!NoPadding.includes(blockType) ? 'w-full px-[clamp(25px,6.6vw,155px)] lg:px-[clamp(136px,13.33vw,256px)]' : 'w-full'} key={index}>
-                  <Block {...block} disableInnerContainer context={props.context} />
                 </div>
               )
             }
