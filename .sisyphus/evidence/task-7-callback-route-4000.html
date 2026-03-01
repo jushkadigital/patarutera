@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Authentication</title>
+</head>
+<body>
+  <script>
+    (function() {
+      var message = {"type":"auth-popup","status":"success","nonce":"test"};
+      var channelName = "patarutera-auth-popup-" + "test";
+      if (typeof BroadcastChannel !== "undefined") {
+        new BroadcastChannel(channelName).postMessage(message);
+      }
+      if (window.opener) {
+        window.opener.postMessage(message, window.location.origin);
+      }
+      try {
+        window.close();
+      } catch (e) {
+        document.body.innerHTML = '<p>You can close this window.</p><a href="/">Return to site</a>';
+      }
+      if (!window.closed) {
+        document.body.innerHTML = '<p>You can close this window.</p><a href="/">Return to site</a>';
+      }
+    })();
+  </script>
+</body>
+</html>

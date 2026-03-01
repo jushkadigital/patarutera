@@ -1,31 +1,41 @@
-import { deleteLineItem, deleteMultipleLineItem } from "@lib/data/cart"
-import { Spinner, Trash } from "@medusajs/icons"
-import { clx } from "@medusajs/ui"
-import { useState } from "react"
+import { deleteLineItem, deleteMultipleLineItem } from "@lib/data/cart";
+import { Spinner, Trash } from "@medusajs/icons";
+import { clx } from "@medusajs/ui";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 const DeleteButton = ({
   id,
   children,
   className,
 }: {
-  id: string
-  children?: React.ReactNode
-  className?: string
+  id: string;
+  children?: React.ReactNode;
+  className?: string;
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const handleDelete = async (id: string) => {
-    setIsDeleting(true)
-    await deleteLineItem(id).catch((err) => {
-      setIsDeleting(false)
-    })
-  }
+    setIsDeleting(true);
+    try {
+      await deleteLineItem(id);
+      startTransition(() => {
+        router.refresh();
+      });
+      window.dispatchEvent(new CustomEvent("cart:item-removed"));
+    } catch (_err) {
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div
       className={clx(
         "flex items-center justify-between text-small-regular",
-        className
+        className,
       )}
     >
       <button
@@ -36,32 +46,41 @@ const DeleteButton = ({
         <span>{children}</span>
       </button>
     </div>
-  )
-}
+  );
+};
 
 export const CustomDeleteButton = ({
   ids,
   children,
   className,
 }: {
-  ids: string[]
-  children?: React.ReactNode
-  className?: string
+  ids: string[];
+  children?: React.ReactNode;
+  className?: string;
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const handleDelete = async (ids: string[]) => {
-    setIsDeleting(true)
-    await deleteMultipleLineItem(ids).catch((err) => {
-      setIsDeleting(false)
-    })
-  }
+    setIsDeleting(true);
+    try {
+      await deleteMultipleLineItem(ids);
+      startTransition(() => {
+        router.refresh();
+      });
+      window.dispatchEvent(new CustomEvent("cart:item-removed"));
+    } catch (_err) {
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div
       className={clx(
         "flex items-center justify-between text-small-regular",
-        className
+        className,
       )}
     >
       <button
@@ -72,8 +91,7 @@ export const CustomDeleteButton = ({
         <span>{children}</span>
       </button>
     </div>
-  )
-}
+  );
+};
 
-
-export default DeleteButton
+export default DeleteButton;

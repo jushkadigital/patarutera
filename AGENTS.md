@@ -23,16 +23,13 @@ The architecture synchronizes user authentication between NextAuth (frontend) an
 
 ### Testing
 
-- **Run All Tests**: No dedicated test runner in package.json (tests integrated with Storybook)
-- **Storybook Tests**: Use Storybook Vitest addon with Playwright
-- **Test Files**: Look for `.stories.tsx` or `.stories.ts` files in `src/stories/`
-- **Run Single Test**: Tests are integrated into Storybook; use Storybook UI or `pnpm test:storybook` if available
-- **Test Setup**: Vitest configured in `vitest.config.ts` with Storybook integration
+- **Run All Tests**: `pnpm vitest`
+- **Test Files**: Look for `.test.ts`, `.test.tsx`, `.spec.ts`, or `.spec.tsx` files
+- **Test Setup**: Vitest configured in `vitest.config.ts`
 
 ### Documentation
 
-- **Storybook**: `pnpm storybook` (runs on port 6006)
-- **Build Storybook**: `pnpm build-storybook`
+- No Storybook setup in this repository.
 
 ## Directory Structure
 
@@ -154,10 +151,10 @@ The project has Cursor rules in `.cursor/rules/` directory:
 1. Create feature in `src/modules/` following feature-based organization
 2. Build components in `src/components/` using shadcn/ui/Medusa UI
 3. Create TypeScript types in `src/types/` or inline in component files
-4. Add Storybook stories in `src/stories/` for documentation and testing
+4. Add or update Vitest tests when behavior changes
 5. Update middleware if authentication/session logic is needed
 6. Run `pnpm lint` to check for issues
-7. Test in Storybook: `pnpm storybook`
+7. Run tests: `pnpm vitest`
 
 ### Module Examples
 
@@ -278,13 +275,11 @@ export default function MyComponent() {
 )}>
 ```
 
-## Testing with Storybook
+## Testing
 
-- Stories are in `src/stories/` with `.stories.tsx` or `.stories.ts` extensions
-- Stories use Storybook's component-driven approach
-- Access stories via Storybook UI or run `pnpm storybook`
-- Vitest runs tests for stories automatically
-- Playwright handles browser testing for stories
+- Use Vitest for unit/integration tests
+- Keep tests near the modules/components they validate
+- Run tests with `pnpm vitest`
 
 ## Important Notes
 

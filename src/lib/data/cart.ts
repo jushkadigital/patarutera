@@ -3,7 +3,7 @@
 import { sdk } from "@lib/config";
 import medusaError from "@lib/util/medusa-error";
 import { HttpTypes } from "@medusajs/types";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
   getAuthHeaders,
@@ -110,6 +110,13 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart) {
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
+      
+      // Revalidate all pages
+      try {
+        revalidatePath("/", "layout");
+      } catch (e) {
+        // Fail silently
+      }
 
       return cart;
     })
@@ -158,6 +165,13 @@ export async function addToCart({
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
+      
+      // Revalidate all pages
+      try {
+        revalidatePath("/", "layout");
+      } catch (e) {
+        // Fail silently
+      }
     })
     .catch(medusaError);
 }
@@ -166,8 +180,83 @@ type MultipleCartType = {
   variant_id: string;
   countryCode: string;
   quantity: number;
+  unit_price?: number;
   metadata?: Record<string, any>;
 }[];
+
+type TourItemInput = {
+  variant_id: string;
+  quantity: number;
+  unit_price?: number;
+  metadata?: Record<string, any>;
+};
+
+type AddTourItemsToCartInput = {
+  countryCode: string;
+  tourDate: string;
+  items: TourItemInput[];
+};
+
+export async function addTourItemsToCart({
+  countryCode,
+  tourDate,
+  items,
+}: AddTourItemsToCartInput) {
+  if (!tourDate) {
+    throw new Error("Missing tour date when adding tour items to cart");
+  }
+
+  if (!items || items.length === 0) {
+    throw new Error("No items to add to cart");
+  }
+
+  const cart = await getOrSetCart(countryCode);
+
+  if (!cart) {
+    throw new Error("Error retrieving or creating cart");
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  };
+
+  const payload = {
+    cart_id: cart.id,
+    tour_date: tourDate,
+    items: items.map((item) => ({
+      variant_id: item.variant_id,
+      quantity: item.quantity,
+      ...(item.unit_price !== undefined ? { unit_price: item.unit_price } : {}),
+      metadata: {
+        ...(item.metadata ?? {}),
+        tour_date: tourDate,
+      },
+    })),
+  };
+
+  await sdk.client
+    .fetch<{ cart: HttpTypes.StoreCart }>("/store/cart/tour-items", {
+      method: "POST",
+      body: payload,
+      headers,
+    })
+    .then(async () => {
+      const cartCacheTag = await getCacheTag("carts");
+      revalidateTag(cartCacheTag);
+
+      const fulfillmentCacheTag = await getCacheTag("fulfillment");
+      revalidateTag(fulfillmentCacheTag);
+      
+      // Revalidate cart and tour pages
+      try {
+        revalidatePath("/", "layout");
+      } catch (e) {
+        // Fail silently
+      }
+    })
+    .catch(medusaError);
+}
+
 export async function addMultipleToCart(items: MultipleCartType) {
   //const variants = items.map(ele => ele.variantId)
 
@@ -200,6 +289,13 @@ export async function addMultipleToCart(items: MultipleCartType) {
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
+      
+      // Revalidate all pages
+      try {
+        revalidatePath("/", "layout");
+      } catch (e) {
+        // Fail silently
+      }
     })
     .catch(medusaError);
 }
@@ -233,6 +329,13 @@ export async function updateLineItem({
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
+      
+      // Revalidate all pages
+      try {
+        revalidatePath("/", "layout");
+      } catch (e) {
+        // Fail silently
+      }
     })
     .catch(medusaError);
 }
@@ -270,17 +373,22 @@ export async function deleteMultipleLineItem(lineIds: string[]) {
   if (!cartId) {
     throw new Error("Missing cart ID when deleting line item");
   }
+  const next = {
+    ...(await getCacheOptions("carts")),
+  };
 
   const headers = {
     ...(await getAuthHeaders()),
   };
   await sdk.client
-    .fetch(`store/customcart/${cartId}/line-items`, {
+    .fetch(`store/cart/delete-items`, {
       method: "POST",
       body: {
-        items: lineIds.map((ele) => ({ id: ele })),
+        cart_id: cartId,
+        items: lineIds.map((ele) => (ele)),
       },
       query: {},
+      next,
       headers,
     })
     .then(async () => {
@@ -289,6 +397,13 @@ export async function deleteMultipleLineItem(lineIds: string[]) {
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
+      
+      // Revalidate cart page (dynamic routes)
+      try {
+        revalidatePath("/", "layout");
+      } catch (e) {
+        // Fail silently
+      }
     })
     .catch(medusaError);
 }
@@ -350,6 +465,13 @@ export async function applyPromotions(codes: string[]) {
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
+      
+      // Revalidate all pages
+      try {
+        revalidatePath("/", "layout");
+      } catch (e) {
+        // Fail silently
+      }
     })
     .catch(medusaError);
 }

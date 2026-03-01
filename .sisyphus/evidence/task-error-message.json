@@ -1,0 +1,23 @@
+{
+  "received": [
+    {
+      "via": "broadcast",
+      "data": {
+        "type": "auth-popup",
+        "status": "error",
+        "nonce": "qa-error-nonce",
+        "error": "access_denied"
+      }
+    },
+    {
+      "via": "postMessage",
+      "data": {
+        "type": "auth-popup",
+        "status": "error",
+        "nonce": "qa-error-nonce",
+        "error": "access_denied"
+      }
+    }
+  ],
+  "popupClosed": true
+}

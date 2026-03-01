@@ -1,7 +1,8 @@
 "use client";
 
-import { Text } from "@medusajs/ui";
+import { HttpTypes } from "@medusajs/types";
 import React, { useEffect, useRef, useState } from "react";
+import { Text } from "@medusajs/ui";
 import Spinner from "@modules/common/icons/spinner";
 import {
   defaultPaymentConfig,
@@ -9,37 +10,14 @@ import {
   setupEventHandlers,
 } from "../izipay/config";
 import { myConvertToLocale } from "@lib/util/money";
-import { initiatePaymentSession } from "@lib/data/cart";
+import { initiatePaymentSession, retrieveCart } from "@lib/data/cart";
+import { createIzipayPayment } from "@lib/data/payment";
 
 type IzipayContainerProps = {
   paymentProviderId: string;
   selectedPaymentOptionId: string | null;
   handleSubmitAction: () => Promise<void>;
-  cart?: {
-    id?: string;
-    billing_address?: {
-      first_name?: string;
-      last_name?: string;
-      phone?: string;
-      address_1?: string;
-      city?: string;
-      province?: string;
-      country_code?: string;
-      postal_code?: string;
-      company?: string;
-    };
-    shipping_address?: {
-      first_name?: string;
-      last_name?: string;
-      phone?: string;
-      address_1?: string;
-      city?: string;
-      province?: string;
-      country_code?: string;
-      postal_code?: string;
-    };
-    email?: string;
-  };
+  cart?: HttpTypes.StoreCart | null;
 };
 
 const IZIPAY_SDK_URL =
@@ -142,32 +120,31 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
       setLoading(true);
 
       try {
-        await initiatePaymentSession(cart as any, {
+        const paymentCollection = await initiatePaymentSession(cart, {
           provider_id: paymentProviderId,
         });
 
-        const updatedCart = await fetch(
-          `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "x-publishable-api-key":
-                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-            },
-          },
-        );
-
-        if (updatedCart.ok) {
-          const data = await updatedCart.json();
-          const session = data.cart?.payment_collection?.payment_sessions?.find(
-            (s: any) =>
+        let session =
+          paymentCollection?.payment_collection?.payment_sessions?.find(
+            (s) =>
               s.provider_id === paymentProviderId && s.status === "pending",
           );
-          if (session?.data) {
-            setPaymentSessionData(session.data);
-            setIsSessionCreated(true);
-          }
+
+        if (!session?.data) {
+          const refreshedCart = await retrieveCart(
+            cart.id,
+            "id,*payment_collection,*payment_collection.payment_sessions",
+          );
+
+          session = refreshedCart?.payment_collection?.payment_sessions?.find(
+            (s) =>
+              s.provider_id === paymentProviderId && s.status === "pending",
+          );
+        }
+
+        if (session?.data) {
+          setPaymentSessionData(session.data as Record<string, unknown>);
+          setIsSessionCreated(true);
         }
       } catch (error) {
         console.error("Failed to create payment session:", error);
@@ -191,7 +168,7 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
       paymentSessionData ? Object.keys(paymentSessionData) : "null",
     );
     console.log("cart:", cart);
-    console.log("cart.id:", (cart as any)?.id);
+    console.log("cart.id:", cart?.id);
     console.log("paymentProviderId:", paymentProviderId);
     console.log("selectedPaymentOptionId:", selectedPaymentOptionId);
   }, [
@@ -270,31 +247,14 @@ export const IzipayContainer: React.FC<IzipayContainerProps> = ({
           }),
         };
 
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/izipay/create-payment`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              transactionId: transactionId,
-              "x-publishable-api-key":
-                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-            },
-            body: JSON.stringify(paymentData),
-          },
-        );
+        const data = await createIzipayPayment(paymentData, transactionId);
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.message || "Failed to create payment token",
-          );
+        if (!data) {
+          throw new Error("Failed to create payment token");
         }
 
-        const data = await response.json();
-
         if (!data.response?.token) {
-          throw new Error("Invalid token response");
+          throw new Error(data.message || "Invalid token response");
         }
 
         const sessionToken = data.response.token;

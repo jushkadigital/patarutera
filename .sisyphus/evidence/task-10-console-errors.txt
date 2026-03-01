@@ -1,0 +1,17 @@
+Total messages: 27 (Errors: 11, Warnings: 0)
+Returning 11 messages for level "error"
+
+[ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://localhost:4001/pe/cart:0
+[ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://localhost:4001/pe/cart:0
+[ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://localhost:4001/pe/cart:0
+[ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://localhost:4001/pe/cart:0
+[ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://localhost:4001/pe/cart:102
+[ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://localhost:4001/pe/cart:102
+[ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://localhost:4001/_next/static/chunks/c6939_next_dist_compiled_71365552._.js:3532
+[ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://localhost:4001/_next/static/chunks/c6939_next_dist_compiled_71365552._.js:3532
+[ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:4001/favicon.svg:0
+[ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:4001/favicon.ico:0
+Error: Switched to client rendering because the server rendering errored:
+
+close is not defined
+    at CartDropdown (file:///home/chamba/Desktop/js/patarutera/.next/server/chunks/ssr/%5Broot-of-the-server%5D__5227227b._.js:1729:66)

@@ -1,0 +1,12 @@
+HTTP/1.1 307 Temporary Redirect
+set-cookie: authjs.csrf-token=6d6f73c8b891537415bbad351285819c6a32f35e2d60048a412cd15c00e1f122%7C68eeee5add15d9fa27e9a7d13eec5b85f0ec9976971920e0c7cd5054d1c9bc56; Path=/; HttpOnly; SameSite=Lax
+set-cookie: authjs.callback-url=http%3A%2F%2Flocalhost%3A4000; Path=/; HttpOnly; SameSite=Lax
+set-cookie: authjs.callback-url=http%3A%2F%2Flocalhost%3A4000%2Fdashboard; Path=/; HttpOnly; SameSite=lax
+set-cookie: authjs.pkce.code_verifier=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoiVFowaEpFYTRIVzhCYXVBY3BqdDhHZC1aN3R0SFFOSzlWR0cxRE1fNlNtT2dlMF9JRFE0TXpZck5OZlQ5QjNBZlVsc2RZWTRDOG5ta2xubmdXUGtPMncifQ..T6yjNQxe686wldDNFDnblg.6x6oiVZzCYeYAGylOAuNMQsRYHzeNgDWIBNHY4PHhYLoT6P_ZMHbuneF82kxum2ijTdD4Itpb1LITrxShoct51fxUdjNCNNmVUQddf_KKLxVQZLOctkc9rj88qv8sgXzuabRwsVdRx6RwdhXoZyExx-gQIgfPY_jyDB9GyeIJ2cQqKytlnsBOUAAXQh7xi_G.tHXS47RsKeWCk3nE_J11kDve7pbwiXJhGwNMu_N2J7M; Path=/; Expires=Thu, 26 Feb 2026 22:19:04 GMT; Max-Age=900; HttpOnly; SameSite=lax
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Router-Segment-Prefetch
+location: https://auth.patarutera.pe/realms/quarkus/protocol/openid-connect/auth?response_type=code&client_id=518110ce-1d5a-470e-8ec2-42ea61360325&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fapi%2Fauth%2Fcallback%2Fkeycloak&scope=openid+profile+email+offline_access&code_challenge=9fR4L3EGjrBrVEYr_USi3Qx7uasBvWNMKeRqx5Bt5RE&code_challenge_method=S256
+Date: Thu, 26 Feb 2026 22:04:04 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+

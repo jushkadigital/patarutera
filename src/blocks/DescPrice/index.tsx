@@ -1,4 +1,8 @@
-import { Media, DescrPriceBlock as DescrPriceBlockType, Footer } from "@/cms-types";
+import {
+  Media,
+  DescrPriceBlock as DescrPriceBlockType,
+  Footer,
+} from "@/cms-types";
 import InfiniteImageCarousel from "@/components/infinity-image-carousel";
 import PrecioCardComponent from "@/components/PrecioCard";
 import RichText from "@/components/RichText";
@@ -8,26 +12,26 @@ import { HttpTypes } from "@medusajs/types";
 
 interface Props extends DescrPriceBlockType {
   context?: {
-    nameCollection: string
-    title: string
-    medusaId: HttpTypes.StoreProduct
-  } | null
+    nameCollection: string;
+    title: string;
+    medusaId: HttpTypes.StoreProduct;
+  } | null;
 }
 
 export async function DescrPriceBlock(props: Props) {
-  const { blockTitle, leftColumn, rightColumn, context } = props
-  const footerData: Footer = await getCachedGlobal('footer', 1)()
+  const { blockTitle, leftColumn, rightColumn, context } = props;
+  const footerData: Footer = await getCachedGlobal("footer", 1)();
+  const safePrice =
+    typeof rightColumn.price === "number" && Number.isFinite(rightColumn.price)
+      ? rightColumn.price
+      : 0;
 
-  let phoneNumber = ""
+  let phoneNumber = "";
   if (!footerData.navItems) {
-
   } else {
     if (!footerData.navItems[0].links) {
-
-    }
-    else {
-
-      phoneNumber = footerData.navItems[0].links[0].link!.textInfo!
+    } else {
+      phoneNumber = footerData.navItems[0].links[0].link!.textInfo!;
     }
   }
   return (
@@ -43,18 +47,24 @@ export async function DescrPriceBlock(props: Props) {
                   {leftColumn.tourTitle}
                 </h1>
                 <RichText data={leftColumn.tourDescription} />
-
               </div>
             </div>
           </div>
         </div>
         <div className="w-[60%] mx-auto lg:mx-0 lg:w-[35%] sm:mt-10 lg:mt-0">
-          <PrecioCardComponent priceTitle={rightColumn.priceTitle!} prevText={rightColumn.prevText!} price={rightColumn.price!} nextText={rightColumn.nextText!} paymentForm={rightColumn.paymentForm} origen={context!.nameCollection} phoneNumber={phoneNumber} title={context!.title} medusaId={context!.medusaId} />
+          <PrecioCardComponent
+            priceTitle={rightColumn.priceTitle!}
+            prevText={rightColumn.prevText!}
+            price={safePrice}
+            nextText={rightColumn.nextText!}
+            paymentForm={rightColumn.paymentForm}
+            origen={context!.nameCollection}
+            phoneNumber={phoneNumber}
+            title={context!.title}
+            medusaId={context!.medusaId}
+          />
         </div>
-
-
       </div>
-
     </div>
-  )
+  );
 }

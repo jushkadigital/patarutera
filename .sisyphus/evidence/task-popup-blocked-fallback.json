@@ -1,0 +1,5 @@
+{
+  "sawLoginRequest": true,
+  "loginRequestUrl": "http://localhost:4001/api/auth/login?redirectTo=%2Fapi%2Fauth%2Fpopup-callback%3Fnonce%3D7c0747a2-3554-4608-ab78-aea7ff72f497&provider=keycloak",
+  "note": "Captured browser request to /api/auth/login after window.open returned null (popup blocked simulation)."
+}

@@ -1,0 +1,7 @@
+{
+  "ok": true,
+  "callbackUrl": "http://localhost:4001/api/auth/popup-callback?nonce=1ea0bca9-9f73-4641-9201-ef1abcfdf53f&error=access_denied",
+  "alertText": "access_denied",
+  "popupClosed": true,
+  "note": "Simulated Keycloak error by navigating popup to popup-callback with error param; opener received error message and rendered it."
+}

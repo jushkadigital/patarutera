@@ -1,0 +1,5 @@
+{
+  "alertText": "Authentication timed out after 30000ms",
+  "popupClosed": true,
+  "note": "Waited >30s after opening Keycloak popup; opener displayed timeout error and popup closed."
+}

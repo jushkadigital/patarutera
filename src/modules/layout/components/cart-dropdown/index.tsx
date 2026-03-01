@@ -1,27 +1,55 @@
 "use client";
 
-import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-  Transition,
-} from "@headlessui/react";
+import { Transition } from "@headlessui/react";
 import { convertToLocale } from "@lib/util/money";
 import { HttpTypes } from "@medusajs/types";
 import { Button } from "@medusajs/ui";
-import DeleteButton, {
-  CustomDeleteButton,
-} from "@modules/common/components/delete-button";
+import { CustomDeleteButton } from "@modules/common/components/delete-button";
 import LineItemOptions from "@modules/common/components/line-item-options";
-import LineItemPrice, {
-  LineCustomItemPrice,
-} from "@modules/common/components/line-item-price";
+import { LineCustomItemPrice } from "@modules/common/components/line-item-price";
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
 import Thumbnail from "@modules/products/components/thumbnail";
 import { groupBy } from "lodash";
+import { ShoppingCart } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Heart, ShoppingCart, CircleUserRound, Mail } from "lucide-react";
+
+const getMetadataRecord = (
+  metadata: HttpTypes.StoreCartLineItem["metadata"],
+): Record<string, unknown> | undefined => {
+  return metadata && typeof metadata === "object"
+    ? (metadata as Record<string, unknown>)
+    : undefined;
+};
+
+const getMetadataImage = (
+  metadata: HttpTypes.StoreCartLineItem["metadata"],
+): string | undefined => {
+  const metadataRecord = getMetadataRecord(metadata);
+
+  if (!metadataRecord) {
+    return undefined;
+  }
+
+  const keys = [
+    "thumbnail",
+    "image",
+    "tour_thumbnail",
+    "tour_image",
+    "featured_image",
+  ];
+
+  for (const key of keys) {
+    const value = metadataRecord[key];
+
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value;
+    }
+  }
+
+  return undefined;
+};
+
 const CartDropdown = ({
   cart: cartState,
 }: {
@@ -31,25 +59,37 @@ const CartDropdown = ({
     undefined,
   );
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
+  const [localCart, setLocalCart] = useState<HttpTypes.StoreCart | null>(
+    cartState ?? null,
+  );
 
-  const newItems = groupBy(cartState?.items, "metadata.group_id");
+  const groupedItems = groupBy(
+    localCart?.items,
+    (item) => item.metadata?.group_id ?? item.id,
+  );
 
-  const groupsArray = Object.entries(newItems).map(([type, items]) => ({
-    type,
+  const groupsArray = Object.entries(groupedItems).map(([groupId, items]) => ({
+    groupId,
     items,
-    created_at: items[0].created_at,
+    created_at: items[0]?.created_at,
   }));
 
   const totalItems = groupsArray.length;
-
-  const subtotal = cartState?.subtotal ?? 0;
+  const subtotal = localCart?.subtotal ?? 0;
   const itemRef = useRef<number>(totalItems || 0);
 
+  const closeDropdown = () => {
+    setCartDropdownOpen(false);
+  };
+
+  const openDropdown = () => {
+    setCartDropdownOpen(true);
+  };
+
   const timedOpen = () => {
-    open();
+    openDropdown();
 
-    const timer = setTimeout(close, 5000);
-
+    const timer = setTimeout(closeDropdown, 5000);
     setActiveTimer(timer);
   };
 
@@ -58,10 +98,29 @@ const CartDropdown = ({
       clearTimeout(activeTimer);
     }
 
-    open();
+    openDropdown();
   };
 
-  // Clean up the timer when the component unmounts
+  const fetchCart = async () => {
+    try {
+      const response = await fetch("/api/cart", {
+        next: { revalidate: 0 },
+      });
+      const data = await response.json();
+      setLocalCart(data.cart);
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
+    }
+  };
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!localCart && cartState) {
+      setLocalCart(cartState);
+    }
+  }, [localCart, cartState]);
+
   useEffect(() => {
     return () => {
       if (activeTimer) {
@@ -70,29 +129,50 @@ const CartDropdown = ({
     };
   }, [activeTimer]);
 
-  const pathname = usePathname();
-
-  // open cart dropdown when modifying the cart items, but only if we're not on the cart page
   useEffect(() => {
-    if (itemRef.current !== totalItems && !pathname.includes("/pe/cart")) {
+    if (itemRef.current < totalItems && !pathname.includes("/cart")) {
       timedOpen();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalItems, itemRef.current]);
+
+    itemRef.current = totalItems;
+  }, [totalItems, pathname]);
+
+  useEffect(() => {
+    const handleItemAdded = () => {
+      fetchCart();
+      if (!pathname.includes("/cart")) {
+        timedOpen();
+      }
+    };
+
+    const handleItemRemoved = () => {
+      fetchCart();
+    };
+
+    window.addEventListener("cart:item-added", handleItemAdded);
+    window.addEventListener("cart:item-removed", handleItemRemoved);
+
+    return () => {
+      window.removeEventListener("cart:item-added", handleItemAdded);
+      window.removeEventListener("cart:item-removed", handleItemRemoved);
+    };
+  }, [pathname]);
 
   return (
-    <Popover className="relative h-full">
-      <PopoverButton className="h-full">
-        <LocalizedClientLink
-          className="hover:text-ui-fg-base flex flex-row text-white"
-          href="/cart"
-          data-testid="nav-cart-link"
-        >
-          {" "}
-          <ShoppingCart size={"icon"} className="size-5" color="#fff" /> (
-          {totalItems})
-        </LocalizedClientLink>
-      </PopoverButton>
+    <div
+      className="relative h-full"
+      onMouseEnter={openAndCancel}
+      onMouseLeave={closeDropdown}
+    >
+      <LocalizedClientLink
+        className="hover:text-ui-fg-base flex flex-row text-white"
+        href="/cart"
+        data-testid="nav-cart-link"
+        onFocus={openAndCancel}
+      >
+        <ShoppingCart size={"icon"} className="size-5" color="#fff" /> (
+        <span aria-live="polite">{totalItems}</span>)
+      </LocalizedClientLink>
       <Transition
         show={cartDropdownOpen}
         as={Fragment}
@@ -103,79 +183,104 @@ const CartDropdown = ({
         leaveFrom="opacity-100 translate-y-0"
         leaveTo="opacity-0 translate-y-1"
       >
-        <PopoverPanel
-          static
+        <div
           className="hidden small:block absolute top-[calc(100%+1px)] right-0 bg-white border-x border-b border-gray-200 w-[420px] text-ui-fg-base"
           data-testid="nav-cart-dropdown"
         >
           <div className="p-4 flex items-center justify-center">
             <h3 className="text-large-semi">Cart</h3>
           </div>
-          {cartState && cartState.items?.length ? (
+          {localCart && localCart.items?.length ? (
             <>
               <div className="overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 no-scrollbar p-px">
                 {groupsArray
                   .sort((a, b) => {
                     return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1;
                   })
-                  .map(({ type, items }, idx) => (
-                    <div
-                      className="grid grid-cols-[122px_1fr] gap-x-4"
-                      key={idx}
-                      data-testid="cart-item"
-                    >
-                      <LocalizedClientLink
-                        href={`/pe/${type}/${items[0].product_handle}`}
-                        className="w-24"
-                      >
-                        <Thumbnail
-                          thumbnail={items[0].thumbnail}
-                          images={items[0].variant?.product?.images}
-                          size="square"
-                        />
-                      </LocalizedClientLink>
-                      <div className="flex flex-col justify-between flex-1">
-                        <div className="flex flex-col flex-1">
-                          <div className="flex items-start justify-between">
-                            <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[180px]">
-                              <h3 className="text-base-regular overflow-hidden text-ellipsis">
-                                <LocalizedClientLink
-                                  href={`/pe/${type}/${items[0].product_handle}`}
-                                  data-testid="product-link"
-                                >
-                                  {items[0].title}
-                                </LocalizedClientLink>
-                              </h3>
+                  .map(({ groupId, items }) => {
+                    const collectionType =
+                      (items[0].metadata?.collection_type as
+                        | string
+                        | undefined) || "tour";
+                    const normalizedCollectionType =
+                      collectionType === "tour" ? "tours" : collectionType;
+                    const productHandle = items[0]?.product_handle;
+                    const href = productHandle
+                      ? `/${normalizedCollectionType}/${productHandle}`
+                      : "/cart";
 
-                              {items.map((ele, idx) => (
-                                <LineItemOptions
-                                  key={idx}
-                                  variant={ele.variant}
-                                  data-testid="cart-item-variant"
-                                  data-value={ele.variant}
+                    const firstItemWithImage = items.find(
+                      (item) =>
+                        Boolean(item.thumbnail) ||
+                        Boolean(item.variant?.product?.images?.[0]?.url) ||
+                        Boolean(getMetadataImage(item.metadata)),
+                    );
+
+                    const thumbnail =
+                      firstItemWithImage?.thumbnail ||
+                      getMetadataImage(items[0]?.metadata) ||
+                      getMetadataImage(firstItemWithImage?.metadata);
+
+                    const images =
+                      firstItemWithImage?.variant?.product?.images ||
+                      items[0]?.variant?.product?.images;
+
+                    return (
+                      <div
+                        className="grid grid-cols-[122px_1fr] gap-x-4"
+                        key={groupId}
+                        data-testid="cart-item"
+                      >
+                        <LocalizedClientLink href={href} className="w-24">
+                          <Thumbnail
+                            thumbnail={thumbnail}
+                            images={images}
+                            size="square"
+                          />
+                        </LocalizedClientLink>
+                        <div className="flex flex-col justify-between flex-1">
+                          <div className="flex flex-col flex-1">
+                            <div className="flex items-start justify-between">
+                              <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[180px]">
+                                <h3 className="text-base-regular overflow-hidden text-ellipsis">
+                                  <LocalizedClientLink
+                                    href={href}
+                                    data-testid="product-link"
+                                  >
+                                    {items[0].title}
+                                  </LocalizedClientLink>
+                                </h3>
+
+                                {items.map((lineItem) => (
+                                  <LineItemOptions
+                                    key={lineItem.id}
+                                    variant={lineItem.variant}
+                                    data-testid="cart-item-variant"
+                                    data-value={lineItem.variant}
+                                  />
+                                ))}
+                              </div>
+                              <div className="flex justify-end">
+                                <LineCustomItemPrice
+                                  items={items}
+                                  style="tight"
+                                  currencyCode={localCart.currency_code}
                                 />
-                              ))}
-                            </div>
-                            <div className="flex justify-end">
-                              <LineCustomItemPrice
-                                items={items}
-                                style="tight"
-                                currencyCode={cartState.currency_code}
-                              />
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <CustomDeleteButton
-                          ids={items.map((ele) => ele.id)}
-                          className="mt-1"
-                          data-testid="cart-item-remove-button"
-                        >
-                          Remove
-                        </CustomDeleteButton>
+                          <CustomDeleteButton
+                            ids={items.map((lineItem) => lineItem.id)}
+                            className="mt-1"
+                            data-testid="cart-item-remove-button"
+                          >
+                            Remove
+                          </CustomDeleteButton>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
               </div>
               <div className="p-4 flex flex-col gap-y-4 text-small-regular">
                 <div className="flex items-center justify-between">
@@ -189,15 +294,16 @@ const CartDropdown = ({
                   >
                     {convertToLocale({
                       amount: subtotal,
-                      currency_code: cartState.currency_code,
+                      currency_code: localCart.currency_code,
                     })}
                   </span>
                 </div>
-                <LocalizedClientLink href="/pe/cart" passHref>
+                <LocalizedClientLink href="/cart" passHref>
                   <Button
                     className="w-full"
                     size="large"
                     data-testid="go-to-cart-button"
+                    onClick={closeDropdown}
                   >
                     Go to cart
                   </Button>
@@ -212,19 +318,19 @@ const CartDropdown = ({
                 </div>
                 <span>Your shopping bag is empty.</span>
                 <div>
-                  <LocalizedClientLink href="/pe">
+                  <LocalizedClientLink href="/">
                     <>
                       <span className="sr-only">Go to all products page</span>
-                      <Button onClick={close}>Explore products</Button>
+                      <Button onClick={closeDropdown}>Explore products</Button>
                     </>
                   </LocalizedClientLink>
                 </div>
               </div>
             </div>
           )}
-        </PopoverPanel>
+        </div>
       </Transition>
-    </Popover>
+    </div>
   );
 };
 

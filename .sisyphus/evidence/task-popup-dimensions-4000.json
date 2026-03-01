@@ -1,0 +1,9 @@
+{
+  "captured": {
+    "url": "http://localhost:4000/api/auth/login?redirectTo=%2Fapi%2Fauth%2Fpopup-callback%3Fnonce%3D5d2fba86-5672-41b8-927f-4ce910af06d2&provider=keycloak",
+    "name": "patarutera-auth-popup-5d2fba86-5672-41b8-927f-4ce910af06d2",
+    "features": "popup=yes,width=520,height=680,left=272,top=216"
+  },
+  "popupUrl": "https://auth.patarutera.pe/realms/quarkus/protocol/openid-connect/auth?response_type=code&client_id=518110ce-1d5a-470e-8ec2-42ea61360325&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fapi%2Fauth%2Fcallback%2Fkeycloak&scope=openid+profile+email+offline_access&code_challenge=RfTgGaBYmioM_SZPjIuQF5HQ8toV7IYAuM82oHQWuQM&code_challenge_method=S256",
+  "note": "Captured popup window.open features and Keycloak auth URL on port 4000."
+}

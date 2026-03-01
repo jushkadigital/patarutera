@@ -1,51 +1,177 @@
-"use client"
+"use client";
 
-import { Table, Text, clx } from "@medusajs/ui"
-import { updateLineItem } from "@lib/data/cart"
-import { HttpTypes } from "@medusajs/types"
-import CartItemSelect from "@modules/cart/components/cart-item-select"
-import ErrorMessage from "@modules/checkout/components/error-message"
-import DeleteButton, { CustomDeleteButton } from "@modules/common/components/delete-button"
-import LineItemOptions from "@modules/common/components/line-item-options"
-import LineItemPrice, { LineCustomItemPrice } from "@modules/common/components/line-item-price"
-import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import Spinner from "@modules/common/icons/spinner"
-import Thumbnail from "@modules/products/components/thumbnail"
-import { useState } from "react"
+import { Table, Text, clx } from "@medusajs/ui";
+import { HttpTypes } from "@medusajs/types";
+import DeleteButton from "@modules/common/components/delete-button";
+import { CustomDeleteButton } from "@modules/common/components/delete-button";
+import LineItemPrice from "@modules/common/components/line-item-price";
+import LineItemOptions from "@modules/common/components/line-item-options";
+import LocalizedClientLink from "@modules/common/components/localized-client-link";
+import Thumbnail from "@modules/products/components/thumbnail";
+
+type StoreCartLineItem = HttpTypes.StoreCartLineItem;
 
 type ItemProps = {
-  item: HttpTypes.StoreCartLineItem[]
-  type?: "full" | "preview"
-  currencyCode: string
-}
+  item: StoreCartLineItem | StoreCartLineItem[];
+  type?: "full" | "preview";
+  currencyCode: string;
+};
 
-const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
-  const [updating, setUpdating] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const changeQuantity = async (quantity: number) => {
-
+const toNumber = (value: unknown): number => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
   }
 
-  // TODO: Update this to grab the actual max inventory
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  return 0;
+};
+
+const getMetadataRecord = (
+  metadata: StoreCartLineItem["metadata"],
+): Record<string, unknown> | undefined => {
+  return metadata && typeof metadata === "object"
+    ? (metadata as Record<string, unknown>)
+    : undefined;
+};
+
+const getMetadataImage = (
+  metadata: StoreCartLineItem["metadata"],
+): string | undefined => {
+  const metadataRecord = getMetadataRecord(metadata);
+
+  if (!metadataRecord) {
+    return undefined;
+  }
+
+  const keys = [
+    "thumbnail",
+    "image",
+    "tour_thumbnail",
+    "tour_image",
+    "featured_image",
+  ];
+
+  for (const key of keys) {
+    const value = metadataRecord[key];
+
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value;
+    }
+  }
+
+  return undefined;
+};
+
+const getVariantBreakdownTotal = (
+  metadata: StoreCartLineItem["metadata"],
+): number => {
+  const metadataRecord = getMetadataRecord(metadata);
+  const breakdown = metadataRecord?.variant_breakdown;
+
+  if (!Array.isArray(breakdown)) {
+    return 0;
+  }
+
+  return breakdown.reduce((acc, entry) => {
+    if (!entry || typeof entry !== "object") {
+      return acc;
+    }
+
+    const record = entry as Record<string, unknown>;
+    const lineTotal = toNumber(record.line_total);
+
+    if (lineTotal > 0) {
+      return acc + lineTotal;
+    }
+
+    return acc + toNumber(record.quantity) * toNumber(record.unit_price);
+  }, 0);
+};
+
+const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
+  const groupedItems = Array.isArray(item) ? item : [item];
+  const firstItemWithImage = groupedItems.find(
+    (groupedItem) =>
+      Boolean(groupedItem.thumbnail) ||
+      Boolean(groupedItem.variant?.product?.images?.[0]?.url) ||
+      Boolean(getMetadataImage(groupedItem.metadata)),
+  );
+
+  const lineItemsTotal = groupedItems.reduce(
+    (acc, currentItem) => acc + toNumber(currentItem.total),
+    0,
+  );
+  const lineItemsOriginalTotal = groupedItems.reduce(
+    (acc, currentItem) => acc + toNumber(currentItem.original_total),
+    0,
+  );
+
+  const variantBreakdownTotal = getVariantBreakdownTotal(
+    groupedItems[0]?.metadata,
+  );
+  const aggregatedTotal =
+    lineItemsTotal > 0 ? lineItemsTotal : variantBreakdownTotal;
+
+  const displayItem = {
+    ...groupedItems[0],
+    thumbnail:
+      firstItemWithImage?.thumbnail ||
+      getMetadataImage(groupedItems[0]?.metadata) ||
+      getMetadataImage(firstItemWithImage?.metadata),
+    variant: firstItemWithImage?.variant || groupedItems[0]?.variant,
+    quantity: groupedItems.reduce(
+      (acc, currentItem) => acc + (currentItem.quantity ?? 0),
+      0,
+    ),
+    total: aggregatedTotal,
+    original_total:
+      lineItemsOriginalTotal > 0 ? lineItemsOriginalTotal : aggregatedTotal,
+  };
+
+  const collectionType =
+    (displayItem.metadata?.collection_type as string | undefined) || "tours";
+  const normalizedCollectionType =
+    collectionType === "tour" ? "tours" : collectionType;
+  const productHref = displayItem.product_handle
+    ? `/${normalizedCollectionType}/${displayItem.product_handle}`
+    : undefined;
+  const productTitle = displayItem.product_title || displayItem.title;
 
   return (
     <Table.Row className="w-full" data-testid="product-row">
       <Table.Cell className="!pl-0 p-4 w-24">
-        <LocalizedClientLink
-          href={`/tours/${item[0].product_handle}`}
-          className={clx("flex", {
-            "w-16": type === "preview",
-            "small:w-24 w-12": type === "full",
-          })}
-        >
-          <Thumbnail
-            thumbnail={item[0].thumbnail}
-            images={item[0].variant?.product?.images}
-            size="square"
-          />
-        </LocalizedClientLink>
+        {productHref ? (
+          <LocalizedClientLink
+            href={productHref}
+            className={clx("flex", {
+              "w-16": type === "preview",
+              "small:w-24 w-12": type === "full",
+            })}
+          >
+            <Thumbnail
+              thumbnail={displayItem.thumbnail}
+              images={displayItem.variant?.product?.images}
+              size="square"
+            />
+          </LocalizedClientLink>
+        ) : (
+          <div
+            className={clx("flex", {
+              "w-16": type === "preview",
+              "small:w-24 w-12": type === "full",
+            })}
+          >
+            <Thumbnail
+              thumbnail={displayItem.thumbnail}
+              images={displayItem.variant?.product?.images}
+              size="square"
+            />
+          </div>
+        )}
       </Table.Cell>
 
       <Table.Cell className="text-left">
@@ -53,22 +179,51 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
           className="txt-medium-plus text-ui-fg-base"
           data-testid="product-title"
         >
-          {item[0].product_title}
+          {productHref ? (
+            <LocalizedClientLink href={productHref}>
+              {productTitle}
+            </LocalizedClientLink>
+          ) : (
+            productTitle
+          )}
         </Text>
-        {item.map((ele, idx) => (<LineItemOptions key={idx} variant={ele.variant} data-testid="product-variant" />))}
 
+        {displayItem.metadata?.seat_number !== undefined && (
+          <Text className="txt-medium text-ui-fg-subtle">
+            Seat {displayItem.metadata?.row_number as string}
+            {displayItem.metadata?.seat_number as string}
+          </Text>
+        )}
+
+        {displayItem.metadata?.show_date !== undefined && (
+          <Text className="txt-medium text-ui-fg-subtle">
+            Show Date:{" "}
+            {new Date(
+              displayItem.metadata?.show_date as string,
+            ).toLocaleDateString()}
+          </Text>
+        )}
+
+        {groupedItems.map((groupedItem) => (
+          <LineItemOptions
+            key={groupedItem.id}
+            variant={groupedItem.variant}
+            data-testid="cart-item-variant"
+            data-value={groupedItem.variant}
+          />
+        ))}
       </Table.Cell>
-      <Table.Cell >
-        <CustomDeleteButton
-          ids={item.map(ele => ele.id)}
-          className="mt-1"
-          data-testid="cart-item-remove-button"
-        >
-          Remove
-        </CustomDeleteButton>
 
-      </Table.Cell>
-
+      {type === "full" && (
+        <Table.Cell>
+          <div className="flex gap-2 items-center w-28">
+            <CustomDeleteButton
+              ids={groupedItems.map((groupedItem) => groupedItem.id)}
+              data-testid="product-delete-button"
+            />
+          </div>
+        </Table.Cell>
+      )}
 
       <Table.Cell className="!pr-0">
         <span
@@ -76,16 +231,15 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
             "flex flex-col items-end h-full justify-center": type === "preview",
           })}
         >
-
-          <LineCustomItemPrice
-            items={item}
+          <LineItemPrice
+            item={displayItem}
             style="tight"
             currencyCode={currencyCode}
           />
         </span>
       </Table.Cell>
     </Table.Row>
-  )
-}
+  );
+};
 
-export default Item
+export default Item;

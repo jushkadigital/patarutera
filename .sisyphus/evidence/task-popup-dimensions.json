@@ -1,0 +1,5 @@
+{
+  "url": "http://localhost:4001/api/auth/login?redirectTo=%2Fapi%2Fauth%2Fpopup-callback%3Fnonce%3D61c30fa9-081b-414c-b8e8-65aeddd4df74&provider=keycloak",
+  "name": "patarutera-auth-popup-61c30fa9-081b-414c-b8e8-65aeddd4df74",
+  "features": "popup=yes,width=520,height=680,left=272,top=216"
+}

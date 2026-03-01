@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "note": "Simulated success by navigating popup window to /api/auth/popup-callback?nonce=...; opener made a second document request to /pe/cart, consistent with window.location.reload() being called after openPopup resolved.",
+  "docRequests": [
+    "http://localhost:4000/pe/cart",
+    "http://localhost:4000/pe/cart"
+  ],
+  "docRequestsToCart": 2,
+  "popupClosed": true,
+  "alertCount": 1,
+  "alertTexts": [
+    ""
+  ]
+}

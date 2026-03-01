@@ -1,0 +1,21 @@
+{
+  "received": [
+    {
+      "via": "broadcast",
+      "data": {
+        "type": "auth-popup",
+        "status": "success",
+        "nonce": "qa-success-nonce"
+      }
+    },
+    {
+      "via": "postMessage",
+      "data": {
+        "type": "auth-popup",
+        "status": "success",
+        "nonce": "qa-success-nonce"
+      }
+    }
+  ],
+  "popupClosed": true
+}

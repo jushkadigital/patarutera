@@ -1,30 +1,33 @@
-"use client"
+"use client";
 
-import repeat from "@lib/util/repeat"
-import { HttpTypes } from "@medusajs/types"
-import { Table, clx } from "@medusajs/ui"
+import repeat from "@lib/util/repeat";
+import { HttpTypes } from "@medusajs/types";
+import { Table, clx } from "@medusajs/ui";
 
-import Item from "@modules/cart/components/item"
-import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
-import { groupBy } from "lodash"
+import Item from "@modules/cart/components/item";
+import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item";
+import { groupBy } from "lodash";
 
 type ItemsTemplateProps = {
-  cart: HttpTypes.StoreCart
-}
+  cart: HttpTypes.StoreCart;
+};
 
 const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
-  const items = cart.items
-  const newItems = groupBy(items, "metadata.group_id")
+  const items = cart.items;
+  const groupedItems = groupBy(
+    items,
+    (item) => item.metadata?.group_id ?? item.id,
+  );
 
-  const groupsArray = Object.entries(newItems).map(
-    ([type, items]) => ({
-      type,
-      items,
-      created_at: items[0].created_at
-    })
-  )
+  const groupsArray = Object.entries(groupedItems).map(
+    ([groupId, groupItems]) => ({
+      groupId,
+      items: groupItems,
+      created_at: groupItems[0]?.created_at,
+    }),
+  );
 
-  const hasOverflow = groupsArray && groupsArray.length > 4
+  const hasOverflow = groupsArray && groupsArray.length > 4;
   return (
     <div
       className={clx({
@@ -36,26 +39,26 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
         <Table.Body data-testid="items-table">
           {groupsArray
             ? groupsArray
-              .sort((a, b) => {
-                return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
-              })
-              .map((item, idx) => {
-                return (
-                  <Item
-                    key={idx}
-                    item={item.items}
-                    type="preview"
-                    currencyCode={cart.currency_code}
-                  />
-                )
-              })
+                .sort((a, b) => {
+                  return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1;
+                })
+                .map((groupedItem) => {
+                  return (
+                    <Item
+                      key={groupedItem.groupId}
+                      item={groupedItem.items}
+                      type="preview"
+                      currencyCode={cart.currency_code}
+                    />
+                  );
+                })
             : repeat(5).map((i) => {
-              return <SkeletonLineItem key={i} />
-            })}
+                return <SkeletonLineItem key={i} />;
+              })}
         </Table.Body>
       </Table>
     </div>
-  )
-}
+  );
+};
 
-export default ItemsPreviewTemplate
+export default ItemsPreviewTemplate;

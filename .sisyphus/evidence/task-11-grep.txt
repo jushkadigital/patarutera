@@ -1,0 +1,2 @@
+3:import { usePopupAuth } from "@/hooks/usePopupAuth";
+6:  const { openPopup, isLoading, error } = usePopupAuth();

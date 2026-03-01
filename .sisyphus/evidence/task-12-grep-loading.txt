@@ -1,0 +1,7 @@
+28:  const { openPopup, isLoading, error } = usePopupAuth();
+93:              disabled={isLoading}
+94:              aria-busy={isLoading}
+96:              {isLoading ? (
+106:              disabled={isLoading}
+107:              aria-busy={isLoading}
+109:              {isLoading ? "Conectando..." : "Iniciar Sesion con Keycloak"}

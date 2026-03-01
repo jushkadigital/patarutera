@@ -1,0 +1,10 @@
+HTTP/1.1 307 Temporary Redirect
+set-cookie: authjs.csrf-token=5ca3f0f307575012b92bec208485d8294163defc4dd17f344b8e9753c9fca5b0%7Cf3aa3db31fe9a9f744b3b9808e5ed28a1dba27f9e94cb70e720522153b644b82; Path=/; HttpOnly; SameSite=Lax
+set-cookie: authjs.callback-url=http%3A%2F%2Flocalhost%3A4000; Path=/; HttpOnly; SameSite=Lax
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Router-Segment-Prefetch
+location: http://localhost:4000/api/auth/signin
+Date: Thu, 26 Feb 2026 22:04:03 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+

@@ -1,0 +1,6 @@
+{
+  "ok": true,
+  "alertText": "access_denied",
+  "popupClosed": true,
+  "note": "Simulated Keycloak error by navigating popup to /api/auth/popup-callback?nonce=...&error=access_denied on port 4000; opener displayed the error."
+}

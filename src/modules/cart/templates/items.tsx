@@ -1,26 +1,31 @@
-import repeat from "@lib/util/repeat"
-import { HttpTypes } from "@medusajs/types"
-import { Heading, Table } from "@medusajs/ui"
+import repeat from "@lib/util/repeat";
+import { HttpTypes } from "@medusajs/types";
+import { Heading, Table } from "@medusajs/ui";
 
-import Item from "@modules/cart/components/item"
-import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
-import { groupBy } from "lodash"
+import Item from "@modules/cart/components/item";
+import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item";
+import { groupBy } from "lodash";
 
 type ItemsTemplateProps = {
-  cart?: HttpTypes.StoreCart
-}
+  cart?: HttpTypes.StoreCart;
+};
 
 const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
-  const items = cart?.items
-  const newItems = groupBy(items, "metadata.group_id")
+  const items = cart?.items;
+  console.log("AQUI")
+  console.log(items)
+  const groupedItems = groupBy(
+    items,
+    (item) => item.metadata?.group_id ?? item.id,
+  );
 
-  const groupsArray = Object.entries(newItems).map(
-    ([type, items]) => ({
-      type,
-      items,
-      created_at: items[0].created_at
-    })
-  )
+  const groupsArray = Object.entries(groupedItems).map(
+    ([groupId, groupItems]) => ({
+      groupId,
+      items: groupItems,
+      created_at: groupItems[0]?.created_at,
+    }),
+  );
   return (
     <div>
       <div className="pb-3 flex items-center">
@@ -41,24 +46,24 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
           {groupsArray
             ? groupsArray
               .sort((a, b) => {
-                return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
+                return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1;
               })
-              .map((item, idx) => {
+              .map((groupedItem) => {
                 return (
                   <Item
-                    key={idx}
-                    item={item.items}
-                    currencyCode={cart?.currency_code!}
+                    key={groupedItem.groupId}
+                    item={groupedItem.items}
+                    currencyCode={cart?.currency_code || ""}
                   />
-                )
+                );
               })
             : repeat(5).map((i) => {
-              return <SkeletonLineItem key={i} />
+              return <SkeletonLineItem key={i} />;
             })}
         </Table.Body>
       </Table>
     </div>
-  )
-}
+  );
+};
 
-export default ItemsTemplate
+export default ItemsTemplate;

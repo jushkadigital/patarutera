@@ -9,7 +9,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { cn } from '@/utilities/ui'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 
@@ -50,7 +50,9 @@ export const Pagination: React.FC<{
               className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
               onClick={() => {
                 if (hasPrevPage) {
-                  router.push(`/${finalType[type]}/page/${page - 1}?${props.searchParams}`)
+                  const params = new URLSearchParams(props.searchParams)
+                  params.set('page', String(page - 1))
+                  router.push(`/${finalType[type]}?${params.toString()}`)
                 }
               }}
             />
@@ -70,7 +72,9 @@ export const Pagination: React.FC<{
                 className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
                 onClick={() => {
                   if (hasPrevPage) {
-                    router.push(`/${finalType[type]}/page/${page - 1}?${props.searchParams}`)
+                    const params = new URLSearchParams(props.searchParams)
+                    params.set('page', String(page - 1))
+                    router.push(`/${finalType[type]}?${params.toString()}`)
                   }
                 }}
               >
@@ -98,7 +102,9 @@ export const Pagination: React.FC<{
                 className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
                 onClick={() => {
                   if (hasNextPage) {
-                    router.push(`/${finalType[type]}/page/${page + 1}?${props.searchParams}`)
+                    const params = new URLSearchParams(props.searchParams)
+                    params.set('page', String(page + 1))
+                    router.push(`/${finalType[type]}?${params.toString()}`)
                   }
                 }}
               >
@@ -121,7 +127,9 @@ export const Pagination: React.FC<{
               className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
               onClick={() => {
                 if (hasNextPage) {
-                  router.push(`/${finalType[type]}/page/${page + 1}?${props.searchParams}`)
+                  const params = new URLSearchParams(props.searchParams)
+                  params.set('page', String(page + 1))
+                  router.push(`/${finalType[type]}?${params.toString()}`)
                 }
               }}
             />

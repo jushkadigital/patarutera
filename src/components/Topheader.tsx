@@ -1,89 +1,124 @@
-'use client'
-import { cn } from '@/lib2/utils';
-import { signIn } from "next-auth/react";
-import { SvgFacebook, SvgInstagram, SvgTiktok, SvgWhatsapp } from "./IconsSvg"
-import { Button } from './ui/button';
-import { Heart, ShoppingCart, CircleUserRound, Mail } from 'lucide-react'
-import { useMobile } from '@/hooks/useMobile';
-import Link from 'next/link';
-import { Suspense } from 'react';
-import LocalizedClientLink from '@modules/common/components/localized-client-link';
-import CartButton from '@modules/layout/components/cart-button';
-import { StoreCart } from '@medusajs/types';
-import CartDropdown from '@modules/layout/components/cart-dropdown';
+"use client";
+import { cn } from "@/lib2/utils";
+import { SvgFacebook, SvgInstagram, SvgTiktok, SvgWhatsapp } from "./IconsSvg";
+import { Button } from "./ui/button";
+import { Heart, ShoppingCart, CircleUserRound, Mail } from "lucide-react";
+import { useMobile } from "@/hooks/useMobile";
+import { usePopupAuth } from "@/hooks/usePopupAuth";
+import { Suspense } from "react";
+import LocalizedClientLink from "@modules/common/components/localized-client-link";
+import { StoreCart } from "@medusajs/types";
+import CartDropdown from "@modules/layout/components/cart-dropdown";
 
 interface Props {
-  socialNetworks: any[]
-  email: string
-  isHome: boolean
-  cart: StoreCart | null
+  socialNetworks: any[];
+  email: string;
+  isHome: boolean;
+  cart: StoreCart | null;
 }
 
 export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
   const networkName = {
     facebook: SvgFacebook,
     instagram: SvgInstagram,
-    tiktok: SvgTiktok
-  }
+    tiktok: SvgTiktok,
+  };
 
-  const isMobile = useMobile({ breakpoint: 610 })
+  const isMobile = useMobile({ breakpoint: 610 });
+  const { openPopup, isLoading, error } = usePopupAuth();
 
+  const handleLoginClick = async () => {
+    try {
+      await openPopup({ provider: "keycloak" });
+      window.location.reload();
+    } catch {}
+  };
 
   return (
-    <div className={cn(isHome ? 'h-17 overflow-visible ' : 'bg-[#2970B7]')}>
-      <div className={`flex justify-between py-3 px-[clamp(21px,7.7vw,44px)]  md:px-[clamp(44px,5.7vw,110px)] items-center`} >
-        <div className='flex flex-row flex-wrap justify-center items-center gap-x-2 md:gap-x-4 lg:gap-x-5 text-[11px]  sm:text-xs lg:text-md text-white'>
-          <Mail size={'icon'} className='size-4' color='#fff' />
+    <div className={cn(isHome ? "h-17 overflow-visible " : "bg-[#2970B7]")}>
+      <div
+        className={`flex justify-between py-3 px-[clamp(21px,7.7vw,44px)]  md:px-[clamp(44px,5.7vw,110px)] items-center`}
+      >
+        <div className="flex flex-row flex-wrap justify-center items-center gap-x-2 md:gap-x-4 lg:gap-x-5 text-[11px]  sm:text-xs lg:text-md text-white">
+          <Mail size={"icon"} className="size-4" color="#fff" />
           {email}
-          {
-            isMobile ?
-              <div></div>
-              :
-              <span className='sm:text-xl lg:text-3xl text-white font-light'>
-                |
-              </span>
-          }
+          {isMobile ? (
+            <div></div>
+          ) : (
+            <span className="sm:text-xl lg:text-3xl text-white font-light">
+              |
+            </span>
+          )}
 
-          <div className='flex flex-row gap-x-1 md:gap-x-4 lg:gap-x-5'>
-            {
-              socialNetworks.map(ele => {
-                const Compo = networkName[ele.iconName]
-                return <a key={ele.id} href={ele.link} target="_blank" rel="noopener noreferrer" ><Compo height={20} width={20} color='#FFF' /></a>
-
-              })
-            }
-          </div>
-
-        </div>
-        <div className='flex flex-row justify-center items-center gap-x-2 sm:gap-x-4'>
-          {
-            isMobile ?
-              <SvgWhatsapp size={20} />
-              :
-              <Button className='bg-[#3EAE64] rounded-2xl sm:text-xs lg:text-md' asChild>
-                <a href='https://wa.link/25w6dc' target="_blank" rel="noopener noreferrer">
-                  <SvgWhatsapp />
-                  +51 930 770 103
+          <div className="flex flex-row gap-x-1 md:gap-x-4 lg:gap-x-5">
+            {socialNetworks.map((ele) => {
+              const Compo = networkName[ele.iconName];
+              return (
+                <a
+                  key={ele.id}
+                  href={ele.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Compo height={20} width={20} color="#FFF" />
                 </a>
-              </Button>
-          }
-
-          {isMobile ?
-            <Button variant={'ghost'} className='p-0!' >
-              <CircleUserRound size={'icon'} className='size-5' />
-            </Button>
-            :
-            <Button className='text-[#2970B7] rounded-2xl bg-white uppercase font-bold sm:text-xs lg:text-md' asChild>
-              <button
-                onClick={() => signIn("keycloak")} // "keycloak" debe coincidir con el ID en tu [...nextauth]
-                className="btn-primary"
+              );
+            })}
+          </div>
+        </div>
+        <div className="flex flex-row justify-center items-center gap-x-2 sm:gap-x-4">
+          {isMobile ? (
+            <SvgWhatsapp size={20} />
+          ) : (
+            <Button
+              className="bg-[#3EAE64] rounded-2xl sm:text-xs lg:text-md"
+              asChild
+            >
+              <a
+                href="https://wa.link/25w6dc"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Iniciar Sesión con Keycloak
-              </button>
+                <SvgWhatsapp />
+                +51 930 770 103
+              </a>
             </Button>
-          }
+          )}
 
-          <Button variant='ghost' className={`${isMobile ? 'p-0!' : ''}`}><Heart size={'icon'} className='size-5' color='#fff' /></Button>
+          {isMobile ? (
+            <Button
+              variant={"ghost"}
+              className="p-0!"
+              onClick={() => void handleLoginClick()}
+              disabled={isLoading}
+              aria-busy={isLoading}
+            >
+              {isLoading ? (
+                <span className="text-xs text-white">...</span>
+              ) : (
+                <CircleUserRound size={"icon"} className="size-5" />
+              )}
+            </Button>
+          ) : (
+            <Button
+              className="text-[#2970B7] rounded-2xl bg-white uppercase font-bold sm:text-xs lg:text-md"
+              onClick={() => void handleLoginClick()}
+              disabled={isLoading}
+              aria-busy={isLoading}
+            >
+              {isLoading ? "Conectando..." : "Iniciar Sesion con Keycloak"}
+            </Button>
+          )}
+
+          {error ? (
+            <p className="text-xs text-white" role="alert">
+              {error}
+            </p>
+          ) : null}
+
+          <Button variant="ghost" className={`${isMobile ? "p-0!" : ""}`}>
+            <Heart size={"icon"} className="size-5" color="#fff" />
+          </Button>
 
           <Suspense
             fallback={
@@ -91,7 +126,9 @@ export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
                 className="hover:text-ui-fg-base flex gap-2"
                 href="/pe/cart"
                 data-testid="nav-cart-link"
-              > <ShoppingCart size={'icon'} className='size-5' color='#fff' />
+              >
+                {" "}
+                <ShoppingCart size={"icon"} className="size-5" color="#fff" />
               </LocalizedClientLink>
             }
           >
@@ -99,7 +136,6 @@ export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
           </Suspense>
         </div>
       </div>
-
     </div>
   );
-}
+};
