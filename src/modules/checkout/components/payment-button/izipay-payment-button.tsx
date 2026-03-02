@@ -13,7 +13,7 @@ type IzipayPaymentButtonProps = {
 };
 
 const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
-  cart,
+
   "data-testid": dataTestId,
 }) => {
   const context = useContext(IzipayContext);
@@ -93,11 +93,7 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
     }
   }, [isInitialized, izipayConfig, sessionToken]);
 
-  // If cart is not ready (though this might be handled by parent)
-  // But prompt said "The component must accept cart as a prop if needed"
-  if (cart && (!cart.billing_address || !cart.email)) {
-    return null;
-  }
+
 
   return (
     <div className="flex flex-col gap-4">
