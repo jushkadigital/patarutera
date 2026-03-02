@@ -1,11 +1,11 @@
 import { cache, Fragment } from "react";
 
-import type { GridPaquetesBlock, Media, Page } from "@/cms-types";
+import type { GridPaquetesBlock, Page } from "@/cms-types";
 import { MediaBlock } from "@blocks/MediaBlock";
 import { RowBlock } from "@blocks/RowBlock";
 import { BannerBlock } from "@/blocks/Banner";
 import { BASEURL } from "@/lib2/config";
-import { RenderHero } from "@/blocks/renderHeros";
+
 
 import { LeftPanelSearchPaquete } from "@/components/leftSearchPanelPaquetes";
 import { SharedStateProvider } from "@/hooks/sharedContextDestinos";
@@ -24,6 +24,7 @@ import { LivePreviewListener } from "@/components/LivePreviewListener";
 import { GridPaquetes } from "@/blocks/GridPaquetes";
 
 const blockComponents = {
+  gridPaquetes: GridPaquetes,
   mediaBlock: MediaBlock,
   rowBlock: RowBlock,
   carouselDestination: CarouselDestinos,
@@ -63,8 +64,8 @@ function parseSelectedCategories(
 
 export default async function Page(props: Props) {
   const params = await props.searchParams;
-  const { countryCode } = await props.params;
-  const { destinations, page: pageParam } = params;
+
+  const { page: pageParam } = params;
   const selectedCategories = parseSelectedCategories(params.categories);
   const currentPage = Number(pageParam) || 1;
   const queryString = new URLSearchParams(
@@ -82,19 +83,9 @@ export default async function Page(props: Props) {
   ).toString();
   const { isEnabled: draft } = await draftMode();
 
-  let destinationRequest;
-  let destinationData: any = null;
 
-  if (destinations) {
-    destinationRequest = await fetch(
-      `${BASEURL}/api/destinations?where[name][in]=${destinations}`,
-    );
-    const destinationDataPre = await destinationRequest.json();
-    destinationData = destinationDataPre.docs;
-  }
 
-  let page: any;
-  page = await queryPageBySlug();
+  const page: any = await queryPageBySlug();
   if (!page) {
     notFound();
   }
@@ -124,7 +115,7 @@ export default async function Page(props: Props) {
     <div>
       {draft && <LivePreviewListener />}
       <Fragment>
-        {heroPageBlocks!.map(async (block, index) => {
+        {heroPageBlocks!.map(async (block) => {
           const { blockType } = block;
           switch (blockType) {
             case "banner": {
@@ -142,6 +133,16 @@ export default async function Page(props: Props) {
             <LeftPanelSearchPaquete destinations={destinationsFinal} />
           </div>
           <div className="w-full lg:w-3/4">
+            <GridPaquetes
+              {...(blocks[0] as GridPaquetesBlock)}
+              gridColumns={6}
+              rangeSlider={true}
+              searchParams={queryString}
+              page={currentPage}
+              selectedCategories={selectedCategories}
+              overrideDefaults={true}
+              context={{ nameCollection: "paquetes" }}
+            />
           </div>
         </div>
       </SharedStateProvider>
