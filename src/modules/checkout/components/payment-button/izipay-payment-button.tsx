@@ -48,35 +48,46 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
       // Prevent double initialization
       isFormLoadedRef.current = true;
 
-      const Izipay = window.Izipay;
-      const checkout = new Izipay({ config: izipayConfig });
+      setTimeout(() => {
+        try {
+          const Izipay = window.Izipay;
+          if (!Izipay) return;
+          const checkout = new Izipay({ config: izipayConfig });
 
-      checkout.LoadForm({
-        authorization: sessionToken,
-        keyRSA: "RSA",
-        callbackResponse: async (response: {
-          status: string;
-          message?: string;
-        }) => {
-          console.log("Payment callback:", response);
-          if (response.status === "SUCCESS") {
-            try {
-              await placeOrder();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (err: any) {
-              console.error("Place order error:", err);
-              setErrorMessage(err.message || "Failed to place order");
-            }
-          } else {
-            console.error("Payment failed:", response);
-            setErrorMessage(response.message || "Payment failed");
-          }
-        },
-      });
+          checkout.LoadForm({
+            authorization: sessionToken,
+            keyRSA: "RSA",
+            callbackResponse: async (response: {
+              status: string;
+              message?: string;
+            }) => {
+              console.log("Payment callback:", response);
+              if (response.status === "SUCCESS") {
+                try {
+                  await placeOrder();
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } catch (err: any) {
+                  console.error("Place order error:", err);
+                  setErrorMessage(err.message || "Failed to place order");
+                }
+              } else {
+                console.error("Payment failed:", response);
+                setErrorMessage(response.message || "Payment failed");
+              }
+            },
+          });
+        } catch (err: unknown) {
+          console.error("Error loading Izipay form:", err);
+          setErrorMessage(
+            err instanceof Error ? err.message : "Failed to load payment form"
+          );
+          isFormLoadedRef.current = false;
+        }
+      }, 100);
     } catch (err: unknown) {
-      console.error("Error loading Izipay form:", err);
+      console.error("Error setting up Izipay form timeout:", err);
       setErrorMessage(
-        err instanceof Error ? err.message : "Failed to load payment form"
+        err instanceof Error ? err.message : "Failed to setup payment form"
       );
       isFormLoadedRef.current = false;
     }
