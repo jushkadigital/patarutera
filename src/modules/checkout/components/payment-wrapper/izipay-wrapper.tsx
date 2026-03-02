@@ -1,0 +1,382 @@
+"use client";
+
+import { HttpTypes } from "@medusajs/types";
+import React, { createContext, useEffect, useRef, useState } from "react";
+import { initiatePaymentSession, retrieveCart } from "@lib/data/cart";
+import { createIzipayPayment } from "@lib/data/payment";
+import {
+  defaultPaymentConfig,
+  getDataOrderDynamic,
+} from "../izipay/config";
+import { myConvertToLocale } from "@lib/util/money";
+
+const IZIPAY_SDK_URL =
+  "https://sandbox-checkout.izipay.pe/payments/v1/js/index.js";
+
+declare global {
+  interface Window {
+    Izipay?: {
+      new (config: { config: Record<string, unknown> }): {
+        LoadForm: (options: {
+          authorization: string;
+          keyRSA: string;
+          callbackResponse: (response: {
+            status: string;
+            message?: string;
+          }) => void;
+        }) => void;
+      };
+    };
+  }
+}
+
+export const IzipayContext = createContext<{
+  isLoaded: boolean;
+  isInitialized: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  checkout: any;
+  sessionToken: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  paymentSessionData: any;
+  error: string | null;
+  loading: boolean;
+} | null>(null);
+
+const useIzipaySDK = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const isLoadingRef = useRef(false);
+
+  useEffect(() => {
+    if (isLoadingRef.current || typeof window === "undefined") {
+      return;
+    }
+
+    if (window.Izipay) {
+      setIsLoaded(true);
+      return;
+    }
+
+    isLoadingRef.current = true;
+    setError(null);
+
+    const script = document.createElement("script");
+    script.src = IZIPAY_SDK_URL;
+    script.async = true;
+
+    script.onload = () => {
+      setIsLoaded(true);
+      isLoadingRef.current = false;
+    };
+
+    script.onerror = () => {
+      setError("Failed to load iZipay SDK. Please try again.");
+      isLoadingRef.current = false;
+    };
+
+    document.head.appendChild(script);
+  }, []);
+
+  return { isLoaded, error };
+};
+
+type IzipayWrapperProps = {
+  cart: HttpTypes.StoreCart;
+  paymentSession?: HttpTypes.StorePaymentSession | null;
+  paymentProviderId?: string;
+  children: React.ReactNode;
+};
+
+export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
+  cart,
+  paymentSession,
+  paymentProviderId,
+  children,
+}) => {
+  const { isLoaded, error: loadError } = useIzipaySDK();
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [sdkError, setSdkError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [checkoutInstance, setCheckoutInstance] = useState<any>(null);
+
+  const [paymentSessionData, setPaymentSessionData] = useState<
+    Record<string, unknown> | undefined
+  >(paymentSession?.data as Record<string, unknown> | undefined);
+  const [isSessionCreated, setIsSessionCreated] = useState(!!paymentSessionData);
+
+  const isInitializingRef = useRef(false);
+  const hasInitializedRef = useRef(false);
+
+  const providerId = paymentSession?.provider_id || paymentProviderId;
+
+  // Create payment session and fetch updated cart
+  useEffect(() => {
+    if (!cart?.id || isSessionCreated || !providerId) {
+      return;
+    }
+
+    const createSession = async () => {
+      console.log("Creating payment session for:", providerId);
+      setLoading(true);
+
+      try {
+        const paymentCollection = await initiatePaymentSession(cart, {
+          provider_id: providerId,
+        });
+
+        let session =
+          paymentCollection?.payment_collection?.payment_sessions?.find(
+            (s) => s.provider_id === providerId && s.status === "pending"
+          );
+
+        if (!session?.data) {
+          const refreshedCart = await retrieveCart(
+            cart.id,
+            "id,*payment_collection,*payment_collection.payment_sessions"
+          );
+
+          session = refreshedCart?.payment_collection?.payment_sessions?.find(
+            (s) => s.provider_id === providerId && s.status === "pending"
+          );
+        }
+
+        if (session?.data) {
+          setPaymentSessionData(session.data as Record<string, unknown>);
+          setIsSessionCreated(true);
+        }
+      } catch (error) {
+        console.error("Failed to create payment session:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    createSession();
+  }, [cart, providerId, isSessionCreated]);
+
+  // Main initialization effect
+  useEffect(() => {
+    if (!isSessionCreated) {
+      setIsInitialized(false);
+      setSdkError(null);
+      hasInitializedRef.current = false;
+      setCheckoutInstance(null);
+      return;
+    }
+
+    if (!isLoaded) {
+      return;
+    }
+
+    if (isInitializingRef.current || hasInitializedRef.current) {
+      return;
+    }
+
+    if (!paymentSessionData) {
+      return;
+    }
+
+    const initializePayment = async () => {
+      isInitializingRef.current = true;
+      setLoading(true);
+      setSdkError(null);
+
+      try {
+        console.log("Starting iZipay initialization...");
+
+        const { publicKey, amount } = paymentSessionData as {
+          publicKey?: string;
+          amount?: string | number;
+        };
+
+        if (!publicKey || !amount) {
+          throw new Error("Missing payment session data");
+        }
+
+        const { transactionId, orderNumber, currentTimeUnix } =
+          getDataOrderDynamic();
+        const { requestSource } = defaultPaymentConfig;
+
+        const paymentData = {
+          requestSource,
+          orderNumber: orderNumber,
+          merchantCode: "4004353",
+          publicKey,
+          amount: myConvertToLocale({
+            amount: Number(amount),
+            currency_code: "PEN",
+            locale: "es-PE",
+          }),
+        };
+
+        const data = await createIzipayPayment(paymentData, transactionId);
+
+        if (!data) {
+          throw new Error("Failed to create payment token");
+        }
+
+        if (!data.response?.token) {
+          throw new Error(data.message || "Invalid token response");
+        }
+
+        const token = data.response.token;
+        setSessionToken(token);
+
+        const iziConfig = {
+          config: {
+            transactionId: transactionId,
+            action: "pay",
+            merchantCode: "4004353",
+            facilitatorCode: "",
+            order: {
+              orderNumber: orderNumber,
+              showAmount: true,
+              currency: "PEN",
+              amount: myConvertToLocale({
+                amount: Number(amount),
+                currency_code: "PEN",
+                locale: "es-PE",
+              }),
+              installments: "",
+              deferred: "",
+              payMethod: "all",
+              channel: "web",
+              processType: "AT",
+              merchantBuyerId: "mc1993",
+              dateTimeTransaction: currentTimeUnix,
+            },
+            card: {
+              brand: "",
+              pan: "",
+              expirationMonth: "",
+              expirationYear: "",
+              cvc: "",
+            },
+            token: {
+              cardToken: "",
+            },
+            billing: {
+              firstName: "Lucho",
+              lastName: "Torres",
+              email: "luchotorres@izipay.pe",
+              street: "Av. Jorge Chávez 275",
+              city: "Lima",
+              state: "Lima",
+              country: "PE",
+              postalCode: "15000",
+              phoneNumber: "989897960",
+              documentType: "DNI",
+              document: "12345678",
+              companyName: "",
+            },
+            shipping: {
+              firstName: cart?.shipping_address?.first_name || "",
+              lastName: cart?.shipping_address?.last_name || "",
+              email: cart?.email || "",
+              phoneNumber: cart?.shipping_address?.phone || "",
+              street: cart?.shipping_address?.address_1 || "",
+              city: cart?.shipping_address?.city || "",
+              state: cart?.shipping_address?.province || "",
+              country: cart?.shipping_address?.country_code || "",
+              postalCode: cart?.shipping_address?.postal_code || "",
+              document: "",
+              documentType: "",
+            },
+            language: {
+              init: "ESP",
+              showControlMultiLang: false,
+            },
+            render: {
+              typeForm: "embedded",
+              container: "#izipay-checkout-container",
+              showButtonProcessForm: true,
+            },
+            urlIPN:
+              "https://testapi-pw.izipay.pe/ipnclient/NotificationPublic/requests",
+            appearance: {
+              styleInput: "normal",
+              logo: "",
+              theme: "green",
+              customize: {
+                visibility: {
+                  hideOrderNumber: false,
+                  hideResultScreen: false,
+                  hideLogo: true,
+                  hideMessageActivateOnlinePurchases: false,
+                  hideTestCards: false,
+                  hideShakeValidation: false,
+                  hideGlobalErrors: false,
+                },
+                elements: [
+                  {
+                    paymentMethod: "CARD",
+                    order: 1,
+                    fields: [
+                      {
+                        name: "cardNumber",
+                        order: 1,
+                        visible: true,
+                        groupName: "",
+                      },
+                    ],
+                    changeButtonText: {
+                      actionPay: "Pagar",
+                    },
+                  },
+                ],
+              },
+            },
+            customFields: [],
+          },
+        };
+
+        const Izipay = window.Izipay;
+
+        if (!Izipay) {
+          throw new Error("Izipay SDK not loaded");
+        }
+
+        console.log("Creating Izipay instance...");
+        const checkout = new Izipay({ config: iziConfig.config });
+        setCheckoutInstance(checkout);
+
+        setIsInitialized(true);
+        hasInitializedRef.current = true;
+        console.log("iZipay initialization completed successfully");
+      } catch (error: unknown) {
+        console.error("Failed to initialize iZipay:", error);
+        setSdkError(
+          error instanceof Error
+            ? error.message
+            : "Failed to initialize payment. Please try again."
+        );
+        setIsInitialized(false);
+      } finally {
+        setLoading(false);
+        isInitializingRef.current = false;
+      }
+    };
+
+    initializePayment();
+  }, [isLoaded, paymentSessionData, cart, isSessionCreated]);
+
+  return (
+    <IzipayContext.Provider
+      value={{
+        isLoaded,
+        isInitialized,
+        checkout: checkoutInstance,
+        sessionToken,
+        paymentSessionData,
+        error: loadError || sdkError,
+        loading,
+      }}
+    >
+      {children}
+    </IzipayContext.Provider>
+  );
+};
+
+export default IzipayWrapper;
