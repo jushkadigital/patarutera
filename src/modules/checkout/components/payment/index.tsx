@@ -1,7 +1,7 @@
 "use client";
 
-import { RadioGroup, Radio as RadioGroupOption } from "@headlessui/react";
-import { isIzipay, isStripeLike, paymentInfoMap } from "@lib/constants";
+import { RadioGroup } from "@headlessui/react";
+import { paymentInfoMap } from "@lib/constants";
 import { initiatePaymentSession } from "@lib/data/cart";
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons";
 import { HttpTypes } from "@medusajs/types";
@@ -9,11 +9,8 @@ import { Button, Container, Heading, Text, clx } from "@medusajs/ui";
 import ErrorMessage from "@modules/checkout/components/error-message";
 import PaymentContainer from "@modules/checkout/components/payment-container";
 import Divider from "@modules/common/components/divider";
-import Radio from "@modules/common/components/radio";
-import Spinner from "@modules/common/icons/spinner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { IzipayContainer } from "../payment-container/izipay-container";
 
 const Payment = ({
   cart,
@@ -125,50 +122,11 @@ const Payment = ({
               >
                 {availablePaymentMethods.map((paymentMethod) => (
                   <div key={paymentMethod.id}>
-                    {isIzipay(paymentMethod.id) ? (
-                      <>
-                        <RadioGroupOption
-                          key={paymentMethod.id}
-                          value={paymentMethod.id}
-                          className={clx(
-                            "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
-                            {
-                              "border-ui-border-interactive":
-                                selectedPaymentMethod === paymentMethod.id,
-                            },
-                          )}
-                        >
-                          <div className="flex items-center gap-x-4">
-                            <Radio
-                              checked={
-                                selectedPaymentMethod === paymentMethod.id
-                              }
-                            />
-                            <Text className="text-base-regular">
-                              {paymentInfoMap[paymentMethod.id]?.title ||
-                                paymentMethod.id}
-                            </Text>
-                          </div>
-                          <span className="justify-self-end text-ui-fg-base">
-                            {paymentInfoMap[paymentMethod.id]?.icon}
-                          </span>
-                        </RadioGroupOption>
-                        {selectedPaymentMethod === paymentMethod.id && (
-                          <IzipayContainer
-                            paymentProviderId={paymentMethod.id}
-                            selectedPaymentOptionId={selectedPaymentMethod}
-                            handleSubmitAction={handleSubmit}
-                            cart={cart || undefined}
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <PaymentContainer
-                        paymentInfoMap={paymentInfoMap}
-                        paymentProviderId={paymentMethod.id}
-                        selectedPaymentOptionId={selectedPaymentMethod}
-                      />
-                    )}
+                    <PaymentContainer
+                      paymentInfoMap={paymentInfoMap}
+                      paymentProviderId={paymentMethod.id}
+                      selectedPaymentOptionId={selectedPaymentMethod}
+                    />
                   </div>
                 ))}
               </RadioGroup>

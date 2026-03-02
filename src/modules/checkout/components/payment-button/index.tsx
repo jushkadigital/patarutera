@@ -1,6 +1,7 @@
 "use client"
 
-import { isManual, isStripeLike } from "@lib/constants"
+import { isIzipay, isManual, isStripeLike } from "@lib/constants"
+import IzipayPaymentButton from "./izipay-payment-button"
 import { placeOrder } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
@@ -33,6 +34,8 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
           data-testid={dataTestId}
         />
       )
+    case isIzipay(paymentSession?.provider_id):
+      return <IzipayPaymentButton cart={cart} data-testid={dataTestId} />
     case isManual(paymentSession?.provider_id):
       return (
         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />

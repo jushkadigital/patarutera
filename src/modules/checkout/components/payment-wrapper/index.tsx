@@ -3,8 +3,9 @@
 import { loadStripe } from "@stripe/stripe-js"
 import React from "react"
 import StripeWrapper from "./stripe-wrapper"
+import IzipayWrapper from "./izipay-wrapper"
 import { HttpTypes } from "@medusajs/types"
-import { isStripeLike } from "@lib/constants"
+import { isStripeLike, isIzipay } from "@lib/constants"
 
 type PaymentWrapperProps = {
   cart: HttpTypes.StoreCart
@@ -41,6 +42,14 @@ const PaymentWrapper: React.FC<PaymentWrapperProps> = ({ cart, children }) => {
       >
         {children}
       </StripeWrapper>
+    )
+  }
+
+  if (isIzipay(paymentSession?.provider_id) && paymentSession) {
+    return (
+      <IzipayWrapper cart={cart} paymentSession={paymentSession}>
+        {children}
+      </IzipayWrapper>
     )
   }
 
