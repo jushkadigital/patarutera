@@ -31,6 +31,8 @@ type MeiliTourItem = {
   description?: unknown;
   categories?: string[];
   destination?: string;
+  max_capacity?: number;
+  difficulty?: string;
   price?: number;
   currency?: string;
   medusa_id?: string;
@@ -50,6 +52,7 @@ function getDescriptionText(value: unknown): string | null {
   return null;
 }
 
+type Difficulty = 'easy' | 'medium' | 'hard';
 function mapMeiliTourToCardTourData(tour: MeiliTourItem): CardTourData {
   return {
     id: tour.id,
@@ -65,8 +68,8 @@ function mapMeiliTourToCardTourData(tour: MeiliTourItem): CardTourData {
     medusaId: tour.medusa_id ?? null,
     Desde: "Desde",
     "Person desc": "Por persona",
-    maxPassengers: 18,
-    difficulty: "easy",
+    maxPassengers: tour.max_capacity,
+    difficulty: tour.difficulty as Difficulty,
     priceMedusa: null,
   };
 }
@@ -100,6 +103,7 @@ async function searchToursFromMeilisearch({
   }
 
   const filters: string[] = [];
+  filters.push('type = "tour"');
 
   if (destinationName) {
     filters.push(`destination = "${escapeFilterValue(destinationName)}"`);

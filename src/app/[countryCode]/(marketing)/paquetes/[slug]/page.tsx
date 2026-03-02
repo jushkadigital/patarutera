@@ -74,11 +74,10 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
     <>
       <Script
         id="paquete-schema"
-        type={"application/ld+json"}
-        strategy={"lazyOnload"}
-      >
-        {JSON.stringify(schema)}
-      </Script>
+        type="application/ld+json"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
       <div className="">
         {draft && <LivePreviewListener />}
         <div className="flex flex-col-reverse lg:flex-col">
