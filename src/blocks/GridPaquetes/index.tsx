@@ -34,7 +34,8 @@ type MeiliPaqueteItem = {
   slug?: string;
   image?: string;
   description?: unknown;
-  categories?: string[];
+  max_capacity?: number;
+  difficulty?: string;
   destination?: string;
   price?: number;
   currency?: string;
@@ -55,18 +56,10 @@ function getDescriptionText(value: unknown): string | null {
   return null;
 }
 
+type Difficulty = 'easy' | 'medium' | 'hard';
 function mapMeiliPaqueteToCardPaqueteData(
   paquete: MeiliPaqueteItem,
-  productsMap: Record<string, HttpTypes.StoreProduct> = {},
 ): CardPaqueteData {
-  const product = paquete.medusa_id ? productsMap[paquete.medusa_id] : null;
-  const priceMedusa = product?.variants?.[0]?.calculated_price
-    ? {
-        amount: product.variants[0].calculated_price.calculated_amount ?? 0,
-        currency: product.variants[0].calculated_price.currency_code ?? "PEN",
-      }
-    : null;
-
   return {
     id: paquete.id,
     title: paquete.title ?? "Paquete en Cusco",
@@ -76,16 +69,13 @@ function mapMeiliPaqueteToCardPaqueteData(
       : null,
     descriptionText: getDescriptionText(paquete.description),
     meiliImage: paquete.image ?? "/backgroundDestinoPage.png",
-    destinationName: paquete.destination ?? "Cusco",
     price: typeof paquete.price === "number" ? paquete.price : 299,
     medusaId: paquete.medusa_id ?? null,
     Desde: "Desde",
     "Person desc": "Por persona",
-    maxPassengers: 18,
-    difficulty: "easy",
-    iconDifficulty: null,
-    iconMaxPassengers: null,
-    priceMedusa: priceMedusa,
+    maxPassengers: paquete.max_capacity,
+    difficulty: paquete.difficulty as Difficulty,
+    priceMedusa: null,
   };
 }
 
@@ -119,7 +109,7 @@ async function searchPaquetesFromMeilisearch({
   }
 
   const filters: string[] = [];
-
+  filters.push('type = "paquete"');
   if (destinationName) {
     filters.push(`destination = "${escapeFilterValue(destinationName)}"`);
   }
@@ -136,7 +126,7 @@ async function searchPaquetesFromMeilisearch({
 
   const offset = (page - 1) * limit;
 
-  const response = await fetch(`${host}/indexes/paquetes/search`, {
+  const response = await fetch(`${host}/indexes/tours/search`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -196,38 +186,9 @@ export async function GridPaquetes(props: Props) {
     Math.ceil(meiliResult.totalDocs / paquetesPerPage),
   );
 
-  const medusaIds = meiliResult.paquetes
-    .map((p) => p.medusa_id)
-    .filter((id): id is string => !!id);
 
-  let productsMap: Record<string, HttpTypes.StoreProduct> = {};
-
-  if (medusaIds.length > 0 && countryCode) {
-    try {
-      const {
-        response: { products },
-      } = await listProducts({
-        countryCode,
-        queryParams: {
-          id: medusaIds,
-          limit: medusaIds.length,
-        },
-      });
-
-      productsMap = products.reduce(
-        (acc, product) => {
-          acc[product.id] = product;
-          return acc;
-        },
-        {} as Record<string, HttpTypes.StoreProduct>,
-      );
-    } catch (error) {
-      console.error("Error fetching Medusa products:", error);
-    }
-  }
-
-  const paquetes = meiliResult.paquetes.map((p) =>
-    mapMeiliPaqueteToCardPaqueteData(p, productsMap),
+  const paquetes = meiliResult.paquetes.map(
+    mapMeiliPaqueteToCardPaqueteData
   );
 
 

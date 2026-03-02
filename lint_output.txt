@@ -1,0 +1,5 @@
+
+> patarutera@0.1.0 lint /home/chamba/Desktop/js/patarutera
+> next lint
+
+ ELIFECYCLE  Command failed with exit code 1.

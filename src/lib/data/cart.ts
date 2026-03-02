@@ -110,7 +110,7 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart) {
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
-      
+
       // Revalidate all pages
       try {
         revalidatePath("/", "layout");
@@ -165,7 +165,7 @@ export async function addToCart({
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
-      
+
       // Revalidate all pages
       try {
         revalidatePath("/", "layout");
@@ -246,7 +246,7 @@ export async function addTourItemsToCart({
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
-      
+
       // Revalidate cart and tour pages
       try {
         revalidatePath("/", "layout");
@@ -289,7 +289,7 @@ export async function addMultipleToCart(items: MultipleCartType) {
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
-      
+
       // Revalidate all pages
       try {
         revalidatePath("/", "layout");
@@ -329,7 +329,7 @@ export async function updateLineItem({
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
-      
+
       // Revalidate all pages
       try {
         revalidatePath("/", "layout");
@@ -385,7 +385,7 @@ export async function deleteMultipleLineItem(lineIds: string[]) {
       method: "POST",
       body: {
         cart_id: cartId,
-        items: lineIds.map((ele) => (ele)),
+        items: lineIds.map((ele) => ele),
       },
       query: {},
       next,
@@ -397,7 +397,7 @@ export async function deleteMultipleLineItem(lineIds: string[]) {
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
-      
+
       // Revalidate cart page (dynamic routes)
       try {
         revalidatePath("/", "layout");
@@ -436,14 +436,36 @@ export async function initiatePaymentSession(
     ...(await getAuthHeaders()),
   };
 
+  console.log("[Server][Cart] initiatePaymentSession:start", {
+    cartId: cart.id,
+    providerId: data.provider_id,
+  });
+
   return sdk.store.payment
     .initiatePaymentSession(cart, data, {}, headers)
     .then(async (resp) => {
+      console.log("[Server][Cart] initiatePaymentSession:success", {
+        cartId: cart.id,
+        providerId: data.provider_id,
+        sessions:
+          resp.payment_collection?.payment_sessions?.map((session) => ({
+            providerId: session.provider_id,
+            status: session.status,
+          })) ?? [],
+      });
+
       const cartCacheTag = await getCacheTag("carts");
       revalidateTag(cartCacheTag);
       return resp;
     })
-    .catch(medusaError);
+    .catch((error) => {
+      console.error("[Server][Cart] initiatePaymentSession:error", {
+        cartId: cart.id,
+        providerId: data.provider_id,
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
+      return medusaError(error);
+    });
 }
 
 export async function applyPromotions(codes: string[]) {
@@ -465,7 +487,7 @@ export async function applyPromotions(codes: string[]) {
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment");
       revalidateTag(fulfillmentCacheTag);
-      
+
       // Revalidate all pages
       try {
         revalidatePath("/", "layout");

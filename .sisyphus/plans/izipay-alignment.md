@@ -104,6 +104,6 @@ Modify `src/modules/checkout/components/payment-button/index.tsx`.
 ---
 
 ## Final Verification Wave
-- [ ] Verify no TypeScript or ESLint errors (`pnpm lint`).
-- [ ] Verify standard Medusa UI is structurally identical (Stripe/Manual paths still function perfectly).
-- [ ] Verify Izipay iframe correctly consumes `min-h-[300px]` in the Review step without breaking layout.
+- [x] Verify no TypeScript or ESLint errors (`pnpm lint`).
+- [x] Verify standard Medusa UI is structurally identical (Stripe/Manual paths still function perfectly).
+- [x] Verify Izipay iframe correctly consumes `min-h-[300px]` in the Review step without breaking layout.

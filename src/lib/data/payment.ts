@@ -59,6 +59,13 @@ export const createIzipayPayment = async (
     transactionId,
   };
 
+  console.log("[Server][Izipay] createPayment:start", {
+    transactionId,
+    orderNumber: data.orderNumber,
+    merchantCode: data.merchantCode,
+    amount: data.amount,
+  });
+
   return sdk.client
     .fetch<IzipayCreatePaymentResponse>("/store/izipay/create-payment", {
       method: "POST",
@@ -66,5 +73,18 @@ export const createIzipayPayment = async (
       headers,
       cache: "no-store",
     })
-    .catch(medusaError);
+    .then((response) => {
+      console.log("[Server][Izipay] createPayment:success", {
+        transactionId,
+        hasToken: Boolean(response?.response?.token),
+      });
+      return response;
+    })
+    .catch((error) => {
+      console.error("[Server][Izipay] createPayment:error", {
+        transactionId,
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
+      return medusaError(error);
+    });
 };

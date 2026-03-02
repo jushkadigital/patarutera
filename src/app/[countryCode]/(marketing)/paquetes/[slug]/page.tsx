@@ -45,6 +45,9 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
   const resolvedParams = await paramsPromise;
   const { slug, countryCode } = resolvedParams;
 
+  if (!slug) {
+    notFound();
+  }
 
   const paquete = await queryPaqueteBySlug({ slug: slug });
 
@@ -82,21 +85,10 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
         {draft && <LivePreviewListener />}
         <div className="flex flex-col-reverse lg:flex-col">
           <RenderHero heroBlocks={heroPaquete} title={title} />
-          <div className="flex flex-col space-y-10">
-            <div className="w-full">
-              <h1 className="text-center text-4xl text-[#2970b7] font-bold italic">
-                {title}
-              </h1>
-            </div>
-            <RenderBlocks
-              blocks={layout}
-              context={{
-                nameCollection: "paquete",
-                title: title,
-                medusaId: pricedProduct,
-              }}
-              countryCode={countryCode}
-            />
+          <div className="flex flex-col space-y-10 order-none">
+            <div className='w-full'><h1 className='text-center text-4xl lg:text-[clamp(16.3px,2.6vw,50.72px)]  text-[#2970b7] font-bold italic'>{title}</h1></div>
+            <RenderBlocks blocks={layout} context={{ nameCollection: 'paquete', title: title, medusaId: pricedProduct }} />
+          </div>
         </div>
       </div>
     </>
