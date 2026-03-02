@@ -34,7 +34,7 @@ export const IzipayContext = createContext<{
   isLoaded: boolean;
   isInitialized: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  checkout: any;
+  izipayConfig: any;
   sessionToken: string | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   paymentSessionData: any;
@@ -99,7 +99,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
   const [loading, setLoading] = useState(false);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [checkoutInstance, setCheckoutInstance] = useState<any>(null);
+  const [izipayConfig, setIzipayConfig] = useState<any>(null);
 
   const [paymentSessionData, setPaymentSessionData] = useState<
     Record<string, unknown> | undefined
@@ -162,7 +162,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
       setIsInitialized(false);
       setSdkError(null);
       hasInitializedRef.current = false;
-      setCheckoutInstance(null);
+      setIzipayConfig(null);
       return;
     }
 
@@ -338,9 +338,8 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
           throw new Error("Izipay SDK not loaded");
         }
 
-        console.log("Creating Izipay instance...");
-        const checkout = new Izipay({ config: iziConfig.config });
-        setCheckoutInstance(checkout);
+        console.log("Setting Izipay config...");
+        setIzipayConfig(iziConfig.config);
 
         setIsInitialized(true);
         hasInitializedRef.current = true;
@@ -367,7 +366,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
       value={{
         isLoaded,
         isInitialized,
-        checkout: checkoutInstance,
+        izipayConfig,
         sessionToken,
         paymentSessionData,
         error: loadError || sdkError,

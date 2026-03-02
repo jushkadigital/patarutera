@@ -27,7 +27,7 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
   const {
     isInitialized,
     loading,
-    checkout,
+    izipayConfig,
     sessionToken,
     error: contextError,
   } = context;
@@ -35,8 +35,9 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
   useEffect(() => {
     if (
       !isInitialized ||
-      !checkout ||
+      !izipayConfig ||
       !sessionToken ||
+      !window.Izipay ||
       isFormLoadedRef.current
     ) {
       return;
@@ -46,6 +47,9 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
       console.log("Loading Izipay form...");
       // Prevent double initialization
       isFormLoadedRef.current = true;
+
+      const Izipay = window.Izipay;
+      const checkout = new Izipay({ config: izipayConfig });
 
       checkout.LoadForm({
         authorization: sessionToken,
@@ -76,7 +80,7 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
       );
       isFormLoadedRef.current = false;
     }
-  }, [isInitialized, checkout, sessionToken]);
+  }, [isInitialized, izipayConfig, sessionToken]);
 
   // If cart is not ready (though this might be handled by parent)
   // But prompt said "The component must accept cart as a prop if needed"
