@@ -113,6 +113,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
 
   // Create payment session and fetch updated cart
   useEffect(() => {
+    console.log("createSession effect dependencies:", { cartId: cart?.id, isSessionCreated, providerId });
     if (!cart?.id || isSessionCreated || !providerId) {
       return;
     }
@@ -158,6 +159,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
 
   // Main initialization effect
   useEffect(() => {
+    console.log("IzipayWrapper Effect running:", { isSessionCreated, isLoaded, paymentSessionData, isInitializingRef: isInitializingRef.current, hasInitializedRef: hasInitializedRef.current });
     if (!isSessionCreated) {
       setIsInitialized(false);
       setSdkError(null);
@@ -184,7 +186,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
       setSdkError(null);
 
       try {
-        console.log("Starting iZipay initialization...");
+        console.log("Starting iZipay initialization. PaymentSessionData:", paymentSessionData);
 
         const { publicKey, amount } = paymentSessionData as {
           publicKey?: string;
@@ -211,7 +213,9 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
           }),
         };
 
+        console.log("Calling createIzipayPayment with:", { paymentData, transactionId });
         const data = await createIzipayPayment(paymentData, transactionId);
+        console.log("createIzipayPayment response:", data);
 
         if (!data) {
           throw new Error("Failed to create payment token");
@@ -345,7 +349,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
         hasInitializedRef.current = true;
         console.log("iZipay initialization completed successfully");
       } catch (error: unknown) {
-        console.error("Failed to initialize iZipay:", error);
+        console.error("Failed to initialize iZipay (catch block):", error);
         setSdkError(
           error instanceof Error
             ? error.message
