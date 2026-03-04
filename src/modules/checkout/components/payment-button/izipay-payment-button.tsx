@@ -12,13 +12,25 @@ type IzipayPaymentButtonProps = {
   "data-testid"?: string;
 };
 
-const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
+type IzipayCallbackResponse = {
+  status?: string;
+  code?: string;
+  message?: string;
+  messageUser?: string;
+  response?: {
+    order?: Array<{
+      stateMessage?: string;
+    }>;
+  };
+};
 
+const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
   "data-testid": dataTestId,
 }) => {
   const context = useContext(IzipayContext);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isFormLoadedRef = useRef(false);
+  const isPlacingOrderRef = useRef(false);
 
   if (!context) {
     throw new Error("IzipayPaymentButton must be used within an IzipayWrapper");
@@ -57,29 +69,47 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
           checkout.LoadForm({
             authorization: sessionToken,
             keyRSA: "RSA",
-            callbackResponse: async (response: {
-              status: string;
-              message?: string;
-            }) => {
+            callbackResponse: async (response: IzipayCallbackResponse) => {
               console.log("Payment callback:", response);
-              if (response.status === "SUCCESS") {
+
+              const stateMessage = response.response?.order?.[0]?.stateMessage;
+              const isSuccess =
+                response.status === "SUCCESS" ||
+                response.code === "00" ||
+                stateMessage === "Autorizado";
+
+              if (isSuccess) {
+                if (isPlacingOrderRef.current) {
+                  return;
+                }
+
+                isPlacingOrderRef.current = true;
+
                 try {
                   await placeOrder();
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                } catch (err: any) {
+                  setErrorMessage(null);
+                } catch (err: unknown) {
                   console.error("Place order error:", err);
-                  setErrorMessage(err.message || "Failed to place order");
+                  setErrorMessage(
+                    err instanceof Error
+                      ? err.message
+                      : "Failed to place order",
+                  );
+                } finally {
+                  isPlacingOrderRef.current = false;
                 }
               } else {
                 console.error("Payment failed:", response);
-                setErrorMessage(response.message || "Payment failed");
+                setErrorMessage(
+                  response.messageUser || response.message || "Payment failed",
+                );
               }
             },
           });
         } catch (err: unknown) {
           console.error("Error loading Izipay form:", err);
           setErrorMessage(
-            err instanceof Error ? err.message : "Failed to load payment form"
+            err instanceof Error ? err.message : "Failed to load payment form",
           );
           isFormLoadedRef.current = false;
         }
@@ -87,13 +117,11 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
     } catch (err: unknown) {
       console.error("Error setting up Izipay form timeout:", err);
       setErrorMessage(
-        err instanceof Error ? err.message : "Failed to setup payment form"
+        err instanceof Error ? err.message : "Failed to setup payment form",
       );
       isFormLoadedRef.current = false;
     }
   }, [isInitialized, izipayConfig, sessionToken]);
-
-
 
   return (
     <div className="flex flex-col gap-4">
@@ -121,5 +149,3 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
 };
 
 export default IzipayPaymentButton;
-
-

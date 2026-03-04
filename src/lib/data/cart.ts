@@ -190,11 +190,23 @@ type TourItemInput = {
   unit_price?: number;
   metadata?: Record<string, any>;
 };
+type PackageItemInput = {
+  variant_id: string;
+  quantity: number;
+  unit_price?: number;
+  metadata?: Record<string, any>;
+};
 
 type AddTourItemsToCartInput = {
   countryCode: string;
   tourDate: string;
   items: TourItemInput[];
+};
+
+type AddPackageItemsToCartInput = {
+  countryCode: string;
+  packageDate: string;
+  items: PackageItemInput[];
 };
 
 export async function addTourItemsToCart({
@@ -219,6 +231,8 @@ export async function addTourItemsToCart({
   const headers = {
     ...(await getAuthHeaders()),
   };
+  console.log("DATE")
+  console.log(tourDate)
 
   const payload = {
     cart_id: cart.id,
@@ -236,6 +250,66 @@ export async function addTourItemsToCart({
 
   await sdk.client
     .fetch<{ cart: HttpTypes.StoreCart }>("/store/cart/tour-items", {
+      method: "POST",
+      body: payload,
+      headers,
+    })
+    .then(async () => {
+      const cartCacheTag = await getCacheTag("carts");
+      revalidateTag(cartCacheTag);
+
+      const fulfillmentCacheTag = await getCacheTag("fulfillment");
+      revalidateTag(fulfillmentCacheTag);
+
+      // Revalidate cart and tour pages
+      try {
+        revalidatePath("/", "layout");
+      } catch (e) {
+        // Fail silently
+      }
+    })
+    .catch(medusaError);
+}
+
+export async function addPackagesItemsToCart({
+  countryCode,
+  packageDate,
+  items,
+}: AddPackageItemsToCartInput) {
+  if (!packageDate) {
+    throw new Error("Missing tour date when adding tour items to cart");
+  }
+
+  if (!items || items.length === 0) {
+    throw new Error("No items to add to cart");
+  }
+
+  const cart = await getOrSetCart(countryCode);
+
+  if (!cart) {
+    throw new Error("Error retrieving or creating cart");
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  };
+
+  const payload = {
+    cart_id: cart.id,
+    package_date: packageDate,
+    items: items.map((item) => ({
+      variant_id: item.variant_id,
+      quantity: item.quantity,
+      ...(item.unit_price !== undefined ? { unit_price: item.unit_price } : {}),
+      metadata: {
+        ...(item.metadata ?? {}),
+        package_date: packageDate,
+      },
+    })),
+  };
+
+  await sdk.client
+    .fetch<{ cart: HttpTypes.StoreCart }>("/store/cart/package-items", {
       method: "POST",
       body: payload,
       headers,
@@ -656,20 +730,49 @@ export async function placeOrder(cartId?: string) {
     ...(await getAuthHeaders()),
   };
 
-  const cartRes = await sdk.client
-    .fetch<HttpTypes.StoreCompleteCartResponse>(
-      `/store/carts/${id}/complete-tours`,
-      {
+  const completeCart = async (path: string) => {
+    const response =
+      await sdk.client.fetch<HttpTypes.StoreCompleteCartResponse>(path, {
         method: "POST",
         headers,
-      },
-    )
-    .then(async (cartRes) => {
-      const cartCacheTag = await getCacheTag("carts");
-      revalidateTag(cartCacheTag);
-      return cartRes;
-    })
-    .catch(medusaError);
+      });
+
+    const cartCacheTag = await getCacheTag("carts");
+    revalidateTag(cartCacheTag);
+
+    return response;
+  };
+
+  let cartRes: HttpTypes.StoreCompleteCartResponse;
+
+  try {
+    console.log("[Server][Cart] placeOrder:start", {
+      cartId: id,
+      endpoint: `/store/carts/${id}/complete-tours`,
+    });
+
+    cartRes = await completeCart(`/store/carts/${id}/complete-tours`);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message.toLowerCase() : "";
+    const shouldFallback = errorMessage.includes("not found");
+
+    if (!shouldFallback) {
+      return medusaError(error);
+    }
+
+    console.warn("[Server][Cart] placeOrder:fallback-to-standard-complete", {
+      cartId: id,
+      message: error instanceof Error ? error.message : "Unknown error",
+      endpoint: `/store/carts/${id}/complete`,
+    });
+
+    try {
+      cartRes = await completeCart(`/store/carts/${id}/complete`);
+    } catch (fallbackError: unknown) {
+      return medusaError(fallbackError);
+    }
+  }
 
   if (cartRes?.type === "order") {
     const countryCode =

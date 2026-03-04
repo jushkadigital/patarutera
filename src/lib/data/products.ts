@@ -6,6 +6,9 @@ import { HttpTypes } from "@medusajs/types"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
 import { getRegion, retrieveRegion } from "./regions"
+export type StoreProductWithTour = HttpTypes.StoreProduct & {
+  tour?: any; // Reemplaza 'any' por el tipo real de tu Tour si lo tienes definido
+}
 
 export const listProducts = async ({
   pageParam = 1,
@@ -82,6 +85,72 @@ export const listProducts = async ({
         nextPage: nextPage,
         queryParams,
       }
+    })
+}
+
+export const getProductByExternalId = async (
+  externalId: string,
+  {
+    queryParams,
+    countryCode,
+    regionId,
+  }: {
+    queryParams?: Record<string, any>
+    countryCode?: string
+    regionId?: string
+  }
+): Promise<{ product: HttpTypes.StoreProduct | null }> => {
+  // 1. Validamos que tengamos cómo obtener la región (vital para los precios)
+  if (!countryCode && !regionId) {
+    throw new Error("Country code or region ID is required")
+  }
+
+  let region: HttpTypes.StoreRegion | undefined | null
+
+  if (countryCode) {
+    region = await getRegion(countryCode)
+  } else {
+    region = await retrieveRegion(regionId!)
+  }
+
+  // Si no hay región válida, no podemos calcular precios, retornamos null
+  if (!region) {
+    return { product: null }
+  }
+
+  // 2. Mantenemos la lógica de headers y caché de tu proyecto
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  const next = {
+    ...(await getCacheOptions("products")), // Puedes cambiarlo a `product_${externalId}` si prefieres invalidar por producto
+  }
+
+  // 3. Hacemos el fetch al nuevo endpoint
+  return sdk.client
+    .fetch<{ product: HttpTypes.StoreProduct }>(
+      `/store/products/external/${externalId}`,
+      {
+        method: "GET",
+        query: {
+          region_id: region?.id,
+          currency_code: region.currency_code,
+          // Eliminamos 'fields' gigante de aquí porque tu backend ahora lo maneja
+          ...queryParams,
+        },
+        headers,
+        next,
+        cache: "force-cache",
+      }
+    )
+    .then(({ product }) => {
+      return { product }
+    })
+    .catch((error) => {
+      // Capturamos el 404 de forma segura por si el external_id no existe
+      console.error(`Error fetching product by external_id ${externalId}:`, error)
+      return { product: null }
     })
 }
 

@@ -4,7 +4,7 @@ import { LivePreviewListener } from "@/components/LivePreviewListener";
 import { PaqueteSchema } from "@/components/Schema";
 import { BASEURL } from "@/lib2/config";
 import { generateMetaPage } from "@/utilities/generateMeta";
-import { listProducts } from "@/lib/data/products";
+import { getProductByExternalId, listProducts } from "@/lib/data/products";
 import { Metadata } from "next";
 import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
@@ -54,20 +54,18 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
   if (!paquete) {
     notFound();
   }
+  const { product } = await getProductByExternalId(paquete.id + "package", {
+    countryCode,
+  })
 
-  const pricedProduct = await listProducts({
-    countryCode: countryCode || "pe", // O la variable que tengas para el país
-    queryParams: {
-      id: paquete.medusaId, // <--- AQUÍ USAS LA VARIABLE DIRECTAMENTE
-    },
-  }).then(({ response }) => response.products[0]);
-
-  if (!pricedProduct) {
+  if (!product) {
     // Maneja el caso de que el ID no exista en Medusa
     console.error("Producto no encontrado en Medusa con ID:", paquete.medusaId);
   }
 
-  console.log(pricedProduct);
+  console.log("MONO")
+  console.log(paquete.id)
+  console.log(product);
 
   const { layout, heroPaquete, title } = paquete; // Assuming paquetes have layout and heroPaquete
 
@@ -87,7 +85,7 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
           <RenderHero heroBlocks={heroPaquete} title={title} />
           <div className="flex flex-col space-y-10 order-none">
             <div className='w-full'><h1 className='text-center text-4xl lg:text-[clamp(16.3px,2.6vw,50.72px)]  text-[#2970b7] font-bold italic'>{title}</h1></div>
-            <RenderBlocks blocks={layout} context={{ nameCollection: 'paquete', title: title, medusaId: pricedProduct }} />
+            <RenderBlocks blocks={layout} context={{ nameCollection: 'paquete', title: title, medusaId: product! }} />
           </div>
         </div>
       </div>

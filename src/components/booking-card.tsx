@@ -12,7 +12,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 import { CustomCalendar } from "./CustomCalendar";
-import { addTourItemsToCart } from "@lib/data/cart";
+import { addPackagesItemsToCart, addTourItemsToCart } from "@lib/data/cart";
 import { HttpTypes } from "@medusajs/types";
 import { convertToLocale } from "@lib/util/money";
 import { Divider } from "@medusajs/ui";
@@ -67,6 +67,7 @@ const buildPassengersByType = (
 
 export function BookingCard({ amount, slug, type, medusaId, tourId }: Props) {
   const typing = type == "tour" ? 2 : 40;
+  const isTour = type == "tour"
   const normalizedAmount = amount.replace(/,/g, "").toString();
   const initialDate = useMemo(() => {
     const d = new Date();
@@ -167,7 +168,7 @@ export function BookingCard({ amount, slug, type, medusaId, tourId }: Props) {
           const calculatedAmount = variant.calculated_price?.calculated_amount;
           const unitPrice =
             typeof calculatedAmount === "number" &&
-            Number.isFinite(calculatedAmount)
+              Number.isFinite(calculatedAmount)
               ? calculatedAmount
               : undefined;
 
@@ -247,10 +248,10 @@ export function BookingCard({ amount, slug, type, medusaId, tourId }: Props) {
           ? { unit_price: entry.unitPrice }
           : {}),
         metadata: {
-          is_tour: true,
-          tour_id: tourId,
+          ...(isTour ? { is_tour: true } : { is_package: true }),
+          ...(isTour ? { tour_id: tourId } : { package_id: tourId }),
           group_id: groupId,
-          tour_date: tourDate,
+          ...(isTour ? { tour_date: tourDate } : { package_date: tourDate }),
           thumbnail: productThumbnail,
           passengers: buildPassengersByType(
             entry.passengerType,
@@ -272,11 +273,20 @@ export function BookingCard({ amount, slug, type, medusaId, tourId }: Props) {
         },
       }));
 
-      await addTourItemsToCart({
-        countryCode: locale,
-        tourDate,
-        items,
-      });
+      if (isTour) {
+        await addTourItemsToCart({
+          countryCode: locale,
+          tourDate,
+          items,
+        });
+      } else {
+        await addPackagesItemsToCart({
+          countryCode: locale,
+          packageDate: tourDate,
+          items,
+        });
+      }
+
 
       window.dispatchEvent(
         new CustomEvent("cart:item-added", {
