@@ -18,11 +18,11 @@ import { convertToLocale } from "@lib/util/money";
 import { Divider } from "@medusajs/ui";
 
 interface Props {
-  amount: string;
   slug: string;
   type: string;
   medusaId: HttpTypes.StoreProduct;
   tourId?: string;
+  formId?: number;
 }
 
 type PassengerType = "ADULT" | "CHILD" | "INFANT";
@@ -65,10 +65,9 @@ const buildPassengersByType = (
   };
 };
 
-export function BookingCard({ amount, slug, type, medusaId, tourId }: Props) {
+export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
   const typing = type == "tour" ? 2 : 40;
   const isTour = type == "tour"
-  const normalizedAmount = amount.replace(/,/g, "").toString();
   const initialDate = useMemo(() => {
     const d = new Date();
     d.setDate(d.getDate() + typing);
@@ -142,6 +141,8 @@ export function BookingCard({ amount, slug, type, medusaId, tourId }: Props) {
     });
     return total;
   }, [product.variants, quantities]);
+  console.log("POPO")
+  console.log(formId)
 
   const handleAddToCart = async () => {
     if (totalItems === 0) {
@@ -273,17 +274,20 @@ export function BookingCard({ amount, slug, type, medusaId, tourId }: Props) {
         },
       }));
 
+
       if (isTour) {
         await addTourItemsToCart({
           countryCode: locale,
           tourDate,
           items,
+          formId
         });
       } else {
         await addPackagesItemsToCart({
           countryCode: locale,
           packageDate: tourDate,
           items,
+          formId
         });
       }
 
@@ -324,7 +328,6 @@ export function BookingCard({ amount, slug, type, medusaId, tourId }: Props) {
         <div className="flex items-baseline gap-2">
           <span className="text-muted-foreground text-sm">De:</span>
           <span className="text-3xl font-bold text-[#2970b7]">
-            S/.{normalizedAmount}
           </span>
         </div>
       </div>

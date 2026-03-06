@@ -1,28 +1,43 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Navbar } from './Navbar';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib2/utils';
-import { Destination } from '@/cms-types';
-import { StoreCart } from '@medusajs/types';
+import React from "react";
+import { Navbar } from "./Navbar";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib2/utils";
+import { Destination } from "@/cms-types";
+import { StoreCart } from "@medusajs/types";
 
 interface Props {
-  destinations: Destination[]
-  socialNetworks: any[]
-  email: string
-  cart: StoreCart | null
+  destinations: Destination[];
+  socialNetworks: any[];
+  email: string;
+  cart: StoreCart | null;
+  isAuthenticated: boolean;
 }
 
-export const Header = ({ destinations, socialNetworks, email, cart }: Props) => {
-  const allowedPaths = ['/', '/destino']
+export const Header = ({
+  destinations,
+  socialNetworks,
+  email,
+  cart,
+  isAuthenticated,
+}: Props) => {
+  const allowedPaths = ["/", "/destino"];
   const pathname = usePathname();
-  const isHome = pathname == '/'
+  const isHome = pathname == "/";
   const isTransparent = allowedPaths.includes(pathname);
 
   return (
-    <header className={cn(isHome ? 'h-0 overflow-visible ' : '')}>
-      <Navbar destinations={destinations} isHome={isHome} isTransparent={isTransparent} socialNetworks={socialNetworks} email={email} cart={cart} />
+    <header className={cn(isHome ? "h-0 overflow-visible " : "")}>
+      <Navbar
+        destinations={destinations}
+        isHome={isHome}
+        isTransparent={isTransparent}
+        socialNetworks={socialNetworks}
+        email={email}
+        cart={cart}
+        isAuthenticated={isAuthenticated}
+      />
     </header>
   );
-}; 
+};

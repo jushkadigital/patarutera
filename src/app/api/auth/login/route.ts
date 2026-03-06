@@ -1,6 +1,6 @@
 import { signIn } from "@/lib2/auth";
 
-const DEFAULT_REDIRECT_TO = "/dashboard";
+const DEFAULT_REDIRECT_TO = "/account";
 const DEFAULT_PROVIDER = "keycloak";
 
 const getSafeRedirectTo = (raw: string | null): string => {

@@ -15,9 +15,16 @@ interface Props {
   email: string;
   isHome: boolean;
   cart: StoreCart | null;
+  isAuthenticated: boolean;
 }
 
-export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
+export const TopHeader = ({
+  isHome,
+  socialNetworks,
+  email,
+  cart,
+  isAuthenticated,
+}: Props) => {
   const networkName = {
     facebook: SvgFacebook,
     instagram: SvgInstagram,
@@ -31,7 +38,7 @@ export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
     try {
       await openPopup({ provider: "keycloak" });
       window.location.reload();
-    } catch {}
+    } catch { }
   };
 
   return (
@@ -85,7 +92,27 @@ export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
             </Button>
           )}
 
-          {isMobile ? (
+          {isAuthenticated ? (
+            <LocalizedClientLink
+              href="/account"
+              data-testid="profile-link-top-header"
+            >
+              <Button
+                className={cn(
+                  "rounded-2xl uppercase font-bold sm:text-xs lg:text-md",
+                  isMobile
+                    ? "p-0! bg-transparent text-white"
+                    : "text-[#2970B7] bg-white",
+                )}
+              >
+                {isMobile ? (
+                  <CircleUserRound size={"icon"} className="size-5" />
+                ) : (
+                  "Mi perfil"
+                )}
+              </Button>
+            </LocalizedClientLink>
+          ) : isMobile ? (
             <Button
               variant={"ghost"}
               className="p-0!"
@@ -106,11 +133,11 @@ export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
               disabled={isLoading}
               aria-busy={isLoading}
             >
-              {isLoading ? "Conectando..." : "Iniciar Sesion con Keycloak"}
+              {isLoading ? "Conectando..." : "Iniciar Sesion"}
             </Button>
           )}
 
-          {error ? (
+          {!isAuthenticated && error ? (
             <p className="text-xs text-white" role="alert">
               {error}
             </p>
@@ -124,7 +151,7 @@ export const TopHeader = ({ isHome, socialNetworks, email, cart }: Props) => {
             fallback={
               <LocalizedClientLink
                 className="hover:text-ui-fg-base flex gap-2"
-                href="/pe/cart"
+                href="/cart"
                 data-testid="nav-cart-link"
               >
                 {" "}

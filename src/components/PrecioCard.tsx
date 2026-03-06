@@ -25,10 +25,6 @@ interface FormData {
 // Se ajustan las props para que sean más genéricas para un formulario de contacto.
 // 'origen' se mantiene para saber de dónde se envía el formulario.
 interface Props {
-  priceTitle: string;
-  prevText: string;
-  price?: number;
-  nextText: string;
   paymentForm?: {
     iconDate?: (number | null) | Media;
     InputPlaceHolderDate?: string | null;
@@ -39,17 +35,15 @@ interface Props {
   phoneNumber: string;
   title: string;
   medusaId: HttpTypes.StoreProduct;
+  formId?: number
 }
 
 export default function FormularioContacto({
-  priceTitle,
-  prevText,
-  price,
-  nextText,
   origen,
   phoneNumber,
   title,
   medusaId,
+  formId
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
@@ -119,7 +113,6 @@ export default function FormularioContacto({
     });
   }
 
-  const formattedPrice = formatMoney(price);
 
   return (
     // 5. ESTRUCTURA Y ESTILOS DEL COMPONENTE ADAPTADOS
@@ -137,7 +130,6 @@ export default function FormularioContacto({
                     {" "}
                     De:{" "}
                     <span className="text-[#25D366] ">
-                      S/.{formattedPrice}{" "}
                     </span>
                   </div>
                   <div>{title}</div>
@@ -154,7 +146,6 @@ export default function FormularioContacto({
 
               <DialogContent className="pb-0! px-0! mx-0!">
                 <BookingCard
-                  amount={formattedPrice}
                   type={origen}
                   slug={pathname}
                   medusaId={medusaId}
@@ -195,10 +186,10 @@ export default function FormularioContacto({
           <div className="p-8 space-y-6 relative">
             {/* Campo: Nombre */}
             <BookingCard
-              amount={formattedPrice}
               type={origen}
               slug={pathname}
               medusaId={medusaId}
+              formId={formId}
             />
 
             {/* Botón de Envío */}

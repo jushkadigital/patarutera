@@ -1,16 +1,20 @@
-import ItemsTemplate from "./items"
-import Summary from "./summary"
-import EmptyCartMessage from "../components/empty-cart-message"
-import SignInPrompt from "../components/sign-in-prompt"
-import Divider from "@modules/common/components/divider"
-import { HttpTypes } from "@medusajs/types"
+import ItemsTemplate from "./items";
+import Summary from "./summary";
+import EmptyCartMessage from "../components/empty-cart-message";
+import SignInPrompt from "../components/sign-in-prompt";
+import Divider from "@modules/common/components/divider";
+import { HttpTypes } from "@medusajs/types";
 
 const CartTemplate = ({
   cart,
   customer,
+  hasAuthSessionCookie,
+  hasMedusaSessionCookie,
 }: {
-  cart: HttpTypes.StoreCart | null
-  customer: HttpTypes.StoreCustomer | null
+  cart: HttpTypes.StoreCart | null;
+  customer: HttpTypes.StoreCustomer | null;
+  hasAuthSessionCookie: boolean;
+  hasMedusaSessionCookie: boolean;
 }) => {
   return (
     <div className="py-12">
@@ -31,7 +35,11 @@ const CartTemplate = ({
                 {cart && cart.region && (
                   <>
                     <div className="bg-white py-6">
-                      <Summary cart={cart as any} />
+                      <Summary
+                        cart={cart as any}
+                        hasAuthSessionCookie={hasAuthSessionCookie}
+                        hasMedusaSessionCookie={hasMedusaSessionCookie}
+                      />
                     </div>
                   </>
                 )}
@@ -45,7 +53,7 @@ const CartTemplate = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CartTemplate
+export default CartTemplate;

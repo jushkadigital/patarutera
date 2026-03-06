@@ -66,10 +66,11 @@ export default async function TourPage({ params: paramsPromise }: Args) {
   }
   console.log(product)
 
-  const { layout, heroTour, title } = tour; // Assuming tours have layout and heroPageBlocks
+  const { layout, heroTour, title, form } = tour; // Assuming tours have layout and heroPageBlocks
 
   const schema = TourSchema(tour)
 
+  console.log(form)
 
   return (
     <>
@@ -82,7 +83,7 @@ export default async function TourPage({ params: paramsPromise }: Args) {
           <RenderHero heroBlocks={heroTour} title={title} />
           <div className='flex flex-col space-y-10 order-none'>
             <div className='w-full'><h1 className='text-center text-4xl lg:text-[clamp(16.3px,2.6vw,50.72px)]  text-[#2970b7] font-bold italic'>{title}</h1></div>
-            <RenderBlocks blocks={layout} context={{ nameCollection: 'tour', title: title, medusaId: product! }} />
+            <RenderBlocks blocks={layout} context={{ nameCollection: 'tour', title: title, medusaId: product!, formId: form?.id ?? null }} />
           </div>
         </div>
 

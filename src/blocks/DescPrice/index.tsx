@@ -15,16 +15,13 @@ interface Props extends DescrPriceBlockType {
     nameCollection: string;
     title: string;
     medusaId: HttpTypes.StoreProduct;
+    formId?: number
   } | null;
 }
 
 export async function DescrPriceBlock(props: Props) {
   const { blockTitle, leftColumn, rightColumn, context } = props;
   const footerData: Footer = await getCachedGlobal("footer", 1)();
-  const safePrice =
-    typeof rightColumn.price === "number" && Number.isFinite(rightColumn.price)
-      ? rightColumn.price
-      : 0;
 
   let phoneNumber = "";
   if (!footerData.navItems) {
@@ -53,15 +50,11 @@ export async function DescrPriceBlock(props: Props) {
         </div>
         <div className="w-[60%] mx-auto lg:mx-0 lg:w-[35%] sm:mt-10 lg:mt-0">
           <PrecioCardComponent
-            priceTitle={rightColumn.priceTitle!}
-            prevText={rightColumn.prevText!}
-            price={safePrice}
-            nextText={rightColumn.nextText!}
-            paymentForm={rightColumn.paymentForm}
             origen={context!.nameCollection}
             phoneNumber={phoneNumber}
             title={context!.title}
             medusaId={context!.medusaId}
+            formId={context?.formId}
           />
         </div>
       </div>

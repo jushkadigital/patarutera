@@ -201,18 +201,21 @@ type AddTourItemsToCartInput = {
   countryCode: string;
   tourDate: string;
   items: TourItemInput[];
+  formId?: number
 };
 
 type AddPackageItemsToCartInput = {
   countryCode: string;
   packageDate: string;
   items: PackageItemInput[];
+  formId?: number
 };
 
 export async function addTourItemsToCart({
   countryCode,
   tourDate,
   items,
+  formId
 }: AddTourItemsToCartInput) {
   if (!tourDate) {
     throw new Error("Missing tour date when adding tour items to cart");
@@ -244,6 +247,7 @@ export async function addTourItemsToCart({
       metadata: {
         ...(item.metadata ?? {}),
         tour_date: tourDate,
+        ...(formId ? { formId: formId } : {})
       },
     })),
   };
@@ -275,6 +279,7 @@ export async function addPackagesItemsToCart({
   countryCode,
   packageDate,
   items,
+  formId
 }: AddPackageItemsToCartInput) {
   if (!packageDate) {
     throw new Error("Missing tour date when adding tour items to cart");
@@ -304,6 +309,7 @@ export async function addPackagesItemsToCart({
       metadata: {
         ...(item.metadata ?? {}),
         package_date: packageDate,
+        ...(formId ? { formId: formId } : {})
       },
     })),
   };

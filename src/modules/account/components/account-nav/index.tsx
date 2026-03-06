@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { clx } from "@medusajs/ui"
-import { ArrowRightOnRectangle } from "@medusajs/icons"
-import { useParams, usePathname } from "next/navigation"
+import { clx } from "@medusajs/ui";
+import { ArrowRightOnRectangle } from "@medusajs/icons";
+import { useParams, usePathname } from "next/navigation";
 
-import ChevronDown from "@modules/common/icons/chevron-down"
-import User from "@modules/common/icons/user"
-import MapPin from "@modules/common/icons/map-pin"
-import Package from "@modules/common/icons/package"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { HttpTypes } from "@medusajs/types"
-import { signout } from "@lib/data/customer"
+import ChevronDown from "@modules/common/icons/chevron-down";
+import User from "@modules/common/icons/user";
+import MapPin from "@modules/common/icons/map-pin";
+import Package from "@modules/common/icons/package";
+import LocalizedClientLink from "@modules/common/components/localized-client-link";
+import { HttpTypes } from "@medusajs/types";
+import { signOut } from "next-auth/react";
 
 const AccountNav = ({
   customer,
 }: {
-  customer: HttpTypes.StoreCustomer | null
+  customer: HttpTypes.StoreCustomer | null;
 }) => {
-  const route = usePathname()
-  const { countryCode } = useParams() as { countryCode: string }
+  const route = usePathname();
+  const { countryCode } = useParams() as { countryCode: string };
 
   const handleLogout = async () => {
-    await signout(countryCode)
-  }
+    await signOut({ callbackUrl: `/${countryCode}/account` });
+  };
 
   return (
     <div>
@@ -41,7 +41,7 @@ const AccountNav = ({
         ) : (
           <>
             <div className="text-xl-semi mb-4 px-8">
-              Hello {customer?.first_name}
+              Dashboard {customer?.first_name}
             </div>
             <div className="text-base-regular">
               <ul>
@@ -54,22 +54,7 @@ const AccountNav = ({
                     <>
                       <div className="flex items-center gap-x-2">
                         <User size={20} />
-                        <span>Profile</span>
-                      </div>
-                      <ChevronDown className="transform -rotate-90" />
-                    </>
-                  </LocalizedClientLink>
-                </li>
-                <li>
-                  <LocalizedClientLink
-                    href="/account/addresses"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
-                    data-testid="addresses-link"
-                  >
-                    <>
-                      <div className="flex items-center gap-x-2">
-                        <MapPin size={20} />
-                        <span>Addresses</span>
+                        <span>Perfil</span>
                       </div>
                       <ChevronDown className="transform -rotate-90" />
                     </>
@@ -83,7 +68,7 @@ const AccountNav = ({
                   >
                     <div className="flex items-center gap-x-2">
                       <Package size={20} />
-                      <span>Orders</span>
+                      <span>Reservas</span>
                     </div>
                     <ChevronDown className="transform -rotate-90" />
                   </LocalizedClientLink>
@@ -164,15 +149,15 @@ const AccountNav = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 type AccountNavLinkProps = {
-  href: string
-  route: string
-  children: React.ReactNode
-  "data-testid"?: string
-}
+  href: string;
+  route: string;
+  children: React.ReactNode;
+  "data-testid"?: string;
+};
 
 const AccountNavLink = ({
   href,
@@ -180,9 +165,9 @@ const AccountNavLink = ({
   children,
   "data-testid": dataTestId,
 }: AccountNavLinkProps) => {
-  const { countryCode }: { countryCode: string } = useParams()
+  const { countryCode }: { countryCode: string } = useParams();
 
-  const active = route.split(countryCode)[1] === href
+  const active = route.split(countryCode)[1] === href;
   return (
     <LocalizedClientLink
       href={href}
@@ -193,7 +178,7 @@ const AccountNavLink = ({
     >
       {children}
     </LocalizedClientLink>
-  )
-}
+  );
+};
 
-export default AccountNav
+export default AccountNav;

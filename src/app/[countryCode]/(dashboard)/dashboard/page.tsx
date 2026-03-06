@@ -1,62 +1,60 @@
 import { RegistrationForm } from "@/components/RegistrationPassenger";
-import { auth, signIn } from "@/lib2/auth";
+import { auth } from "@/lib2/auth";
+import { retrieveCustomer } from "@lib/data/customer";
+import { listOrders } from "@lib/data/orders";
+import Overview from "@modules/account/components/overview";
+import AccountLayout from "@modules/account/templates/account-layout";
 import { redirect } from "next/navigation";
 
 async function checkUserStatus(token?: string): Promise<boolean> {
   try {
-    const res = await fetch(`http://172.17.0.1:8081/api/passengers/me`, {
+    const response = await fetch("http://172.17.0.1:8081/api/passengers/me", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // Si tu API requiere el token Bearer:
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-      // IMPORTANTE: '' asegura que no se cachee la respuesta falsa
-      // para que cuando router.refresh() ocurra, vuelva a preguntar de verdad.
       cache: "no-store",
     });
 
-    if (!res.ok) return false;
+    if (!response.ok) {
+      return false;
+    }
 
-    const data = await res.json();
-    return data.onboardingCompleted === true; // O la lógica que retorne tu API
+    const data = await response.json();
+    return data.onboardingCompleted === true;
   } catch (error) {
-    console.error("Error comprobando estado:", error);
-    return false; // Ante la duda, bloqueamos
+    console.error("Error checking user status:", error);
+    return false;
   }
 }
-export default async function Page() {
 
-
+export default async function DashboardPage() {
   const session = await auth();
 
-
   if (!session) {
+    redirect("/api/auth/login");
   }
 
-  const isAllowed = await checkUserStatus(session?.accessToken)
+  const isAllowed = await checkUserStatus(session.accessToken);
 
   if (!isAllowed) {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-        <RegistrationForm submitUrl="http://172.17.0.1:8081/api/passengers/complete" session={session} />
+        <RegistrationForm
+          submitUrl="http://172.17.0.1:8081/api/passengers/complete"
+          session={session}
+        />
       </main>
     );
   }
 
-  // 2. Si no hay sesión, forzar el login con un proveedor específico
+  const customer = await retrieveCustomer().catch(() => null);
+  const orders = customer ? await listOrders(5, 0).catch(() => null) : null;
+
   return (
-    <div>
-      <div className="p-8">
-        <h1 className="text-2xl font-bold">DASHBOARD</h1>
-        <div className="mt-4 p-4 bg-gray-100 rounded">
-          {session && session!.user!.name}
-          {session && session!.user!.id}
-          {session && session!.expires}
-          {session && session!.user!.email}
-          {session && session.accessToken}
-        </div>
-      </div>
-    </div>
-  )
+    <AccountLayout customer={customer}>
+      <Overview customer={customer} orders={orders} />
+    </AccountLayout>
+  );
 }

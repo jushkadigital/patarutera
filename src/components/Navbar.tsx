@@ -36,6 +36,7 @@ interface Props {
   socialNetworks: any[];
   email: string;
   cart: StoreCart | null;
+  isAuthenticated: boolean;
 }
 export const Navbar = ({
   destinations,
@@ -44,6 +45,7 @@ export const Navbar = ({
   socialNetworks,
   email,
   cart,
+  isAuthenticated,
 }: Props) => {
   //const pathname = usePathname();
   //const isHome = pathname === '/';
@@ -62,6 +64,7 @@ export const Navbar = ({
         email={email}
         isHome={isHome}
         cart={cart}
+        isAuthenticated={isAuthenticated}
       />
       <div className=" mx-auto flex items-center justify-around px-4">
         {/* Sección 1: Logo */}
@@ -107,7 +110,9 @@ export const Navbar = ({
                       : "text-[#2970b7]",
                 )}
               >
-                <Link href="/pe/paquetes?destinations=Ica,Cusco">Paquetes UNO</Link>
+                <Link href="/pe/paquetes?destinations=Ica,Cusco">
+                  Paquetes UNO
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
