@@ -9,6 +9,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { usePopupAuth } from "@/hooks/usePopupAuth";
 import { HttpTypes } from "@medusajs/types";
 import { useState } from "react";
+import Link from "next/link";
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart & {
@@ -59,9 +60,9 @@ const Summary = ({
       <Divider />
       <CartTotals totals={cart} />
       {canContinueToCheckout ? (
-        <LocalizedClientLink href={checkoutHref} data-testid="checkout-button">
+        <Link href={"/pe" + checkoutHref} data-testid="checkout-button">
           <Button className="w-full h-10">Ir a checkout</Button>
-        </LocalizedClientLink>
+        </Link>
       ) : (
         <>
           <Button
@@ -75,7 +76,7 @@ const Summary = ({
               ? "Syncing session..."
               : isLoading
                 ? "Connecting..."
-                : "Go to checkout"}
+                : "Ir a checkout"}
           </Button>
           {error ? (
             <p className="text-sm text-red-500" role="alert" aria-live="polite">
