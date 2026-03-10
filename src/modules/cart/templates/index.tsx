@@ -8,17 +8,25 @@ import { HttpTypes } from "@medusajs/types";
 const CartTemplate = ({
   cart,
   customer,
+  showExpiredCartNotice,
   hasAuthSessionCookie,
   hasMedusaSessionCookie,
 }: {
   cart: HttpTypes.StoreCart | null;
   customer: HttpTypes.StoreCustomer | null;
+  showExpiredCartNotice: boolean;
   hasAuthSessionCookie: boolean;
   hasMedusaSessionCookie: boolean;
 }) => {
   return (
     <div className="py-12">
       <div className="content-container" data-testid="cart-container">
+        {showExpiredCartNotice && (
+          <div className="mb-6 rounded-md border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-900">
+            Your previous cart was no longer available, so we redirected you
+            from checkout.
+          </div>
+        )}
         {cart?.items?.length ? (
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_360px] gap-x-40">
             <div className="flex flex-col bg-white py-6 gap-y-6">

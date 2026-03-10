@@ -23,6 +23,7 @@ import { getLocale } from "@lib/data/locale-actions";
  */
 export async function retrieveCart(cartId?: string, fields?: string) {
   const id = cartId || (await getCartId());
+  const isCookieCartId = !cartId;
   fields ??=
     "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name";
 
@@ -49,7 +50,13 @@ export async function retrieveCart(cartId?: string, fields?: string) {
       cache: "force-cache",
     })
     .then(({ cart }: { cart: HttpTypes.StoreCart }) => cart)
-    .catch(() => null);
+    .catch(async () => {
+      if (isCookieCartId) {
+        await removeCartId();
+      }
+
+      return null;
+    });
 }
 
 export async function getOrSetCart(countryCode: string) {
