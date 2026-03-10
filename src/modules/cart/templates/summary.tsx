@@ -9,7 +9,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { usePopupAuth } from "@/hooks/usePopupAuth";
 import { HttpTypes } from "@medusajs/types";
 import { useState } from "react";
-import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart & {
@@ -25,6 +25,8 @@ const Summary = ({
   hasMedusaSessionCookie,
 }: SummaryProps) => {
   const checkoutHref = "/checkout";
+  const pathname = usePathname();
+  const localizedCheckoutPath = pathname.replace(/\/cart$/, checkoutHref);
   const { openPopup, isLoading, error } = usePopupAuth();
   const [isSyncing, setIsSyncing] = useState(false);
   //const canContinueToCheckout = hasMedusaSessionCookie || hasAuthSessionCookie;
@@ -37,10 +39,6 @@ const Summary = ({
 
     if (hasAuthSessionCookie && !hasMedusaSessionCookie) {
       setIsSyncing(true);
-      const localizedCheckoutPath = window.location.pathname.replace(
-        /\/cart$/,
-        checkoutHref,
-      );
       const syncUrl = `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`;
       window.location.assign(syncUrl);
       return;
@@ -48,8 +46,8 @@ const Summary = ({
 
     try {
       await openPopup({ provider: "keycloak" });
-      window.location.assign(checkoutHref);
-    } catch { }
+      window.location.assign(localizedCheckoutPath);
+    } catch {}
   };
 
   return (
@@ -60,9 +58,9 @@ const Summary = ({
       <Divider />
       <CartTotals totals={cart} />
       {canContinueToCheckout ? (
-        <Link href={"/pe" + checkoutHref} data-testid="checkout-button">
+        <LocalizedClientLink href={checkoutHref} data-testid="checkout-button">
           <Button className="w-full h-10">Ir a checkout</Button>
-        </Link>
+        </LocalizedClientLink>
       ) : (
         <>
           <Button
