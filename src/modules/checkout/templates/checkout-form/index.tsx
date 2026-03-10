@@ -1,12 +1,140 @@
 import { listCartPaymentMethods } from "@lib/data/payment";
+import CheckoutStepGuard from "@modules/checkout/components/checkout-step-guard";
+import PreData from "@modules/checkout/components/pre-data";
+import { BASEURL } from "@/lib2/config";
 import { HttpTypes } from "@medusajs/types";
 import Payment from "@modules/checkout/components/payment";
+
+type GroupedForm = {
+  formId: string | number;
+  group_id: string;
+  tour_date?: string;
+  package_date?: string;
+  item_ids: string[];
+};
+
+type FormStructure = {
+  group_id: string;
+  formId: string | number;
+  tour_date?: string;
+  package_date?: string;
+  structure: unknown;
+};
+
+const toRecord = (value: unknown): Record<string, unknown> => {
+  if (typeof value !== "object" || value === null) {
+    return {};
+  }
+
+  return value as Record<string, unknown>;
+};
+
+const toOptionalString = (value: unknown): string | undefined => {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  return value || undefined;
+};
+
+const getGroupedForms = (cart: HttpTypes.StoreCart): GroupedForm[] => {
+  const groupedForms = new Map<string, GroupedForm>();
+
+  for (const item of cart.items ?? []) {
+    const metadata = toRecord(item.metadata);
+    const rawFormId = metadata.formId;
+    const formId =
+      typeof rawFormId === "string" || typeof rawFormId === "number"
+        ? rawFormId
+        : undefined;
+
+    if (!formId) {
+      continue;
+    }
+
+    const groupId = toOptionalString(metadata.group_id) ?? item.id;
+    const existingGroup = groupedForms.get(groupId);
+
+    if (existingGroup) {
+      existingGroup.item_ids.push(item.id);
+      continue;
+    }
+
+    groupedForms.set(groupId, {
+      formId,
+      group_id: groupId,
+      tour_date: toOptionalString(metadata.tour_date),
+      package_date: toOptionalString(metadata.package_date),
+      item_ids: [item.id],
+    });
+  }
+
+  return Array.from(groupedForms.values());
+};
+
+const getFormStructure = async (group: GroupedForm): Promise<FormStructure> => {
+  if (!BASEURL) {
+    return {
+      group_id: group.group_id,
+      formId: group.formId,
+      tour_date: group.tour_date,
+      package_date: group.package_date,
+      structure: {
+        id: group.formId,
+        message: "NEXT_PUBLIC_SERVER_URL is not configured.",
+      },
+    };
+  }
+
+  try {
+    const response = await fetch(`${BASEURL}/api/forms/${group.formId}`, {
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) {
+      return {
+        group_id: group.group_id,
+        formId: group.formId,
+        tour_date: group.tour_date,
+        package_date: group.package_date,
+        structure: {
+          id: group.formId,
+          message: "The forms endpoint did not return 200.",
+          status: response.status,
+        },
+      };
+    }
+
+    return {
+      group_id: group.group_id,
+      formId: group.formId,
+      tour_date: group.tour_date,
+      package_date: group.package_date,
+      structure: await response.json(),
+    };
+  } catch (error) {
+    console.error("Error fetching form structure", {
+      formId: group.formId,
+      error,
+    });
+
+    return {
+      group_id: group.group_id,
+      formId: group.formId,
+      tour_date: group.tour_date,
+      package_date: group.package_date,
+      structure: {
+        id: group.formId,
+        message: "Failed to fetch form structure.",
+      },
+    };
+  }
+};
 
 export default async function CheckoutForm({
   cart,
 }: {
   cart: HttpTypes.StoreCart | null;
-  customer: HttpTypes.StoreCustomer | null;
 }) {
   if (!cart) {
     return null;
@@ -18,9 +146,21 @@ export default async function CheckoutForm({
     return null;
   }
 
+  const groups = getGroupedForms(cart);
+  const hasPreData = groups.length > 0;
+  const formStructures = hasPreData
+    ? await Promise.all(groups.map((group) => getFormStructure(group)))
+    : [];
+
   return (
     <div className="w-full grid grid-cols-1 gap-y-8">
-      <Payment cart={cart} availablePaymentMethods={paymentMethods} />
+      <CheckoutStepGuard hasPreData={hasPreData} />
+      {hasPreData && <PreData cart={cart} formStructures={formStructures} />}
+      <Payment
+        cart={cart}
+        availablePaymentMethods={paymentMethods}
+        hasPreData={hasPreData}
+      />
     </div>
   );
 }

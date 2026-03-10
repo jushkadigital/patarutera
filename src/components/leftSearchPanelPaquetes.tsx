@@ -1,22 +1,36 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { Calendar, ChevronsUpDown, MapPin, Search, ChevronDown, X, Filter } from 'lucide-react';
+import * as React from "react";
+import {
+  Calendar,
+  ChevronsUpDown,
+  MapPin,
+  ChevronDown,
+  X,
+  Filter,
+} from "lucide-react";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { Destination, TourCategory } from '@/cms-types';
-import { parseAsArrayOf, useQueryState, parseAsString } from 'nuqs';
+} from "@/components/ui/collapsible";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Destination, TourCategory } from "@/cms-types";
+import { parseAsArrayOf, useQueryState, parseAsString } from "nuqs";
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { useSharedState } from '@/hooks/sharedContextDestinos';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
-import { useMobile } from '@/hooks/useMobile';
+import { useSharedState } from "@/hooks/sharedContextDestinos";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import { useMobile } from "@/hooks/useMobile";
+import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 
 // Interfaz actualizada: ya no necesita 'categories'
 interface LeftPanelSearchProps {
@@ -25,15 +39,16 @@ interface LeftPanelSearchProps {
 }
 
 // Componente principal: Se elimina TourCategoryList
-export function LeftPanelSearchPaquete({ title, destinations }: LeftPanelSearchProps) {
-  
-  const isMobile = useMobile({breakpoint:1024})
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false)
+export function LeftPanelSearchPaquete({
+  title,
+  destinations,
+}: LeftPanelSearchProps) {
+  const isMobile = useMobile({ breakpoint: 1024 });
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   return (
- <div>
-      {isMobile 
-      ?
-      <div className=" absolute mt-[-25px]">
+    <div>
+      {isMobile ? (
+        <div className=" absolute mt-[-25px]">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="sm">
@@ -41,35 +56,30 @@ export function LeftPanelSearchPaquete({ title, destinations }: LeftPanelSearchP
                 Filtros
               </Button>
             </SheetTrigger>
-    <SheetContent side="left" className="">
-      <SheetHeader>
-        <SheetTitle>Filtrar Tours</SheetTitle>
-      </SheetHeader>
-    <div className="mt-6 overflow-y-auto">
-      <div className='flex flex-col w-full space-y-10 p-4'>
-      <MultiDestinationSearch destinations={destinations} />
-      <PriceFilter />
-    </div>
+            <SheetContent side="left" className="">
+              <SheetHeader>
+                <SheetTitle>Filtrar Tours</SheetTitle>
+              </SheetHeader>
+              <div className="mt-6 overflow-y-auto">
+                <div className="flex flex-col w-full space-y-10 p-4">
+                  <MultiDestinationSearch destinations={destinations} />
+                  <PriceFilter />
+                </div>
               </div>
             </SheetContent>
           </Sheet>
         </div>
-        :
-    <div>
-      <div className='flex flex-col w-full space-y-10 p-4'>
-      <MultiDestinationSearch destinations={destinations} />
-      <PriceFilter />
+      ) : (
+        <div>
+          <div className="flex flex-col w-full space-y-10 p-4">
+            <MultiDestinationSearch destinations={destinations} />
+            <PriceFilter />
+          </div>
+        </div>
+      )}
     </div>
-    </div>
-      }
-      
-    
-    
-    </div>   
-    
   );
 }
-
 
 interface MultiDestinationSearchProps {
   destinations: Destination[];
@@ -78,32 +88,45 @@ interface MultiDestinationSearchProps {
 // Componente de búsqueda modificado para múltiples destinos
 function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isPending, startTransition] = React.useTransition();
 
-  // 1. Cambiamos el estado para que acepte un array de strings
   const [selectedDestinations, setSelectedDestinations] = useQueryState(
-    'destinations',
-    parseAsArrayOf(parseAsString).withOptions({ shallow: false })
+    "filterDestination",
+    parseAsArrayOf(parseAsString).withOptions({
+      shallow: false,
+      startTransition,
+    }),
   );
 
-  // 2. Estado temporal para manejar la selección antes de aplicar
-  const [tempDestinations, setTempDestinations] = React.useState<string[] | null>(selectedDestinations);
+  const currentDestinations = selectedDestinations ?? [];
 
-  // 3. Función para añadir o quitar un destino de la selección temporal
   const handleDestinationToggle = (destinationName: string) => {
-    setTempDestinations((prev) =>
-      prev!.includes(destinationName)
-        ? prev!.filter((d) => d !== destinationName)
-        : [...prev!, destinationName]
-    );
+    setSelectedDestinations((prev) => {
+      const previous = prev ?? [];
+
+      if (previous.includes(destinationName)) {
+        return previous.filter((d) => d !== destinationName);
+      }
+
+      return [...previous, destinationName];
+    });
+
+    if (!isOpen) {
+      setIsOpen(true);
+    }
   };
 
   return (
     <div className="w-full  bg-white rounded-2xl shadow-lg overflow-hidden">
+      {isPending && <FilterLoadingOverlay label="Actualizando paquetes..." />}
+
       {/* Header */}
       <div className="px-6 py-6 border-b ">
         <div className="flex items-center gap-3">
           <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
-          <h1 className="text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-semibold tracking-wide">BUSCAR PAQUETES</h1>
+          <h1 className="text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-semibold tracking-wide">
+            BUSCAR PAQUETES
+          </h1>
         </div>
       </div>
 
@@ -116,23 +139,29 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
               <MapPin className="w-6 h-6 text-[#2970b7]" />
             </div>
             <div className="flex-1">
-              <label className="block text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-medium mb-2">Destino(s)</label>
+              <label className="block text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-medium mb-2">
+                Destino(s)
+              </label>
               <Collapsible open={isOpen} onOpenChange={setIsOpen}>
                 <CollapsibleTrigger asChild>
                   <button
                     type="button"
                     className="w-[clamp(170px,16.6vw,320px)] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
                   >
-                    {/* 4. Mostrar destinos seleccionados o placeholder */}
                     <div className="flex flex-wrap gap-1 items-center">
-                      {tempDestinations!.length > 0 ? (
-                        tempDestinations!.map(dest => (
-                          <span key={dest} className="bg-[#2970b7]  text-white lg:text-[clamp(10.92px,1vw,20.48px)] font-medium px-2 py-1 rounded-full flex items-center gap-1">
+                      {currentDestinations.length > 0 ? (
+                        currentDestinations.map((dest) => (
+                          <span
+                            key={dest}
+                            className="bg-[#2970b7]  text-white lg:text-[clamp(10.92px,1vw,20.48px)] font-medium px-2 py-1 rounded-full flex items-center gap-1"
+                          >
                             {dest}
                           </span>
                         ))
                       ) : (
-                        <span className="text-[#adadac] lg:text-[clamp(10.9px,1vw,20.48px)]">Seleccionar destinos</span>
+                        <span className="text-[#adadac] lg:text-[clamp(10.9px,1vw,20.48px)]">
+                          Seleccionar destinos
+                        </span>
                       )}
                     </div>
                     <ChevronDown
@@ -145,12 +174,15 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
                     {destinations.map((destination) => (
                       <div
                         key={destination.name}
-                        onClick={() => handleDestinationToggle(destination.name)}
+                        onClick={() =>
+                          handleDestinationToggle(destination.name)
+                        }
                         className="w-[clamp(170px,16.6vw,320px)] text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg"
                       >
-                        {/* 5. Usar Checkbox para indicar selección */}
                         <Checkbox
-                          checked={tempDestinations!.includes(destination.name)}
+                          checked={currentDestinations.includes(
+                            destination.name,
+                          )}
                           className="data-[state=checked]:bg-[#2970b7] data-[state=checked]:border-[#2970b7] "
                         />
                         <MapPin className="w-4 h-4 text-[#2970b7]" />
@@ -176,18 +208,6 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
             </div>
           </div>*/}
         </div>
-
-        {/* Search Button */}
-        <button
-          onClick={() => {
-            // 6. Aplicar la selección temporal al estado final
-            setSelectedDestinations(tempDestinations);
-            setIsOpen(false); // Opcional: cerrar el dropdown al buscar
-          }}
-          className="w-full bg-[#2970b7] text-white py-4 px-6 rounded-2xl font-medium text-lg lg:text-[clamp(10.9px,1vw,20.48px)] flex items-center justify-center gap-3 hover:bg-[#2970b7]/90 transition-colors">
-          Buscar
-          <Search className="lg:w-3 xl:w-5 lg:h-3 xl:h-5" />
-        </button>
       </div>
     </div>
   );
@@ -196,24 +216,25 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
 // El componente PriceFilter se mantiene igual, no se muestra aquí por brevedad.
 // ... (pegar aquí el componente PriceFilter original sin cambios)
 export function PriceFilter() {
-    // ...código original del PriceFilter
- const minPrice = 0
-  const maxPrice = 1999
+  // ...código original del PriceFilter
+  const minPrice = 0;
+  const maxPrice = 1999;
 
-  const {priceOne:priceRange,setPriceOne:setPriceRange} = useSharedState()
+  const { priceOne: priceRange, setPriceOne: setPriceRange } = useSharedState();
 
   return (
     <div className="w-full max-w-md mx-auto rounded-3xl border border-[#e3e3e3] bg-white p-6">
-      
-      <div  className="flex items-center gap-3">
-      <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
-      <h2 className="text-[#2970b7] text-xl font-semibold tracking-wide">Filtrar Precio</h2>
+      <div className="flex items-center gap-3">
+        <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
+        <h2 className="text-[#2970b7] text-xl font-semibold tracking-wide">
+          Filtrar Precio
+        </h2>
       </div>
       <div className="relative pt-4 pb-8">
         <SliderPrimitive.Root
           className="relative flex w-full touch-none select-none items-center"
           value={priceRange}
-          onValueChange={(setPriceRange as (value: number[])=>void)}
+          onValueChange={setPriceRange as (value: number[]) => void}
           min={minPrice}
           max={maxPrice}
           step={10}
@@ -246,5 +267,5 @@ export function PriceFilter() {
         </span>
       </div>
     </div>
-  )
+  );
 }

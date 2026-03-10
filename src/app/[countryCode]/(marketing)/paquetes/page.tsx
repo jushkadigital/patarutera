@@ -6,7 +6,6 @@ import { RowBlock } from "@blocks/RowBlock";
 import { BannerBlock } from "@/blocks/Banner";
 import { BASEURL } from "@/lib2/config";
 
-
 import { LeftPanelSearchPaquete } from "@/components/leftSearchPanelPaquetes";
 import { SharedStateProvider } from "@/hooks/sharedContextDestinos";
 import { CarouselDestinos } from "@/blocks/CarouselDestinos";
@@ -46,7 +45,6 @@ interface Props {
   params: Promise<{ countryCode: string }>;
 }
 
-
 function parseSelectedCategories(
   value: string | string[] | undefined,
 ): string[] {
@@ -62,28 +60,53 @@ function parseSelectedCategories(
     .filter(Boolean);
 }
 
+function parseSelectedDestinations(
+  value: string | string[] | undefined,
+): string[] {
+  if (!value) {
+    return [];
+  }
+
+  const values = Array.isArray(value) ? value : [value];
+
+  return values
+    .flatMap((item) => item.split(","))
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function buildQueryString(
+  params: Record<string, string | string[] | undefined>,
+): string {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (typeof value === "string") {
+      searchParams.set(key, value);
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        searchParams.append(key, item);
+      });
+    }
+  });
+
+  return searchParams.toString();
+}
+
 export default async function Page(props: Props) {
   const params = await props.searchParams;
 
   const { page: pageParam } = params;
+  const selectedDestinations = parseSelectedDestinations(
+    params.filterDestination ?? params.destination,
+  );
   const selectedCategories = parseSelectedCategories(params.categories);
   const currentPage = Number(pageParam) || 1;
-  const queryString = new URLSearchParams(
-    Object.entries(params).reduce(
-      (acc, [key, value]) => {
-        if (typeof value === "string") {
-          acc[key] = value;
-        } else if (Array.isArray(value)) {
-          acc[key] = value[0]; // o unirlos como acc[key] = value.join(',')
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    ),
-  ).toString();
+  const queryString = buildQueryString(params);
   const { isEnabled: draft } = await draftMode();
-
-
 
   const page: any = await queryPageBySlug();
   if (!page) {
@@ -139,6 +162,7 @@ export default async function Page(props: Props) {
               rangeSlider={true}
               searchParams={queryString}
               page={currentPage}
+              selectedDestinations={selectedDestinations}
               selectedCategories={selectedCategories}
               overrideDefaults={true}
               context={{ nameCollection: "paquetes" }}

@@ -64,9 +64,26 @@ function parseSelectedCategories(
     .filter(Boolean);
 }
 
+function parseSingleParam(
+  value: string | string[] | undefined,
+): string | undefined {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return undefined;
+}
+
 export default async function Page(props: Props) {
   const params = await props.searchParams;
-  const { destination, page: pageParam } = params;
+  const { page: pageParam } = params;
+  const destination =
+    parseSingleParam(params.filterDestination) ??
+    parseSingleParam(params.destination);
   const selectedCategories = parseSelectedCategories(params.categories);
   const currentPage = Number(pageParam) || 1;
   const queryString = new URLSearchParams(
@@ -84,7 +101,7 @@ export default async function Page(props: Props) {
   ).toString();
   const { isEnabled: draft } = await draftMode();
   const destinationRequest = await fetch(
-    `${BASEURL}/api/destinations?where[name][equals]=${destination}`,
+    `${BASEURL}/api/destinations?where[name][equals]=${encodeURIComponent(destination ?? "")}`,
   );
   const destinationDataPre = await destinationRequest.json();
   const destinationData = destinationDataPre.docs[0];

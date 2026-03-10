@@ -60,14 +60,11 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
 
   if (!product) {
     // Maneja el caso de que el ID no exista en Medusa
-    console.error("Producto no encontrado en Medusa con ID:", paquete.medusaId);
+    console.error("Producto no encontrado en Medusa con ID:", paquete.id + "package");
   }
 
-  console.log("MONO")
-  console.log(paquete.id)
-  console.log(product);
 
-  const { layout, heroPaquete, title } = paquete; // Assuming paquetes have layout and heroPaquete
+  const { layout, heroPaquete, title, form } = paquete; // Assuming paquetes have layout and heroPaquete
 
   const schema = PaqueteSchema(paquete);
 
@@ -85,7 +82,7 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
           <RenderHero heroBlocks={heroPaquete} title={title} />
           <div className="flex flex-col space-y-10 order-none">
             <div className='w-full'><h1 className='text-center text-4xl lg:text-[clamp(16.3px,2.6vw,50.72px)]  text-[#2970b7] font-bold italic'>{title}</h1></div>
-            <RenderBlocks blocks={layout} context={{ nameCollection: 'paquete', title: title, medusaId: product! }} />
+            <RenderBlocks blocks={layout} context={{ nameCollection: 'paquete', title: title, medusaId: product!, formId: form?.id ?? null }} />
           </div>
         </div>
       </div>

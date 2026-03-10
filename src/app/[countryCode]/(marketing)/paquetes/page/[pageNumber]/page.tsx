@@ -1,30 +1,35 @@
-import { cache, Fragment } from 'react'
+import { cache, Fragment } from "react";
 
-import type { GridPaquetesBlock, GridToursBlock, Media, Page } from '@/cms-types'
-import { MediaBlock } from '@blocks/MediaBlock'
-import { GridTours } from '@blocks/GridTours'
-import { RowBlock } from '@blocks/RowBlock'
-import { BannerBlock } from '@/blocks/Banner'
-import { BASEURL } from '@/lib2/config'
-import { RenderHero } from '@/blocks/renderHeros'
+import type {
+  GridPaquetesBlock,
+  GridToursBlock,
+  Media,
+  Page,
+} from "@/cms-types";
+import { MediaBlock } from "@blocks/MediaBlock";
+import { GridTours } from "@blocks/GridTours";
+import { RowBlock } from "@blocks/RowBlock";
+import { BannerBlock } from "@/blocks/Banner";
+import { BASEURL } from "@/lib2/config";
+import { RenderHero } from "@/blocks/renderHeros";
 
-import { LeftPanelSearch } from '@/components/leftPanelSearch'
-import { SharedStateProvider } from '@/hooks/sharedContextDestinos'
-import { CarouselDestinos } from '@/blocks/CarouselDestinos'
-import { TikTokLinksBlock } from '@/blocks/TikToksLinksBlock'
-import { ReconocimientosBlock } from '@/blocks/Reconocimientos'
-import { OfertasBlock } from '@/blocks/OfertasBlock'
-import { SociosBlock } from '@/blocks/Socios'
-import { TextContentBlock } from '@/blocks/TextContent'
-import { BeneficiosBlock } from '@/blocks/BeneficiosBlock'
-import { EstadisticasBlock } from '@/blocks/Estadisticas'
-import { DescrPriceBlock } from '@/blocks/DescPrice'
-import { YouTubeLinksBlock } from '@/blocks/YoutubeLinksBlock'
-import { draftMode } from 'next/headers'
-import { notFound } from 'next/navigation'
-import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { LeftPanelSearchPaquete } from '@/components/leftSearchPanelPaquetes'
-import { GridPaquetes } from '@/blocks/GridPaquetes'
+import { LeftPanelSearch } from "@/components/leftPanelSearch";
+import { SharedStateProvider } from "@/hooks/sharedContextDestinos";
+import { CarouselDestinos } from "@/blocks/CarouselDestinos";
+import { TikTokLinksBlock } from "@/blocks/TikToksLinksBlock";
+import { ReconocimientosBlock } from "@/blocks/Reconocimientos";
+import { OfertasBlock } from "@/blocks/OfertasBlock";
+import { SociosBlock } from "@/blocks/Socios";
+import { TextContentBlock } from "@/blocks/TextContent";
+import { BeneficiosBlock } from "@/blocks/BeneficiosBlock";
+import { EstadisticasBlock } from "@/blocks/Estadisticas";
+import { DescrPriceBlock } from "@/blocks/DescPrice";
+import { YouTubeLinksBlock } from "@/blocks/YoutubeLinksBlock";
+import { draftMode } from "next/headers";
+import { notFound } from "next/navigation";
+import { LivePreviewListener } from "@/components/LivePreviewListener";
+import { LeftPanelSearchPaquete } from "@/components/leftSearchPanelPaquetes";
+import { GridPaquetes } from "@/blocks/GridPaquetes";
 
 const blockComponents = {
   gridTours: GridTours,
@@ -41,135 +46,174 @@ const blockComponents = {
   estadisticas: EstadisticasBlock,
   gridImages: null,
   youTubeLinks: YouTubeLinksBlock,
-}
-
-
+};
 
 interface Props {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>,
-  params: Promise<{ pageNumber: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Promise<{ pageNumber: string }>;
+}
+
+function parseSelectedDestinations(
+  value: string | string[] | undefined,
+): string[] {
+  if (!value) {
+    return [];
+  }
+
+  const values = Array.isArray(value) ? value : [value];
+
+  return values
+    .flatMap((item) => item.split(","))
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function buildQueryString(
+  params: Record<string, string | string[] | undefined>,
+): string {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (typeof value === "string") {
+      searchParams.set(key, value);
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        searchParams.append(key, item);
+      });
+    }
+  });
+
+  return searchParams.toString();
 }
 
 export default async function Page(props: Props) {
-  const { destination } = await props.searchParams
-  const { pageNumber } = await props.params
+  const searchParams = await props.searchParams;
+  const selectedDestinations = parseSelectedDestinations(
+    searchParams.filterDestination ?? searchParams.destination,
+  );
+  const { pageNumber } = await props.params;
 
-  const sanitizedPageNumber = Number(pageNumber)
+  const sanitizedPageNumber = Number(pageNumber);
 
-  const params = await props.searchParams
-  const queryString = new URLSearchParams(
-    Object.entries(params).reduce((acc, [key, value]) => {
-      if (typeof value === 'string') {
-        acc[key] = value
-      } else if (Array.isArray(value)) {
-        acc[key] = value[0] // o unirlos como acc[key] = value.join(',')
-      }
-      return acc
-    }, {} as Record<string, string>)
-  ).toString()
+  const queryString = buildQueryString(searchParams);
   const { isEnabled: draft } = await draftMode();
-  const destinationRequest = await fetch(`${BASEURL}/api/destinations?where[name][equals]=${destination}`)
-  const destinationDataPre = await destinationRequest.json()
-  const destinationData = destinationDataPre.docs[0]
   let page: any;
   page = await queryPageBySlug();
   if (!page) {
     notFound();
   }
 
-  if (!Number.isInteger(sanitizedPageNumber)) notFound()
+  if (!Number.isInteger(sanitizedPageNumber)) notFound();
 
-  const { layout: blocks, heroPageBlocks } = page
-  const hasBlocksLayout = blocks && Array.isArray(blocks) && blocks.length > 0
-  const hasBlocksHero = heroPageBlocks && Array.isArray(heroPageBlocks) && heroPageBlocks.length > 0
+  const { layout: blocks, heroPageBlocks } = page;
+  const hasBlocksLayout = blocks && Array.isArray(blocks) && blocks.length > 0;
+  const hasBlocksHero =
+    heroPageBlocks &&
+    Array.isArray(heroPageBlocks) &&
+    heroPageBlocks.length > 0;
 
-  const destinationsRequest = await fetch(`${BASEURL}/api/destinations`)
-  const destinationsData = await destinationsRequest.json()
-  const destinations = destinationsData.docs
+  const destinationsRequest = await fetch(`${BASEURL}/api/destinations`);
+  const destinationsData = await destinationsRequest.json();
+  const destinations = destinationsData.docs;
   // Si ambos son falsos, fallback
   if (!hasBlocksLayout && !hasBlocksHero) {
-    return <div>No hay contenido para mostrar.</div>
+    return <div>No hay contenido para mostrar.</div>;
   }
 
   // Solo heroBlocks
-  const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
+  const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0;
 
-  const NoPadding = ['carouselDestination', 'reconocimientos', 'socios']
+  const NoPadding = ["carouselDestination", "reconocimientos", "socios"];
 
   return (
     <div>
-
       {draft && <LivePreviewListener />}
       <Fragment>
-
         {heroPageBlocks!.map(async (block, index) => {
-          const { blockType } = block
+          const { blockType } = block;
           switch (blockType) {
-            case 'banner':
-              {
-                return <BannerBlock {...block} />
-              }
+            case "banner": {
+              return <BannerBlock {...block} />;
+            }
             default:
-              return null
+              return null;
           }
         })}
       </Fragment>
 
       <SharedStateProvider>
-        <div className='flex flex-row mt-10 w-[85%] mx-auto'>
-
-          <div className='lg:w-1/3'>
+        <div className="flex flex-row mt-10 w-[85%] mx-auto">
+          <div className="lg:w-1/3">
             <LeftPanelSearchPaquete destinations={destinations} />
           </div>
-          <div className='w-full lg:w-3/4'>
-            <GridPaquetes  {...blocks[0] as GridPaquetesBlock} destination={destinationData} gridColumns={6} gridStyle={false} rangeSlider={true} searchParams={queryString} page={sanitizedPageNumber} />
+          <div className="w-full lg:w-3/4">
+            <GridPaquetes
+              {...(blocks[0] as GridPaquetesBlock)}
+              selectedDestinations={selectedDestinations}
+              gridColumns={6}
+              gridStyle={false}
+              rangeSlider={true}
+              searchParams={queryString}
+              page={sanitizedPageNumber}
+            />
           </div>
         </div>
       </SharedStateProvider>
-      <div className='flex flex-col w-full'>
+      <div className="flex flex-col w-full">
         <Fragment>
-          {hasBlocks && blocks.slice(1).map((block, index) => {
-            const { blockType } = block
-            if (blockType && blockType in blockComponents) {
-              const Block = blockComponents[blockType]
+          {hasBlocks &&
+            blocks.slice(1).map((block, index) => {
+              const { blockType } = block;
+              if (blockType && blockType in blockComponents) {
+                const Block = blockComponents[blockType];
 
-              if (Block) {
-                return (
-                  <div className={!NoPadding.includes(blockType) ? 'w-full px-36 ' : 'w-full'} key={index}>
-                    <Block {...block} disableInnerContainer />
-                  </div>
-                )
+                if (Block) {
+                  return (
+                    <div
+                      className={
+                        !NoPadding.includes(blockType)
+                          ? "w-full px-36 "
+                          : "w-full"
+                      }
+                      key={index}
+                    >
+                      <Block {...block} disableInnerContainer />
+                    </div>
+                  );
+                }
               }
-            }
-            return null
-          })}
+              return null;
+            })}
         </Fragment>
       </div>
     </div>
-  )
+  );
 }
-
 
 const queryPageBySlug = cache(async () => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
-  const data = await fetch(`${BASEURL}/api/globals/pacP?depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
+  const data = await fetch(
+    `${BASEURL}/api/globals/pacP?depth=2&draft=${draft}`,
+  ); // Added depth=2 for potentially richer layout data
   const result = await data.json();
   return result || null;
 });
 export async function generateStaticParams() {
+  const req = await fetch(`${BASEURL}/api/paquetes/count`);
+  const { totalDocs } = await req.json();
 
-  const req = await fetch(`${BASEURL}/api/paquetes/count`)
-  const { totalDocs } = await req.json()
+  const totalPages = Math.ceil(totalDocs / 10);
 
-  const totalPages = Math.ceil(totalDocs / 10)
-
-  const pages: { pageNumber: string }[] = []
+  const pages: { pageNumber: string }[] = [];
 
   for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
+    pages.push({ pageNumber: String(i) });
   }
 
-  return pages
+  return pages;
 }
 
 // Optional: Metadata for the page
@@ -183,4 +227,4 @@ export async function generateStaticParams() {
 //     title: `${pageData.title || 'Page'} | Patarutera`,
 //     // description: pageData.seoDescription || defaultDescription,
 //   };
-// } 
+// }

@@ -15,9 +15,11 @@ import { useEffect, useRef, useState } from "react";
 const Payment = ({
   cart,
   availablePaymentMethods,
+  hasPreData,
 }: {
   cart: HttpTypes.StoreCart | null;
   availablePaymentMethods: HttpTypes.StorePaymentProvider[];
+  hasPreData: boolean;
 }) => {
   const activeSession = cart?.payment_collection?.payment_sessions?.find(
     (paymentSession: HttpTypes.StorePaymentSession) =>
@@ -26,6 +28,9 @@ const Payment = ({
 
   const searchParams = useSearchParams();
   const searchParamsString = searchParams.toString();
+  const currentStep = searchParams.get("step");
+  const isPaymentStep =
+    currentStep === "payment" || (!currentStep && !hasPreData);
   const router = useRouter();
 
   const selectedProviderFromQuery = searchParams.get("payment_provider") || "";
@@ -39,6 +44,10 @@ const Payment = ({
   const syncedProviderRef = useRef<string | null>(null);
 
   useEffect(() => {
+    if (!isPaymentStep) {
+      return;
+    }
+
     if (selectedPaymentMethod || !availablePaymentMethods?.length) {
       return;
     }
@@ -58,9 +67,13 @@ const Payment = ({
     });
 
     setSelectedPaymentMethod(defaultProviderId);
-  }, [availablePaymentMethods, cart?.id, selectedPaymentMethod]);
+  }, [availablePaymentMethods, cart?.id, isPaymentStep, selectedPaymentMethod]);
 
   useEffect(() => {
+    if (!isPaymentStep) {
+      return;
+    }
+
     if (!cart || !selectedPaymentMethod) {
       return;
     }
@@ -142,6 +155,7 @@ const Payment = ({
     router,
     searchParamsString,
     selectedPaymentMethod,
+    isPaymentStep,
   ]);
 
   const handlePaymentMethodChange = (method: string) => {
@@ -156,6 +170,10 @@ const Payment = ({
   };
 
   const shouldRenderPaymentButton = Boolean(cart && selectedPaymentMethod);
+
+  if (!isPaymentStep && hasPreData) {
+    return null;
+  }
 
   return (
     <div className="bg-white">

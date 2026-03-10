@@ -9,7 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Minus, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { CustomCalendar } from "./CustomCalendar";
 import { addPackagesItemsToCart, addTourItemsToCart } from "@lib/data/cart";
@@ -26,6 +26,12 @@ interface Props {
 }
 
 type PassengerType = "ADULT" | "CHILD" | "INFANT";
+
+const PASSENGER_TYPE_ORDER: Record<PassengerType, number> = {
+  ADULT: 0,
+  CHILD: 1,
+  INFANT: 2,
+};
 
 type SelectedVariant = {
   variant: HttpTypes.StoreProductVariant;
@@ -65,9 +71,32 @@ const buildPassengersByType = (
   };
 };
 
+const getPassengerCopy = (
+  passengerType: PassengerType,
+): { label: string; description: string } => {
+  if (passengerType === "INFANT") {
+    return {
+      label: "Infantes",
+      description: "Menor de 3 años",
+    };
+  }
+
+  if (passengerType === "CHILD") {
+    return {
+      label: "Niños",
+      description: "Edad de 3 a 17 años",
+    };
+  }
+
+  return {
+    label: "Adultos",
+    description: "Edad 18 o más",
+  };
+};
+
 export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
   const typing = type == "tour" ? 2 : 40;
-  const isTour = type == "tour"
+  const isTour = type == "tour";
   const initialDate = useMemo(() => {
     const d = new Date();
     d.setDate(d.getDate() + typing);
@@ -141,9 +170,6 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
     });
     return total;
   }, [product.variants, quantities]);
-  console.log("POPO")
-  console.log(formId)
-
   const handleAddToCart = async () => {
     if (totalItems === 0) {
       return;
@@ -158,7 +184,7 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
       }
 
       const selectedVariants = Object.entries(quantities)
-        .filter(([_, qty]) => qty > 0)
+        .filter(([, qty]) => qty > 0)
         .map(([variantId, qty]) => {
           const variant = product.variants?.find((v) => v.id === variantId);
 
@@ -169,7 +195,7 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
           const calculatedAmount = variant.calculated_price?.calculated_amount;
           const unitPrice =
             typeof calculatedAmount === "number" &&
-              Number.isFinite(calculatedAmount)
+            Number.isFinite(calculatedAmount)
               ? calculatedAmount
               : undefined;
 
@@ -274,23 +300,21 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
         },
       }));
 
-
       if (isTour) {
         await addTourItemsToCart({
           countryCode: locale,
           tourDate,
           items,
-          formId
+          formId,
         });
       } else {
         await addPackagesItemsToCart({
           countryCode: locale,
           packageDate: tourDate,
           items,
-          formId
+          formId,
         });
       }
-
 
       window.dispatchEvent(
         new CustomEvent("cart:item-added", {
@@ -327,54 +351,80 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-baseline gap-2">
           <span className="text-muted-foreground text-sm">De:</span>
-          <span className="text-3xl font-bold text-[#2970b7]">
-          </span>
+          <span className="text-3xl font-bold text-[#2970b7]"></span>
         </div>
       </div>
 
       <div className="space-y-4 w-full">
         <div className="flex flex-col gap-y-4">
-          {product.variants?.map((variant) => {
-            const qty = quantities[variant.id] || 0;
-            const outOfStock =
-              variant.manage_inventory &&
-              !variant.allow_backorder &&
-              (variant.inventory_quantity || 0) <= 0;
+          {product.variants
+            ?.slice()
+            .sort((a, b) => {
+              const aPassengerType = getPassengerType(a.title);
+              const bPassengerType = getPassengerType(b.title);
 
-            return (
-              <div
-                key={variant.id}
-                className="flex items-center justify-between border p-3 rounded-md"
-              >
-                <div className="flex flex-col">
-                  <span className="font-medium text-ui-fg-base">
-                    {variant.title}
-                  </span>
-                  <span className="text-small-regular text-ui-fg-subtle">
-                    {getPriceDisplay(variant)}
-                  </span>
-                </div>
+              return (
+                PASSENGER_TYPE_ORDER[aPassengerType] -
+                PASSENGER_TYPE_ORDER[bPassengerType]
+              );
+            })
+            .map((variant) => {
+              const qty = quantities[variant.id] || 0;
+              const passengerType = getPassengerType(variant.title);
+              const passengerCopy = getPassengerCopy(passengerType);
+              const outOfStock =
+                variant.manage_inventory &&
+                !variant.allow_backorder &&
+                (variant.inventory_quantity || 0) <= 0;
 
-                <div className="flex items-center gap-x-3">
-                  <button
-                    onClick={() => handleQuantityChange(variant.id, -1)}
-                    disabled={qty === 0 || isAdding}
-                    className="w-8 h-8 flex items-center justify-center border rounded-full hover:bg-gray-100 disabled:opacity-50"
-                  >
-                    -
-                  </button>
-                  <span className="w-4 text-center">{qty}</span>
-                  <button
-                    onClick={() => handleQuantityChange(variant.id, 1)}
-                    disabled={outOfStock || isAdding}
-                    className="w-8 h-8 flex items-center justify-center border rounded-full hover:bg-gray-100 disabled:opacity-50"
-                  >
-                    +
-                  </button>
+              return (
+                <div
+                  key={variant.id}
+                  className="rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent/40"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                      <div className="text-[#2970b7] font-semibold mb-1">
+                        {passengerCopy.label}
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {passengerCopy.description}
+                      </p>
+                      <span className="text-sm font-medium text-ui-fg-base">
+                        {getPriceDisplay(variant)}
+                      </span>
+                      {outOfStock && (
+                        <p className="mt-1 text-xs text-destructive">
+                          Sin stock
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => handleQuantityChange(variant.id, -1)}
+                        disabled={qty === 0 || isAdding}
+                        className="w-8 h-8 rounded-full border border-border hover:border-foreground transition-colors flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label={`Disminuir ${passengerCopy.label.toLowerCase()}`}
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="text-[#2970b7] font-semibold min-w-[20px] text-center">
+                        {qty}
+                      </span>
+                      <button
+                        onClick={() => handleQuantityChange(variant.id, 1)}
+                        disabled={outOfStock || isAdding}
+                        className="w-8 h-8 rounded-full border border-border hover:border-foreground transition-colors flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label={`Aumentar ${passengerCopy.label.toLowerCase()}`}
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
 
         <Divider />

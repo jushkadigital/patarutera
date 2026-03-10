@@ -14,18 +14,18 @@ import React from 'react'
 
 
 
- const finalType = {
+const finalType = {
   'tours': 'tours',
   'paquetes': 'paquetes',
   'posts': 'blog'
- }
+}
 
 export const Pagination: React.FC<{
   className?: string
   page: number
   totalPages: number
-  searchParams:string
-  type: 'tours' | 'paquetes'| 'posts'
+  searchParams: string
+  type: 'tours' | 'paquetes' | 'posts'
 }> = (props) => {
   const router = useRouter()
 
@@ -52,7 +52,7 @@ export const Pagination: React.FC<{
                 if (hasPrevPage) {
                   const params = new URLSearchParams(props.searchParams)
                   params.set('page', String(page - 1))
-                  router.push(`/${finalType[type]}?${params.toString()}`)
+                  router.push(`/pe/${finalType[type]}?${params.toString()}`)
                 }
               }}
             />
@@ -74,7 +74,7 @@ export const Pagination: React.FC<{
                   if (hasPrevPage) {
                     const params = new URLSearchParams(props.searchParams)
                     params.set('page', String(page - 1))
-                    router.push(`/${finalType[type]}?${params.toString()}`)
+                    router.push(`/pe/${finalType[type]}?${params.toString()}`)
                   }
                 }}
               >
@@ -104,7 +104,7 @@ export const Pagination: React.FC<{
                   if (hasNextPage) {
                     const params = new URLSearchParams(props.searchParams)
                     params.set('page', String(page + 1))
-                    router.push(`/${finalType[type]}?${params.toString()}`)
+                    router.push(`/pe/${finalType[type]}?${params.toString()}`)
                   }
                 }}
               >
@@ -129,7 +129,7 @@ export const Pagination: React.FC<{
                 if (hasNextPage) {
                   const params = new URLSearchParams(props.searchParams)
                   params.set('page', String(page + 1))
-                  router.push(`/${finalType[type]}?${params.toString()}`)
+                  router.push(`/pe/${finalType[type]}?${params.toString()}`)
                 }
               }}
             />

@@ -123,6 +123,146 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart) {
     .catch(medusaError);
 }
 
+const toMetadataRecord = (value: unknown): Record<string, unknown> => {
+  return value && typeof value === "object"
+    ? (value as Record<string, unknown>)
+    : {};
+};
+
+const toStringArray = (value: unknown): string[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter((entry): entry is string => typeof entry === "string");
+};
+
+const toAnswersRecord = (value: unknown): Record<string, unknown> => {
+  return value && typeof value === "object"
+    ? (value as Record<string, unknown>)
+    : {};
+};
+
+type SavePreDataGroupSubmissionInput = {
+  groupId: string;
+  formId: string | number;
+  answers: Record<string, unknown>;
+  tourDate?: string;
+  packageDate?: string;
+};
+
+export async function savePreDataGroupSubmission({
+  answers,
+  formId,
+  groupId,
+  packageDate,
+  tourDate,
+}: SavePreDataGroupSubmissionInput) {
+  const cart = await retrieveCart(undefined, "id,metadata");
+
+  if (!cart) {
+    throw new Error("No existing cart found when saving pre-data submission");
+  }
+
+  const currentMetadata = toMetadataRecord(cart.metadata);
+  const currentPreData = toMetadataRecord(currentMetadata.preData);
+  const currentGroups = toMetadataRecord(currentPreData.groups);
+  const currentGroup = toMetadataRecord(currentGroups[groupId]);
+
+  const currentRequiredGroupIds = toStringArray(
+    currentPreData.required_group_ids,
+  );
+  const nextRequiredGroupIds = currentRequiredGroupIds.includes(groupId)
+    ? currentRequiredGroupIds
+    : [...currentRequiredGroupIds, groupId];
+
+  const now = new Date().toISOString();
+
+  const nextGroups = {
+    ...currentGroups,
+    [groupId]: {
+      ...currentGroup,
+      form_id: formId,
+      answers: toAnswersRecord(answers),
+      status: "completed",
+      submitted_at: now,
+      ...(tourDate ? { tour_date: tourDate } : {}),
+      ...(packageDate ? { package_date: packageDate } : {}),
+    },
+  };
+
+  const nextPreData = {
+    ...currentPreData,
+    version: 1,
+    groups: nextGroups,
+    required_group_ids: nextRequiredGroupIds,
+    completed: false,
+    updated_at: now,
+  };
+
+  return updateCart({
+    metadata: {
+      ...currentMetadata,
+      preData: nextPreData,
+      preDataCompleted: false,
+    },
+  });
+}
+
+type CompletePreDataStepInput = {
+  requiredGroupIds: string[];
+};
+
+export async function completePreDataStep({
+  requiredGroupIds,
+}: CompletePreDataStepInput) {
+  const cart = await retrieveCart(undefined, "id,metadata");
+
+  if (!cart) {
+    throw new Error("No existing cart found when completing pre-data step");
+  }
+
+  const currentMetadata = toMetadataRecord(cart.metadata);
+  const currentPreData = toMetadataRecord(currentMetadata.preData);
+  const currentGroups = toMetadataRecord(currentPreData.groups);
+
+  const sanitizedRequiredGroupIds = Array.from(
+    new Set(requiredGroupIds.filter((groupId) => typeof groupId === "string")),
+  );
+
+  const missingGroupIds = sanitizedRequiredGroupIds.filter((groupId) => {
+    const group = toMetadataRecord(currentGroups[groupId]);
+    const status = group.status;
+    return status !== "completed";
+  });
+
+  if (missingGroupIds.length > 0) {
+    throw new Error(
+      `Missing completed forms for groups: ${missingGroupIds.join(", ")}`,
+    );
+  }
+
+  const now = new Date().toISOString();
+
+  const nextPreData = {
+    ...currentPreData,
+    version: 1,
+    groups: currentGroups,
+    required_group_ids: sanitizedRequiredGroupIds,
+    completed: true,
+    completed_at: now,
+    updated_at: now,
+  };
+
+  return updateCart({
+    metadata: {
+      ...currentMetadata,
+      preData: nextPreData,
+      preDataCompleted: true,
+    },
+  });
+}
+
 export async function addToCart({
   variantId,
   quantity,
@@ -201,21 +341,21 @@ type AddTourItemsToCartInput = {
   countryCode: string;
   tourDate: string;
   items: TourItemInput[];
-  formId?: number
+  formId?: number;
 };
 
 type AddPackageItemsToCartInput = {
   countryCode: string;
   packageDate: string;
   items: PackageItemInput[];
-  formId?: number
+  formId?: number;
 };
 
 export async function addTourItemsToCart({
   countryCode,
   tourDate,
   items,
-  formId
+  formId,
 }: AddTourItemsToCartInput) {
   if (!tourDate) {
     throw new Error("Missing tour date when adding tour items to cart");
@@ -234,8 +374,6 @@ export async function addTourItemsToCart({
   const headers = {
     ...(await getAuthHeaders()),
   };
-  console.log("DATE")
-  console.log(tourDate)
 
   const payload = {
     cart_id: cart.id,
@@ -247,7 +385,7 @@ export async function addTourItemsToCart({
       metadata: {
         ...(item.metadata ?? {}),
         tour_date: tourDate,
-        ...(formId ? { formId: formId } : {})
+        ...(formId ? { formId: formId } : {}),
       },
     })),
   };
@@ -279,7 +417,7 @@ export async function addPackagesItemsToCart({
   countryCode,
   packageDate,
   items,
-  formId
+  formId,
 }: AddPackageItemsToCartInput) {
   if (!packageDate) {
     throw new Error("Missing tour date when adding tour items to cart");
@@ -309,7 +447,7 @@ export async function addPackagesItemsToCart({
       metadata: {
         ...(item.metadata ?? {}),
         package_date: packageDate,
-        ...(formId ? { formId: formId } : {})
+        ...(formId ? { formId: formId } : {}),
       },
     })),
   };
@@ -732,6 +870,64 @@ export async function placeOrder(cartId?: string) {
     throw new Error("No existing cart found when placing an order");
   }
 
+  const cartForValidation = await retrieveCart(
+    id,
+    "id,metadata,*items,*items.metadata",
+  );
+
+  if (!cartForValidation) {
+    throw new Error("Cart not found when validating pre-data before order");
+  }
+
+  const metadataRecord = toMetadataRecord(cartForValidation.metadata);
+  const preDataRecord = toMetadataRecord(metadataRecord.preData);
+  const preDataGroups = toMetadataRecord(preDataRecord.groups);
+
+  const requiredGroupsFromMetadata = toStringArray(
+    preDataRecord.required_group_ids,
+  );
+
+  const requiredGroupsFromItems = (cartForValidation.items ?? []).reduce(
+    (acc, item) => {
+      const itemMetadata = toMetadataRecord(item.metadata);
+      const formId = itemMetadata.formId;
+
+      if (typeof formId !== "string" && typeof formId !== "number") {
+        return acc;
+      }
+
+      const groupId =
+        typeof itemMetadata.group_id === "string" && itemMetadata.group_id
+          ? itemMetadata.group_id
+          : item.id;
+
+      acc.push(groupId);
+      return acc;
+    },
+    [] as string[],
+  );
+
+  const requiredGroupIds = Array.from(
+    new Set([...requiredGroupsFromMetadata, ...requiredGroupsFromItems]),
+  );
+
+  const missingRequiredGroupIds = requiredGroupIds.filter((groupId) => {
+    const groupData = toMetadataRecord(preDataGroups[groupId]);
+    return groupData.status !== "completed";
+  });
+
+  if (requiredGroupIds.length > 0) {
+    const preDataCompleted = metadataRecord.preDataCompleted === true;
+
+    if (!preDataCompleted || missingRequiredGroupIds.length > 0) {
+      throw new Error(
+        missingRequiredGroupIds.length > 0
+          ? `Complete all pre-data forms before placing the order. Missing groups: ${missingRequiredGroupIds.join(", ")}`
+          : "Complete all pre-data forms before placing the order.",
+      );
+    }
+  }
+
   const headers = {
     ...(await getAuthHeaders()),
   };
@@ -754,30 +950,12 @@ export async function placeOrder(cartId?: string) {
   try {
     console.log("[Server][Cart] placeOrder:start", {
       cartId: id,
-      endpoint: `/store/carts/${id}/complete-tours`,
-    });
-
-    cartRes = await completeCart(`/store/carts/${id}/complete-tours`);
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message.toLowerCase() : "";
-    const shouldFallback = errorMessage.includes("not found");
-
-    if (!shouldFallback) {
-      return medusaError(error);
-    }
-
-    console.warn("[Server][Cart] placeOrder:fallback-to-standard-complete", {
-      cartId: id,
-      message: error instanceof Error ? error.message : "Unknown error",
       endpoint: `/store/carts/${id}/complete`,
     });
 
-    try {
-      cartRes = await completeCart(`/store/carts/${id}/complete`);
-    } catch (fallbackError: unknown) {
-      return medusaError(fallbackError);
-    }
+    cartRes = await completeCart(`/store/carts/${id}/complete`);
+  } catch (error: unknown) {
+    return medusaError(error);
   }
 
   if (cartRes?.type === "order") {

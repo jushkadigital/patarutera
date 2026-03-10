@@ -18,24 +18,17 @@ type SummaryProps = {
   hasMedusaSessionCookie: boolean;
 };
 
-function getCheckoutStep(cart: HttpTypes.StoreCart) {
-  return "payment";
-}
-
 const Summary = ({
   cart,
   hasAuthSessionCookie,
   hasMedusaSessionCookie,
 }: SummaryProps) => {
-  const step = getCheckoutStep(cart);
-  const checkoutHref = "/checkout?step=" + step;
+  const checkoutHref = "/checkout";
   const { openPopup, isLoading, error } = usePopupAuth();
   const [isSyncing, setIsSyncing] = useState(false);
-  const canContinueToCheckout = hasMedusaSessionCookie || hasAuthSessionCookie;
+  //const canContinueToCheckout = hasMedusaSessionCookie || hasAuthSessionCookie;
+  const canContinueToCheckout = hasAuthSessionCookie || hasMedusaSessionCookie;
 
-  console.log("XRP")
-  console.log(hasMedusaSessionCookie)
-  console.log(hasAuthSessionCookie)
   const handleCheckoutClick = async () => {
     if (canContinueToCheckout) {
       return;
@@ -61,14 +54,13 @@ const Summary = ({
   return (
     <div className="flex flex-col gap-y-4">
       <Heading level="h2" className="text-[2rem] leading-[2.75rem]">
-        Summary
+        Resumen
       </Heading>
-      <DiscountCode cart={cart} />
       <Divider />
       <CartTotals totals={cart} />
       {canContinueToCheckout ? (
         <LocalizedClientLink href={checkoutHref} data-testid="checkout-button">
-          <Button className="w-full h-10">Go to checkout</Button>
+          <Button className="w-full h-10">Ir a checkout</Button>
         </LocalizedClientLink>
       ) : (
         <>

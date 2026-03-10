@@ -12,8 +12,6 @@ type ItemsTemplateProps = {
 
 const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
   const items = cart?.items;
-  console.log("AQUI")
-  console.log(items)
   const groupedItems = groupBy(
     items,
     (item) => item.metadata?.group_id ?? item.id,
@@ -29,7 +27,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
   return (
     <div>
       <div className="pb-3 flex items-center">
-        <Heading className="text-[2rem] leading-[2.75rem]">Cart</Heading>
+        <Heading className="text-[2rem] leading-[2.75rem]">Carrito</Heading>
       </div>
       <Table>
         <Table.Header className="border-t-0">

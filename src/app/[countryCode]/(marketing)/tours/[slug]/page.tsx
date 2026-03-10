@@ -44,7 +44,6 @@ export default async function TourPage({ params: paramsPromise }: Args) {
   const resolvedParams = await paramsPromise;
   // const searchParams = await searchParamsPromise; // Uncomment if searchParams are needed for tours
   const { slug, countryCode } = resolvedParams;
-  console.log(resolvedParams)
 
   if (!slug) {
     notFound(); // Should be handled by Next.js routing if slug is missing, but good practice
@@ -61,16 +60,14 @@ export default async function TourPage({ params: paramsPromise }: Args) {
 
   if (!product) {
     // Maneja el caso de que el ID no exista en Medusa
-    console.error("Producto no encontrado en Medusa con ID:", tour.medusaId);
+    console.error("Producto no encontrado en Medusa con ID:", tour.id + "tour");
 
   }
-  console.log(product)
 
   const { layout, heroTour, title, form } = tour; // Assuming tours have layout and heroPageBlocks
 
   const schema = TourSchema(tour)
 
-  console.log(form)
 
   return (
     <>

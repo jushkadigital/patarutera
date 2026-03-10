@@ -15,13 +15,12 @@ interface Props extends GridPaquetesBlockType {
   searchParams?: string;
   page?: number;
   selectedCategories?: string[];
+  selectedDestinations?: string[];
   context?: {
     nameCollection: string;
   } | null;
   countryCode?: string;
 }
-
-
 
 type MeiliSearchResponse = {
   hits?: MeiliPaqueteItem[];
@@ -56,7 +55,7 @@ function getDescriptionText(value: unknown): string | null {
   return null;
 }
 
-type Difficulty = 'easy' | 'medium' | 'hard';
+type Difficulty = "easy" | "medium" | "hard";
 function mapMeiliPaqueteToCardPaqueteData(
   paquete: MeiliPaqueteItem,
 ): CardPaqueteData {
@@ -79,7 +78,6 @@ function mapMeiliPaqueteToCardPaqueteData(
   };
 }
 
-
 function sanitizeCategories(categories?: string[]): string[] {
   if (!categories) return [];
 
@@ -91,12 +89,12 @@ function escapeFilterValue(value: string): string {
 }
 
 async function searchPaquetesFromMeilisearch({
-  destinationName,
+  destinationNames,
   categories,
   page,
   limit,
 }: {
-  destinationName?: string;
+  destinationNames: string[];
   categories: string[];
   page: number;
   limit: number;
@@ -110,8 +108,16 @@ async function searchPaquetesFromMeilisearch({
 
   const filters: string[] = [];
   filters.push('type = "paquete"');
-  if (destinationName) {
-    filters.push(`destination = "${escapeFilterValue(destinationName)}"`);
+
+  if (destinationNames.length > 0) {
+    const destinationFilter = destinationNames
+      .map(
+        (destinationName) =>
+          `destination = "${escapeFilterValue(destinationName)}"`,
+      )
+      .join(" OR ");
+
+    filters.push(`(${destinationFilter})`);
   }
 
   if (categories.length > 0) {
@@ -165,6 +171,7 @@ export async function GridPaquetes(props: Props) {
     overrideDefaults,
     searchParams,
     selectedCategories,
+    selectedDestinations,
     countryCode = "pe",
   } = props;
 
@@ -173,9 +180,16 @@ export async function GridPaquetes(props: Props) {
   const destinationName = (destination as Destination | undefined)?.name;
 
   const categoriesToFilter = sanitizeCategories(selectedCategories ?? []);
+  const destinationNamesToFilter = sanitizeCategories(
+    selectedDestinations && selectedDestinations.length > 0
+      ? selectedDestinations
+      : destinationName
+        ? [destinationName]
+        : [],
+  );
 
   const meiliResult = await searchPaquetesFromMeilisearch({
-    destinationName,
+    destinationNames: destinationNamesToFilter,
     categories: categoriesToFilter,
     page: currentPage,
     limit: paquetesPerPage,
@@ -186,11 +200,7 @@ export async function GridPaquetes(props: Props) {
     Math.ceil(meiliResult.totalDocs / paquetesPerPage),
   );
 
-
-  const paquetes = meiliResult.paquetes.map(
-    mapMeiliPaqueteToCardPaqueteData
-  );
-
+  const paquetes = meiliResult.paquetes.map(mapMeiliPaqueteToCardPaqueteData);
 
   return (
     <div className=" mx-auto py-4 bg bg-white w-[90%]">

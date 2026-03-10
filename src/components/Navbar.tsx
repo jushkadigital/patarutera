@@ -111,7 +111,7 @@ export const Navbar = ({
                 )}
               >
                 <Link href="/pe/paquetes?destinations=Ica,Cusco">
-                  Paquetes UNO
+                  Paquetes
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>

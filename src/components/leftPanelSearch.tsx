@@ -1,30 +1,43 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { Calendar, ChevronsUpDown, MapPin, Search, ChevronDown, Tag, Filter } from 'lucide-react';
+import * as React from "react";
+import {
+  Calendar,
+  ChevronsUpDown,
+  MapPin,
+  Search,
+  ChevronDown,
+  Tag,
+  Filter,
+} from "lucide-react";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+} from "@/components/ui/collapsible";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label'; // Asumiendo que tienes un componente Label o usa html label
-import { Destination, TourCategory } from '@/cms-types';
-import { parseAsArrayOf, useQueryState, parseAsString } from 'nuqs'
-import * as SliderPrimitive from "@radix-ui/react-slider"
-import { useSharedState } from '@/hooks/sharedContextDestinos';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
-import { useMobile } from '@/hooks/useMobile';
-import Link from 'next/link';
-
-
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label"; // Asumiendo que tienes un componente Label o usa html label
+import { Destination, TourCategory } from "@/cms-types";
+import { parseAsArrayOf, useQueryState, parseAsString } from "nuqs";
+import * as SliderPrimitive from "@radix-ui/react-slider";
+import { useSharedState } from "@/hooks/sharedContextDestinos";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import { useMobile } from "@/hooks/useMobile";
+import Link from "next/link";
+import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 
 interface LeftPanelSearch {
   categories: TourCategory[];
@@ -32,17 +45,18 @@ interface LeftPanelSearch {
   destinations: Destination[];
 }
 
-
-
-export function LeftPanelSearch({ categories, title, destinations }: LeftPanelSearch) {
-  const isMobile = useMobile({ breakpoint: 1024 })
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false)
+export function LeftPanelSearch({
+  categories,
+  title,
+  destinations,
+}: LeftPanelSearch) {
+  const isMobile = useMobile({ breakpoint: 1024 });
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   return (
     <div>
-      {isMobile
-        ?
+      {isMobile ? (
         <div className=" absolute mt-[-25px] ">
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen} >
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="sm">
                 <Filter className="h-2 w-2 " />
@@ -54,7 +68,7 @@ export function LeftPanelSearch({ categories, title, destinations }: LeftPanelSe
                 <SheetTitle>Filtrar Tours</SheetTitle>
               </SheetHeader>
               <div className="mt-6 overflow-y-auto">
-                <div className='flex flex-col w-full space-y-10 p-4'>
+                <div className="flex flex-col w-full space-y-10 p-4">
                   <TourSearchComponent destinations={destinations} />
                   <TourCategoryList categories={categories} />
                   <PriceFilter />
@@ -63,39 +77,44 @@ export function LeftPanelSearch({ categories, title, destinations }: LeftPanelSe
             </SheetContent>
           </Sheet>
         </div>
-        :
-        <div className='flex flex-col w-full space-y-10 p-4'>
+      ) : (
+        <div className="flex flex-col w-full space-y-10 p-4">
           <TourSearchComponent destinations={destinations} />
           <TourCategoryList categories={categories} />
           <PriceFilter />
         </div>
-      }
-
-
-
+      )}
     </div>
-  )
+  );
 }
 
 interface TourSearchComponentProps {
   destinations: Destination[];
 }
 
-
-
 function TourSearchComponent({ destinations }: TourSearchComponentProps) {
   const [isOpen, setIsOpen] = React.useState(false); // Default to open
-  const [destinoTemp, setDestinoTemp] = React.useState("")
+  const [isPending, startTransition] = React.useTransition();
+  const [filterDestination, setFilterDestination] = useQueryState(
+    "filterDestination",
+    parseAsString.withOptions({ shallow: false, startTransition }),
+  );
 
-  const selectedOption = destinations.find((dest) => dest.name === destinoTemp)
+  const selectedOption = destinations.find(
+    (dest) => dest.name === filterDestination,
+  );
   return (
     <div className="  p-0 flex items-center justify-center">
+      {isPending && <FilterLoadingOverlay label="Actualizando tours..." />}
+
       <div className="w-full  bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Header */}
         <div className="px-6 py-6 border-b border-[#d9d9d9]">
           <div className="flex items-center gap-3">
             <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
-            <h1 className="text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-semibold tracking-wide">BUSCAR TOURS</h1>
+            <h1 className="text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-semibold tracking-wide">
+              BUSCAR TOURS
+            </h1>
           </div>
         </div>
 
@@ -108,7 +127,9 @@ function TourSearchComponent({ destinations }: TourSearchComponentProps) {
                 <MapPin className="w-6 h-6 text-[#2970b7] " />
               </div>
               <div className="flex-1 ">
-                <label className="block text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-medium mb-2">Destino</label>
+                <label className="block text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-medium mb-2">
+                  Destino
+                </label>
                 <Popover open={isOpen} onOpenChange={setIsOpen}>
                   <PopoverTrigger asChild>
                     <button
@@ -118,10 +139,14 @@ function TourSearchComponent({ destinations }: TourSearchComponentProps) {
                       {selectedOption ? (
                         <>
                           <MapPin className="w-4 h-4 text-[#2970b7]" />
-                          <span className="text-[#333]">{selectedOption.name}</span>
+                          <span className="text-[#333]">
+                            {selectedOption.name}
+                          </span>
                         </>
                       ) : (
-                        <span className="text-[#adadac] lg:text-[clamp(10.9px,1vw,20.48px)]">Seleccionar destino</span>
+                        <span className="text-[#adadac] lg:text-[clamp(10.9px,1vw,20.48px)]">
+                          Seleccionar destino
+                        </span>
                       )}
                       <ChevronDown
                         className={`w-5 h-5 text-[#adadac] transition-transform duration-200 absolute right-3 ${isOpen ? "rotate-180" : ""}`}
@@ -134,8 +159,8 @@ function TourSearchComponent({ destinations }: TourSearchComponentProps) {
                         <div
                           key={destination.name}
                           onClick={() => {
-                            setDestinoTemp(destination.name)
-                            setIsOpen(false)
+                            setFilterDestination(destination.name);
+                            setIsOpen(false);
                           }}
                           className="w-[clamp(170px,16.6vw,320px)] text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg"
                         >
@@ -164,30 +189,24 @@ function TourSearchComponent({ destinations }: TourSearchComponentProps) {
             </div>
           </div>
           */}
-          {/* Search Button */}
-          <Link href={`/tours?destination=${destinoTemp}&categories=`}>
-            <button
-              className="w-full bg-[#2970b7] text-white py-4 px-6 rounded-2xl font-medium text-lg lg:text-[clamp(10.9px,1vw,20.48px)] flex items-center justify-center gap-3 hover:bg-[#2970b7]/90 transition-colors">
-              Buscar
-              <Search className="lg:w-3 xl:w-5 lg:h-3 xl:h-5" />
-            </button>
-          </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export function TourSearchBoxHorizontal({ destinations }: TourSearchComponentProps) {
+export function TourSearchBoxHorizontal({
+  destinations,
+}: TourSearchComponentProps) {
   const [isOpen, setIsOpen] = React.useState(false); // Default to open
-  const [destinoTemp, setDestinoTemp] = React.useState("Cusco")
+  const [destinoTemp, setDestinoTemp] = React.useState("Cusco");
 
-  const selectedOption = destinations.find((dest) => dest.name === destinoTemp)
+  const selectedOption = destinations.find((dest) => dest.name === destinoTemp);
   return (
     <div className="bg-white rounded-2xl lg:rounded-full shadow-lg border border-gray-200 px-8 py-4 max-w-4xl mx-auto">
       <div className="flex flex-col lg:flex-row items-end lg:items-center justify-between gap-3 lg:gap-8">
         {/* Destinos Dropdown */}
-        <div className='flex items-center lg:gap-3 flex-1 '>
+        <div className="flex items-center lg:gap-3 flex-1 ">
           <div className="flex items-center lg:gap-3 flex-1 relative">
             <MapPin className="w-5 h-5 lg:w-8 lg:h-8 text-[#2970b7] flex-shrink-0 hidden lg:block" />
             <div className="relative flex-1"></div>
@@ -216,8 +235,8 @@ export function TourSearchBoxHorizontal({ destinations }: TourSearchComponentPro
                     <div
                       key={destination.name}
                       onClick={() => {
-                        setDestinoTemp(destination.name)
-                        setIsOpen(false)
+                        setDestinoTemp(destination.name);
+                        setIsOpen(false);
                       }}
                       className="w-full text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg cursor-pointer"
                     >
@@ -244,38 +263,41 @@ export function TourSearchBoxHorizontal({ destinations }: TourSearchComponentPro
         */}
         </div>
 
-
-
         {/* Botón de búsqueda */}
-        <Link href={`/tours?destination=${destinoTemp}&categories=`} >
-          <button className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg"
-          >
+        <Link href={`/tours?destination=${destinoTemp}&categories=`}>
+          <button className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg">
             <span>Buscar</span>
             <Search className="w-5 h-5" />
           </button>
         </Link>
       </div>
     </div>
-  )
+  );
 }
-
-
 
 interface TourCategoryListProps {
-  categories: TourCategory[]
-  title?: string
+  categories: TourCategory[];
+  title?: string;
 }
 
-
-
-
-
-function TourCategoryList({ categories, title = "Categorías" }: TourCategoryListProps) {
-  const [isOpen, setIsOpen] = React.useState(true)
-  const [selectedCategories, setSelectedCategories] = useQueryState('categories', parseAsArrayOf(parseAsString).withOptions({ shallow: false }))
+function TourCategoryList({
+  categories,
+  title = "Categorías",
+}: TourCategoryListProps) {
+  const [isOpen, setIsOpen] = React.useState(true);
+  const [isPending, startTransition] = React.useTransition();
+  const [selectedCategories, setSelectedCategories] = useQueryState(
+    "categories",
+    parseAsArrayOf(parseAsString).withOptions({
+      shallow: false,
+      startTransition,
+    }),
+  );
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+      {isPending && <FilterLoadingOverlay label="Actualizando tours..." />}
+
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Header */}
         <div className="px-6 py-6 border-b border-[#d9d9d9]">
@@ -295,8 +317,7 @@ function TourCategoryList({ categories, title = "Categorías" }: TourCategoryLis
         {/* Content */}
         <CollapsibleContent>
           <div className="p-6">
-            <div className="flex items-start gap-4 mb-4">
-            </div>
+            <div className="flex items-start gap-4 mb-4"></div>
 
             <div className="space-y-3">
               {categories.map((category) => (
@@ -308,14 +329,15 @@ function TourCategoryList({ categories, title = "Categorías" }: TourCategoryLis
                     id={`category-${category.id}`}
                     checked={selectedCategories?.includes(category.name)}
                     onCheckedChange={(checked) => {
-                      const isSelected = checked === true || checked === "indeterminate"
+                      const isSelected =
+                        checked === true || checked === "indeterminate";
                       setSelectedCategories((prev) => {
                         if (isSelected) {
-                          return [...prev!, category.name]
+                          return [...prev!, category.name];
                         } else {
-                          return prev!.filter((c) => c !== category.name)
+                          return prev!.filter((c) => c !== category.name);
                         }
-                      })
+                      });
                     }}
                     className="data-[state=checked]:bg-[#2970b7] data-[state=checked]:border-[#2970b7]"
                   />
@@ -332,28 +354,28 @@ function TourCategoryList({ categories, title = "Categorías" }: TourCategoryLis
         </CollapsibleContent>
       </div>
     </Collapsible>
-  )
+  );
 }
 
-
 export function PriceFilter() {
-  const minPrice = 0
-  const maxPrice = 1999
+  const minPrice = 0;
+  const maxPrice = 1999;
 
-  const { priceOne: priceRange, setPriceOne: setPriceRange } = useSharedState()
+  const { priceOne: priceRange, setPriceOne: setPriceRange } = useSharedState();
 
   return (
     <div className="w-full  mx-auto rounded-3xl border border-[#e3e3e3] bg-white p-6">
-
       <div className="flex items-center gap-3">
         <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
-        <h2 className="text-[#2970b7] text-xl font-semibold tracking-wide">Filtrar Precio</h2>
+        <h2 className="text-[#2970b7] text-xl font-semibold tracking-wide">
+          Filtrar Precio
+        </h2>
       </div>
       <div className="relative pt-4 pb-8">
         <SliderPrimitive.Root
           className="relative flex w-full touch-none select-none items-center"
           value={priceRange}
-          onValueChange={(setPriceRange as (value: number[]) => void)}
+          onValueChange={setPriceRange as (value: number[]) => void}
           min={minPrice}
           max={maxPrice}
           step={10}
@@ -386,5 +408,5 @@ export function PriceFilter() {
         </span>
       </div>
     </div>
-  )
+  );
 }
