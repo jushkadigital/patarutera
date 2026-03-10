@@ -1,32 +1,45 @@
-import { RenderBlocks } from '@/blocks/renderBlocks';
-import { RenderHero } from '@/blocks/renderTourHero';
-import { LivePreviewListener } from '@/components/LivePreviewListener';
-import { TourSchema } from '@/components/Schema';
-import { BASEURL } from '@/lib2/config';
-import { generateMetaPage } from '@/utilities/generateMeta';
-import { getProductByExternalId, listProducts } from '@lib/data/products';
-import { Metadata } from 'next';
-import { draftMode } from 'next/headers';
-import { notFound } from 'next/navigation';
-import Script from 'next/script';
-import { cache } from 'react';
+import { RenderBlocks } from "@/blocks/renderBlocks";
+import { RenderHero } from "@/blocks/renderTourHero";
+import { TourSchema } from "@/components/Schema";
+import { BASEURL } from "@/lib2/config";
+import { generateMetaPage } from "@/utilities/generateMeta";
+import { HttpTypes } from "@medusajs/types";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Script from "next/script";
+import { cache } from "react";
 
 // ISR Configuration: Revalidate every hour (3600 seconds)
 // Pages will be statically generated at build time and regenerated in the background
 export const revalidate = 3600; // 1 hour
+export const dynamic = "force-static";
+
+const MEDUSA_BACKEND_URL =
+  process.env.MEDUSA_BACKEND_URL ?? "http://localhost:9000";
+const MEDUSA_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+
+const medusaHeaders = MEDUSA_PUBLISHABLE_KEY
+  ? { "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY }
+  : undefined;
+
+type StoreRegion = {
+  id: string;
+  currency_code: string;
+  countries?: Array<{ iso_2?: string | null }>;
+};
+
 export async function generateStaticParams() {
-  const toursRequest = await fetch(`${BASEURL}/api/tours?depth=0&limit=1000&draft=false&select[slug]=true`); // Fetch tour slugs
+  const toursRequest = await fetch(
+    `${BASEURL}/api/tours?depth=0&limit=1000&draft=false&select[slug]=true`,
+  ); // Fetch tour slugs
   const tours = await toursRequest.json();
 
   const params = tours.docs
     ?.filter((doc: { slug?: string }) => doc.slug) // Ensure slug exists
     .map(({ slug }: { slug: string }) => ({ slug }));
 
-
-
-  return params || []
+  return params || [];
 }
-
 
 type TourPageParams = {
   slug?: string;
@@ -40,7 +53,6 @@ type Args = {
 };
 
 export default async function TourPage({ params: paramsPromise }: Args) {
-  const { isEnabled: draft } = await draftMode();
   const resolvedParams = await paramsPromise;
   // const searchParams = await searchParamsPromise; // Uncomment if searchParams are needed for tours
   const { slug, countryCode } = resolvedParams;
@@ -54,49 +66,60 @@ export default async function TourPage({ params: paramsPromise }: Args) {
   if (!tour) {
     notFound();
   }
-  const { product } = await getProductByExternalId(tour.id + "tour", {
+  const product = await queryProductByExternalId({
+    externalId: tour.id + "tour",
     countryCode,
-  })
+  });
 
   if (!product) {
-    // Maneja el caso de que el ID no exista en Medusa
-    console.error("Producto no encontrado en Medusa con ID:", tour.id + "tour");
-
+    notFound();
   }
 
   const { layout, heroTour, title, form } = tour; // Assuming tours have layout and heroPageBlocks
 
-  const schema = TourSchema(tour)
-
+  const schema = TourSchema(tour);
 
   return (
     <>
-      <Script id="tour-schema" type={'application/ld+json'} strategy={'lazyOnload'}>
+      <Script
+        id="tour-schema"
+        type={"application/ld+json"}
+        strategy={"lazyOnload"}
+      >
         {JSON.stringify(schema)}
       </Script>
       <div className="">
-        {draft && <LivePreviewListener />}
         <div className="flex flex-col md:flex-col mt-10 md:mt-0">
           <RenderHero heroBlocks={heroTour} title={title} />
-          <div className='flex flex-col space-y-10 order-none'>
-            <div className='w-full'><h1 className='text-center text-4xl lg:text-[clamp(16.3px,2.6vw,50.72px)]  text-[#2970b7] font-bold italic'>{title}</h1></div>
-            <RenderBlocks blocks={layout} context={{ nameCollection: 'tour', title: title, medusaId: product!, formId: form?.id ?? null }} />
+          <div className="flex flex-col space-y-10 order-none">
+            <div className="w-full">
+              <h1 className="text-center text-4xl lg:text-[clamp(16.3px,2.6vw,50.72px)]  text-[#2970b7] font-bold italic">
+                {title}
+              </h1>
+            </div>
+            <RenderBlocks
+              blocks={layout}
+              context={{
+                nameCollection: "tour",
+                title: title,
+                medusaId: product,
+                formId: form?.id ?? null,
+              }}
+            />
           </div>
         </div>
-
       </div>
     </>
   );
 }
 
 const queryTourBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode();
   // Fetch a single tour by slug. Adjust depth as needed for tour data.
   const data = await fetch(
-    `${BASEURL}/api/tours?limit=1&where[slug][equals]=${slug}&depth=2&draft=${draft}`,
+    `${BASEURL}/api/tours?limit=1&where[slug][equals]=${slug}&depth=2&draft=false`,
     {
       next: {
-        tags: ['tours', `tour-${slug}`],
+        tags: ["tours", `tour-${slug}`],
         revalidate: 3600, // 1 hour
       },
     },
@@ -104,14 +127,89 @@ const queryTourBySlug = cache(async ({ slug }: { slug: string }) => {
   const result = await data.json();
   return result.docs?.[0] || null;
 });
-export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
 
-  const { slug = 'home' } = await paramsPromise;
+const queryRegionByCountryCode = cache(
+  async (countryCode?: string): Promise<StoreRegion | null> => {
+    if (!countryCode) {
+      return null;
+    }
+
+    const response = await fetch(`${MEDUSA_BACKEND_URL}/store/regions`, {
+      headers: medusaHeaders,
+      next: {
+        revalidate: 3600,
+        tags: ["regions"],
+      },
+      cache: "force-cache",
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const { regions } = (await response.json()) as { regions?: StoreRegion[] };
+    const normalizedCountryCode = countryCode.toLowerCase();
+
+    return (
+      regions?.find((region) =>
+        region.countries?.some(
+          (country) => country?.iso_2 === normalizedCountryCode,
+        ),
+      ) ?? null
+    );
+  },
+);
+
+const queryProductByExternalId = cache(
+  async ({
+    externalId,
+    countryCode,
+  }: {
+    externalId: string;
+    countryCode?: string;
+  }): Promise<HttpTypes.StoreProduct | null> => {
+    const region = await queryRegionByCountryCode(countryCode);
+
+    if (!region) {
+      return null;
+    }
+
+    const query = new URLSearchParams({
+      region_id: region.id,
+      currency_code: region.currency_code,
+    });
+
+    const response = await fetch(
+      `${MEDUSA_BACKEND_URL}/store/products/external/${externalId}?${query.toString()}`,
+      {
+        headers: medusaHeaders,
+        next: {
+          revalidate: 3600,
+          tags: ["products", `product-${externalId}`],
+        },
+        cache: "force-cache",
+      },
+    );
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const { product } = (await response.json()) as {
+      product?: HttpTypes.StoreProduct;
+    };
+
+    return product ?? null;
+  },
+);
+
+export async function generateMetadata({
+  params: paramsPromise,
+}: Args): Promise<Metadata> {
+  const { slug = "home" } = await paramsPromise;
   const page = await queryTourBySlug({ slug });
-  return generateMetaPage({ doc: page })
-
+  return generateMetaPage({ doc: page });
 }
-
 
 // Optional: Metadata for the tour page
 // import { Metadata } from 'next'; // Uncomment if using metadata
