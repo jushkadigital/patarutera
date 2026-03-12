@@ -30,7 +30,8 @@ const Summary = ({
   const { openPopup, isLoading, error } = usePopupAuth();
   const [isSyncing, setIsSyncing] = useState(false);
   //const canContinueToCheckout = hasMedusaSessionCookie || hasAuthSessionCookie;
-  const canContinueToCheckout = hasAuthSessionCookie || hasMedusaSessionCookie;
+  //const canContinueToCheckout = hasAuthSessionCookie || hasMedusaSessionCookie;
+  const canContinueToCheckout = true
 
   const handleCheckoutClick = async () => {
     if (canContinueToCheckout) {
@@ -47,7 +48,7 @@ const Summary = ({
     try {
       await openPopup({ provider: "keycloak" });
       window.location.assign(localizedCheckoutPath);
-    } catch {}
+    } catch { }
   };
 
   return (

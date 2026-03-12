@@ -6,7 +6,7 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 const REVALIDATE_TOKEN = process.env.REVALIDATE_TOKEN;
 
 export async function POST(request: NextRequest) {
-  
+
   const body = await request.json();
   const secretFromBody = body.secret;
   if (!REVALIDATE_TOKEN) {
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       if (typeof path === 'string') {
         try {
           // Si el path es 'home', revalidamos la ruta raíz '/'.
-          const actualPath = path === 'home' ? '/' : path;
+          const actualPath = path === 'home' ? '/pe' : path;
           revalidatePath(actualPath);
           revalidatedPaths.push(actualPath);
         } catch (err: any) {

@@ -195,7 +195,7 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
           const calculatedAmount = variant.calculated_price?.calculated_amount;
           const unitPrice =
             typeof calculatedAmount === "number" &&
-            Number.isFinite(calculatedAmount)
+              Number.isFinite(calculatedAmount)
               ? calculatedAmount
               : undefined;
 
