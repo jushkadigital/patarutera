@@ -16,7 +16,7 @@ const IZIPAY_SDK_URL =
 declare global {
   interface Window {
     Izipay?: {
-      new (config: { config: Record<string, unknown> }): {
+      new(config: { config: Record<string, unknown> }): {
         LoadForm: (options: {
           authorization: string;
           keyRSA: string;
@@ -298,7 +298,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
               showButtonProcessForm: true,
             },
             urlIPN:
-              "https://testapi-pw.izipay.pe/ipnclient/NotificationPublic/requests",
+              "https://commerce.patarutera.pe/custom/izipay/callback",
             appearance: {
               styleInput: "normal",
               logo: "",
