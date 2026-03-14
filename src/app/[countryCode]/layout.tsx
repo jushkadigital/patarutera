@@ -1,13 +1,14 @@
-import PixelEvents from "@/components/PixelEvents";
-import TikTokPixel from "@/components/PixelTiktok";
 import { getBaseURL } from "@lib/util/env";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Metadata } from "next";
+import { Poppins } from "next/font/google";
 import Script from "next/script";
-import { Suspense } from "react";
 import "../globals.css";
-import SessionProvider from "@/providers/session-provider";
-import MedusaSynchronizer from "@/components/medusa-synchronizer";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -21,7 +22,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <GoogleTagManager gtmId="G-6XPFF81QJW" />
-      <body className="min-h-screen flex flex-col">
+      <body className={`${poppins.className} min-h-screen flex flex-col`}>
         <Script
           id="fb-pixel-script"
           strategy="afterInteractive"

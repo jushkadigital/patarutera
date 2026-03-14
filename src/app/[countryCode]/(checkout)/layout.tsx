@@ -15,7 +15,7 @@ export default function CheckoutLayout({
       <div className="h-16 bg-white border-b ">
         <nav className="flex flex-row justify-center h-full items-center w-full">
           <LocalizedClientLink
-            href="/pe"
+            href="/"
             className="w-36"
             data-testid="store-link"
           >
