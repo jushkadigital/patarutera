@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 // Configuración de reintentos
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1500; // Esperar 1.5 segundos entre intentos
+const MEDUSA_SYNC_FALLBACK_COOKIE = "medusa_sync_guest_fallback";
+const MEDUSA_SYNC_FALLBACK_MAX_AGE_SECONDS = 60 * 5;
 
 function getSafeCallbackPath(raw: string | null): string {
   if (!raw) {
@@ -27,23 +29,72 @@ function extractCookieValue(
   return match ? match[1] : null;
 }
 
+async function continueAsGuest(
+  req: NextRequest,
+  callbackUrl: string,
+  reason: string,
+  isDevelopment: boolean,
+) {
+  try {
+    await signOut({ redirect: false });
+  } catch (error) {
+    if (isDevelopment) {
+      console.warn("[SYNC] Guest fallback signOut failed:", error);
+    }
+  }
+
+  const fallbackUrl = new URL(callbackUrl, req.url);
+  fallbackUrl.searchParams.set("medusa_sync", "guest");
+  fallbackUrl.searchParams.set("medusa_sync_reason", reason);
+
+  const isProduction = process.env.NODE_ENV === "production";
+  const response = NextResponse.redirect(fallbackUrl);
+  response.cookies.set(MEDUSA_SYNC_FALLBACK_COOKIE, "1", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: isProduction,
+    path: "/",
+    maxAge: MEDUSA_SYNC_FALLBACK_MAX_AGE_SECONDS,
+  });
+  response.cookies.set("_medusa_jwt", "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: isProduction,
+    path: "/",
+    maxAge: 0,
+  });
+
+  return response;
+}
+
 export async function GET(req: NextRequest) {
   const isDevelopment = process.env.NODE_ENV !== "production";
+  const callbackUrl = getSafeCallbackPath(
+    req.nextUrl.searchParams.get("callbackUrl"),
+  );
+  const mode = req.nextUrl.searchParams.get("mode");
 
   if (isDevelopment) {
     console.log("[SYNC] Iniciando medusa-sync...");
+    console.log("[SYNC] CallbackUrl:", callbackUrl);
+  }
+
+  if (mode === "guest") {
+    if (isDevelopment) {
+      console.log("[SYNC] Modo guest solicitado por usuario.");
+    }
+    return continueAsGuest(req, callbackUrl, "manual_guest", isDevelopment);
   }
 
   const session = await auth();
 
   if (!session?.user) {
     if (isDevelopment) {
-      console.log("[SYNC] ❌ No hay sesión, redirigiendo a signin");
+      console.log("[SYNC] ❌ No hay sesión, continuando como guest");
     }
-    return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+    return continueAsGuest(req, callbackUrl, "no_session", isDevelopment);
   }
 
-  // @ts-ignore
   const accessToken = session.accessToken;
 
   if (isDevelopment && accessToken) {
@@ -58,15 +109,12 @@ export async function GET(req: NextRequest) {
 
   if (!accessToken) {
     console.error("❌ No hay Access Token en la sesión");
-    await signOut({ redirect: false });
-    return NextResponse.redirect(new URL("/?error=no_access_token", req.url));
-  }
-
-  const callbackUrl = getSafeCallbackPath(
-    req.nextUrl.searchParams.get("callbackUrl"),
-  );
-  if (isDevelopment) {
-    console.log("[SYNC] CallbackUrl:", callbackUrl);
+    return continueAsGuest(
+      req,
+      callbackUrl,
+      "missing_access_token",
+      isDevelopment,
+    );
   }
 
   let attempt = 0;
@@ -89,7 +137,7 @@ export async function GET(req: NextRequest) {
         },
       );
 
-      const data = await medusaRes.json();
+      const data = await medusaRes.json().catch(() => ({}));
 
       if (isDevelopment) {
         console.log(
@@ -115,26 +163,34 @@ export async function GET(req: NextRequest) {
         }
 
         console.error(
-          "❌ Error definitivo o límite de intentos alcanzado. Haciendo logout.",
+          "❌ Error definitivo o límite de intentos alcanzado. Continuando como guest.",
         );
-        await signOut({ redirect: false });
-        return NextResponse.redirect(new URL("/?error=sync_failed", req.url));
+        return continueAsGuest(req, callbackUrl, "sync_failed", isDevelopment);
       }
 
       // Extract all Set-Cookie headers (may be multiple)
       // Node/undici provides getSetCookie() for reliable multi-cookie handling
-      const setCookieHeaders = medusaRes.headers.getSetCookie?.() ?? (() => {
-        // Fallback: iterate header entries
-        const cookies: string[] = [];
-        medusaRes.headers.forEach((value, name) => {
-          if (name.toLowerCase() === "set-cookie") {
-            cookies.push(value);
-          }
-        });
-        return cookies;
-      })();
+      const setCookieHeaders =
+        medusaRes.headers.getSetCookie?.() ??
+        (() => {
+          // Fallback: iterate header entries
+          const cookies: string[] = [];
+          medusaRes.headers.forEach((value, name) => {
+            if (name.toLowerCase() === "set-cookie") {
+              cookies.push(value);
+            }
+          });
+          return cookies;
+        })();
       const response = NextResponse.redirect(new URL(callbackUrl, req.url));
       const isProduction = process.env.NODE_ENV === "production";
+      response.cookies.set(MEDUSA_SYNC_FALLBACK_COOKIE, "", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: isProduction,
+        maxAge: 0,
+        path: "/",
+      });
 
       if (isDevelopment) {
         console.log("[SYNC] ✅ Exito en sync.");
@@ -189,7 +245,7 @@ export async function GET(req: NextRequest) {
           if (isDevelopment) {
             console.log("[SYNC] Iniciando cart transfer para:", incomingCartId);
           }
-          
+
           try {
             // Use correct Medusa v2 endpoint: POST /store/carts/{id}/customer
             // Customer ID is automatically extracted from JWT auth session
@@ -200,12 +256,13 @@ export async function GET(req: NextRequest) {
                 headers: {
                   Authorization: `Bearer ${medusaJwt}`,
                   "Content-Type": "application/json",
-                  "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+                  "x-publishable-api-key":
+                    process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
                 },
                 cache: "no-store",
-              }
+              },
             );
-            
+
             if (isDevelopment) {
               if (transferResponse.ok) {
                 console.log("[SYNC] ✅ Cart transfer completado exitosamente");
@@ -245,12 +302,10 @@ export async function GET(req: NextRequest) {
       return response;
     } catch (error) {
       console.error(`❌ Error de red en intento ${attempt}:`, error);
-      await signOut({ redirect: false });
-      return NextResponse.redirect(new URL("/?error=network_error", req.url));
+      return continueAsGuest(req, callbackUrl, "network_error", isDevelopment);
     }
   }
 
-  console.error("❌ Error desconocido en sync. Haciendo logout.");
-  await signOut({ redirect: false });
-  return NextResponse.redirect(new URL("/?error=unknown_error", req.url));
+  console.error("❌ Error desconocido en sync. Continuando como guest.");
+  return continueAsGuest(req, callbackUrl, "unknown_error", isDevelopment);
 }

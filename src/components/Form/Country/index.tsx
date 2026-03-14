@@ -1,5 +1,4 @@
-import type { SelectField } from "@payloadcms/plugin-form-builder/types";
-import type { Control, FieldErrorsImpl, FieldValues } from "react-hook-form";
+import type { FieldErrorsImpl, FieldValues, Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
 import { Label } from "@/components/ui/label";
@@ -16,29 +15,40 @@ import { Error } from "../Error";
 import { FORM_FIELD_CLASS, FORM_LABEL_CLASS } from "../styles";
 import { Width } from "../Width";
 
-type SelectOption = {
-  label: string;
+type CountryPhoneOption = {
   value: string;
-  id?: string | null;
+  label: string;
 };
 
-const getOptions = (options: SelectField["options"]): SelectOption[] => {
-  if (!Array.isArray(options)) {
-    return [];
-  }
-
-  return options.filter((option): option is SelectOption => {
-    return (
-      typeof option === "object" &&
-      option !== null &&
-      typeof option.label === "string" &&
-      typeof option.value === "string"
-    );
-  });
+type CountryFieldProps = {
+  name: string;
+  label?: string | null;
+  defaultValue?: string | null;
+  placeholder?: string | null;
+  required?: boolean | null;
+  width?: number | string | null;
 };
 
-export const Select: React.FC<
-  SelectField & {
+const COUNTRY_PHONE_OPTIONS: CountryPhoneOption[] = [
+  { value: "+51", label: "+51 Peru" },
+  { value: "+54", label: "+54 Argentina" },
+  { value: "+591", label: "+591 Bolivia" },
+  { value: "+55", label: "+55 Brasil" },
+  { value: "+56", label: "+56 Chile" },
+  { value: "+57", label: "+57 Colombia" },
+  { value: "+593", label: "+593 Ecuador" },
+  { value: "+595", label: "+595 Paraguay" },
+  { value: "+598", label: "+598 Uruguay" },
+  { value: "+58", label: "+58 Venezuela" },
+  { value: "+507", label: "+507 Panama" },
+  { value: "+506", label: "+506 Costa Rica" },
+  { value: "+52", label: "+52 Mexico" },
+  { value: "+1", label: "+1 United States / Canada" },
+  { value: "+34", label: "+34 Spain" },
+];
+
+export const Country: React.FC<
+  CountryFieldProps & {
     control: Control<FieldValues>;
     errors: Partial<
       FieldErrorsImpl<{
@@ -48,20 +58,18 @@ export const Select: React.FC<
   }
 > = ({
   name,
+  label,
   control,
   defaultValue,
   errors,
-  label,
-  options,
   placeholder,
   required: requiredFromProps,
   width,
 }) => {
-  const availableOptions = getOptions(options);
-  const placeholderLabel = placeholder || label || "Select an option";
+  const placeholderLabel = placeholder || label || "Select country code";
 
   return (
-    <Width width={width}>
+    <Width width={width ?? undefined}>
       <Label className={FORM_LABEL_CLASS} htmlFor={name}>
         {label}
       </Label>
@@ -81,11 +89,8 @@ export const Select: React.FC<
               <SelectValue placeholder={placeholderLabel} />
             </SelectTrigger>
             <SelectContent>
-              {availableOptions.map((option) => (
-                <SelectItem
-                  key={option.id ?? `${name}-${option.value}`}
-                  value={option.value}
-                >
+              {COUNTRY_PHONE_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
               ))}

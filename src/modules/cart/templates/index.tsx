@@ -19,7 +19,7 @@ const CartTemplate = ({
   hasMedusaSessionCookie: boolean;
 }) => {
   return (
-    <div className="py-12">
+    <div className="py-12 font-[Poppins]">
       <div className="content-container" data-testid="cart-container">
         {showExpiredCartNotice && (
           <div className="mb-6 rounded-md border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-900">
@@ -28,8 +28,8 @@ const CartTemplate = ({
           </div>
         )}
         {cart?.items?.length ? (
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_360px] gap-x-40">
-            <div className="flex flex-col bg-white py-6 gap-y-6">
+          <div className="flex flex-col gap-y-8">
+            <div className="flex flex-col gap-y-6">
               {!customer && (
                 <>
                   <SignInPrompt />
@@ -44,7 +44,7 @@ const CartTemplate = ({
                   <>
                     <div className="bg-white py-6">
                       <Summary
-                        cart={cart as any}
+                        cart={cart}
                         hasAuthSessionCookie={hasAuthSessionCookie}
                         hasMedusaSessionCookie={hasMedusaSessionCookie}
                       />

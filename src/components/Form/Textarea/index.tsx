@@ -8,15 +8,12 @@ import type {
 import { Label } from "@/components/ui/label";
 import React from "react";
 import { Error } from "../Error";
+import { FORM_LABEL_CLASS, FORM_TEXTAREA_CLASS } from "../styles";
 import { Width } from "../Width";
 
 export const Textarea: React.FC<
   TextField & {
-    errors: Partial<
-      FieldErrorsImpl<{
-        [x: string]: any;
-      }>
-    >;
+    errors: Partial<FieldErrorsImpl<Record<string, unknown>>>;
     register: UseFormRegister<FieldValues>;
     rows?: number;
   }
@@ -32,14 +29,16 @@ export const Textarea: React.FC<
 }) => {
   return (
     <Width width={width}>
-      <Label htmlFor={name}>{label}</Label>
+      <Label className={FORM_LABEL_CLASS} htmlFor={name}>
+        {label}
+      </Label>
 
       <textarea
-        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className={FORM_TEXTAREA_CLASS}
         defaultValue={defaultValue}
         id={name}
         rows={rows}
-        placeholder={label}
+        placeholder={label ?? ""}
         {...register(name, { required: requiredFromProps })}
       />
 

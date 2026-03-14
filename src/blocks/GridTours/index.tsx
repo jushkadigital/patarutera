@@ -1,15 +1,13 @@
-import type {
-  Destination,
-  GridToursBlock as GridToursBlockType,
-  TourCategory,
-} from "@/cms-types";
+import type { GridToursBlock as GridToursBlockType, Tour } from "@/cms-types";
 import { CardTourData } from "@/components/CardTour";
 import { Pagination } from "@/components/Pagination";
 import { Subtitle } from "@/components/Subtitle";
 import { ToursComponent } from "@/components/ToursComponent";
+import { BASEURL } from "@/lib2/config";
 
 interface Props extends GridToursBlockType {
   rangeSlider?: boolean;
+  fromPayload?: boolean;
   searchParams?: string;
   page?: number;
   selectedCategories?: string[];
@@ -21,6 +19,13 @@ interface Props extends GridToursBlockType {
 type MeiliSearchResponse = {
   hits?: MeiliTourItem[];
   estimatedTotalHits?: number;
+};
+
+type PayloadToursResponse = {
+  docs?: Tour[];
+  totalDocs?: number;
+  totalPages?: number;
+  page?: number;
 };
 
 type MeiliTourItem = {
@@ -52,7 +57,8 @@ function getDescriptionText(value: unknown): string | null {
   return null;
 }
 
-type Difficulty = 'easy' | 'medium' | 'hard';
+type Difficulty = "easy" | "medium" | "hard";
+
 function mapMeiliTourToCardTourData(tour: MeiliTourItem): CardTourData {
   return {
     id: tour.id,
@@ -72,6 +78,86 @@ function mapMeiliTourToCardTourData(tour: MeiliTourItem): CardTourData {
     difficulty: tour.difficulty as Difficulty,
     priceMedusa: null,
   };
+}
+
+function mapPayloadTourToCardTourData(tour: Tour): CardTourData {
+  const miniDescriptionValue = tour.miniDescription as unknown;
+
+  const destinationName =
+    typeof tour.destinos === "object" &&
+      tour.destinos !== null &&
+      "name" in tour.destinos
+      ? tour.destinos.name
+      : null;
+
+  return {
+    id: tour.id,
+    title: tour.title,
+    slug: tour.slug ?? `tour-${tour.id}`,
+    miniDescription: isLexicalDescription(miniDescriptionValue)
+      ? miniDescriptionValue
+      : null,
+    descriptionText: getDescriptionText(miniDescriptionValue),
+    featuredImage: tour.featuredImage,
+    destinationName,
+    destinos: tour.destinos,
+    price: typeof tour.price === "number" ? tour.price : tour.priceGeneral,
+    iconMaxPassengers: tour.iconMaxPassengers,
+    maxPassengers:
+      typeof tour.maxPassengers === "number"
+        ? tour.maxPassengers
+        : tour.maxPassengersGeneral,
+    iconDifficulty: tour.iconDifficulty,
+    difficulty: tour.difficulty,
+    medusaId: null,
+    priceMedusa: null,
+  };
+}
+
+function getCategoryNamesFromBlock(
+  category: GridToursBlockType["category"],
+): string[] {
+  if (!Array.isArray(category)) {
+    return [];
+  }
+
+  return category
+    .map((item) => {
+      if (typeof item === "object" && item !== null && "name" in item) {
+        return item.name;
+      }
+
+      return null;
+    })
+    .filter((value): value is string => typeof value === "string");
+}
+
+function getCategoryIdsFromBlock(
+  category: GridToursBlockType["category"],
+): number[] {
+  if (!Array.isArray(category)) {
+    return [];
+  }
+
+  return category.filter((item): item is number => typeof item === "number");
+}
+
+function getDestinationId(
+  destination: GridToursBlockType["destination"],
+): number | undefined {
+  if (typeof destination === "number") {
+    return destination;
+  }
+
+  if (
+    typeof destination === "object" &&
+    destination !== null &&
+    "id" in destination
+  ) {
+    return destination.id;
+  }
+
+  return undefined;
 }
 
 function sanitizeCategories(categories?: string[]): string[] {
@@ -151,6 +237,75 @@ async function searchToursFromMeilisearch({
   };
 }
 
+async function searchToursFromPayload({
+  destinationId,
+  destinationName,
+  categoryNames,
+  categoryIds,
+  page,
+  limit,
+}: {
+  destinationId?: number;
+  destinationName?: string;
+  categoryNames: string[];
+  categoryIds: number[];
+  page: number;
+  limit: number;
+}): Promise<{ tours: Tour[]; totalDocs: number }> {
+  if (!BASEURL) {
+    return { tours: [], totalDocs: 0 };
+  }
+
+  const params = new URLSearchParams();
+  params.append("limit", String(limit));
+  params.append("page", String(page));
+  params.append("depth", "2");
+  params.append("draft", "false");
+
+  params.append("select[featuredImage]", "true");
+  params.append("select[slug]", "true");
+  params.append("select[title]", "true");
+  params.append("select[price]", "true");
+  params.append("select[difficulty]", "true");
+  params.append("select[iconDifficulty]", "true");
+  params.append("select[maxPassengers]", "true");
+  params.append("select[iconMaxPassengers]", "true");
+  params.append("select[miniDescription]", "true");
+  params.append("select[destinos]", "true");
+
+  if (destinationName) {
+    params.append("where[destinos.name][equals]", destinationName);
+  } else if (destinationId) {
+    params.append("where[destinos][equals]", String(destinationId));
+  }
+
+  if (categoryNames.length > 0) {
+    params.append("where[categorias.name][in]", categoryNames.join(","));
+  } else if (categoryIds.length > 0) {
+    params.append("where[categorias][in]", categoryIds.join(","));
+  }
+
+  const response = await fetch(`${BASEURL}/api/tours?${params.toString()}`, {
+    next: { tags: ["tours"] },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Payload request failed with status ${response.status}`);
+  }
+
+  const result: PayloadToursResponse = await response.json();
+  const tours = Array.isArray(result.docs) ? result.docs : [];
+  const totalDocs =
+    typeof result.totalDocs === "number" && Number.isFinite(result.totalDocs)
+      ? result.totalDocs
+      : tours.length;
+
+  return {
+    tours,
+    totalDocs,
+  };
+}
+
 export async function GridTours(props: Props) {
   const {
     gridColumns,
@@ -162,14 +317,20 @@ export async function GridTours(props: Props) {
     overrideDefaults,
     searchParams,
     selectedCategories,
+    fromPayload = true,
   } = props;
 
   const toursPerPage = gridColumns ?? 6;
   const currentPage = page ?? 1;
-  const destinationName = (destination as Destination | undefined)?.name;
-  const categoryFromBlock = (
-    (category as TourCategory[] | undefined) ?? []
-  ).map((item) => item.name);
+  const destinationName =
+    typeof destination === "object" &&
+      destination !== null &&
+      "name" in destination
+      ? destination.name
+      : undefined;
+  const destinationId = getDestinationId(destination);
+  const categoryFromBlock = getCategoryNamesFromBlock(category);
+  const categoryIdsFromBlock = getCategoryIdsFromBlock(category);
 
   const categoriesToFilter = sanitizeCategories(
     selectedCategories && selectedCategories.length > 0
@@ -177,19 +338,44 @@ export async function GridTours(props: Props) {
       : categoryFromBlock,
   );
 
-  const meiliResult = await searchToursFromMeilisearch({
-    destinationName,
-    categories: categoriesToFilter,
-    page: currentPage,
-    limit: toursPerPage,
-  });
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(meiliResult.totalDocs / toursPerPage),
+  const payloadCategoryNames = sanitizeCategories(
+    categoryFromBlock.length > 0
+      ? categoryFromBlock
+      : selectedCategories && selectedCategories.length > 0
+        ? selectedCategories
+        : [],
   );
 
-  const tours = meiliResult.tours.map(mapMeiliTourToCardTourData);
+  const shouldUsePayload = Boolean(fromPayload);
+
+  let tours: CardTourData[] = [];
+  let totalDocs = 0;
+
+  if (shouldUsePayload) {
+    const payloadResult = await searchToursFromPayload({
+      destinationId,
+      destinationName,
+      categoryNames: payloadCategoryNames,
+      categoryIds: categoryIdsFromBlock,
+      page: currentPage,
+      limit: toursPerPage,
+    });
+
+    tours = payloadResult.tours.map(mapPayloadTourToCardTourData);
+    totalDocs = payloadResult.totalDocs;
+  } else {
+    const meiliResult = await searchToursFromMeilisearch({
+      destinationName,
+      categories: categoriesToFilter,
+      page: currentPage,
+      limit: toursPerPage,
+    });
+
+    tours = meiliResult.tours.map(mapMeiliTourToCardTourData);
+    totalDocs = meiliResult.totalDocs;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(totalDocs / toursPerPage));
 
   return (
     <div className=" mx-auto py-4 bg bg-white w-[90%]">

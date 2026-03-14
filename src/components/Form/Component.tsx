@@ -10,6 +10,7 @@ import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical
 
 import { buildInitialFormState } from "./buildInitialFormState";
 import { fields } from "./fields";
+import { FORM_SUBMIT_BUTTON_CLASS } from "./styles";
 import { getClientSideURL } from "@/utilities/getURL";
 import RichText from "../RichText";
 import Grid from "../Grid";
@@ -154,7 +155,6 @@ export const FormBlock: React.FC<
     ],
   );
 
-  // @ts-ignore
   return (
     <div className={classes.formSection}>
       <div>
@@ -178,30 +178,38 @@ export const FormBlock: React.FC<
                 id={formID}
                 onSubmit={handleSubmit(onSubmit)}
               >
-                <div className="mb-4 last:mb-0" id={id}>
+                <div
+                  className="mb-4 flex flex-wrap items-start gap-x-4 gap-y-6 last:mb-0"
+                  id={id}
+                >
                   {formFromProps &&
                     formFromProps.fields &&
                     formFromProps.fields?.map((field, index) => {
-                      const Field: React.FC<any> = fields?.[field.blockType];
+                      const Field = fields?.[field.blockType] as
+                        | React.ComponentType<Record<string, unknown>>
+                        | undefined;
                       if (Field) {
                         return (
-                          <div className="mb-6 last:mb-0" key={index}>
-                            <Field
-                              form={formFromProps}
-                              {...field}
-                              {...formMethods}
-                              control={control}
-                              errors={errors}
-                              register={register}
-                            />
-                          </div>
+                          <Field
+                            key={`${field.blockType}-${index}`}
+                            form={formFromProps}
+                            {...field}
+                            {...formMethods}
+                            control={control}
+                            errors={errors}
+                            register={register}
+                          />
                         );
                       }
                       return null;
                     })}
                 </div>
-                {/*@ts-ignore*/}
-                <Button form={formID} type="submit" variant="default">
+                <Button
+                  className={FORM_SUBMIT_BUTTON_CLASS}
+                  form={formID}
+                  type="submit"
+                  variant="default"
+                >
                   {submitButtonLabel}
                 </Button>
               </form>

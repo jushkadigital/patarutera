@@ -1,358 +1,267 @@
-"use client"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ReservationCard } from "./ReservationCard"
-import { v4 as uuidv4 } from 'uuid'
-import { url } from "inspector"
-import { Media } from "@/cms-types"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
+"use client";
+
+import type { Media } from "@/cms-types";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+
+import { ReservationCard } from "./ReservationCard";
+
 type BillingFormValues = {
-  names: string
-  country: string
-  dni: string
-  streetAddress: string
-  city: string
-  state: string
-  postcode: string
-  phone: string
-  email: string
-  hotel: string
-}
+  names: string;
+  lastNames: string;
+  dni: string;
+  city: string;
+  phone: string;
+  email: string;
+  streetAddress: string;
+};
+
 interface Props {
-  name: string
-  date: string
-  amount: number
-  numberPassengers: number
-  type: string
-  image: Media
-  id: string
+  name: string;
+  date: string;
+  amount: number;
+  numberPassengers: number;
+  type: string;
+  image: Media;
+  id: string;
 }
 
+const FIGMA_INPUT_CLASSES =
+  "h-[53px] rounded-[5px] border-[1.5px] border-[#dddddd] bg-white px-5 text-[15px] font-medium text-[#1f1f1f] placeholder:text-[#9f9f9f] focus-visible:ring-1 focus-visible:ring-[#dddddd] focus-visible:ring-offset-0";
 
-
-export function BillingForm({ name, date, amount, numberPassengers, type, image, id }: Props) {
+export function BillingForm({
+  name,
+  date,
+  amount,
+  numberPassengers,
+  type,
+  image,
+  id,
+}: Props) {
   const form = useForm<BillingFormValues>({
     defaultValues: {
       names: "",
-      country: "",
-      streetAddress: "",
+      lastNames: "",
+      dni: "",
       city: "",
       phone: "",
       email: "",
-      hotel: "Plaza de Armas de Cusco",
+      streetAddress: "Plaza de Armas de Cusco",
     },
-  })
-
-
-
-  const passengerName = form.watch("names")
-  const countryCodeValue = form.watch("country");
-  const hotelStatus = form.watch("hotel");
+  });
 
   const onSubmit = async (data: BillingFormValues) => {
+    const fullName = `${data.names} ${data.lastNames}`.trim();
+
     const paymentConf = {
       amount: Math.round(numberPassengers * Number(amount) * 100),
       currency: "PEN",
       customer: {
-        reference: data.names,
-        email: (data.email),
+        reference: fullName,
+        email: data.email,
         billingDetails: {
-          cellPhoneNumber: countryCodeValue + ' ' + data.phone,
+          cellPhoneNumber: `+51 ${data.phone}`,
           identityCode: data.dni,
-          state: phoneCountryOptions.find(ele => ele.value == data.country)!.label,
+          state: "Perú",
           district: numberPassengers,
-          address: data.streetAddress
+          address: data.city || data.streetAddress,
         },
         shippingDetails: {
-          city: date,
-        }
+          city: data.city || date,
+        },
       },
-      orderId: `${type}-${id}-${new Date().valueOf()}`
-    }
+      orderId: `${type}-${id}-${new Date().valueOf()}`,
+    };
+
     const response = await fetch(`/api/createpayment`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ ...paymentConf }),
     });
+
     if (!response.ok) {
-      throw new Error('Error al enviar el formulario');
+      throw new Error("Error al enviar el formulario");
     }
 
-    if (typeof window.fbq === 'function') {
-      window.fbq('track', 'InitiateCheckout');
-      window.fbq('track', 'AddPaymentInfo');
+    if (typeof window.fbq === "function") {
+      window.fbq("track", "InitiateCheckout");
+      window.fbq("track", "AddPaymentInfo");
     }
+
     if (window.ttq) {
-      window.ttq.track('AddPaymentInfo')
-      window.ttq.track('InitiateCheckout')
+      window.ttq.track("AddPaymentInfo");
+      window.ttq.track("InitiateCheckout");
     }
+
     const result = await response.json();
-    const urlPayment = JSON.parse(result.message).answer.paymentURL
-    window.location.href = urlPayment
-  }
-
-  const phoneCountryOptions = [
-    // EUROPA (España)
-    { value: '+34', label: 'España' },
-
-    // AMÉRICA DEL NORTE
-    { value: '+1', label: 'Estados Unidos y Canadá (+1)' }, // Código unificado +1
-    { value: '+52', label: 'México' },
-    // Códigos de área del Caribe y otros territorios +1
-    { value: '+1-242', label: 'Bahamas' },
-    { value: '+1-767', label: 'Dominica' },
-    { value: '+1-809', label: 'República Dominicana (+1-809, +1-829, +1-849)' },
-    { value: '+1-876', label: 'Jamaica' },
-    { value: '+1-787', label: 'Puerto Rico (+1-787, +1-939)' },
-    { value: '+1-868', label: 'Trinidad y Tobago' },
-    { value: '+1-340', label: 'Islas Vírgenes de EE. UU.' },
-
-    // AMÉRICA CENTRAL
-    { value: '+501', label: 'Belice' },
-    { value: '+502', label: 'Guatemala' },
-    { value: '+503', label: 'El Salvador' },
-    { value: '+504', label: 'Honduras' },
-    { value: '+505', label: 'Nicaragua' },
-    { value: '+506', label: 'Costa Rica' },
-    { value: '+507', label: 'Panamá' },
-
-    // AMÉRICA DEL SUR
-    { value: '+54', label: 'Argentina' },
-    { value: '+55', label: 'Brasil' },
-    { value: '+56', label: 'Chile' },
-    { value: '+57', label: 'Colombia' },
-    { value: '+51', label: 'Perú' },
-    { value: '+591', label: 'Bolivia' },
-    { value: '+593', label: 'Ecuador' },
-    { value: '+595', label: 'Paraguay' },
-    { value: '+598', label: 'Uruguay' },
-    { value: '+58', label: 'Venezuela' },
-
-  ];
-
+    const urlPayment = JSON.parse(result.message).answer.paymentURL;
+    window.location.href = urlPayment;
+  };
 
   return (
-    <div className="w-full flex flex-col md:flex-row justify-center items-center lg:items-start">
-      <div className="mx-auto  p-6 w-[80%] lg:w-2/3">
-        <h1 className="mb-8 text-2xl font-semibold">Datos del Pasajero</h1>
+    <div className="flex w-full flex-col items-center justify-center gap-8 lg:flex-row lg:items-start">
+      <div className="w-full max-w-[760px] px-4 lg:w-2/3">
+        <div className="rounded-xl bg-[#f2f2f2] px-4 py-8 sm:px-6 lg:px-10">
+          <h2 className="font-[Poppins] text-[24px] font-medium leading-normal text-black">
+            2. Información de Pasajero
+          </h2>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* First name and Last name */}
-            <div className="grid gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="names"
-                rules={{ required: "Nombres requeridos" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Nombres<span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Input placeholder="Nombres y Apellidos" {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="dni"
-                rules={{ required: "DNI o Pasaporte requerido" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      DNI o Pasaporte<span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Input type="number" placeholder=".." {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <div className="mt-3 h-px w-full bg-[#d9d9d9]" />
 
-            </div>
-
-            {/* Country / Region */}
-
-
-            {/* Street address and Town / City */}
-            <div className="grid gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="country"
-                rules={{ required: "Pais es requerido" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Country / Pais <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona un Pais" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {phoneCountryOptions.map((ele) => (
-                          <SelectItem value={ele.value}>{ele.label}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="hotel"
-                rules={{
-                }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Recojo
-                    </FormLabel>
-                    <RadioGroup onValueChange={(e) => {
-                      field.onChange(e)
-                      if (e !== "otro") {
-                        form.setValue("streetAddress", e)
-                      } else {
-                        form.setValue("streetAddress", "")
-                      }
-                    }} value={field.value}>
-                      <div className="flex items-center gap-3">
-                        <RadioGroupItem value="Plaza de Armas de Cusco" id="r1" />
-                        <Label htmlFor="r1">Plaza de Armas de Cusco</Label>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <RadioGroupItem value="Plaza Regocijos" id="r2" />
-                        <Label htmlFor="r2">Plaza Regocijos</Label>
-                      </div>
-                      <div className="flex flex-col  gap-3">
-                        <div className="flex items-center gap-3">
-
-                          <RadioGroupItem value="otro" id="r3" />
-                          <Label htmlFor="r3">Otra Ubicacion</Label>
-                        </div>
-                        {field.value == 'otro' &&
-                          <FormField
-                            control={form.control}
-                            name="streetAddress"
-                            rules={{ required: "Direccion de domicilio requirido" }}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>
-                                  Direccion <span className="text-destructive">*</span>
-                                </FormLabel>
-                                <Input placeholder="Av o Calle" {...field} />
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                        }
-                      </div>
-                    </RadioGroup>
-                    <FormMessage />
-
-                  </FormItem>
-                )}
-              />
-
-
-            </div>
-
-            {/* State / County and Postcode / ZIP */}
-            <div className="grid gap-6 md:grid-cols-2">
-
-
-            </div>
-
-            {/* Phone and Email */}
-            <div className="grid gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="phone"
-                rules={{ required: "Phone is required" }}
-                render={({ field }) => {
-                  const prefix = countryCodeValue + " " || '';
-
-                  // 2. Combina el valor que se debe mostrar en el Input: [prefijo + valor actual del campo]
-                  const displayValue = prefix + (field.value || '');
-
-                  // 3. Define la función onChange para asegurar que solo se guarde el número
-                  const handlePhoneChange = (e) => {
-                    let newValue = e.target.value;
-
-                    // Intenta eliminar el prefijo del código de país para obtener solo el número.
-                    // Esto evita que el prefijo sea guardado si ya está en la entrada.
-                    if (prefix && newValue.startsWith(prefix)) {
-                      newValue = newValue.substring(prefix.length);
-                    }
-                    // Llama a la función onChange de React Hook Form con solo el número.
-                    field.onChange(newValue);
-                  }
-                  return (
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="mt-8 space-y-[29px]"
+            >
+              <div className="grid gap-[18px] sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="names"
+                  rules={{ required: "Nombres requeridos" }}
+                  render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        Telefono <span className="text-destructive">*</span>
-                      </FormLabel>
+                      <FormLabel className="sr-only">Nombres</FormLabel>
                       <Input
-                        placeholder="Numero de Telefono"
-                        type="tel"
-                        // Usa el valor combinado para mostrar el prefijo
-                        value={displayValue}
-                        // Usa la función personalizada para limpiar el prefijo antes de guardar
-                        onChange={handlePhoneChange}
-                        onBlur={field.onBlur} // Importante mantener el onBlur
-                        name={field.name}     // Importante mantener el name
+                        className={FIGMA_INPUT_CLASSES}
+                        placeholder="Nombres"
+                        {...field}
                       />
                       <FormMessage />
                     </FormItem>
-                  )
-                }}
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="lastNames"
+                  rules={{ required: "Apellidos requeridos" }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="sr-only">Apellidos</FormLabel>
+                      <Input
+                        className={FIGMA_INPUT_CLASSES}
+                        placeholder="Apellidos"
+                        {...field}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="city"
+                rules={{ required: "Ciudad requerida" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="sr-only">Ciudad</FormLabel>
+                    <Input
+                      className={FIGMA_INPUT_CLASSES}
+                      placeholder="Ciudad"
+                      {...field}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="dni"
+                rules={{ required: "Documento requerido" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="sr-only">Tipo de documento</FormLabel>
+                    <Input
+                      className={FIGMA_INPUT_CLASSES}
+                      placeholder="Tipo de documento"
+                      {...field}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone"
+                rules={{ required: "Teléfono requerido" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="sr-only">
+                      N° de teléfono (Whatsapp)
+                    </FormLabel>
+                    <Input
+                      className={FIGMA_INPUT_CLASSES}
+                      placeholder="N° de teléfono (Whatsapp)"
+                      type="tel"
+                      {...field}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <FormField
                 control={form.control}
                 name="email"
                 rules={{
-                  required: "Email is required",
+                  required: "Email requerido",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
+                    message: "Email inválido",
                   },
                 }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Email <span className="text-destructive">*</span>
+                    <FormLabel className="sr-only">
+                      Correo electrónico
                     </FormLabel>
-                    <Input placeholder="Email" type="email" {...field} />
+                    <Input
+                      className={FIGMA_INPUT_CLASSES}
+                      placeholder="Correo electrònico"
+                      type="email"
+                      {...field}
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="grid gap-6 md:grid-cols-2">
 
-            </div>
-
-            {/* Booking Button */}
-            <div className="pt-4">
-              <Button type="submit" size="lg" className="w-full md:w-auto bg-[#2970b7] hover:bg-[black] cursor-pointer">
-                Reservar
-              </Button>
-            </div>
-          </form>
-        </Form>
+              <div className="flex justify-end pt-2">
+                <Button
+                  type="submit"
+                  className="h-[51px] w-full rounded-[8px] border border-[#e2e2e2] bg-[#efba06] font-[Poppins] text-[16px] font-bold text-white hover:bg-[#dba900] sm:w-[216px]"
+                >
+                  Continuar a pagar
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
       </div>
-      <div className="w-[80%] md:w-1/3">
-        <ReservationCard name={name} amount={Number(amount)} numberPassengers={Number(numberPassengers)} type={type} date={date} image={image} />
+
+      <div className="w-full max-w-[380px] px-4 lg:w-1/3">
+        <ReservationCard
+          name={name}
+          amount={Number(amount)}
+          numberPassengers={Number(numberPassengers)}
+          type={type}
+          date={date}
+          image={image}
+        />
       </div>
     </div>
-  )
+  );
 }

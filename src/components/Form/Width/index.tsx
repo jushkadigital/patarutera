@@ -1,18 +1,41 @@
-import * as React from 'react'
+import * as React from "react";
 
-export const Width: React.FC<{
-  children: React.ReactNode
-  className?: string
-  width?: number | string
-}> = ({ children, className, width }) => {
+type WidthProps = {
+  children: React.ReactNode;
+  className?: string;
+  width?: number | string | null;
+};
+
+const normalizeWidth = (value?: number | string | null): number | undefined => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return Math.min(100, Math.max(1, value));
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number(value.trim());
+
+    if (Number.isFinite(parsed)) {
+      return Math.min(100, Math.max(1, parsed));
+    }
+  }
+
+  return undefined;
+};
+
+export const Width: React.FC<WidthProps> = ({ children, className, width }) => {
+  const normalizedWidth = normalizeWidth(width);
+  const widthValue = normalizedWidth ? `${normalizedWidth}%` : "100%";
+
   return (
-    <div className={className} style={{
-      maxWidth: width ? `${width}%` : undefined,
-      // width: width ? `${width}%` : undefined,
-      // display: width !== 100 ? 'inline-block' : undefined,
-    }}
+    <div
+      className={className}
+      style={{
+        width: widthValue,
+        maxWidth: widthValue,
+        flexBasis: widthValue,
+      }}
     >
       {children}
     </div>
-  )
-}
+  );
+};

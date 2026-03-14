@@ -150,6 +150,66 @@ const toAnswersRecord = (value: unknown): Record<string, unknown> => {
     : {};
 };
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const normalizeEmailValue = (value: unknown): string | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmedValue = value.trim();
+  if (!EMAIL_REGEX.test(trimmedValue)) {
+    return null;
+  }
+
+  return trimmedValue.toLowerCase();
+};
+
+const isEmailFieldKey = (fieldKey: string): boolean => {
+  const normalizedKey = fieldKey.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  return normalizedKey.includes("email") || normalizedKey.includes("correo");
+};
+
+const findEmailInAnswers = (
+  answers: Record<string, unknown>,
+): string | null => {
+  const queue: Array<[string, unknown]> = Object.entries(answers);
+
+  while (queue.length > 0) {
+    const [currentKey, currentValue] = queue.shift()!;
+
+    if (typeof currentValue === "string") {
+      if (!isEmailFieldKey(currentKey)) {
+        continue;
+      }
+
+      const normalizedEmail = normalizeEmailValue(currentValue);
+      if (normalizedEmail) {
+        return normalizedEmail;
+      }
+
+      continue;
+    }
+
+    if (
+      currentValue &&
+      typeof currentValue === "object" &&
+      !Array.isArray(currentValue)
+    ) {
+      for (const [nestedKey, nestedValue] of Object.entries(currentValue)) {
+        queue.push([nestedKey, nestedValue]);
+      }
+    }
+  }
+
+  return null;
+};
+
+const hasOwnProperties = (value: Record<string, unknown>): boolean => {
+  return Object.keys(value).length > 0;
+};
+
 type SavePreDataGroupSubmissionInput = {
   groupId: string;
   formId: string | number;
@@ -165,7 +225,7 @@ export async function savePreDataGroupSubmission({
   packageDate,
   tourDate,
 }: SavePreDataGroupSubmissionInput) {
-  const cart = await retrieveCart(undefined, "id,metadata");
+  const cart = await retrieveCart(undefined, "id,email,customer_id,metadata");
 
   if (!cart) {
     throw new Error("No existing cart found when saving pre-data submission");
@@ -207,11 +267,32 @@ export async function savePreDataGroupSubmission({
     updated_at: now,
   };
 
+  const existingCartEmail = normalizeEmailValue(cart.email);
+  const emailFromAnswers = findEmailInAnswers(answers);
+  const nextCartEmail = existingCartEmail || emailFromAnswers;
+
+  const isGuestCart = !cart.customer_id;
+  const currentGuestMetadata = toMetadataRecord(currentMetadata.guest);
+  const customerFromAnswers = toMetadataRecord(answers.customer);
+  const guestFromAnswers = toMetadataRecord(answers.guest);
+  const nextGuestMetadata: Record<string, unknown> = {
+    ...currentGuestMetadata,
+    ...(hasOwnProperties(customerFromAnswers)
+      ? { customer: customerFromAnswers }
+      : {}),
+    ...(hasOwnProperties(guestFromAnswers) ? guestFromAnswers : {}),
+    ...(nextCartEmail ? { email: nextCartEmail } : {}),
+    updated_at: now,
+    source: "predata",
+  };
+
   return updateCart({
+    ...(nextCartEmail ? { email: nextCartEmail } : {}),
     metadata: {
       ...currentMetadata,
       preData: nextPreData,
       preDataCompleted: false,
+      ...(isGuestCart ? { guest: nextGuestMetadata } : {}),
     },
   });
 }

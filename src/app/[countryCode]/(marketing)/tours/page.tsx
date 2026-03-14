@@ -175,6 +175,7 @@ export default async function Page(props: Props) {
               page={currentPage}
               selectedCategories={selectedCategories}
               overrideDefaults={true}
+              fromPayload={false}
             />
           </div>
         </div>

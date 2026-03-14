@@ -2,19 +2,17 @@
 
 import { Button, Heading } from "@medusajs/ui";
 
-import CartTotals from "@modules/common/components/cart-totals";
 import Divider from "@modules/common/components/divider";
-import DiscountCode from "@modules/checkout/components/discount-code";
-import LocalizedClientLink from "@modules/common/components/localized-client-link";
+import Modal from "@modules/common/components/modal";
 import { usePopupAuth } from "@/hooks/usePopupAuth";
 import { HttpTypes } from "@medusajs/types";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import CustomCartTotals from "@modules/common/components/custom-cart-totals";
+import useToggleState from "@lib/hooks/use-toggle-state";
 
 type SummaryProps = {
-  cart: HttpTypes.StoreCart & {
-    promotions: HttpTypes.StorePromotion[];
-  };
+  cart: HttpTypes.StoreCart;
   hasAuthSessionCookie: boolean;
   hasMedusaSessionCookie: boolean;
 };
@@ -29,17 +27,35 @@ const Summary = ({
   const localizedCheckoutPath = pathname.replace(/\/cart$/, checkoutHref);
   const { openPopup, isLoading, error } = usePopupAuth();
   const [isSyncing, setIsSyncing] = useState(false);
-  //const canContinueToCheckout = hasMedusaSessionCookie || hasAuthSessionCookie;
-  //const canContinueToCheckout = hasAuthSessionCookie || hasMedusaSessionCookie;
-  const canContinueToCheckout = true
+  const {
+    state: isCheckoutChoiceOpen,
+    open: openCheckoutChoice,
+    close: closeCheckoutChoice,
+  } = useToggleState(false);
 
-  const handleCheckoutClick = async () => {
-    if (canContinueToCheckout) {
+  const goToGuestCheckout = () => {
+    closeCheckoutChoice();
+
+    if (!hasAuthSessionCookie) {
+      window.location.assign(localizedCheckoutPath);
       return;
     }
 
+    const guestCheckoutUrl = `/api/auth/medusa-sync?mode=guest&callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`;
+    window.location.assign(guestCheckoutUrl);
+  };
+
+  const loginAndContinueCheckout = async () => {
+    if (hasMedusaSessionCookie) {
+      closeCheckoutChoice();
+      window.location.assign(localizedCheckoutPath);
+      return;
+    }
+
+    setIsSyncing(true);
+
     if (hasAuthSessionCookie && !hasMedusaSessionCookie) {
-      setIsSyncing(true);
+      closeCheckoutChoice();
       const syncUrl = `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`;
       window.location.assign(syncUrl);
       return;
@@ -47,8 +63,14 @@ const Summary = ({
 
     try {
       await openPopup({ provider: "keycloak" });
+      closeCheckoutChoice();
       window.location.assign(localizedCheckoutPath);
-    } catch { }
+    } catch {
+      setIsSyncing(false);
+      return;
+    }
+
+    setIsSyncing(false);
   };
 
   return (
@@ -57,33 +79,60 @@ const Summary = ({
         Resumen
       </Heading>
       <Divider />
-      <CartTotals totals={cart} />
-      {canContinueToCheckout ? (
-        <LocalizedClientLink href={checkoutHref} data-testid="checkout-button">
-          <Button className="w-full h-10">Ir a checkout</Button>
-        </LocalizedClientLink>
-      ) : (
-        <>
+      <CustomCartTotals totals={cart} />
+      <Button
+        className="w-full h-10"
+        onClick={openCheckoutChoice}
+        disabled={isLoading || isSyncing}
+        aria-busy={isLoading || isSyncing}
+        data-testid="checkout-button"
+      >
+        {isSyncing
+          ? "Sincronizando sesión..."
+          : isLoading
+            ? "Conectando..."
+            : "Ir a checkout"}
+      </Button>
+
+      <Modal
+        isOpen={isCheckoutChoiceOpen}
+        close={closeCheckoutChoice}
+        size="small"
+        data-testid="checkout-choice-modal"
+      >
+        <Modal.Title>
+          <Heading level="h3">Como deseas continuar?</Heading>
+        </Modal.Title>
+        <Modal.Description>
+          Elige si quieres iniciar sesion para vincular tu compra o seguir como
+          invitado.
+        </Modal.Description>
+        <Modal.Footer>
           <Button
-            className="w-full h-10"
-            onClick={() => void handleCheckoutClick()}
+            variant="secondary"
+            className="h-10"
+            onClick={goToGuestCheckout}
             disabled={isLoading || isSyncing}
-            aria-busy={isLoading || isSyncing}
-            data-testid="checkout-button"
+            data-testid="checkout-guest-button"
           >
-            {isSyncing
-              ? "Syncing session..."
-              : isLoading
-                ? "Connecting..."
-                : "Ir a checkout"}
+            Continuar como guest
           </Button>
-          {error ? (
-            <p className="text-sm text-red-500" role="alert" aria-live="polite">
-              {error}
-            </p>
-          ) : null}
-        </>
-      )}
+          <Button
+            className="h-10"
+            onClick={() => void loginAndContinueCheckout()}
+            disabled={isLoading || isSyncing}
+            data-testid="checkout-login-button"
+          >
+            {isSyncing || isLoading ? "Conectando..." : "Iniciar sesion"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {error ? (
+        <p className="text-sm text-red-500" role="alert" aria-live="polite">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 };

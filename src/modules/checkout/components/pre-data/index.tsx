@@ -250,10 +250,7 @@ export default function PreData({
                   key={`${groupForm.group_id}-${groupForm.formId}`}
                   className="rounded-md border bg-gray-50 p-4 text-sm"
                 >
-                  <p className="mb-2 font-semibold">
-                    Formulario para Grupo ID: {groupForm.group_id}
-                    {titleDate}
-                  </p>
+
 
                   {isPayloadForm(groupForm.structure) ? (
                     <FormBlock

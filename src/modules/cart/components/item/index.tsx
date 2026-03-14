@@ -15,6 +15,9 @@ type ItemProps = {
   item: StoreCartLineItem | StoreCartLineItem[];
   type?: "full" | "preview";
   currencyCode: string;
+  bookingDate: string;
+  bookingDestination: string;
+  bookingThumbnail: string;
 };
 
 const toNumber = (value: unknown): number => {
@@ -92,7 +95,7 @@ const getVariantBreakdownTotal = (
   }, 0);
 };
 
-const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
+const Item = ({ item, type = "full", currencyCode, bookingDate, bookingDestination, bookingThumbnail }: ItemProps) => {
   const groupedItems = Array.isArray(item) ? item : [item];
   const firstItemWithImage = groupedItems.find(
     (groupedItem) =>
@@ -132,6 +135,8 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
       lineItemsOriginalTotal > 0 ? lineItemsOriginalTotal : aggregatedTotal,
   };
 
+
+
   const collectionType =
     (displayItem.metadata?.collection_type as string | undefined) || "tours";
   const normalizedCollectionType =
@@ -139,7 +144,7 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const productHref = displayItem.product_handle
     ? `/${normalizedCollectionType}/${displayItem.product_handle}`
     : undefined;
-  const productTitle = displayItem.product_title || displayItem.title;
+  const productTitle = bookingDestination
 
   return (
     <Table.Row className="w-full" data-testid="product-row">
@@ -153,8 +158,7 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
             })}
           >
             <Thumbnail
-              thumbnail={displayItem.thumbnail}
-              images={displayItem.variant?.product?.images}
+              thumbnail={bookingThumbnail}
               size="square"
             />
           </LocalizedClientLink>
@@ -167,7 +171,6 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
           >
             <Thumbnail
               thumbnail={displayItem.thumbnail}
-              images={displayItem.variant?.product?.images}
               size="square"
             />
           </div>
@@ -188,30 +191,7 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
           )}
         </Text>
 
-        {displayItem.metadata?.seat_number !== undefined && (
-          <Text className="txt-medium text-ui-fg-subtle">
-            Seat {displayItem.metadata?.row_number as string}
-            {displayItem.metadata?.seat_number as string}
-          </Text>
-        )}
 
-        {displayItem.metadata?.show_date !== undefined && (
-          <Text className="txt-medium text-ui-fg-subtle">
-            Show Date:{" "}
-            {new Date(
-              displayItem.metadata?.show_date as string,
-            ).toLocaleDateString()}
-          </Text>
-        )}
-
-        {groupedItems.map((groupedItem) => (
-          <LineItemOptions
-            key={groupedItem.id}
-            variant={groupedItem.variant}
-            data-testid="cart-item-variant"
-            data-value={groupedItem.variant}
-          />
-        ))}
       </Table.Cell>
 
       {type === "full" && (

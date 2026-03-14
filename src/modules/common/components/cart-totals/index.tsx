@@ -1,21 +1,36 @@
-"use client"
+"use client";
 
-import { convertToLocale } from "@lib/util/money"
-import React from "react"
+import { convertToLocale } from "@lib/util/money";
+import React from "react";
 
 type CartTotalsProps = {
   totals: {
-    total?: number | null
-    subtotal?: number | null
-    tax_total?: number | null
-    currency_code: string
-    item_subtotal?: number | null
-    shipping_subtotal?: number | null
-    discount_subtotal?: number | null
-  }
-}
+    total?: number | null;
+    subtotal?: number | null;
+    tax_total?: number | null;
+    currency_code: string;
+    item_subtotal?: number | null;
+    shipping_subtotal?: number | null;
+    discount_subtotal?: number | null;
+  };
+  showOnlyTotal?: boolean;
+  displayCurrencyAsSoles?: boolean;
+};
 
-const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
+const formatSoles = (amount: number) => {
+  const formattedAmount = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+
+  return `S/. ${formattedAmount}`;
+};
+
+const CartTotals: React.FC<CartTotalsProps> = ({
+  totals,
+  showOnlyTotal = false,
+  displayCurrencyAsSoles = false,
+}) => {
   const {
     currency_code,
     total,
@@ -23,7 +38,29 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
     item_subtotal,
     shipping_subtotal,
     discount_subtotal,
-  } = totals
+  } = totals;
+
+  const formattedTotal = displayCurrencyAsSoles
+    ? formatSoles(total ?? 0)
+    : convertToLocale({ amount: total ?? 0, currency_code });
+
+  if (showOnlyTotal) {
+    return (
+      <div>
+        <div className="flex items-center justify-between text-ui-fg-base mb-2 txt-medium ">
+          <span>Total</span>
+          <span
+            className="txt-xlarge-plus"
+            data-testid="cart-total"
+            data-value={total || 0}
+          >
+            {formattedTotal}
+          </span>
+        </div>
+        <div className="h-px w-full border-b border-gray-200 mt-4" />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -71,12 +108,12 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
           data-testid="cart-total"
           data-value={total || 0}
         >
-          {convertToLocale({ amount: total ?? 0, currency_code })}
+          {formattedTotal}
         </span>
       </div>
       <div className="h-px w-full border-b border-gray-200 mt-4" />
     </div>
-  )
-}
+  );
+};
 
-export default CartTotals
+export default CartTotals;

@@ -1,9 +1,11 @@
 import { listCartPaymentMethods } from "@lib/data/payment";
 import CheckoutStepGuard from "@modules/checkout/components/checkout-step-guard";
+import CheckoutStepsTimeline from "@modules/checkout/components/checkout-steps-timeline";
 import PreData from "@modules/checkout/components/pre-data";
 import { BASEURL } from "@/lib2/config";
 import { HttpTypes } from "@medusajs/types";
 import Payment from "@modules/checkout/components/payment";
+import CheckoutSummary from "../checkout-summary";
 
 type GroupedForm = {
   formId: string | number;
@@ -35,6 +37,10 @@ const toOptionalString = (value: unknown): string | undefined => {
   }
 
   return value || undefined;
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === "object" && value !== null;
 };
 
 const getGroupedForms = (cart: HttpTypes.StoreCart): GroupedForm[] => {
@@ -148,19 +154,32 @@ export default async function CheckoutForm({
 
   const groups = getGroupedForms(cart);
   const hasPreData = groups.length > 0;
+  const isPreDataCompleted =
+    isRecord(cart.metadata) && cart.metadata.preDataCompleted === true;
   const formStructures = hasPreData
     ? await Promise.all(groups.map((group) => getFormStructure(group)))
     : [];
 
   return (
-    <div className="w-full grid grid-cols-1 gap-y-8">
+    <div className="grid w-full grid-cols-1 gap-y-8 font-[Poppins]">
       <CheckoutStepGuard hasPreData={hasPreData} />
-      {hasPreData && <PreData cart={cart} formStructures={formStructures} />}
-      <Payment
-        cart={cart}
-        availablePaymentMethods={paymentMethods}
+      <CheckoutStepsTimeline
         hasPreData={hasPreData}
+        isPreDataCompleted={isPreDataCompleted}
       />
+      <div className="flex flex-row">
+        <div className="w-1/2">
+          {hasPreData && (
+            <PreData cart={cart} formStructures={formStructures} />
+          )}
+          <Payment
+            cart={cart}
+            availablePaymentMethods={paymentMethods}
+            hasPreData={hasPreData}
+          />
+        </div>
+        <CheckoutSummary cart={cart} />
+      </div>
     </div>
   );
 }

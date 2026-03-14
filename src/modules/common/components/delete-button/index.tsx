@@ -1,3 +1,5 @@
+"use client";
+
 import { deleteLineItem, deleteMultipleLineItem } from "@lib/data/cart";
 import { Spinner, Trash } from "@medusajs/icons";
 import { clx } from "@medusajs/ui";
@@ -15,7 +17,7 @@ const DeleteButton = ({
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   const handleDelete = async (id: string) => {
     setIsDeleting(true);
@@ -25,7 +27,8 @@ const DeleteButton = ({
         router.refresh();
       });
       window.dispatchEvent(new CustomEvent("cart:item-removed"));
-    } catch (_err) {
+    } catch (error) {
+      console.error("Failed to remove cart item", error);
     } finally {
       setIsDeleting(false);
     }
@@ -39,11 +42,12 @@ const DeleteButton = ({
       )}
     >
       <button
+        type="button"
         className="flex gap-x-1 text-ui-fg-subtle hover:text-ui-fg-base cursor-pointer"
         onClick={() => handleDelete(id)}
       >
         {isDeleting ? <Spinner className="animate-spin" /> : <Trash />}
-        <span>{children}</span>
+        {children ? <span>{children}</span> : null}
       </button>
     </div>
   );
@@ -60,7 +64,7 @@ export const CustomDeleteButton = ({
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   const handleDelete = async (ids: string[]) => {
     setIsDeleting(true);
@@ -70,7 +74,8 @@ export const CustomDeleteButton = ({
         router.refresh();
       });
       window.dispatchEvent(new CustomEvent("cart:item-removed"));
-    } catch (_err) {
+    } catch (error) {
+      console.error("Failed to remove grouped cart items", error);
     } finally {
       setIsDeleting(false);
     }
@@ -84,11 +89,12 @@ export const CustomDeleteButton = ({
       )}
     >
       <button
+        type="button"
         className="flex gap-x-1 text-ui-fg-subtle hover:text-ui-fg-base cursor-pointer"
         onClick={() => handleDelete(ids)}
       >
         {isDeleting ? <Spinner className="animate-spin" /> : <Trash />}
-        <span>{children}</span>
+        {children ? <span>{children}</span> : null}
       </button>
     </div>
   );

@@ -1,17 +1,17 @@
 import type {
   Destination,
   GridPaquetesBlock as GridPaquetesBlockType,
+  Paquete,
 } from "@/cms-types";
 import { CardPaqueteData } from "@/components/cardPaquete";
 import { Pagination } from "@/components/Pagination";
 import { Subtitle } from "@/components/Subtitle";
 import { PaquetesComponent } from "@/components/PaquetesComponent";
-
-import { listProducts } from "@/lib/data/products";
-import { HttpTypes } from "@medusajs/types";
+import { BASEURL } from "@/lib2/config";
 
 interface Props extends GridPaquetesBlockType {
   rangeSlider?: boolean;
+  fromPayload?: boolean | null;
   searchParams?: string;
   page?: number;
   selectedCategories?: string[];
@@ -25,6 +25,13 @@ interface Props extends GridPaquetesBlockType {
 type MeiliSearchResponse = {
   hits?: MeiliPaqueteItem[];
   estimatedTotalHits?: number;
+};
+
+type PayloadPaquetesResponse = {
+  docs?: Paquete[];
+  totalDocs?: number;
+  totalPages?: number;
+  page?: number;
 };
 
 type MeiliPaqueteItem = {
@@ -76,6 +83,93 @@ function mapMeiliPaqueteToCardPaqueteData(
     difficulty: paquete.difficulty as Difficulty,
     priceMedusa: null,
   };
+}
+
+function isDestination(value: unknown): value is Destination {
+  return typeof value === "object" && value !== null && "name" in value;
+}
+
+function getDestinationNameFromPaquete(paquete: Paquete): string | null {
+  if (Array.isArray(paquete.destinos)) {
+    const names = paquete.destinos
+      .filter(isDestination)
+      .map((destination) => destination.name);
+
+    return names.length > 0 ? names.join(", ") : null;
+  }
+
+  return null;
+}
+
+function mapPayloadPaqueteToCardPaqueteData(paquete: Paquete): CardPaqueteData {
+  const miniDescriptionValue = paquete.miniDescription as unknown;
+
+  return {
+    id: paquete.id,
+    title: paquete.title,
+    slug: paquete.slug ?? `paquete-${paquete.id}`,
+    miniDescription: isLexicalDescription(miniDescriptionValue)
+      ? miniDescriptionValue
+      : null,
+    descriptionText: getDescriptionText(miniDescriptionValue),
+    featuredImage: paquete.featuredImage,
+    destinationName: getDestinationNameFromPaquete(paquete),
+    destinos: paquete.destinos,
+    price:
+      typeof paquete.price === "number" ? paquete.price : paquete.priceGeneral,
+    Desde: "Desde",
+    "Person desc": "Por persona",
+    iconMaxPassengers: paquete.iconMaxPassengers,
+    maxPassengers:
+      typeof paquete.maxPassengers === "number"
+        ? paquete.maxPassengers
+        : paquete.maxPassengersGeneral,
+    iconDifficulty: paquete.iconDifficulty,
+    difficulty: paquete.difficulty,
+    medusaId: null,
+    priceMedusa: null,
+  };
+}
+
+function getDestinationNamesFromBlock(
+  destination: GridPaquetesBlockType["destination"],
+): string[] {
+  if (!Array.isArray(destination)) {
+    return [];
+  }
+
+  return destination
+    .map((item) => {
+      if (typeof item === "object" && item !== null && "name" in item) {
+        return item.name;
+      }
+
+      return null;
+    })
+    .filter((value): value is string => typeof value === "string");
+}
+
+function getDestinationIdsFromBlock(
+  destination: GridPaquetesBlockType["destination"],
+): number[] {
+  if (!Array.isArray(destination)) {
+    return [];
+  }
+
+  const ids: number[] = [];
+
+  destination.forEach((item) => {
+    if (typeof item === "number") {
+      ids.push(item);
+      return;
+    }
+
+    if (typeof item === "object" && item !== null && "id" in item) {
+      ids.push(item.id);
+    }
+  });
+
+  return ids;
 }
 
 function sanitizeCategories(categories?: string[]): string[] {
@@ -162,6 +256,67 @@ async function searchPaquetesFromMeilisearch({
   };
 }
 
+async function searchPaquetesFromPayload({
+  destinationNames,
+  destinationIds,
+  page,
+  limit,
+}: {
+  destinationNames: string[];
+  destinationIds: number[];
+  page: number;
+  limit: number;
+}): Promise<{ paquetes: Paquete[]; totalDocs: number }> {
+  if (!BASEURL) {
+    return { paquetes: [], totalDocs: 0 };
+  }
+
+  const params = new URLSearchParams();
+  params.append("limit", String(limit));
+  params.append("page", String(page));
+  params.append("depth", "2");
+  params.append("draft", "false");
+
+  params.append("select[featuredImage]", "true");
+  params.append("select[slug]", "true");
+  params.append("select[title]", "true");
+  params.append("select[price]", "true");
+  params.append("select[priceGeneral]", "true");
+  params.append("select[difficulty]", "true");
+  params.append("select[iconDifficulty]", "true");
+  params.append("select[maxPassengers]", "true");
+  params.append("select[maxPassengersGeneral]", "true");
+  params.append("select[iconMaxPassengers]", "true");
+  params.append("select[miniDescription]", "true");
+  params.append("select[destinos]", "true");
+
+  if (destinationNames.length > 0) {
+    params.append("where[destinos.name][in]", destinationNames.join(","));
+  } else if (destinationIds.length > 0) {
+    params.append("where[destinos][in]", destinationIds.join(","));
+  }
+
+  const response = await fetch(`${BASEURL}/api/paquetes?${params.toString()}`, {
+    next: { tags: ["paquetes"] },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Payload request failed with status ${response.status}`);
+  }
+
+  const result: PayloadPaquetesResponse = await response.json();
+  const paquetes = Array.isArray(result.docs) ? result.docs : [];
+  const totalDocs =
+    typeof result.totalDocs === "number" && Number.isFinite(result.totalDocs)
+      ? result.totalDocs
+      : paquetes.length;
+
+  return {
+    paquetes,
+    totalDocs,
+  };
+}
+
 export async function GridPaquetes(props: Props) {
   const {
     gridColumns,
@@ -172,35 +327,49 @@ export async function GridPaquetes(props: Props) {
     searchParams,
     selectedCategories,
     selectedDestinations,
-    countryCode = "pe",
+    fromPayload,
   } = props;
 
   const paquetesPerPage = gridColumns ?? 6;
   const currentPage = page ?? 1;
-  const destinationName = (destination as Destination | undefined)?.name;
+  const destinationNamesFromBlock = getDestinationNamesFromBlock(destination);
+  const destinationIdsFromBlock = getDestinationIdsFromBlock(destination);
 
   const categoriesToFilter = sanitizeCategories(selectedCategories ?? []);
   const destinationNamesToFilter = sanitizeCategories(
     selectedDestinations && selectedDestinations.length > 0
       ? selectedDestinations
-      : destinationName
-        ? [destinationName]
-        : [],
+      : destinationNamesFromBlock,
   );
 
-  const meiliResult = await searchPaquetesFromMeilisearch({
-    destinationNames: destinationNamesToFilter,
-    categories: categoriesToFilter,
-    page: currentPage,
-    limit: paquetesPerPage,
-  });
+  const shouldUsePayload = Boolean(fromPayload);
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(meiliResult.totalDocs / paquetesPerPage),
-  );
+  let paquetes: CardPaqueteData[] = [];
+  let totalDocs = 0;
 
-  const paquetes = meiliResult.paquetes.map(mapMeiliPaqueteToCardPaqueteData);
+  if (shouldUsePayload) {
+    const payloadResult = await searchPaquetesFromPayload({
+      destinationNames: destinationNamesToFilter,
+      destinationIds: destinationIdsFromBlock,
+      page: currentPage,
+      limit: paquetesPerPage,
+    });
+
+    paquetes = payloadResult.paquetes.map(mapPayloadPaqueteToCardPaqueteData);
+    totalDocs = payloadResult.totalDocs;
+  } else {
+    const meiliResult = await searchPaquetesFromMeilisearch({
+      destinationNames: destinationNamesToFilter,
+      categories: categoriesToFilter,
+      page: currentPage,
+      limit: paquetesPerPage,
+    });
+
+    paquetes = meiliResult.paquetes.map(mapMeiliPaqueteToCardPaqueteData);
+    totalDocs = meiliResult.totalDocs;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(totalDocs / paquetesPerPage));
 
   return (
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
