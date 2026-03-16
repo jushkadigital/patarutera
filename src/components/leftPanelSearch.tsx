@@ -2,13 +2,13 @@
 
 import * as React from "react";
 import {
-  Calendar,
-  ChevronsUpDown,
   MapPin,
   Search,
   ChevronDown,
   Tag,
   Filter,
+  Loader2,
+  Package,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label"; // Asumiendo que tienes un componente Label o usa html label
-import { Destination, TourCategory } from "@/cms-types";
+import { Label } from "@/components/ui/label";
+import { Destination, TourCategory, Tour, Paquete } from "@/cms-types";
 import { parseAsArrayOf, useQueryState, parseAsString } from "nuqs";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { useSharedState } from "@/hooks/sharedContextDestinos";
@@ -36,20 +36,18 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { useMobile } from "@/hooks/useMobile";
-import Link from "next/link";
 import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
+import { useRouter, useParams } from "next/navigation";
+import { debounce } from "lodash";
+import { Input } from "@/components/ui/input";
 
 interface LeftPanelSearch {
   categories: TourCategory[];
-  title?: string; // Optional title for the collapsible trigger
+  title?: string;
   destinations: Destination[];
 }
 
-export function LeftPanelSearch({
-  categories,
-  title,
-  destinations,
-}: LeftPanelSearch) {
+export function LeftPanelSearch({ categories, destinations }: LeftPanelSearch) {
   const isMobile = useMobile({ breakpoint: 1024 });
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   return (
@@ -93,7 +91,7 @@ interface TourSearchComponentProps {
 }
 
 function TourSearchComponent({ destinations }: TourSearchComponentProps) {
-  const [isOpen, setIsOpen] = React.useState(false); // Default to open
+  const [isOpen, setIsOpen] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
   const [filterDestination, setFilterDestination] = useQueryState(
     "filterDestination",
@@ -174,21 +172,6 @@ function TourSearchComponent({ destinations }: TourSearchComponentProps) {
               </div>
             </div>
           </div>
-
-          {/* Date Field */}
-          {/* 
-          <div className="pb-8">
-            <div className="flex items-start gap-4">
-              <div className="mt-1">
-                <Calendar className="w-6 h-6 text-[#79368c]" />
-              </div>
-              <div className="flex-1">
-                <label className="block text-[#2970b7] text-lg font-medium mb-1">Desde</label>
-                <p className="text-[#adadac] text-lg">día/mes/año</p>
-              </div>
-            </div>
-          </div>
-          */}
         </div>
       </div>
     </div>
@@ -198,78 +181,184 @@ function TourSearchComponent({ destinations }: TourSearchComponentProps) {
 export function TourSearchBoxHorizontal({
   destinations,
 }: TourSearchComponentProps) {
-  const [isOpen, setIsOpen] = React.useState(false); // Default to open
-  const [destinoTemp, setDestinoTemp] = React.useState("Cusco");
+  const router = useRouter();
+  const params = useParams();
+  const countryCode =
+    (params?.countryCode as string) ||
+    process.env.NEXT_PUBLIC_DEFAULT_REGION ||
+    "pe";
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [destinoTemp, setDestinoTemp] = React.useState("");
+  const [searchResults, setSearchResults] = React.useState<{
+    tours: Tour[];
+    paquetes: Paquete[];
+  }>({ tours: [], paquetes: [] });
+  const [isSearching, setIsSearching] = React.useState(false);
 
-  const selectedOption = destinations.find((dest) => dest.name === destinoTemp);
+  // Debounced search function
+  const performSearch = React.useMemo(
+    () =>
+      debounce(async (query: string) => {
+        if (!query || query.length < 2) {
+          setSearchResults({ tours: [], paquetes: [] });
+          setIsSearching(false);
+          return;
+        }
+
+        try {
+          setIsSearching(true);
+          const response = await fetch(
+            `/api/search?q=${encodeURIComponent(query)}`,
+          );
+
+          if (!response.ok) {
+            throw new Error("Search request failed");
+          }
+
+          const data = await response.json();
+
+          setSearchResults({
+            tours: (data.tours as Tour[]) || [],
+            paquetes: (data.paquetes as Paquete[]) || [],
+          });
+        } catch (error) {
+          console.error("Search error:", error);
+          setSearchResults({ tours: [], paquetes: [] });
+        } finally {
+          setIsSearching(false);
+        }
+      }, 300),
+    [],
+  );
+
+  React.useEffect(() => {
+    performSearch(destinoTemp);
+    // Cleanup debounce on unmount
+    return () => {
+      performSearch.cancel();
+    };
+  }, [destinoTemp, performSearch]);
+
+  const handleSelectResult = (
+    slug: string | null | undefined,
+    type: "tours" | "paquetes",
+  ) => {
+    if (!slug) return;
+    router.push(`/${countryCode}/${type}/${slug}`);
+    setIsOpen(false);
+  };
+
+  const handleSearch = () => {
+    if (!destinoTemp) return;
+    router.push(`/${countryCode}/tours?destination=${destinoTemp}&categories=`);
+  };
+
+  const hasResults =
+    searchResults.tours.length > 0 || searchResults.paquetes.length > 0;
+
   return (
-    <div className="bg-white rounded-2xl lg:rounded-full shadow-lg border border-gray-200 px-8 py-4 max-w-4xl mx-auto">
+    <div className="bg-white rounded-2xl lg:rounded-full shadow-lg border border-gray-200 px-8 py-4 max-w-4xl mx-auto z-50 relative">
       <div className="flex flex-col lg:flex-row items-end lg:items-center justify-between gap-3 lg:gap-8">
-        {/* Destinos Dropdown */}
-        <div className="flex items-center lg:gap-3 flex-1 ">
-          <div className="flex items-center lg:gap-3 flex-1 relative">
+        {/* Destinos Autocomplete */}
+        <div className="flex items-center lg:gap-3 flex-1 w-full">
+          <div className="flex items-center lg:gap-3 flex-1 relative w-full">
             <MapPin className="w-5 h-5 lg:w-8 lg:h-8 text-[#2970b7] flex-shrink-0 hidden lg:block" />
-            <div className="relative flex-1"></div>
-            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-              <CollapsibleTrigger asChild>
-                <button
-                  type="button"
-                  className="min-w-[180px] lg:min-w-[250px] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
-                >
-                  {selectedOption ? (
-                    <>
-                      <MapPin className="w-4 h-4 text-[#2970b7]" />
-                      <span className="text-[#333]">{selectedOption.name}</span>
-                    </>
-                  ) : (
-                    <span className="text-[#adadac]">Seleccionar destino</span>
-                  )}
-                  <ChevronDown
-                    className={`w-5 h-5 text-[#adadac] transition-transform duration-200 absolute right-3 ${isOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="relative">
-                <div className="absolute top-1 left-0 right-0 bg-white border border-[#d9d9d9] rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
-                  {destinations.map((destination) => (
-                    <div
-                      key={destination.name}
-                      onClick={() => {
-                        setDestinoTemp(destination.name);
-                        setIsOpen(false);
-                      }}
-                      className="w-full text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg cursor-pointer"
-                    >
-                      <MapPin className="w-4 h-4 text-[#2970b7]" />
-                      {destination.name}
-                    </div>
-                  ))}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-          {/* Separador */}
-          <div className="h-0 w-0 lg:w-px lg:h-12 bg-gray-200"></div>
 
-          {/* Selector de día */}
-          {/* 
-        <div className="flex items-center gap-3 flex-1">
-          <Calendar className="w-6 h-6 text-[#79368c] fill-current flex-shrink-0" />
-          <div className="flex items-center gap-2 cursor-pointer">
-            <span className="text-[#686868] font-medium">Día</span>
-            <ChevronDown className="w-5 h-5 text-[#686868]" />
+            <div className="relative flex-1 w-full">
+              <Popover open={isOpen} onOpenChange={setIsOpen}>
+                <PopoverTrigger asChild>
+                  <div className="relative w-full">
+                    <Input
+                      type="text"
+                      placeholder="Seleccionar destino"
+                      value={destinoTemp}
+                      onChange={(e) => {
+                        setDestinoTemp(e.target.value);
+                        setIsOpen(true);
+                      }}
+                      onFocus={() => setIsOpen(true)}
+                      className="w-full text-lg border-none shadow-none focus-visible:ring-0 px-0 placeholder:text-[#adadac] text-[#333]"
+                    />
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="p-0 w-[300px] lg:w-[400px] max-h-[400px] overflow-y-auto"
+                  align="start"
+                  onOpenAutoFocus={(e) => e.preventDefault()}
+                >
+                  {isSearching ? (
+                    <div className="p-4 flex items-center justify-center text-sm text-muted-foreground">
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Buscando...
+                    </div>
+                  ) : (
+                    <div className="flex flex-col">
+                      {/* Section: Tours */}
+                      {searchResults.tours.length > 0 && (
+                        <div className="py-2 border-t">
+                          <div className="px-3 py-1 text-xs font-semibold text-muted-foreground bg-gray-50">
+                            TOURS
+                          </div>
+                          {searchResults.tours.map((tour) => (
+                            <button
+                              key={tour.id}
+                              className="w-full text-left px-3 py-2 hover:bg-gray-100 flex items-center gap-2 text-sm"
+                              onClick={() =>
+                                handleSelectResult(tour.slug, "tours")
+                              }
+                            >
+                              <Tag className="w-4 h-4 text-green-600 flex-shrink-0" />
+                              <span className="truncate">{tour.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Section: Paquetes */}
+                      {searchResults.paquetes.length > 0 && (
+                        <div className="py-2 border-t">
+                          <div className="px-3 py-1 text-xs font-semibold text-muted-foreground bg-gray-50">
+                            PAQUETES
+                          </div>
+                          {searchResults.paquetes.map((paquete) => (
+                            <button
+                              key={paquete.id}
+                              className="w-full text-left px-3 py-2 hover:bg-gray-100 flex items-center gap-2 text-sm"
+                              onClick={() =>
+                                handleSelectResult(paquete.slug, "paquetes")
+                              }
+                            >
+                              <Package className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                              <span className="truncate">{paquete.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {!hasResults && destinoTemp.length >= 2 && (
+                        <div className="p-4 text-center text-sm text-muted-foreground">
+                          No se encontraron resultados
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
-        </div>
-        */}
+
+          {/* Separador */}
+          <div className="hidden lg:block h-8 w-px bg-gray-200 mx-4"></div>
         </div>
 
         {/* Botón de búsqueda */}
-        <Link href={`/tours?destination=${destinoTemp}&categories=`}>
-          <button className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg">
-            <span>Buscar</span>
-            <Search className="w-5 h-5" />
-          </button>
-        </Link>
+        <button
+          onClick={handleSearch}
+          className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg w-full lg:w-auto justify-center"
+        >
+          <span>Buscar</span>
+          <Search className="w-5 h-5" />
+        </button>
       </div>
     </div>
   );

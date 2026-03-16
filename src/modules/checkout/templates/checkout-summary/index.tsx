@@ -132,7 +132,7 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
 
   return (
     <div className="flex w-full justify-end font-[Poppins] lg:w-1/2">
-      <div className="w-full max-w-[465px] bg-[#f2f2f2]">
+      <div className="w-[90%]  ">
         <div className="px-5 pb-8 pt-6">
           <h2 className="font-[Poppins] text-[24px] font-medium leading-normal text-black">
             Resumen de la reserva
@@ -186,7 +186,7 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
               Total
             </span>
             <div className="flex items-end gap-2 font-[Poppins] font-bold leading-none text-[#2970b7]">
-              <span className="text-[24px]">s/.</span>
+              <span className="text-[30px]">s/.</span>
               <span className="text-[40px]">
                 {formatSolesAmount(toNumber(cart.total))}
               </span>

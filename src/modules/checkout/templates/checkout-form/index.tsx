@@ -1,11 +1,10 @@
 import { listCartPaymentMethods } from "@lib/data/payment";
 import CheckoutStepGuard from "@modules/checkout/components/checkout-step-guard";
 import CheckoutStepsTimeline from "@modules/checkout/components/checkout-steps-timeline";
-import PreData from "@modules/checkout/components/pre-data";
 import { BASEURL } from "@/lib2/config";
 import { HttpTypes } from "@medusajs/types";
-import Payment from "@modules/checkout/components/payment";
 import CheckoutSummary from "../checkout-summary";
+import CheckoutStepContent from "./checkout-step-content";
 
 type GroupedForm = {
   formId: string | number;
@@ -161,7 +160,7 @@ export default async function CheckoutForm({
     : [];
 
   return (
-    <div className="grid w-full grid-cols-1 gap-y-8 font-[Poppins]">
+    <div className=" w-full px-[clamp(25px,6.6vw,155px)] lg:px-[clamp(136px,14.00vw,256px)] grid  grid-cols-1 gap-y-8 font-[Poppins]">
       <CheckoutStepGuard hasPreData={hasPreData} />
       <CheckoutStepsTimeline
         hasPreData={hasPreData}
@@ -169,13 +168,11 @@ export default async function CheckoutForm({
       />
       <div className="flex flex-row">
         <div className="w-1/2">
-          {hasPreData && (
-            <PreData cart={cart} formStructures={formStructures} />
-          )}
-          <Payment
+          <CheckoutStepContent
             cart={cart}
-            availablePaymentMethods={paymentMethods}
+            paymentMethods={paymentMethods}
             hasPreData={hasPreData}
+            formStructures={formStructures}
           />
         </div>
         <CheckoutSummary cart={cart} />

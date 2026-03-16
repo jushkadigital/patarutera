@@ -21,7 +21,7 @@ export function OfertaCardComponent({ color = "#79368C", price, perPerson, type,
   isBigSize = isMobile ? false : isBigSize
   return (
     <div className={`flex w-full items-center justify-center lg:px-0 ${isBigSize ? "h-[clamp(93px,43.6vw,855px)] lg:h-[clamp(93px,23.6vw,455px)]" : "h-[clamp(93px,44.6vw,835px)] lg:h-[clamp(93px,22.6vw,435px)]"}`}>
-      <Link href={`/tours/${slug}`} className="relative w-full h-full rounded-3xl overflow-hidden">
+      <Link href={`/pe/tours/${slug}`} className="relative w-full h-full rounded-3xl overflow-hidden">
         {/* Background Image */}
         <Image media={background} fill className="object-cover" priority />
 

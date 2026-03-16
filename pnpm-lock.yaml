@@ -107,6 +107,9 @@ importers:
       lucide-react:
         specifier: ^0.507.0
         version: 0.507.0(react@19.0.3)
+      meilisearch:
+        specifier: ^0.55.0
+        version: 0.55.0
       motion:
         specifier: ^12.10.0
         version: 12.10.0(react-dom@19.0.3(react@19.0.3))(react@19.0.3)
@@ -5198,6 +5201,9 @@ packages:
   media-typer@1.1.0:
     resolution: {integrity: sha512-aisnrDP4GNe06UcKFnV5bfMNPBUw4jsLGaWwWfnH3v02GnBuXX2MCVn5RbrWo0j3pczUilYblq7fQ7Nw2t5XKw==}
     engines: {node: '>= 0.8'}
+
+  meilisearch@0.55.0:
+    resolution: {integrity: sha512-qSMeiezfDgIqciIeYzh5E4pXDZZD7CtHeWDCs43kN3trLgl5FtfmBAIkljL3huFaOx08feYtC8FfIFUpVwq6rg==}
 
   memoize-one@6.0.0:
     resolution: {integrity: sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==}
@@ -12269,6 +12275,8 @@ snapshots:
       '@types/mdast': 4.0.4
 
   media-typer@1.1.0: {}
+
+  meilisearch@0.55.0: {}
 
   memoize-one@6.0.0: {}
 

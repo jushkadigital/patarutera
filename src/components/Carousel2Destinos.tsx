@@ -108,7 +108,7 @@ export default function CustomCarousel({ slides, titleObj }: CustomCarouselProps
             {slides.map((slide, index) => (
               <CarouselItem key={index} className="pl-8 basis-auto">
                 <LinkMotion
-                  href={`/tours?destination=${slide.title}&categories=`}
+                  href={`/pe/tours?destination=${slide.title}&categories=`}
                   className="flex flex-col items-center justify-end relative text-center text-white w-[300px] sm:w-[350px] lg:w-[450px] h-[70vh] lg:h-[70vh] cursor-pointer  lg:rounded-[4xl] overflow-hidden"
                   onClick={() => handleSlideClick(index)}
                   animate={{
@@ -143,7 +143,7 @@ export default function CustomCarousel({ slides, titleObj }: CustomCarouselProps
                   >
                     <h2 className="text-2xl text-[23px] sm:text-[clamp(23.21px,2.26vw,43.52px)] font-bold relative uppercase ">{slide.title}</h2>
                     <div className="flex justify-center">
-                      <Link href={`/tours?destination=${slide.title}&categories=`} className="h-full cursor-pointer">
+                      <Link href={`/pe/tours?destination=${slide.title}&categories=`} className="h-full cursor-pointer">
                         <motion.button
                           className="mt-6 px-4 py-0 text-[13px] sm:text-[13px] lg:text-[14px] w-[150px] mx-auto space-x-5   text-white bg-black/30 font-bold  border border-2 border-white flex justify-between items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] cursor-pointer"
                           whileHover={{

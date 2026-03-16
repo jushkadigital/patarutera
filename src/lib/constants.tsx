@@ -35,7 +35,7 @@ export const paymentInfoMap: Record<
     icon: <CreditCard />,
   },
   pp_izipay_izipay: {
-    title: "IZIPAY",
+    title: "Tarjeta de crédito / débito",
     icon: <CreditCard />
   }
   // Add more payment providers here

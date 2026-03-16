@@ -1,15 +1,36 @@
 "use client";
 
-import { Button, Heading } from "@medusajs/ui";
-
-import Divider from "@modules/common/components/divider";
+import { Button } from "@medusajs/ui";
 import Modal from "@modules/common/components/modal";
 import { usePopupAuth } from "@/hooks/usePopupAuth";
 import { HttpTypes } from "@medusajs/types";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import CustomCartTotals from "@modules/common/components/custom-cart-totals";
 import useToggleState from "@lib/hooks/use-toggle-state";
+import LocalizedClientLink from "@modules/common/components/localized-client-link";
+
+const toNumber = (value: unknown): number => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  if (typeof value === "string") {
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) ? parsedValue : 0;
+  }
+
+  return 0;
+};
+
+const formatSolesAmount = (amount: number): string => {
+  const hasDecimals = Math.abs(amount % 1) > 0;
+
+  return new Intl.NumberFormat("en-US", {
+    useGrouping: false,
+    minimumFractionDigits: hasDecimals ? 2 : 0,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart;
@@ -32,6 +53,8 @@ const Summary = ({
     open: openCheckoutChoice,
     close: closeCheckoutChoice,
   } = useToggleState(false);
+
+  const totalAmount = formatSolesAmount(toNumber(cart.total));
 
   const goToGuestCheckout = () => {
     closeCheckoutChoice();
@@ -74,25 +97,47 @@ const Summary = ({
   };
 
   return (
-    <div className="flex flex-col gap-y-4">
-      <Heading level="h2" className="text-[2rem] leading-[2.75rem]">
-        Resumen
-      </Heading>
-      <Divider />
-      <CustomCartTotals totals={cart} />
-      <Button
-        className="w-full h-10"
-        onClick={openCheckoutChoice}
-        disabled={isLoading || isSyncing}
-        aria-busy={isLoading || isSyncing}
-        data-testid="checkout-button"
-      >
-        {isSyncing
-          ? "Sincronizando sesión..."
-          : isLoading
-            ? "Conectando..."
-            : "Ir a checkout"}
-      </Button>
+    <div className="flex w-full justify-end">
+      <div className=" max-w-[426px]">
+        <div className="flex items-end justify-between">
+          <span className="font-[Poppins] text-[20px] font-semibold leading-normal text-[#747474]">
+            Total
+          </span>
+
+          <div className="flex items-end gap-2 font-[Poppins] font-bold leading-none text-[#2970b7]">
+            <span className="text-[24px]">s/.</span>
+            <span className="text-[40px]">{totalAmount}</span>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <LocalizedClientLink href="/">
+            <Button
+              className="h-[51px] w-full rounded-[8px] border border-[#e2e2e2] bg-white px-6 font-[Poppins] text-[16px] font-medium text-[#b1b1b1] hover:bg-[#f8f8f8] sm:w-[229px]"
+              data-testid="continue-shopping-button"
+              type="button"
+              variant="transparent"
+            >
+              Seguir Comprando
+            </Button>
+          </LocalizedClientLink>
+
+          <Button
+            className="h-[51px] w-full rounded-[8px] border border-[#e2e2e2] bg-[#efba06] px-6 font-[Poppins] text-[16px] font-medium text-white hover:bg-[#dba900] sm:w-[180px]"
+            onClick={openCheckoutChoice}
+            disabled={isLoading || isSyncing}
+            aria-busy={isLoading || isSyncing}
+            data-testid="checkout-button"
+            type="button"
+          >
+            {isSyncing
+              ? "Sincronizando..."
+              : isLoading
+                ? "Conectando..."
+                : "Proceder Compra"}
+          </Button>
+        </div>
+      </div>
 
       <Modal
         isOpen={isCheckoutChoiceOpen}
@@ -101,7 +146,9 @@ const Summary = ({
         data-testid="checkout-choice-modal"
       >
         <Modal.Title>
-          <Heading level="h3">Como deseas continuar?</Heading>
+          <h3 className="font-[Poppins] text-[20px] font-semibold text-black">
+            Como deseas continuar?
+          </h3>
         </Modal.Title>
         <Modal.Description>
           Elige si quieres iniciar sesion para vincular tu compra o seguir como

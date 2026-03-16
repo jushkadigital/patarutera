@@ -9,6 +9,7 @@ import ErrorMessage from "@modules/checkout/components/error-message";
 import PaymentButton from "@modules/checkout/components/payment-button";
 import PaymentContainer from "@modules/checkout/components/payment-container";
 import Divider from "@modules/common/components/divider";
+import { Lock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -177,10 +178,22 @@ const Payment = ({
 
   return (
     <div className="bg-white">
-      <div className="flex flex-row items-center justify-between mb-6">
-        <Heading level="h2" className="flex flex-row text-3xl-regular gap-x-2">
-          Payment
-        </Heading>
+      <div className="mb-6 flex flex-row items-center justify-between">
+        <div className="flex flex-col  gap-y-3 w-2/3">
+          <Heading
+
+            className="flex flex-row text-3xl "
+          >
+            3.Pago de Tours
+          </Heading>
+
+          <span>Seleccion una forma de pago para continuar</span>
+
+        </div>
+        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#2970b7]">
+          <Lock aria-hidden="true" className="h-4 w-4 text-[#2970b7]" />
+          pago 100% seguro
+        </span>
       </div>
 
       {availablePaymentMethods?.length ? (

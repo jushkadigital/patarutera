@@ -12,7 +12,6 @@ import {
   completePreDataStep,
   savePreDataGroupSubmission,
 } from "@lib/data/cart";
-import { Button } from "@/components/ui/button";
 import Divider from "@modules/common/components/divider";
 
 type FormStructureType = {
@@ -74,16 +73,9 @@ const getStructureMessage = (value: unknown): string => {
 };
 
 const withSubmitLabel = (form: PayloadForm): PayloadForm => {
-  if (
-    typeof form.submitButtonLabel === "string" &&
-    form.submitButtonLabel.trim().length > 0
-  ) {
-    return form;
-  }
-
   return {
     ...form,
-    submitButtonLabel: "Save answers",
+    submitButtonLabel: "Pasar a pago",
   };
 };
 
@@ -124,12 +116,6 @@ export default function PreData({
       );
     });
 
-  const missingGroupIds = requiredGroupIds.filter(
-    (groupId) => groupSubmissionState[groupId]?.status !== "completed",
-  );
-
-  const hasPendingRequiredGroups = missingGroupIds.length > 0;
-
   const isAnyGroupSaving = Object.values(groupSubmissionState).some(
     (group) => group.status === "saving",
   );
@@ -146,6 +132,12 @@ export default function PreData({
     groupForm: FormStructureType,
     values: unknown,
   ) => {
+    if (isSubmitting || isAnyGroupSaving) {
+      return;
+    }
+
+    setContinueError(null);
+
     setGroupSubmissionState((currentState) => ({
       ...currentState,
       [groupForm.group_id]: {
@@ -162,12 +154,44 @@ export default function PreData({
         packageDate: groupForm.package_date,
       });
 
-      setGroupSubmissionState((currentState) => ({
-        ...currentState,
-        [groupForm.group_id]: {
-          status: "completed",
-        },
-      }));
+      let nextState: GroupSubmissionStateMap = {};
+
+      setGroupSubmissionState((currentState) => {
+        nextState = {
+          ...currentState,
+          [groupForm.group_id]: {
+            status: "completed",
+          },
+        };
+
+        return nextState;
+      });
+
+      const hasPendingRequiredGroups = requiredGroupIds.some(
+        (groupId) => nextState[groupId]?.status !== "completed",
+      );
+
+      if (hasPendingRequiredGroups) {
+        setContinueError(
+          "Debes completar todos los formularios de reserva antes de continuar a pago.",
+        );
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      try {
+        await completePreDataStep({ requiredGroupIds });
+        router.push(pathname + "?step=payment");
+      } catch (error) {
+        setContinueError(
+          error instanceof Error
+            ? error.message
+            : "No se pudo validar los formularios antes de continuar a pago.",
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -183,32 +207,6 @@ export default function PreData({
       }));
 
       throw error;
-    }
-  };
-
-  const handleContinue = async () => {
-    setContinueError(null);
-
-    if (hasPendingRequiredGroups) {
-      setContinueError(
-        "Debes completar todos los formularios de reserva antes de continuar a pago.",
-      );
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      await completePreDataStep({ requiredGroupIds });
-      router.push(pathname + "?step=payment");
-    } catch (error) {
-      setContinueError(
-        error instanceof Error
-          ? error.message
-          : "No se pudo validar los formularios antes de continuar a pago.",
-      );
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -239,10 +237,6 @@ export default function PreData({
         <div className="pb-8">
           <div className="mb-4 flex flex-col gap-6">
             {formStructures?.map((groupForm, index) => {
-              const titleDate = groupForm.tour_date
-                ? ` (Fecha: ${new Date(groupForm.tour_date).toLocaleDateString()})`
-                : "";
-
               const groupState = groupSubmissionState[groupForm.group_id];
 
               return (
@@ -250,8 +244,6 @@ export default function PreData({
                   key={`${groupForm.group_id}-${groupForm.formId}`}
                   className="rounded-md border bg-gray-50 p-4 text-sm"
                 >
-
-
                   {isPayloadForm(groupForm.structure) ? (
                     <FormBlock
                       id={`predata-group-${groupForm.group_id}-${index}`}
@@ -274,12 +266,6 @@ export default function PreData({
                     </Text>
                   )}
 
-                  {groupState?.status === "completed" && (
-                    <Text className="txt-medium mt-2 text-green-600">
-                      Formulario guardado en el carrito.
-                    </Text>
-                  )}
-
                   {groupState?.status === "error" && (
                     <Text className="txt-medium mt-2 text-red-600">
                       {groupState.message ||
@@ -295,17 +281,11 @@ export default function PreData({
             <Text className="txt-medium text-red-600">{continueError}</Text>
           )}
 
-          <Button
-            className="mt-6 w-full sm:w-auto"
-            type="button"
-            onClick={handleContinue}
-            disabled={
-              isSubmitting || isAnyGroupSaving || hasPendingRequiredGroups
-            }
-            data-testid="submit-predata-button"
-          >
-            {isSubmitting ? "Guardando..." : "Continuar a pago"}
-          </Button>
+          {isSubmitting && (
+            <Text className="txt-medium mt-4 text-ui-fg-subtle">
+              Validando formularios y redirigiendo a pago...
+            </Text>
+          )}
         </div>
       ) : (
         <div>
