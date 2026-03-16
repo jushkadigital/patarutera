@@ -5,6 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "@/components/PayloadImage";
 import {
+  MeiliCompleteImage,
+  toMediaFromMeiliCompleteImage,
+  toMediaFromUrl,
+} from "@/lib2/meili-image";
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -23,6 +28,7 @@ export interface CardPaqueteData {
   descriptionText?: string | null;
   featuredImage?: Paquete["featuredImage"] | null;
   meiliImage?: string | null;
+  meiliCompleteImage?: MeiliCompleteImage | null;
   destinationName?: string | null;
   destinos?: Paquete["destinos"] | null;
   Desde?: string | null;
@@ -119,10 +125,30 @@ function renderPaqueteImage(unitData: CardPaqueteData, className: string) {
     return <Image media={unitData.featuredImage} fill className={className} />;
   }
 
-  const src = unitData.meiliImage ?? STATIC_FALLBACK.image;
+  const meiliResponsiveMedia = toMediaFromMeiliCompleteImage(
+    unitData.meiliCompleteImage,
+    unitData.title,
+  );
+
+  if (meiliResponsiveMedia) {
+    return <Image media={meiliResponsiveMedia} fill className={className} />;
+  }
+
+  const fallbackMedia = toMediaFromUrl(
+    unitData.meiliImage ?? STATIC_FALLBACK.image,
+    unitData.title,
+  );
+
+  if (fallbackMedia) {
+    return <Image media={fallbackMedia} fill className={className} />;
+  }
 
   return (
-    <img src={src} alt={unitData.title ?? "Paquete"} className={className} />
+    <img
+      src={STATIC_FALLBACK.image}
+      alt={unitData.title ?? "Paquete"}
+      className={className}
+    />
   );
 }
 
@@ -165,8 +191,7 @@ export default function CardPaquete({
   const destinationName = getDestinationName(unitData);
   const price = getPrice(unitData);
   const difficulty = getDifficulty(unitData);
-  const maxPassengers =
-    unitData.maxPassengers ?? STATIC_FALLBACK.maxPassengers;
+  const maxPassengers = unitData.maxPassengers ?? STATIC_FALLBACK.maxPassengers;
   const fromLabel = unitData.Desde ?? STATIC_FALLBACK.from;
   const personDesc = unitData["Person desc"] ?? STATIC_FALLBACK.personDesc;
 

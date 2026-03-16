@@ -8,6 +8,10 @@ import { Pagination } from "@/components/Pagination";
 import { Subtitle } from "@/components/Subtitle";
 import { PaquetesComponent } from "@/components/PaquetesComponent";
 import { BASEURL } from "@/lib2/config";
+import {
+  getMeiliCompleteImageFallback,
+  parseMeiliCompleteImage,
+} from "@/lib2/meili-image";
 
 interface Props extends GridPaquetesBlockType {
   rangeSlider?: boolean;
@@ -39,6 +43,7 @@ type MeiliPaqueteItem = {
   title?: string;
   slug?: string;
   image?: string;
+  completeImage?: unknown;
   description?: unknown;
   max_capacity?: number;
   difficulty?: string;
@@ -66,6 +71,8 @@ type Difficulty = "easy" | "medium" | "hard";
 function mapMeiliPaqueteToCardPaqueteData(
   paquete: MeiliPaqueteItem,
 ): CardPaqueteData {
+  const meiliCompleteImage = parseMeiliCompleteImage(paquete.completeImage);
+
   return {
     id: paquete.id,
     title: paquete.title ?? "Paquete en Cusco",
@@ -74,7 +81,11 @@ function mapMeiliPaqueteToCardPaqueteData(
       ? paquete.description
       : null,
     descriptionText: getDescriptionText(paquete.description),
-    meiliImage: paquete.image ?? "/backgroundDestinoPage.png",
+    meiliImage:
+      getMeiliCompleteImageFallback(meiliCompleteImage) ??
+      paquete.image ??
+      "/backgroundDestinoPage.png",
+    meiliCompleteImage,
     price: typeof paquete.price === "number" ? paquete.price : 299,
     medusaId: paquete.medusa_id ?? null,
     Desde: "Desde",

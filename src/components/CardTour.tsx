@@ -5,6 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "@/components/PayloadImage";
 import {
+  MeiliCompleteImage,
+  toMediaFromMeiliCompleteImage,
+  toMediaFromUrl,
+} from "@/lib2/meili-image";
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -23,6 +28,7 @@ export interface CardTourData {
   descriptionText?: string | null;
   featuredImage?: Tour["featuredImage"] | null;
   meiliImage?: string | null;
+  meiliCompleteImage?: MeiliCompleteImage | null;
   destinationName?: string | null;
   destinos?: Tour["destinos"] | null;
   Desde?: string | null;
@@ -112,9 +118,31 @@ function renderTourImage(unitData: CardTourData, className: string) {
     return <Image media={unitData.featuredImage} fill className={className} />;
   }
 
-  const src = unitData.meiliImage ?? STATIC_FALLBACK.image;
+  const meiliResponsiveMedia = toMediaFromMeiliCompleteImage(
+    unitData.meiliCompleteImage,
+    unitData.title,
+  );
 
-  return <img src={src} alt={unitData.title ?? "Tour"} className={className} />;
+  if (meiliResponsiveMedia) {
+    return <Image media={meiliResponsiveMedia} fill className={className} />;
+  }
+
+  const fallbackMedia = toMediaFromUrl(
+    unitData.meiliImage ?? STATIC_FALLBACK.image,
+    unitData.title,
+  );
+
+  if (fallbackMedia) {
+    return <Image media={fallbackMedia} fill className={className} />;
+  }
+
+  return (
+    <img
+      src={STATIC_FALLBACK.image}
+      alt={unitData.title ?? "Tour"}
+      className={className}
+    />
+  );
 }
 
 function renderIcon(

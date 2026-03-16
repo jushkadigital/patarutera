@@ -4,6 +4,10 @@ import { Pagination } from "@/components/Pagination";
 import { Subtitle } from "@/components/Subtitle";
 import { ToursComponent } from "@/components/ToursComponent";
 import { BASEURL } from "@/lib2/config";
+import {
+  getMeiliCompleteImageFallback,
+  parseMeiliCompleteImage,
+} from "@/lib2/meili-image";
 
 interface Props extends GridToursBlockType {
   rangeSlider?: boolean;
@@ -33,6 +37,7 @@ type MeiliTourItem = {
   title?: string;
   slug?: string;
   image?: string;
+  completeImage?: unknown;
   description?: unknown;
   categories?: string[];
   destination?: string;
@@ -60,6 +65,8 @@ function getDescriptionText(value: unknown): string | null {
 type Difficulty = "easy" | "medium" | "hard";
 
 function mapMeiliTourToCardTourData(tour: MeiliTourItem): CardTourData {
+  const meiliCompleteImage = parseMeiliCompleteImage(tour.completeImage);
+
   return {
     id: tour.id,
     title: tour.title ?? "Tour en Cusco",
@@ -68,7 +75,11 @@ function mapMeiliTourToCardTourData(tour: MeiliTourItem): CardTourData {
       ? tour.description
       : null,
     descriptionText: getDescriptionText(tour.description),
-    meiliImage: tour.image ?? "/backgroundDestinoPage.png",
+    meiliImage:
+      getMeiliCompleteImageFallback(meiliCompleteImage) ??
+      tour.image ??
+      "/backgroundDestinoPage.png",
+    meiliCompleteImage,
     destinationName: tour.destination ?? "Cusco",
     price: typeof tour.price === "number" ? tour.price : 299,
     medusaId: tour.medusa_id ?? null,
@@ -85,8 +96,8 @@ function mapPayloadTourToCardTourData(tour: Tour): CardTourData {
 
   const destinationName =
     typeof tour.destinos === "object" &&
-      tour.destinos !== null &&
-      "name" in tour.destinos
+    tour.destinos !== null &&
+    "name" in tour.destinos
       ? tour.destinos.name
       : null;
 
@@ -324,8 +335,8 @@ export async function GridTours(props: Props) {
   const currentPage = page ?? 1;
   const destinationName =
     typeof destination === "object" &&
-      destination !== null &&
-      "name" in destination
+    destination !== null &&
+    "name" in destination
       ? destination.name
       : undefined;
   const destinationId = getDestinationId(destination);

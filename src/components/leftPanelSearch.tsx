@@ -270,7 +270,7 @@ export function TourSearchBoxHorizontal({
                   <div className="relative w-full">
                     <Input
                       type="text"
-                      placeholder="Seleccionar destino"
+                      placeholder="Busca tu proximo Destino"
                       value={destinoTemp}
                       onChange={(e) => {
                         setDestinoTemp(e.target.value);
