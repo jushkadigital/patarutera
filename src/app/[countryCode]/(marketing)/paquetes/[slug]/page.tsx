@@ -15,6 +15,8 @@ import { HttpTypes } from "@medusajs/types";
 // ISR Configuration: Revalidate every hour (3600 seconds)
 // Pages will be statically generated at build time and regenerated in the background
 export const revalidate = 3600; // 1 hour
+export const dynamic = "force-static";
+
 
 const MEDUSA_BACKEND_URL =
   process.env.MEDUSA_BACKEND_URL ?? "http://localhost:9000";
@@ -57,7 +59,6 @@ type Args = {
 };
 
 export default async function PaquetePage({ params: paramsPromise }: Args) {
-  const { isEnabled: draft } = await draftMode();
   const resolvedParams = await paramsPromise;
   const { slug, countryCode } = resolvedParams;
 
