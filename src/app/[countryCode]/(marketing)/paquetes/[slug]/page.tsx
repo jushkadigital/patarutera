@@ -182,10 +182,9 @@ const queryProductByExternalId = cache(
 
 
 const queryPaqueteBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode();
   // Fetch a single paquete by slug. Adjust depth as needed for paquete data.
   const data = await fetch(
-    `${BASEURL}/api/paquetes?limit=1&where[slug][equals]=${slug}&depth=2&draft=${draft}`,
+    `${BASEURL}/api/paquetes?limit=1&where[slug][equals]=${slug}&depth=2&draft=false`,
     {
       next: {
         tags: ["paquetes", `paquete-${slug}`],
