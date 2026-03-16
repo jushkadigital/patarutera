@@ -3,9 +3,11 @@ import { useSharedState } from "@/hooks/sharedContextDestinos";
 import CardTour, { CardTourData } from "./CardTour";
 import { cn } from "@/lib2/utils";
 import { useMobile } from "@/hooks/useMobile";
+import { CardPaqueteData } from "./cardPaquete";
+import CardBoth from "./CardBoth";
 
 interface Props {
-  tours: CardTourData[];
+  tours: (CardTourData | CardPaqueteData)[];
   mode: boolean;
   rangeSlider?: boolean;
 }
@@ -18,7 +20,7 @@ export function ToursComponent({ tours, rangeSlider, mode }: Props) {
     return numberToCheck >= minValue && numberToCheck <= maxValue;
   }
 
-  function getComparablePrice(tour: CardTourData): number | null {
+  function getComparablePrice(tour: CardTourData | CardPaqueteData): number | null {
     const medusaPrice = tour.priceMedusa?.amount;
     if (typeof medusaPrice === "number") {
       return medusaPrice;
@@ -56,7 +58,7 @@ export function ToursComponent({ tours, rangeSlider, mode }: Props) {
             .map((tour) => (
               // Pasar la prop 'mode' a CardTour
               // Asegurarse que tour.slug existe y es único. Si no, usar tour.id u otro identificador único.
-              <CardTour
+              <CardBoth
                 key={tour.id}
                 unitData={tour}
                 mode={mode ? "grid" : responsive ? "grid" : "list"}
@@ -66,7 +68,7 @@ export function ToursComponent({ tours, rangeSlider, mode }: Props) {
           tours.map((tour) => (
             // Pasar la prop 'mode' a CardTour
             // Asegurarse que tour.slug existe y es único. Si no, usar tour.id u otro identificador único.
-            <CardTour
+            <CardBoth
               key={tour.id}
               unitData={tour}
               mode={mode ? "grid" : "list"}

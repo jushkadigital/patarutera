@@ -12,23 +12,21 @@ import { cn } from '@/utilities/ui'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
-
-
 const finalType = {
-  'tours': 'tours',
-  'paquetes': 'paquetes',
-  'posts': 'blog'
-}
+  tours: 'tours',
+  paquetes: 'paquetes',
+  both: 'tours-y-paquetes', // o la ruta real que uses
+  posts: 'blog',
+} as const
 
 export const Pagination: React.FC<{
   className?: string
   page: number
   totalPages: number
   searchParams: string
-  type: 'tours' | 'paquetes' | 'posts'
+  type: 'tours' | 'paquetes' | 'both' | 'posts'
 }> = (props) => {
   const router = useRouter()
-
 
   const { className, page, totalPages, type } = props
 
@@ -37,6 +35,12 @@ export const Pagination: React.FC<{
 
   const hasExtraPrevPages = page - 1 > 1
   const hasExtraNextPages = page + 1 < totalPages
+
+  const goToPage = (targetPage: number) => {
+    const params = new URLSearchParams(props.searchParams)
+    params.set('page', String(targetPage))
+    router.push(`/pe/${finalType[type]}?${params.toString()}`)
+  }
 
   return (
     <div className={cn('my-12', className)}>
@@ -49,11 +53,7 @@ export const Pagination: React.FC<{
               tabIndex={hasPrevPage ? 0 : -1}
               className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
               onClick={() => {
-                if (hasPrevPage) {
-                  const params = new URLSearchParams(props.searchParams)
-                  params.set('page', String(page - 1))
-                  router.push(`/pe/${finalType[type]}?${params.toString()}`)
-                }
+                if (hasPrevPage) goToPage(page - 1)
               }}
             />
           </PaginationItem>
@@ -67,16 +67,7 @@ export const Pagination: React.FC<{
           {hasPrevPage && (
             <PaginationItem>
               <PaginationLink
-                aria-disabled={!hasPrevPage}
-                tabIndex={hasPrevPage ? 0 : -1}
-                className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
-                onClick={() => {
-                  if (hasPrevPage) {
-                    const params = new URLSearchParams(props.searchParams)
-                    params.set('page', String(page - 1))
-                    router.push(`/pe/${finalType[type]}?${params.toString()}`)
-                  }
-                }}
+                onClick={() => goToPage(page - 1)}
               >
                 {page - 1}
               </PaginationLink>
@@ -88,7 +79,7 @@ export const Pagination: React.FC<{
               aria-current="page"
               tabIndex={-1}
               isActive
-              className="pointer-events-none  "
+              className="pointer-events-none"
             >
               {page}
             </PaginationLink>
@@ -97,16 +88,7 @@ export const Pagination: React.FC<{
           {hasNextPage && (
             <PaginationItem>
               <PaginationLink
-                aria-disabled={!hasNextPage}
-                tabIndex={hasNextPage ? 0 : -1}
-                className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
-                onClick={() => {
-                  if (hasNextPage) {
-                    const params = new URLSearchParams(props.searchParams)
-                    params.set('page', String(page + 1))
-                    router.push(`/pe/${finalType[type]}?${params.toString()}`)
-                  }
-                }}
+                onClick={() => goToPage(page + 1)}
               >
                 {page + 1}
               </PaginationLink>
@@ -126,11 +108,7 @@ export const Pagination: React.FC<{
               tabIndex={hasNextPage ? 0 : -1}
               className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
               onClick={() => {
-                if (hasNextPage) {
-                  const params = new URLSearchParams(props.searchParams)
-                  params.set('page', String(page + 1))
-                  router.push(`/pe/${finalType[type]}?${params.toString()}`)
-                }
+                if (hasNextPage) goToPage(page + 1)
               }}
             />
           </PaginationItem>
