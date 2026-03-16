@@ -250,6 +250,7 @@ export default function PreData({
                       enableIntro={false}
                       form={withSubmitLabel(groupForm.structure)}
                       submitToApi={false}
+                      showLoadingIndicator={false}
                       onSuccessfulSubmit={(values) =>
                         handleGroupSubmitted(groupForm, values)
                       }
@@ -257,12 +258,6 @@ export default function PreData({
                   ) : (
                     <Text className="txt-medium text-ui-fg-subtle">
                       {getStructureMessage(groupForm.structure)}
-                    </Text>
-                  )}
-
-                  {groupState?.status === "saving" && (
-                    <Text className="txt-medium mt-2 text-ui-fg-subtle">
-                      Guardando respuestas en Medusa...
                     </Text>
                   )}
 

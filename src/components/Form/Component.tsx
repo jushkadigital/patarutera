@@ -29,6 +29,7 @@ export type FormBlockType = {
 type FormBlockSubmitProps = {
   onSuccessfulSubmit?: (data: FieldValues) => Promise<void> | void;
   submitToApi?: boolean;
+  showLoadingIndicator?: boolean;
 };
 
 type FormField = NonNullable<FormType["fields"]>[number];
@@ -128,6 +129,7 @@ export const FormBlock: React.FC<
     id,
     onSuccessfulSubmit,
     submitToApi = true,
+    showLoadingIndicator = true,
   } = props;
 
   const formMethods = useForm<FieldValues>({
@@ -251,7 +253,7 @@ export const FormBlock: React.FC<
             {!isLoading && hasSubmitted && confirmationType === "message" && (
               <RichText data={confirmationMessage} />
             )}
-            {isLoading && !hasSubmitted && (
+            {showLoadingIndicator && isLoading && !hasSubmitted && (
               <div className="flex items-center text-ui-fg-subtle">
                 <Spinner size={16} />
               </div>
