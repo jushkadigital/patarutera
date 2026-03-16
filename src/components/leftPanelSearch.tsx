@@ -91,16 +91,39 @@ interface TourSearchComponentProps {
 }
 
 function TourSearchComponent({ destinations }: TourSearchComponentProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
   const [filterDestination, setFilterDestination] = useQueryState(
     "filterDestination",
     parseAsString.withOptions({ shallow: false, startTransition }),
   );
+  const [searchTerm, setSearchTerm] = React.useState(filterDestination ?? "");
 
-  const selectedOption = destinations.find(
-    (dest) => dest.name === filterDestination,
-  );
+  React.useEffect(() => {
+    setSearchTerm(filterDestination ?? "");
+  }, [filterDestination]);
+
+  const executeSearch = () => {
+    const normalizedTerm = searchTerm.trim();
+
+    if (!normalizedTerm) {
+      setFilterDestination(null);
+      return;
+    }
+
+    const matchedDestination = destinations.find((destination) =>
+      destination.name.toLowerCase().includes(normalizedTerm.toLowerCase()),
+    );
+
+    setFilterDestination(matchedDestination?.name ?? normalizedTerm);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      executeSearch();
+    }
+  };
+
   return (
     <div className="  p-0 flex items-center justify-center">
       {isPending && <FilterLoadingOverlay label="Actualizando tours..." />}
@@ -118,57 +141,32 @@ function TourSearchComponent({ destinations }: TourSearchComponentProps) {
 
         {/* Form Fields */}
         <div className="p-6 space-y-6">
-          {/* Destination Field */}
           <div className="border-b border-[#d9d9d9] pb-6">
             <div className="flex items-start gap-[clamp(0px,0.6vw,12.8px)]">
               <div className="mt-1">
-                <MapPin className="w-6 h-6 text-[#2970b7] " />
+                <Search className="w-6 h-6 text-[#2970b7]" />
               </div>
-              <div className="flex-1 ">
+              <div className="flex-1">
                 <label className="block text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-medium mb-2">
-                  Destino
+                  Buscador
                 </label>
-                <Popover open={isOpen} onOpenChange={setIsOpen}>
-                  <PopoverTrigger asChild>
-                    <button
-                      type="button"
-                      className="w-[clamp(170px,16.6vw,320px)] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
-                    >
-                      {selectedOption ? (
-                        <>
-                          <MapPin className="w-4 h-4 text-[#2970b7]" />
-                          <span className="text-[#333]">
-                            {selectedOption.name}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-[#adadac] lg:text-[clamp(10.9px,1vw,20.48px)]">
-                          Seleccionar destino
-                        </span>
-                      )}
-                      <ChevronDown
-                        className={`w-5 h-5 text-[#adadac] transition-transform duration-200 absolute right-3 ${isOpen ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="relative border-none p-0">
-                    <div className="w-fit absolute left-1/5 bg-white border border-[#d9d9d9] rounded-lg shadow-lg  max-h-60 z-80">
-                      {destinations.map((destination) => (
-                        <div
-                          key={destination.name}
-                          onClick={() => {
-                            setFilterDestination(destination.name);
-                            setIsOpen(false);
-                          }}
-                          className="w-[clamp(170px,16.6vw,320px)] text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg"
-                        >
-                          <MapPin className="w-4 h-4 text-[#2970b7]" />
-                          {destination.name}
-                        </div>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <div className="flex flex-col gap-3">
+                  <Input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Buscar destino"
+                    className="w-[clamp(170px,16.6vw,320px)]"
+                  />
+                  <Button
+                    type="button"
+                    onClick={executeSearch}
+                    className="w-[clamp(170px,16.6vw,320px)] bg-[#2970b7] hover:bg-[#2970b7]/90 text-white"
+                  >
+                    Ejecutar busqueda
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -178,9 +176,7 @@ function TourSearchComponent({ destinations }: TourSearchComponentProps) {
   );
 }
 
-export function TourSearchBoxHorizontal({
-  destinations,
-}: TourSearchComponentProps) {
+export function TourSearchBoxHorizontal() {
   const router = useRouter();
   const params = useParams();
   const countryCode =

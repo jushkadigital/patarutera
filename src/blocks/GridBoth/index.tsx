@@ -1,19 +1,23 @@
-import type { GridToursBlock as GridToursBlockType, Tour } from "@/cms-types";
+import type {
+  GridToursBlock as GridToursBlockType,
+  TitleGroup,
+  Tour,
+} from "@/cms-types";
 import { CardTourData } from "@/components/CardTour";
 import { Pagination } from "@/components/Pagination";
 import { Subtitle } from "@/components/Subtitle";
-import { ToursComponent } from "@/components/ToursComponent";
-import { BASEURL } from "@/lib2/config";
+import { BothComponent } from "@/components/BothComponent";
 import {
   getMeiliCompleteImageFallback,
   parseMeiliCompleteImage,
 } from "@/lib2/meili-image";
 
-interface Props extends GridToursBlockType {
+interface Props extends Omit<GridToursBlockType, "blockTitle" | "blockType"> {
   rangeSlider?: boolean;
   fromPayload?: boolean;
   searchParams?: string;
   page?: number;
+  destinationName?: string;
   selectedCategories?: string[];
   context?: {
     nameCollection: string;
@@ -90,8 +94,6 @@ function mapMeiliTourToCardTourData(tour: MeiliTourItem): CardTourData {
     priceMedusa: null,
   };
 }
-
-
 
 function getCategoryNamesFromBlock(
   category: GridToursBlockType["category"],
@@ -215,34 +217,34 @@ async function searchBothFromMeilisearch({
   };
 }
 
-
 export async function GridBoth(props: Props) {
   const {
     gridColumns,
     gridStyle: mode,
     destination,
-    blockTitle,
     page,
     overrideDefaults,
     searchParams,
+    destinationName: destinationNameFromParams,
+    selectedCategories,
   } = props;
 
   const toursPerPage = gridColumns ?? 6;
   const currentPage = page ?? 1;
-  const destinationName =
+  const destinationNameFromBlock =
     typeof destination === "object" &&
-      destination !== null &&
-      "name" in destination
+    destination !== null &&
+    "name" in destination
       ? destination.name
       : undefined;
-
+  const destinationName = destinationNameFromParams ?? destinationNameFromBlock;
 
   let tours: CardTourData[] = [];
   let totalDocs = 0;
 
   const meiliResult = await searchBothFromMeilisearch({
     destinationName,
-    categories: [],
+    categories: sanitizeCategories(selectedCategories),
     page: currentPage,
     limit: toursPerPage,
   });
@@ -254,8 +256,7 @@ export async function GridBoth(props: Props) {
 
   return (
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
-      <Subtitle className="" titleGroup={blockTitle} />
-      <ToursComponent
+      <BothComponent
         mode={Boolean(mode)}
         tours={tours}
         rangeSlider={props.rangeSlider}
@@ -271,4 +272,3 @@ export async function GridBoth(props: Props) {
     </div>
   );
 }
-

@@ -104,7 +104,7 @@ export default async function Page(props: Props) {
     `${BASEURL}/api/destinations?where[name][equals]=${encodeURIComponent(destination ?? "")}`,
   );
   const destinationDataPre = await destinationRequest.json();
-  const destinationData = destinationDataPre.docs[0];
+  const destinationData = destinationDataPre.docs?.[0] ?? null;
   let page: any;
   page = await queryPageBySlug();
   if (!page) {
@@ -145,8 +145,11 @@ export default async function Page(props: Props) {
               return (
                 <BannerBlock
                   {...block}
-                  title={destinationData.name}
-                  image={destinationData.backgroundDestination as Media}
+                  title={destinationData?.name ?? block.title}
+                  image={
+                    (destinationData?.backgroundDestination as Media) ??
+                    (block.image as Media)
+                  }
                 />
               );
             }
@@ -168,7 +171,7 @@ export default async function Page(props: Props) {
             <GridTours
               {...(blocks[0] as GridToursBlock)}
               gridColumns={6}
-              destination={destinationData}
+              destination={destinationData ?? undefined}
               gridStyle={false}
               rangeSlider={true}
               searchParams={queryString}

@@ -1,24 +1,10 @@
 "use client";
 
 import * as React from "react";
-import {
-  Calendar,
-  ChevronsUpDown,
-  MapPin,
-  ChevronDown,
-  X,
-  Filter,
-} from "lucide-react";
+import { Search, Filter } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Destination, TourCategory } from "@/cms-types";
+import { Destination } from "@/cms-types";
 import { parseAsArrayOf, useQueryState, parseAsString } from "nuqs";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { useSharedState } from "@/hooks/sharedContextDestinos";
@@ -31,18 +17,15 @@ import {
 } from "./ui/sheet";
 import { useMobile } from "@/hooks/useMobile";
 import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
+import { Input } from "@/components/ui/input";
 
 // Interfaz actualizada: ya no necesita 'categories'
 interface LeftPanelSearchProps {
-  title?: string;
   destinations: Destination[];
 }
 
 // Componente principal: Se elimina TourCategoryList
-export function LeftPanelSearchPaquete({
-  title,
-  destinations,
-}: LeftPanelSearchProps) {
+export function LeftPanelSearchPaquete({ destinations }: LeftPanelSearchProps) {
   const isMobile = useMobile({ breakpoint: 1024 });
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   return (
@@ -87,7 +70,6 @@ interface MultiDestinationSearchProps {
 
 // Componente de búsqueda modificado para múltiples destinos
 function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
 
   const [selectedDestinations, setSelectedDestinations] = useQueryState(
@@ -99,20 +81,32 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
   );
 
   const currentDestinations = selectedDestinations ?? [];
+  const firstSelectedDestination = currentDestinations[0] ?? "";
+  const [searchTerm, setSearchTerm] = React.useState(firstSelectedDestination);
 
-  const handleDestinationToggle = (destinationName: string) => {
-    setSelectedDestinations((prev) => {
-      const previous = prev ?? [];
+  React.useEffect(() => {
+    setSearchTerm(firstSelectedDestination);
+  }, [firstSelectedDestination]);
 
-      if (previous.includes(destinationName)) {
-        return previous.filter((d) => d !== destinationName);
-      }
+  const executeSearch = () => {
+    const normalizedTerm = searchTerm.trim();
 
-      return [...previous, destinationName];
-    });
+    if (!normalizedTerm) {
+      setSelectedDestinations(null);
+      return;
+    }
 
-    if (!isOpen) {
-      setIsOpen(true);
+    const matchedDestination = destinations.find((destination) =>
+      destination.name.toLowerCase().includes(normalizedTerm.toLowerCase()),
+    );
+
+    setSelectedDestinations([matchedDestination?.name ?? normalizedTerm]);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      executeSearch();
     }
   };
 
@@ -136,62 +130,29 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
         <div className="border-b border-[#d9d9d9] pb-6">
           <div className="flex items-start gap-4">
             <div className="mt-1">
-              <MapPin className="w-6 h-6 text-[#2970b7]" />
+              <Search className="w-6 h-6 text-[#2970b7]" />
             </div>
             <div className="flex-1">
               <label className="block text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-medium mb-2">
-                Destino(s)
+                Buscador
               </label>
-              <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-                <CollapsibleTrigger asChild>
-                  <button
-                    type="button"
-                    className="w-[clamp(170px,16.6vw,320px)] text-left text-lg bg-white border border-[#d9d9d9] rounded-lg px-3 py-2 pr-10 outline-none focus:border-[#2970b7] focus:ring-2 focus:ring-[#2970b7]/20 cursor-pointer transition-all duration-200 hover:border-[#2970b7]/50 flex items-center gap-2 relative"
-                  >
-                    <div className="flex flex-wrap gap-1 items-center">
-                      {currentDestinations.length > 0 ? (
-                        currentDestinations.map((dest) => (
-                          <span
-                            key={dest}
-                            className="bg-[#2970b7]  text-white lg:text-[clamp(10.92px,1vw,20.48px)] font-medium px-2 py-1 rounded-full flex items-center gap-1"
-                          >
-                            {dest}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-[#adadac] lg:text-[clamp(10.9px,1vw,20.48px)]">
-                          Seleccionar destinos
-                        </span>
-                      )}
-                    </div>
-                    <ChevronDown
-                      className={`w-5 h-5 text-[#adadac] transition-transform duration-200 absolute right-3 ${isOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="relative">
-                  <div className="absolute top-1 left-0 right-0 bg-white border border-[#d9d9d9] rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
-                    {destinations.map((destination) => (
-                      <div
-                        key={destination.name}
-                        onClick={() =>
-                          handleDestinationToggle(destination.name)
-                        }
-                        className="w-[clamp(170px,16.6vw,320px)] text-left px-3 py-2 hover:bg-[#f5f5f5] transition-colors duration-150 flex items-center gap-2 text-[#333] first:rounded-t-lg last:rounded-b-lg"
-                      >
-                        <Checkbox
-                          checked={currentDestinations.includes(
-                            destination.name,
-                          )}
-                          className="data-[state=checked]:bg-[#2970b7] data-[state=checked]:border-[#2970b7] "
-                        />
-                        <MapPin className="w-4 h-4 text-[#2970b7]" />
-                        {destination.name}
-                      </div>
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+              <div className="flex flex-col gap-3">
+                <Input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Buscar destino"
+                  className="w-[clamp(170px,16.6vw,320px)]"
+                />
+                <Button
+                  type="button"
+                  onClick={executeSearch}
+                  className="w-[clamp(170px,16.6vw,320px)] bg-[#2970b7] hover:bg-[#2970b7]/90 text-white"
+                >
+                  Ejecutar busqueda
+                </Button>
+              </div>
             </div>
           </div>
         </div>

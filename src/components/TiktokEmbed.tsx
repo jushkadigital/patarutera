@@ -77,7 +77,7 @@ function getVideoId(url: string): string | undefined {
   }
 }
 
-export default function TiktokEmbed({ url,className }: Props) {
+export default function TiktokEmbed({ url, className }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const videoId = getVideoId(url);
@@ -130,6 +130,6 @@ export default function TiktokEmbed({ url,className }: Props) {
   }
 
   return <div className={className}>
-   <div ref={containerRef} className="tiktok-embed-wrapper" />;
+    <div ref={containerRef} className="tiktok-embed-wrapper" />
   </div>
 }
