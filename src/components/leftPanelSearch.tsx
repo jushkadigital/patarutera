@@ -249,7 +249,7 @@ export function TourSearchBoxHorizontal() {
 
   const handleSearch = () => {
     if (!destinoTemp) return;
-    router.push(`/${countryCode}/tours?destination=${destinoTemp}&categories=`);
+    router.push(`/${countryCode}/tours-y-paquetes`);
   };
 
   const hasResults =

@@ -28,6 +28,7 @@ export const FooterColumns = ({ columns }) => {
         // Tipo custom: enlace personalizado
         return (
           <Link
+            scroll
             href={`/${link.url}`}
             className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200"
             target={link.newTab ? "_blank" : undefined}
@@ -46,7 +47,8 @@ export const FooterColumns = ({ columns }) => {
 
         return (
           <Link
-            href={slugType == "pages" ? `/${slug}` :`/${slugType}/${slug}`}
+            scroll
+            href={slugType == "pages" ? `/${slug}` : `/${slugType}/${slug}`}
             className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200"
             target={link.newTab ? "_blank" : undefined}
             rel={link.newTab ? "noopener noreferrer" : undefined}
@@ -62,24 +64,24 @@ export const FooterColumns = ({ columns }) => {
   }
 
   return (
-      <div className=" mx-auto ">
-          {/* Logo y descripción - Izquierda */}
-          {/* Grid de columnas - Derecha */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {columns.map((column) => (
-                <div key={column.id} className="space-y-4 flex flex-col pl-[clamp(0px,3vw,40px)] lg:pl-0 text-left">
-                  <h3 className="font-bold text-[clamp(0px,3.6vw,19.2px)] lg:text-[clamp(13.65px,1.3vw,25.6px)] mb-4 text-[#3EAE64]">{column.nameColumn}</h3>
-                  <ul className="space-y-3">
-                    {column.links.map((linkItem) => (
-                      <li key={linkItem.id}>{renderLink(linkItem)}</li>
-                    ))}
-                  </ul>
-                </div>
+    <div className=" mx-auto ">
+      {/* Logo y descripción - Izquierda */}
+      {/* Grid de columnas - Derecha */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {columns.map((column) => (
+          <div key={column.id} className="space-y-4 flex flex-col pl-[clamp(0px,3vw,40px)] lg:pl-0 text-left">
+            <h3 className="font-bold text-[clamp(0px,3.6vw,19.2px)] lg:text-[clamp(13.65px,1.3vw,25.6px)] mb-4 text-[#3EAE64]">{column.nameColumn}</h3>
+            <ul className="space-y-3">
+              {column.links.map((linkItem) => (
+                <li key={linkItem.id}>{renderLink(linkItem)}</li>
               ))}
-            </div>
-
-        {/* Línea divisoria y copyright */}
+            </ul>
+          </div>
+        ))}
       </div>
+
+      {/* Línea divisoria y copyright */}
+    </div>
   )
 }
 
