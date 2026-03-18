@@ -46,6 +46,11 @@ type MeiliPaqueteItem = {
   image?: string;
   completeImage?: unknown;
   description?: unknown;
+  miniDescription?: unknown;
+  _formatted?: {
+    description?: unknown;
+    miniDescription?: unknown;
+  };
   max_capacity?: number;
   difficulty?: string;
   destination?: string;
@@ -60,12 +65,89 @@ function isLexicalDescription(value: unknown): value is LexicalDescription {
   return typeof value === "object" && value !== null && "root" in value;
 }
 
-function getDescriptionText(value: unknown): string | null {
-  if (typeof value === "string") {
-    return value.trim() || null;
+function parseLexicalDescription(value: unknown): LexicalDescription | null {
+  if (isLexicalDescription(value)) {
+    return value;
   }
 
-  return null;
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue.startsWith("{")) {
+    return null;
+  }
+
+  try {
+    const parsedValue: unknown = JSON.parse(trimmedValue);
+    return isLexicalDescription(parsedValue) ? parsedValue : null;
+  } catch {
+    return null;
+  }
+}
+
+function getDescriptionText(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return null;
+  }
+
+  if (parseLexicalDescription(trimmedValue)) {
+    return null;
+  }
+
+  return trimmedValue;
+}
+
+function resolveMeiliDescription(paquete: MeiliPaqueteItem): {
+  miniDescription: LexicalDescription | null;
+  descriptionText: string | null;
+} {
+  const lexicalCandidates: unknown[] = [
+    paquete.miniDescription,
+    paquete.description,
+    paquete._formatted?.miniDescription,
+    paquete._formatted?.description,
+  ];
+
+  for (const candidate of lexicalCandidates) {
+    const lexicalDescription = parseLexicalDescription(candidate);
+    if (lexicalDescription) {
+      return {
+        miniDescription: lexicalDescription,
+        descriptionText: null,
+      };
+    }
+  }
+
+  const textCandidates: unknown[] = [
+    paquete.miniDescription,
+    paquete.description,
+    paquete._formatted?.miniDescription,
+    paquete._formatted?.description,
+  ];
+
+  for (const candidate of textCandidates) {
+    const descriptionText = getDescriptionText(candidate);
+    if (descriptionText) {
+      return {
+        miniDescription: null,
+        descriptionText,
+      };
+    }
+  }
+
+  return {
+    miniDescription: null,
+    descriptionText: null,
+  };
 }
 
 type Difficulty = "easy" | "medium" | "hard";
@@ -73,15 +155,14 @@ function mapMeiliPaqueteToCardPaqueteData(
   paquete: MeiliPaqueteItem,
 ): CardPaqueteData {
   const meiliCompleteImage = parseMeiliCompleteImage(paquete.completeImage);
+  const { miniDescription, descriptionText } = resolveMeiliDescription(paquete);
 
   return {
     id: paquete.id,
     title: paquete.title ?? "Paquete en Cusco",
     slug: paquete.slug ?? `paquete-${paquete.id}`,
-    miniDescription: isLexicalDescription(paquete.description)
-      ? paquete.description
-      : null,
-    descriptionText: getDescriptionText(paquete.description),
+    miniDescription,
+    descriptionText,
     meiliImage:
       getMeiliCompleteImageFallback(meiliCompleteImage) ??
       paquete.image ??

@@ -41,6 +41,11 @@ type MeiliTourItem = {
   image?: string;
   completeImage?: unknown;
   description?: unknown;
+  miniDescription?: unknown;
+  _formatted?: {
+    description?: unknown;
+    miniDescription?: unknown;
+  };
   categories?: string[];
   destination?: string;
   max_capacity?: number;
@@ -56,27 +61,103 @@ function isLexicalDescription(value: unknown): value is LexicalDescription {
   return typeof value === "object" && value !== null && "root" in value;
 }
 
-function getDescriptionText(value: unknown): string | null {
-  if (typeof value === "string") {
-    return value.trim() || null;
+function parseLexicalDescription(value: unknown): LexicalDescription | null {
+  if (isLexicalDescription(value)) {
+    return value;
   }
 
-  return null;
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue.startsWith("{")) {
+    return null;
+  }
+
+  try {
+    const parsedValue: unknown = JSON.parse(trimmedValue);
+    return isLexicalDescription(parsedValue) ? parsedValue : null;
+  } catch {
+    return null;
+  }
+}
+
+function getDescriptionText(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return null;
+  }
+
+  if (parseLexicalDescription(trimmedValue)) {
+    return null;
+  }
+
+  return trimmedValue;
+}
+
+function resolveMeiliDescription(tour: MeiliTourItem): {
+  miniDescription: LexicalDescription | null;
+  descriptionText: string | null;
+} {
+  const lexicalCandidates: unknown[] = [
+    tour.miniDescription,
+    tour.description,
+    tour._formatted?.miniDescription,
+    tour._formatted?.description,
+  ];
+
+  for (const candidate of lexicalCandidates) {
+    const lexicalDescription = parseLexicalDescription(candidate);
+    if (lexicalDescription) {
+      return {
+        miniDescription: lexicalDescription,
+        descriptionText: null,
+      };
+    }
+  }
+
+  const textCandidates: unknown[] = [
+    tour.miniDescription,
+    tour.description,
+    tour._formatted?.miniDescription,
+    tour._formatted?.description,
+  ];
+
+  for (const candidate of textCandidates) {
+    const descriptionText = getDescriptionText(candidate);
+    if (descriptionText) {
+      return {
+        miniDescription: null,
+        descriptionText,
+      };
+    }
+  }
+
+  return {
+    miniDescription: null,
+    descriptionText: null,
+  };
 }
 
 type Difficulty = "easy" | "medium" | "hard";
 
 function mapMeiliTourToCardTourData(tour: MeiliTourItem): CardTourData {
   const meiliCompleteImage = parseMeiliCompleteImage(tour.completeImage);
+  const { miniDescription, descriptionText } = resolveMeiliDescription(tour);
 
   return {
     id: tour.id,
     title: tour.title ?? "Tour en Cusco",
     slug: tour.slug ?? `tour-${tour.id}`,
-    miniDescription: isLexicalDescription(tour.description)
-      ? tour.description
-      : null,
-    descriptionText: getDescriptionText(tour.description),
+    miniDescription,
+    descriptionText,
     meiliImage:
       getMeiliCompleteImageFallback(meiliCompleteImage) ??
       tour.image ??

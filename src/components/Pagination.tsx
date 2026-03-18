@@ -51,7 +51,7 @@ export const Pagination: React.FC<{
               isActive={hasPrevPage}
               aria-disabled={!hasPrevPage}
               tabIndex={hasPrevPage ? 0 : -1}
-              className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
+              className={!hasPrevPage ? 'cursor-pointer opacity-50' : 'cursor-pointer'}
               onClick={() => {
                 if (hasPrevPage) goToPage(page - 1)
               }}
@@ -67,6 +67,7 @@ export const Pagination: React.FC<{
           {hasPrevPage && (
             <PaginationItem>
               <PaginationLink
+                className='cursor-pointer'
                 onClick={() => goToPage(page - 1)}
               >
                 {page - 1}
@@ -79,7 +80,7 @@ export const Pagination: React.FC<{
               aria-current="page"
               tabIndex={-1}
               isActive
-              className="pointer-events-none"
+              className="cursor-pointer"
             >
               {page}
             </PaginationLink>
@@ -88,6 +89,7 @@ export const Pagination: React.FC<{
           {hasNextPage && (
             <PaginationItem>
               <PaginationLink
+                className='cursor-pointer'
                 onClick={() => goToPage(page + 1)}
               >
                 {page + 1}
@@ -106,7 +108,7 @@ export const Pagination: React.FC<{
               isActive={hasNextPage}
               aria-disabled={!hasNextPage}
               tabIndex={hasNextPage ? 0 : -1}
-              className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
+              className={!hasNextPage ? 'cursor-pointer opacity-50' : 'cursor-pointer'}
               onClick={() => {
                 if (hasNextPage) goToPage(page + 1)
               }}
