@@ -40,6 +40,7 @@ import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 import { useRouter, useParams } from "next/navigation";
 import { debounce } from "lodash";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 interface LeftPanelSearch {
   categories: TourCategory[];
@@ -351,13 +352,14 @@ export function TourSearchBoxHorizontal() {
         </div>
 
         {/* Botón de búsqueda */}
-        <button
-          onClick={handleSearch}
-          className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg w-full lg:w-auto justify-center"
+        <Link
+          href={"/pe/tours-y-paquetes"}
+
+          className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg w-full lg:w-auto justify-center cursor"
         >
           <span>Buscar</span>
           <Search className="w-5 h-5" />
-        </button>
+        </Link>
       </div>
     </div>
   );

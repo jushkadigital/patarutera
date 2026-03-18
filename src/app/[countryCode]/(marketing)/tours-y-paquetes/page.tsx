@@ -1,6 +1,5 @@
 import { Fragment } from "react";
 
-import { LeftPanelSearch } from "@/components/leftPanelSearch";
 import { SharedStateProvider } from "@/hooks/sharedContextDestinos";
 import { GridBoth } from "@/blocks/GridBoth";
 import { BASEURL } from "@/lib2/config";
@@ -102,6 +101,8 @@ export default async function Page(props: Props) {
               rangeSlider={true}
               searchParams={queryString}
               page={currentPage}
+              destinationName={destination}
+              filterTourName={filterTourName}
               selectedCategories={selectedCategories}
               overrideDefaults={true}
               fromPayload={false}
