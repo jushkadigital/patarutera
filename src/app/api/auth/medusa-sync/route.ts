@@ -1,11 +1,19 @@
 import { auth, signOut } from "@/lib2/auth";
 import { NextRequest, NextResponse } from "next/server";
 
-// Configuración de reintentos
-const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 1500; // Esperar 1.5 segundos entre intentos
+const MAX_SYNC_WAIT_MS = 35_000;
+const SYNC_REQUEST_TIMEOUT_MS = 12_000;
+const INITIAL_RETRY_DELAY_MS = 1_200;
+const MAX_RETRY_DELAY_MS = 6_000;
+const RETRY_BACKOFF_MULTIPLIER = 1.5;
 const MEDUSA_SYNC_FALLBACK_COOKIE = "medusa_sync_guest_fallback";
-const MEDUSA_SYNC_FALLBACK_MAX_AGE_SECONDS = 60 * 5;
+const TRANSIENT_FALLBACK_MAX_AGE_SECONDS = 20;
+const MANUAL_GUEST_FALLBACK_MAX_AGE_SECONDS = 60 * 5;
+
+type MedusaSyncErrorBody = {
+  code?: string;
+  message?: string;
+};
 
 function getSafeCallbackPath(raw: string | null): string {
   if (!raw) {
@@ -29,17 +37,98 @@ function extractCookieValue(
   return match ? match[1] : null;
 }
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function getRetryDelay(currentDelayMs: number) {
+  return Math.min(
+    Math.floor(currentDelayMs * RETRY_BACKOFF_MULTIPLIER),
+    MAX_RETRY_DELAY_MS,
+  );
+}
+
+function getErrorCode(data: unknown): string | null {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  if (!("code" in data)) {
+    return null;
+  }
+
+  const possibleCode = (data as MedusaSyncErrorBody).code;
+  return typeof possibleCode === "string" ? possibleCode : null;
+}
+
+function isRetriableSyncError(status: number, data: unknown) {
+  const code = getErrorCode(data);
+
+  if (!code) {
+    return false;
+  }
+
+  const retriableCodes = new Set([
+    "NOT_SYNCED",
+    "NOT_SYNCED_YET",
+    "CUSTOMER_NOT_FOUND",
+  ]);
+
+  return status >= 400 && status < 500 && retriableCodes.has(code);
+}
+
+function isRetriableNetworkError(error: unknown) {
+  if (!error || typeof error !== "object" || !("name" in error)) {
+    return false;
+  }
+
+  const errorName = (error as { name?: unknown }).name;
+  return errorName === "AbortError" || errorName === "TypeError";
+}
+
+function shouldSignOutOnFallback(reason: string) {
+  return reason === "manual_guest";
+}
+
+function getFallbackCookieMaxAge(reason: string) {
+  if (reason === "manual_guest") {
+    return MANUAL_GUEST_FALLBACK_MAX_AGE_SECONDS;
+  }
+
+  return TRANSIENT_FALLBACK_MAX_AGE_SECONDS;
+}
+
+async function fetchWithTimeout(
+  input: string,
+  init: RequestInit,
+  timeoutMs: number,
+) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(input, {
+      ...init,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 async function continueAsGuest(
   req: NextRequest,
   callbackUrl: string,
   reason: string,
   isDevelopment: boolean,
 ) {
-  try {
-    await signOut({ redirect: false });
-  } catch (error) {
-    if (isDevelopment) {
-      console.warn("[SYNC] Guest fallback signOut failed:", error);
+  if (shouldSignOutOnFallback(reason)) {
+    try {
+      await signOut({ redirect: false });
+    } catch (error) {
+      if (isDevelopment) {
+        console.warn("[SYNC] Guest fallback signOut failed:", error);
+      }
     }
   }
 
@@ -54,7 +143,7 @@ async function continueAsGuest(
     sameSite: "lax",
     secure: isProduction,
     path: "/",
-    maxAge: MEDUSA_SYNC_FALLBACK_MAX_AGE_SECONDS,
+    maxAge: getFallbackCookieMaxAge(reason),
   });
   response.cookies.set("_medusa_jwt", "", {
     httpOnly: true,
@@ -118,12 +207,20 @@ export async function GET(req: NextRequest) {
   }
 
   let attempt = 0;
+  let retryDelayMs = INITIAL_RETRY_DELAY_MS;
+  const syncStartedAt = Date.now();
 
-  while (attempt < MAX_RETRIES) {
+  while (Date.now() - syncStartedAt < MAX_SYNC_WAIT_MS) {
     try {
       attempt++;
+      const elapsedMs = Date.now() - syncStartedAt;
+      const remainingMs = MAX_SYNC_WAIT_MS - elapsedMs;
+      const requestTimeoutMs = Math.min(
+        SYNC_REQUEST_TIMEOUT_MS,
+        Math.max(remainingMs, 1_000),
+      );
 
-      const medusaRes = await fetch(
+      const medusaRes = await fetchWithTimeout(
         `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/auth/keycloak`,
         {
           method: "POST",
@@ -135,31 +232,33 @@ export async function GET(req: NextRequest) {
           body: JSON.stringify({ accessToken }),
           cache: "no-store",
         },
+        requestTimeoutMs,
       );
 
       const data = await medusaRes.json().catch(() => ({}));
 
       if (isDevelopment) {
         console.log(
-          `[SYNC] Intento ${attempt}/${MAX_RETRIES} - Status: ${medusaRes.status}`,
+          `[SYNC] Intento ${attempt} - Status: ${medusaRes.status} - Elapsed: ${elapsedMs}ms`,
           data,
         );
       }
 
       if (!medusaRes.ok) {
-        if (isDevelopment) {
-          console.error(
-            `⚠️ Intento ${attempt}/${MAX_RETRIES} fallido. Medusa error:`,
-            medusaRes.status,
-            data.code,
-          );
-        }
+        const retryableSyncError = isRetriableSyncError(medusaRes.status, data);
 
-        if (data.code === "NOT_SYNCED" || data.code === "NOT_SYNCED_YET") {
-          if (attempt < MAX_RETRIES) {
-            await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
-            continue;
+        if (retryableSyncError && remainingMs > 0) {
+          const waitMs = Math.min(retryDelayMs, remainingMs);
+
+          if (isDevelopment) {
+            console.warn(
+              `[SYNC] ⚠️ Intento ${attempt} recibió error transitorio (${getErrorCode(data)}). Reintentando en ${waitMs}ms`,
+            );
           }
+
+          await sleep(waitMs);
+          retryDelayMs = getRetryDelay(retryDelayMs);
+          continue;
         }
 
         console.error(
@@ -301,11 +400,33 @@ export async function GET(req: NextRequest) {
 
       return response;
     } catch (error) {
-      console.error(`❌ Error de red en intento ${attempt}:`, error);
+      const elapsedMs = Date.now() - syncStartedAt;
+      const remainingMs = MAX_SYNC_WAIT_MS - elapsedMs;
+      const shouldRetryNetwork =
+        isRetriableNetworkError(error) && remainingMs > 0;
+
+      if (shouldRetryNetwork) {
+        const waitMs = Math.min(retryDelayMs, remainingMs);
+
+        if (isDevelopment) {
+          console.warn(
+            `[SYNC] ⚠️ Error de red transitorio en intento ${attempt}. Reintentando en ${waitMs}ms`,
+            error,
+          );
+        }
+
+        await sleep(waitMs);
+        retryDelayMs = getRetryDelay(retryDelayMs);
+        continue;
+      }
+
+      console.error(`❌ Error de red definitivo en intento ${attempt}:`, error);
       return continueAsGuest(req, callbackUrl, "network_error", isDevelopment);
     }
   }
 
-  console.error("❌ Error desconocido en sync. Continuando como guest.");
-  return continueAsGuest(req, callbackUrl, "unknown_error", isDevelopment);
+  console.error(
+    `❌ Sync timeout alcanzado después de ${MAX_SYNC_WAIT_MS}ms. Continuando como guest.`,
+  );
+  return continueAsGuest(req, callbackUrl, "sync_timeout", isDevelopment);
 }
