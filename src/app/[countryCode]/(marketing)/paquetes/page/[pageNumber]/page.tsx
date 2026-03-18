@@ -68,6 +68,20 @@ function parseSelectedDestinations(
     .filter(Boolean);
 }
 
+function parseSingleParam(
+  value: string | string[] | undefined,
+): string | undefined {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return undefined;
+}
+
 function buildQueryString(
   params: Record<string, string | string[] | undefined>,
 ): string {
@@ -92,8 +106,9 @@ function buildQueryString(
 export default async function Page(props: Props) {
   const searchParams = await props.searchParams;
   const selectedDestinations = parseSelectedDestinations(
-    searchParams.filterDestination ?? searchParams.destination,
+    searchParams.destination,
   );
+  const filterTourName = parseSingleParam(searchParams.filterTourName);
   const { pageNumber } = await props.params;
 
   const sanitizedPageNumber = Number(pageNumber);
@@ -115,9 +130,6 @@ export default async function Page(props: Props) {
     Array.isArray(heroPageBlocks) &&
     heroPageBlocks.length > 0;
 
-  const destinationsRequest = await fetch(`${BASEURL}/api/destinations`);
-  const destinationsData = await destinationsRequest.json();
-  const destinations = destinationsData.docs;
   // Si ambos son falsos, fallback
   if (!hasBlocksLayout && !hasBlocksHero) {
     return <div>No hay contenido para mostrar.</div>;
@@ -147,17 +159,19 @@ export default async function Page(props: Props) {
       <SharedStateProvider>
         <div className="flex flex-row mt-10 w-[85%] mx-auto">
           <div className="lg:w-1/3">
-            <LeftPanelSearchPaquete destinations={destinations} />
+            <LeftPanelSearchPaquete />
           </div>
           <div className="w-full lg:w-3/4">
             <GridPaquetes
               {...(blocks[0] as GridPaquetesBlock)}
               selectedDestinations={selectedDestinations}
+              filterTourName={filterTourName}
               gridColumns={6}
               gridStyle={false}
               rangeSlider={true}
               searchParams={queryString}
               page={sanitizedPageNumber}
+              fromPayload={false}
             />
           </div>
         </div>

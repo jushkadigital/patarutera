@@ -3,6 +3,7 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
+import CartItemAddedToastBridge from "@/components/cart-item-added-toast-bridge";
 import "../globals.css";
 
 const poppins = Poppins({
@@ -23,6 +24,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       </head>
       <GoogleTagManager gtmId="G-6XPFF81QJW" />
       <body className={`${poppins.className} min-h-screen flex flex-col`}>
+        <CartItemAddedToastBridge />
         <Script
           id="fb-pixel-script"
           strategy="afterInteractive"

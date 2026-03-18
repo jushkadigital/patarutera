@@ -4,6 +4,7 @@ import { LeftPanelSearch } from "@/components/leftPanelSearch";
 import { SharedStateProvider } from "@/hooks/sharedContextDestinos";
 import { GridBoth } from "@/blocks/GridBoth";
 import { BASEURL } from "@/lib2/config";
+import { LeftPanelSearchBoth } from "@/components/LeftPanelSearchBoth";
 
 interface Props {
   searchParams: Promise<{
@@ -64,25 +65,16 @@ function buildQueryString(
 export default async function Page(props: Props) {
   const params = await props.searchParams;
   const { page: pageParam } = params;
-  const destination =
-    parseSingleParam(params.filterDestination) ??
-    parseSingleParam(params.destination);
+  const destination = parseSingleParam(params.destination);
+  const filterTourName = parseSingleParam(params.filterTourName);
   const selectedCategories = parseSelectedCategories(params.categories);
   const currentPage = Number(pageParam) || 1;
   const queryString = buildQueryString(params);
 
-  const [categoriesResponse, destinationsResponse] = await Promise.all([
-    fetch(`${BASEURL}/api/tourCategory`),
-    fetch(`${BASEURL}/api/destinations`),
-  ]);
-
-  const [categoriesData, destinationsData] = await Promise.all([
-    categoriesResponse.json(),
-    destinationsResponse.json(),
-  ]);
+  const categoriesResponse = await fetch(`${BASEURL}/api/tourCategory`);
+  const categoriesData = await categoriesResponse.json();
 
   const categories = categoriesData.docs;
-  const destinations = destinationsData.docs;
 
   return (
     <div>
@@ -101,10 +93,7 @@ export default async function Page(props: Props) {
       <SharedStateProvider>
         <div className="flex flex-row mt-10 w-[90%] md:w-[85%] mx-auto">
           <div className="lg:w-1/3">
-            <LeftPanelSearch
-              categories={categories}
-              destinations={destinations}
-            />
+            <LeftPanelSearchBoth categories={categories} />
           </div>
           <div className="w-full lg:w-3/4">
             <GridBoth
@@ -113,7 +102,6 @@ export default async function Page(props: Props) {
               rangeSlider={true}
               searchParams={queryString}
               page={currentPage}
-              destinationName={destination}
               selectedCategories={selectedCategories}
               overrideDefaults={true}
               fromPayload={false}

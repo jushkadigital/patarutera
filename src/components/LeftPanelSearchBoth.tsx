@@ -46,7 +46,7 @@ interface LeftPanelSearch {
   title?: string;
 }
 
-export function LeftPanelSearch({ categories }: LeftPanelSearch) {
+export function LeftPanelSearchBoth({ categories }: LeftPanelSearch) {
   const isMobile = useMobile({ breakpoint: 1024 });
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   return (
@@ -67,7 +67,6 @@ export function LeftPanelSearch({ categories }: LeftPanelSearch) {
               <div className="mt-6 overflow-y-auto">
                 <div className="flex flex-col w-full space-y-10 p-4">
                   <TourSearchComponent />
-                  <TourCategoryList categories={categories} />
                   <PriceFilter />
                 </div>
               </div>
@@ -77,7 +76,6 @@ export function LeftPanelSearch({ categories }: LeftPanelSearch) {
       ) : (
         <div className="flex flex-col w-full space-y-10 p-4">
           <TourSearchComponent />
-          <TourCategoryList categories={categories} />
           <PriceFilter />
         </div>
       )}
@@ -450,17 +448,6 @@ export function PriceFilter() {
   const maxPrice = 1999;
 
   const { priceOne: priceRange, setPriceOne: setPriceRange } = useSharedState();
-  const handleValueChange = React.useCallback(
-    (value: number[]) => {
-      if (value.length < 2) {
-        return;
-      }
-
-      const nextRange: [number, number] = [value[0], value[1]];
-      setPriceRange(nextRange);
-    },
-    [setPriceRange],
-  );
 
   return (
     <div className="w-full  mx-auto rounded-3xl border border-[#e3e3e3] bg-white p-6">
@@ -474,7 +461,7 @@ export function PriceFilter() {
         <SliderPrimitive.Root
           className="relative flex w-full touch-none select-none items-center"
           value={priceRange}
-          onValueChange={handleValueChange}
+          onValueChange={setPriceRange as (value: number[]) => void}
           min={minPrice}
           max={maxPrice}
           step={10}

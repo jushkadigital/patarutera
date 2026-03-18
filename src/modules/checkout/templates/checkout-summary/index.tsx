@@ -1,11 +1,13 @@
 import { HttpTypes } from "@medusajs/types";
 import { groupBy } from "lodash";
 import Image from "next/image";
+import { Badge } from "@medusajs/ui";
 
 type ReservationGroup = {
   id: string;
   createdAt?: string | Date;
   title: string;
+  date: string;
   passengers: number;
   total: number;
   thumbnail?: string;
@@ -100,6 +102,13 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
   const groupedItems = groupBy(cart.items ?? [], (item) => {
     return item.metadata?.group_id ?? item.id;
   });
+  const promotions = cart.promotions ?? [];
+  const manualPromotion = promotions.find(
+    (promotion) => !promotion.is_automatic,
+  );
+  const automaticPromotions = promotions.filter(
+    (promotion) => promotion.is_automatic,
+  );
 
   const reservationGroups: ReservationGroup[] = Object.entries(groupedItems)
     .map(([groupId, items]) => {
@@ -121,6 +130,9 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
         id: groupId,
         createdAt: firstItem?.created_at,
         title: getGroupTitle(firstItem),
+        date:
+          (firstItem.metadata!.tour_date as string) ??
+          (firstItem.metadata!.package_date as string),
         passengers: items.reduce((acc, item) => acc + (item.quantity ?? 0), 0),
         total: items.reduce((acc, item) => acc + toNumber(item.total), 0),
         thumbnail,
@@ -129,6 +141,11 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
     .sort((a, b) => {
       return (a.createdAt ?? "") > (b.createdAt ?? "") ? -1 : 1;
     });
+
+  const originalTotal = toNumber(cart.original_total);
+  const discountTotal = toNumber(cart.discount_total);
+  const total = toNumber(cart.total);
+  const hasDiscount = discountTotal > 0;
 
   return (
     <div className="flex w-full justify-end font-[Poppins] lg:w-1/2">
@@ -163,6 +180,9 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
                       {group.title}
                     </p>
                     <p className="mt-1 font-[Poppins] text-[15px] leading-normal text-[#747474]">
+                      {group.date}
+                    </p>
+                    <p className="mt-1 font-[Poppins] text-[15px] leading-normal text-[#747474]">
                       {group.passengers}{" "}
                       {group.passengers === 1 ? "pasajero" : "pasajeros"}
                     </p>
@@ -181,15 +201,78 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
         </div>
 
         <div className="border-t border-[#d9d9d9] px-9 py-7">
-          <div className="flex items-end justify-between">
-            <span className="font-[Poppins] text-[20px] font-semibold leading-normal text-[#747474]">
-              Total
-            </span>
-            <div className="flex items-end gap-2 font-[Poppins] font-bold leading-none text-[#2970b7]">
-              <span className="text-[30px]">s/.</span>
-              <span className="text-[40px]">
-                {formatSolesAmount(toNumber(cart.total))}
+          <div className="space-y-5">
+            {manualPromotion || automaticPromotions.length > 0 ? (
+              <div className="space-y-3 border-b border-[#d9d9d9] pb-5">
+                {manualPromotion ? (
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-1">
+                      <p className="font-[Poppins] text-[16px] font-medium leading-normal text-[#747474]">
+                        Applied coupon
+                      </p>
+                      <p className="font-[Poppins] text-[14px] leading-normal text-[#8a8a8a]">
+                        Coupon changes are available only in the cart.
+                      </p>
+                    </div>
+
+                    <Badge color="grey" size="small">
+                      {manualPromotion.code}
+                    </Badge>
+                  </div>
+                ) : null}
+
+                {automaticPromotions.length > 0 ? (
+                  <div className="space-y-2">
+                    {automaticPromotions.map((promotion) => {
+                      return (
+                        <div
+                          key={promotion.id}
+                          className="flex items-center justify-between gap-4"
+                        >
+                          <span className="font-[Poppins] text-[14px] leading-normal text-[#747474]">
+                            Automatic promotion
+                          </span>
+                          <Badge color="green" size="small">
+                            {promotion.code}
+                          </Badge>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+
+            {hasDiscount ? (
+              <div className="space-y-3 border-b border-[#d9d9d9] pb-5">
+                <div className="flex items-center justify-between">
+                  <span className="font-[Poppins] text-[16px] leading-normal text-[#747474]">
+                    Original total
+                  </span>
+                  <span className="font-[Poppins] text-[18px] leading-normal text-[#747474] line-through">
+                    s/. {formatSolesAmount(originalTotal)}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="font-[Poppins] text-[16px] font-medium leading-normal text-[#747474]">
+                    Coupon discount
+                  </span>
+                  <span className="font-[Poppins] text-[18px] font-semibold leading-normal text-[#2e8b57]">
+                    - s/. {formatSolesAmount(discountTotal)}
+                  </span>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="flex items-end justify-between">
+              <span className="font-[Poppins] text-[20px] font-semibold leading-normal text-[#747474]">
+                Total
               </span>
+              <div className="flex items-end gap-2 font-[Poppins] font-bold leading-none text-[#2970b7]">
+                <span className="text-[30px]">s/.</span>
+                <span className="text-[40px]">{formatSolesAmount(total)}</span>
+              </div>
             </div>
           </div>
         </div>

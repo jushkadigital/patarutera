@@ -50,6 +50,19 @@ const getMetadataImage = (
   return undefined;
 };
 
+const toNumber = (value: unknown): number => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  if (typeof value === "string") {
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) ? parsedValue : 0;
+  }
+
+  return 0;
+};
+
 const CartDropdown = ({
   cart: cartState,
 }: {
@@ -75,7 +88,10 @@ const CartDropdown = ({
   }));
 
   const totalItems = groupsArray.length;
-  const subtotal = localCart?.subtotal ?? 0;
+  const total = toNumber(localCart?.total);
+  const originalTotal = toNumber(localCart?.original_total);
+  const discountTotal = toNumber(localCart?.discount_total);
+  const hasDiscount = discountTotal > 0;
   const itemRef = useRef<number>(totalItems || 0);
 
   const closeDropdown = () => {
@@ -149,12 +165,18 @@ const CartDropdown = ({
       fetchCart();
     };
 
+    const handleCartUpdated = () => {
+      fetchCart();
+    };
+
     window.addEventListener("cart:item-added", handleItemAdded);
     window.addEventListener("cart:item-removed", handleItemRemoved);
+    window.addEventListener("cart:updated", handleCartUpdated);
 
     return () => {
       window.removeEventListener("cart:item-added", handleItemAdded);
       window.removeEventListener("cart:item-removed", handleItemRemoved);
+      window.removeEventListener("cart:updated", handleCartUpdated);
     };
   }, [pathname]);
 
@@ -283,17 +305,46 @@ const CartDropdown = ({
                   })}
               </div>
               <div className="p-4 flex flex-col gap-y-4 text-small-regular">
+                {hasDiscount ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-ui-fg-base font-semibold">
+                        Original total
+                      </span>
+                      <span className="text-ui-fg-subtle line-through">
+                        {convertToLocale({
+                          amount: originalTotal,
+                          currency_code: localCart.currency_code,
+                        })}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-ui-fg-base font-semibold">
+                        Coupon discount
+                      </span>
+                      <span
+                        className="text-ui-fg-interactive"
+                        data-testid="cart-discount"
+                        data-value={discountTotal}
+                      >
+                        -
+                        {convertToLocale({
+                          amount: discountTotal,
+                          currency_code: localCart.currency_code,
+                        })}
+                      </span>
+                    </div>
+                  </>
+                ) : null}
                 <div className="flex items-center justify-between">
-                  <span className="text-ui-fg-base font-semibold">
-                    Subtotal <span className="font-normal">(excl. taxes)</span>
-                  </span>
+                  <span className="text-ui-fg-base font-semibold">Total</span>
                   <span
                     className="text-large-semi"
-                    data-testid="cart-subtotal"
-                    data-value={subtotal}
+                    data-testid="cart-total"
+                    data-value={total}
                   >
                     {convertToLocale({
-                      amount: subtotal,
+                      amount: total,
                       currency_code: localCart.currency_code,
                     })}
                   </span>

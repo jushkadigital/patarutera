@@ -4,7 +4,6 @@ import * as React from "react";
 import { Search, Filter } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Destination } from "@/cms-types";
 import { parseAsArrayOf, useQueryState, parseAsString } from "nuqs";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { useSharedState } from "@/hooks/sharedContextDestinos";
@@ -19,13 +18,8 @@ import { useMobile } from "@/hooks/useMobile";
 import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 import { Input } from "@/components/ui/input";
 
-// Interfaz actualizada: ya no necesita 'categories'
-interface LeftPanelSearchProps {
-  destinations: Destination[];
-}
-
 // Componente principal: Se elimina TourCategoryList
-export function LeftPanelSearchPaquete({ destinations }: LeftPanelSearchProps) {
+export function LeftPanelSearchPaquete() {
   const isMobile = useMobile({ breakpoint: 1024 });
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   return (
@@ -45,7 +39,7 @@ export function LeftPanelSearchPaquete({ destinations }: LeftPanelSearchProps) {
               </SheetHeader>
               <div className="mt-6 overflow-y-auto">
                 <div className="flex flex-col w-full space-y-10 p-4">
-                  <MultiDestinationSearch destinations={destinations} />
+                  <MultiDestinationSearch />
                   <PriceFilter />
                 </div>
               </div>
@@ -55,7 +49,7 @@ export function LeftPanelSearchPaquete({ destinations }: LeftPanelSearchProps) {
       ) : (
         <div>
           <div className="flex flex-col w-full space-y-10 p-4">
-            <MultiDestinationSearch destinations={destinations} />
+            <MultiDestinationSearch />
             <PriceFilter />
           </div>
         </div>
@@ -64,43 +58,44 @@ export function LeftPanelSearchPaquete({ destinations }: LeftPanelSearchProps) {
   );
 }
 
-interface MultiDestinationSearchProps {
-  destinations: Destination[];
-}
-
 // Componente de búsqueda modificado para múltiples destinos
-function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
+function MultiDestinationSearch() {
   const [isPending, startTransition] = React.useTransition();
-
-  const [selectedDestinations, setSelectedDestinations] = useQueryState(
+  const [filterTourName, setFilterTourName] = useQueryState(
+    "filterTourName",
+    parseAsString.withOptions({ shallow: false, startTransition }),
+  );
+  const [, setLegacyFilterDestination] = useQueryState(
     "filterDestination",
     parseAsArrayOf(parseAsString).withOptions({
       shallow: false,
       startTransition,
     }),
   );
+  const [, setLegacySearchText] = useQueryState(
+    "searchText",
+    parseAsString.withOptions({ shallow: false, startTransition }),
+  );
 
-  const currentDestinations = selectedDestinations ?? [];
-  const firstSelectedDestination = currentDestinations[0] ?? "";
-  const [searchTerm, setSearchTerm] = React.useState(firstSelectedDestination);
+  const [searchTerm, setSearchTerm] = React.useState(filterTourName ?? "");
 
   React.useEffect(() => {
-    setSearchTerm(firstSelectedDestination);
-  }, [firstSelectedDestination]);
+    setSearchTerm(filterTourName ?? "");
+  }, [filterTourName]);
 
   const executeSearch = () => {
     const normalizedTerm = searchTerm.trim();
 
     if (!normalizedTerm) {
-      setSelectedDestinations(null);
+      setFilterTourName(null);
+      setLegacyFilterDestination(null);
+      setLegacySearchText(null);
       return;
     }
 
-    const matchedDestination = destinations.find((destination) =>
-      destination.name.toLowerCase().includes(normalizedTerm.toLowerCase()),
-    );
-
-    setSelectedDestinations([matchedDestination?.name ?? normalizedTerm]);
+    setFilterTourName(normalizedTerm.toLowerCase());
+    setLegacyFilterDestination(null);
+    setLegacySearchText(null);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -142,7 +137,7 @@ function MultiDestinationSearch({ destinations }: MultiDestinationSearchProps) {
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Buscar destino"
+                  placeholder="Buscar nombre de paquete"
                   className="w-[clamp(170px,16.6vw,320px)]"
                 />
                 <Button

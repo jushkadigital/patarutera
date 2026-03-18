@@ -75,6 +75,20 @@ function parseSelectedDestinations(
     .filter(Boolean);
 }
 
+function parseSingleParam(
+  value: string | string[] | undefined,
+): string | undefined {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return undefined;
+}
+
 function buildQueryString(
   params: Record<string, string | string[] | undefined>,
 ): string {
@@ -100,15 +114,14 @@ export default async function Page(props: Props) {
   const params = await props.searchParams;
 
   const { page: pageParam } = params;
-  const selectedDestinations = parseSelectedDestinations(
-    params.filterDestination ?? params.destination,
-  );
+  const selectedDestinations = parseSelectedDestinations(params.destination);
+  const filterTourName = parseSingleParam(params.filterTourName);
   const selectedCategories = parseSelectedCategories(params.categories);
   const currentPage = Number(pageParam) || 1;
   const queryString = buildQueryString(params);
   const { isEnabled: draft } = await draftMode();
 
-  const page: any = await queryPageBySlug();
+  const page = await queryPageBySlug();
   if (!page) {
     notFound();
   }
@@ -119,10 +132,6 @@ export default async function Page(props: Props) {
     heroPageBlocks &&
     Array.isArray(heroPageBlocks) &&
     heroPageBlocks.length > 0;
-
-  const destinationsRequest = await fetch(`${BASEURL}/api/destinations`);
-  const destinationsData = await destinationsRequest.json();
-  const destinationsFinal = destinationsData.docs;
 
   // Si ambos son falsos, fallback
   if (!hasBlocksLayout && !hasBlocksHero) {
@@ -153,7 +162,7 @@ export default async function Page(props: Props) {
       <SharedStateProvider>
         <div className="flex flex-row mt-10 w-[90%] md:w-[85%] mx-auto">
           <div className="lg:w-1/3">
-            <LeftPanelSearchPaquete destinations={destinationsFinal} />
+            <LeftPanelSearchPaquete />
           </div>
           <div className="w-full lg:w-3/4">
             <GridPaquetes
@@ -161,10 +170,12 @@ export default async function Page(props: Props) {
               gridColumns={6}
               rangeSlider={true}
               searchParams={queryString}
+              filterTourName={filterTourName}
               page={currentPage}
               selectedDestinations={selectedDestinations}
               selectedCategories={selectedCategories}
               overrideDefaults={true}
+              fromPayload={false}
               context={{ nameCollection: "paquetes" }}
             />
           </div>
@@ -201,7 +212,7 @@ export default async function Page(props: Props) {
   );
 }
 
-const queryPageBySlug = cache(async () => {
+const queryPageBySlug = cache(async (): Promise<Page | null> => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
   const data = await fetch(
     `${BASEURL}/api/globals/pacP?depth=2&draft=${draft}`, // Added depth=2 for potentially richer layout data

@@ -18,6 +18,7 @@ interface Props extends Omit<GridToursBlockType, "blockTitle" | "blockType"> {
   searchParams?: string;
   page?: number;
   destinationName?: string;
+  filterTourName?: string;
   selectedCategories?: string[];
   context?: {
     nameCollection: string;
@@ -152,11 +153,13 @@ function escapeFilterValue(value: string): string {
 }
 
 async function searchBothFromMeilisearch({
+  query,
   destinationName,
   categories,
   page,
   limit,
 }: {
+  query?: string;
   destinationName?: string;
   categories: string[];
   page: number;
@@ -194,7 +197,7 @@ async function searchBothFromMeilisearch({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      q: "",
+      q: query?.trim() ?? "",
       filter: filters.length > 0 ? filters.join(" AND ") : undefined,
       limit,
       offset,
@@ -226,6 +229,7 @@ export async function GridBoth(props: Props) {
     overrideDefaults,
     searchParams,
     destinationName: destinationNameFromParams,
+    filterTourName,
     selectedCategories,
   } = props;
 
@@ -243,6 +247,7 @@ export async function GridBoth(props: Props) {
   let totalDocs = 0;
 
   const meiliResult = await searchBothFromMeilisearch({
+    query: filterTourName,
     destinationName,
     categories: sanitizeCategories(selectedCategories),
     page: currentPage,

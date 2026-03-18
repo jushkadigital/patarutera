@@ -25,7 +25,7 @@ export async function retrieveCart(cartId?: string, fields?: string) {
   const id = cartId || (await getCartId());
   const isCookieCartId = !cartId;
   fields ??=
-    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name";
+    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, *promotions, *payment_collection, *payment_collection.payment_sessions, +items.total, +total, +subtotal, +original_total, +discount_total, +shipping_methods.name";
 
   if (!id) {
     return null;
@@ -774,20 +774,32 @@ export async function initiatePaymentSession(
     });
 }
 
-export async function applyPromotions(codes: string[]) {
+export async function applyCoupon(code: string) {
   const cartId = await getCartId();
 
   if (!cartId) {
     throw new Error("No existing cart found");
   }
 
+  const trimmedCode = code.trim();
+
+  if (!trimmedCode) {
+    throw new Error("Coupon code is required.");
+  }
+
   const headers = {
     ...(await getAuthHeaders()),
   };
 
-  return sdk.store.cart
-    .update(cartId, { promo_codes: codes }, {}, headers)
-    .then(async () => {
+  return sdk.client
+    .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${cartId}/promotions`, {
+      method: "POST",
+      body: {
+        promo_codes: [trimmedCode],
+      },
+      headers,
+    })
+    .then(async ({ cart }: { cart: HttpTypes.StoreCart }) => {
       const cartCacheTag = await getCacheTag("carts");
       revalidateTag(cartCacheTag);
 
@@ -800,6 +812,43 @@ export async function applyPromotions(codes: string[]) {
       } catch (e) {
         // Fail silently
       }
+
+      return cart;
+    })
+    .catch(medusaError);
+}
+
+export async function removeCoupon() {
+  const cartId = await getCartId();
+
+  if (!cartId) {
+    throw new Error("No existing cart found");
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  };
+
+  return sdk.client
+    .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${cartId}/promotions`, {
+      method: "DELETE",
+      headers,
+    })
+    .then(async ({ cart }: { cart: HttpTypes.StoreCart }) => {
+      const cartCacheTag = await getCacheTag("carts");
+      revalidateTag(cartCacheTag);
+
+      const fulfillmentCacheTag = await getCacheTag("fulfillment");
+      revalidateTag(fulfillmentCacheTag);
+
+      // Revalidate all pages
+      try {
+        revalidatePath("/", "layout");
+      } catch (e) {
+        // Fail silently
+      }
+
+      return cart;
     })
     .catch(medusaError);
 }
@@ -814,17 +863,6 @@ export async function applyGiftCard(code: string) {
   //   } catch (error: any) {
   //     throw error
   //   }
-}
-
-export async function removeDiscount(code: string) {
-  // const cartId = getCartId()
-  // if (!cartId) return "No cartId cookie found"
-  // try {
-  //   await deleteDiscount(cartId, code)
-  //   revalidateTag("cart")
-  // } catch (error: any) {
-  //   throw error
-  // }
 }
 
 export async function removeGiftCard(
@@ -851,11 +889,16 @@ export async function submitPromotionForm(
   currentState: unknown,
   formData: FormData,
 ) {
-  const code = formData.get("code") as string;
+  const code = formData.get("code");
+
+  if (typeof code !== "string") {
+    return "Coupon code is required.";
+  }
+
   try {
-    await applyPromotions([code]);
-  } catch (e: any) {
-    return e.message;
+    await applyCoupon(code);
+  } catch (error: unknown) {
+    return error instanceof Error ? error.message : "Failed to apply coupon.";
   }
 }
 

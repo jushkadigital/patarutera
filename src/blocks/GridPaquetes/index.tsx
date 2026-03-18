@@ -18,6 +18,7 @@ interface Props extends GridPaquetesBlockType {
   fromPayload?: boolean | null;
   searchParams?: string;
   page?: number;
+  filterTourName?: string;
   selectedCategories?: string[];
   selectedDestinations?: string[];
   context?: {
@@ -194,11 +195,13 @@ function escapeFilterValue(value: string): string {
 }
 
 async function searchPaquetesFromMeilisearch({
+  query,
   destinationNames,
   categories,
   page,
   limit,
 }: {
+  query?: string;
   destinationNames: string[];
   categories: string[];
   page: number;
@@ -244,7 +247,7 @@ async function searchPaquetesFromMeilisearch({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      q: "",
+      q: query?.trim() ?? "",
       filter: filters.length > 0 ? filters.join(" AND ") : undefined,
       limit,
       offset,
@@ -336,6 +339,7 @@ export async function GridPaquetes(props: Props) {
     page,
     overrideDefaults,
     searchParams,
+    filterTourName,
     selectedCategories,
     selectedDestinations,
     fromPayload,
@@ -370,6 +374,7 @@ export async function GridPaquetes(props: Props) {
     totalDocs = payloadResult.totalDocs;
   } else {
     const meiliResult = await searchPaquetesFromMeilisearch({
+      query: filterTourName,
       destinationNames: destinationNamesToFilter,
       categories: categoriesToFilter,
       page: currentPage,

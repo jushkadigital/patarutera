@@ -2,6 +2,7 @@ import type { GridToursBlock as GridToursBlockType, Tour } from "@/cms-types";
 import { CardTourData } from "@/components/CardTour";
 import { Pagination } from "@/components/Pagination";
 import { Subtitle } from "@/components/Subtitle";
+import { MeiliToursFilterClient } from "@/components/meili-tours-filter-client";
 import { ToursComponent } from "@/components/ToursComponent";
 import { BASEURL } from "@/lib2/config";
 import {
@@ -14,6 +15,7 @@ interface Props extends GridToursBlockType {
   fromPayload?: boolean;
   searchParams?: string;
   page?: number;
+  filterTourName?: string;
   selectedCategories?: string[];
   context?: {
     nameCollection: string;
@@ -182,11 +184,13 @@ function escapeFilterValue(value: string): string {
 }
 
 async function searchToursFromMeilisearch({
+  query,
   destinationName,
   categories,
   page,
   limit,
 }: {
+  query?: string;
   destinationName?: string;
   categories: string[];
   page: number;
@@ -225,7 +229,7 @@ async function searchToursFromMeilisearch({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      q: "",
+      q: query?.trim() ?? "",
       filter: filters.length > 0 ? filters.join(" AND ") : undefined,
       limit,
       offset,
@@ -327,6 +331,7 @@ export async function GridTours(props: Props) {
     page,
     overrideDefaults,
     searchParams,
+    filterTourName,
     selectedCategories,
     fromPayload = true,
   } = props;
@@ -358,6 +363,8 @@ export async function GridTours(props: Props) {
   );
 
   const shouldUsePayload = Boolean(fromPayload);
+  const shouldUseClientPriceSearch =
+    !shouldUsePayload && Boolean(props.rangeSlider);
 
   let tours: CardTourData[] = [];
   let totalDocs = 0;
@@ -376,6 +383,7 @@ export async function GridTours(props: Props) {
     totalDocs = payloadResult.totalDocs;
   } else {
     const meiliResult = await searchToursFromMeilisearch({
+      query: filterTourName,
       destinationName,
       categories: categoriesToFilter,
       page: currentPage,
@@ -391,12 +399,27 @@ export async function GridTours(props: Props) {
   return (
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
       <Subtitle className="" titleGroup={blockTitle} />
-      <ToursComponent
-        mode={Boolean(mode)}
-        tours={tours}
-        rangeSlider={props.rangeSlider}
-      />
-      {overrideDefaults && totalPages > 1 && (
+      {shouldUseClientPriceSearch ? (
+        <MeiliToursFilterClient
+          initialTours={tours}
+          mode={Boolean(mode)}
+          query={filterTourName}
+          destinationName={destinationName}
+          categories={categoriesToFilter}
+          searchParams={searchParams ?? ""}
+          currentPage={currentPage}
+          initialTotalDocs={totalDocs}
+          page={currentPage}
+          limit={toursPerPage}
+        />
+      ) : (
+        <ToursComponent
+          mode={Boolean(mode)}
+          tours={tours}
+          rangeSlider={props.rangeSlider}
+        />
+      )}
+      {overrideDefaults && totalPages > 1 && !shouldUseClientPriceSearch && (
         <Pagination
           page={currentPage}
           totalPages={totalPages}

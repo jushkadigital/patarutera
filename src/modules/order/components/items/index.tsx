@@ -191,11 +191,8 @@ const Items = ({ order }: ItemsProps) => {
   return (
     <div className="flex flex-col">
       <Divider className="!mb-0" />
-      <div
-        className=" py-8 "
-        data-testid="products-table"
-      >
-        <div className="hidden grid-cols-[2.3fr_1fr_0.7fr_0.8fr] px-4 lg:grid">
+      <div className=" py-8 " data-testid="products-table">
+        <div className="grid-cols-[2.3fr_1fr_0.7fr_0.8fr] px-4 lg:grid">
           <span className="font-[Poppins] text-[15px] font-semibold text-white pl-3">
             Servicio
           </span>
@@ -210,67 +207,67 @@ const Items = ({ order }: ItemsProps) => {
           </span>
         </div>
 
-        <div className="mt-4 space-y-6">
+        <div className="mt-4 max-h-[264px] space-y-6 overflow-y-auto lg:max-h-[356px]">
           {groupsArray.length
             ? groupsArray.map((groupedItem) => {
-              return (
-                <div
-                  className="grid grid-cols-1 gap-y-4 rounded-[15px] bg-white px-3 py-3 sm:px-4 lg:grid-cols-[2.5fr_1fr_1fr_1fr] lg:items-center lg:gap-y-0"
-                  key={groupedItem.groupId}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="relative h-[96px] w-[96px] overflow-hidden rounded-[12px] bg-[#d9d9d9] lg:h-[142px] lg:w-[142px] lg:rounded-[15px]">
-                      {groupedItem.thumbnail ? (
-                        <Image
-                          src={groupedItem.thumbnail}
-                          alt={groupedItem.title}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 1024px) 96px, 142px"
-                        />
-                      ) : null}
+                return (
+                  <div
+                    className="grid grid-cols-1 gap-y-4 rounded-[15px] bg-white px-3 py-3 sm:px-4 lg:grid-cols-[2.5fr_1fr_1fr_1fr] lg:items-center lg:gap-y-0"
+                    key={groupedItem.groupId}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="relative h-[96px] w-[96px] overflow-hidden rounded-[12px] bg-[#d9d9d9] lg:h-[142px] lg:w-[142px] lg:rounded-[15px]">
+                        {groupedItem.thumbnail ? (
+                          <Image
+                            src={groupedItem.thumbnail}
+                            alt={groupedItem.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 1024px) 96px, 142px"
+                          />
+                        ) : null}
+                      </div>
+
+                      <p className="max-w-[100px] min-w-0 font-[Poppins] text-[15px] font-semibold leading-normal text-black whitespace-normal">
+                        {groupedItem.title}
+                      </p>
                     </div>
 
-                    <p className="font-[Poppins] text-[15px] font-semibold leading-normal text-black">
-                      {groupedItem.title}
-                    </p>
-                  </div>
+                    <div>
+                      <p className="font-[Poppins] text-[13px] text-[#747474] lg:hidden">
+                        Fecha y hora
+                      </p>
+                      <p className="font-[Poppins] text-[15px] leading-normal text-[#747474]">
+                        {groupedItem.bookingDate ?? "-"}
+                      </p>
+                    </div>
 
-                  <div>
-                    <p className="font-[Poppins] text-[13px] text-[#747474] lg:hidden">
-                      Fecha y hora
-                    </p>
-                    <p className="font-[Poppins] text-[15px] leading-normal text-[#747474]">
-                      {groupedItem.bookingDate ?? "-"}
-                    </p>
-                  </div>
+                    <div>
+                      <p className="font-[Poppins] text-[13px] text-[#747474] lg:hidden">
+                        Viajeros
+                      </p>
+                      <p className="font-[Poppins] text-[15px] leading-normal text-[#747474] text-center">
+                        {groupedItem.totalQuantity}
+                      </p>
+                    </div>
 
-                  <div>
-                    <p className="font-[Poppins] text-[13px] text-[#747474] lg:hidden">
-                      Viajeros
-                    </p>
-                    <p className="font-[Poppins] text-[15px] leading-normal text-[#747474] text-center">
-                      {groupedItem.totalQuantity}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="font-[Poppins] text-[13px] text-[#747474] lg:hidden">
-                      Precio
-                    </p>
-                    <div className="flex items-end gap-1 font-[Poppins] font-bold leading-none text-[#2970b7]">
-                      <span className="text-[15px]">s/.</span>
-                      <span className="text-[32px] lg:text-[24px]">
-                        {formatSolesAmount(groupedItem.totalAmount)}
-                      </span>
+                    <div>
+                      <p className="font-[Poppins] text-[13px] text-[#747474] lg:hidden">
+                        Precio
+                      </p>
+                      <div className="flex items-end gap-1 font-[Poppins] font-bold leading-none text-[#2970b7]">
+                        <span className="text-[15px]">s/.</span>
+                        <span className="text-[32px] lg:text-[24px]">
+                          {formatSolesAmount(groupedItem.totalAmount)}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })
+                );
+              })
             : repeat(5).map((i) => {
-              return <SkeletonLineItem key={i} />;
-            })}
+                return <SkeletonLineItem key={i} />;
+              })}
         </div>
       </div>
     </div>

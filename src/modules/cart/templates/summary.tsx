@@ -2,6 +2,7 @@
 
 import { Button } from "@medusajs/ui";
 import Modal from "@modules/common/components/modal";
+import DiscountCode from "@modules/checkout/components/discount-code";
 import { usePopupAuth } from "@/hooks/usePopupAuth";
 import { HttpTypes } from "@medusajs/types";
 import { useState } from "react";
@@ -54,7 +55,12 @@ const Summary = ({
     close: closeCheckoutChoice,
   } = useToggleState(false);
 
+  const originalTotal = toNumber(cart.original_total);
+  const discountTotal = toNumber(cart.discount_total);
   const totalAmount = formatSolesAmount(toNumber(cart.total));
+  const originalTotalAmount = formatSolesAmount(originalTotal);
+  const discountAmount = formatSolesAmount(discountTotal);
+  const hasDiscount = discountTotal > 0;
 
   const goToGuestCheckout = () => {
     closeCheckoutChoice();
@@ -99,27 +105,48 @@ const Summary = ({
   return (
     <div className="flex w-full justify-end">
       <div className=" max-w-[426px]">
-        <div className="flex items-end justify-between">
-          <span className="font-[Poppins] text-[20px] font-semibold leading-normal text-[#747474]">
-            Total
-          </span>
+        <div className="flex flex-col gap-5 rounded-[18px] border border-[#e5e7eb] bg-white p-5">
+          <DiscountCode cart={cart} />
 
-          <div className="flex items-end gap-2 font-[Poppins] font-bold leading-none text-[#2970b7]">
-            <span className="text-[24px]">s/.</span>
-            <span className="text-[40px]">{totalAmount}</span>
+          <div className="space-y-3">
+            {hasDiscount ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="font-[Poppins] text-[16px] leading-normal text-[#747474]">
+                    Original total
+                  </span>
+                  <span className="font-[Poppins] text-[18px] leading-normal text-[#747474] line-through">
+                    s/. {originalTotalAmount}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="font-[Poppins] text-[16px] font-medium leading-normal text-[#747474]">
+                    Coupon discount
+                  </span>
+                  <span className="font-[Poppins] text-[18px] font-semibold leading-normal text-[#2e8b57]">
+                    - s/. {discountAmount}
+                  </span>
+                </div>
+              </>
+            ) : null}
+
+            <div className="flex items-end justify-between border-t border-[#e5e7eb] pt-4">
+              <span className="font-[Poppins] text-[20px] font-semibold leading-normal text-[#747474]">
+                Total
+              </span>
+
+              <div className="flex items-end gap-2 font-[Poppins] font-bold leading-none text-[#2970b7]">
+                <span className="text-[24px]">s/.</span>
+                <span className="text-[40px]">{totalAmount}</span>
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
-          <LocalizedClientLink href="/">
-            <Button
-              className="h-[51px] w-full rounded-[8px] border border-[#e2e2e2] bg-white px-6 font-[Poppins] text-[16px] font-medium text-[#b1b1b1] hover:bg-[#f8f8f8] sm:w-[229px]"
-              data-testid="continue-shopping-button"
-              type="button"
-              variant="transparent"
-            >
-              Seguir Comprando
-            </Button>
+          <LocalizedClientLink href="/tours?destination=Cusco&categories=">
+            <div className="w-[100px]"></div>
           </LocalizedClientLink>
 
           <Button
@@ -162,7 +189,7 @@ const Summary = ({
             disabled={isLoading || isSyncing}
             data-testid="checkout-guest-button"
           >
-            Continuar como guest
+            Continuar como invitado
           </Button>
           <Button
             className="h-10"

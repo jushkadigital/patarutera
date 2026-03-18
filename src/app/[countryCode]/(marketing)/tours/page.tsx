@@ -81,9 +81,8 @@ function parseSingleParam(
 export default async function Page(props: Props) {
   const params = await props.searchParams;
   const { page: pageParam } = params;
-  const destination =
-    parseSingleParam(params.filterDestination) ??
-    parseSingleParam(params.destination);
+  const destination = parseSingleParam(params.destination);
+  const filterTourName = parseSingleParam(params.filterTourName);
   const selectedCategories = parseSelectedCategories(params.categories);
   const currentPage = Number(pageParam) || 1;
   const queryString = new URLSearchParams(
@@ -121,9 +120,6 @@ export default async function Page(props: Props) {
   const categoriesRequest = await fetch(`${BASEURL}/api/tourCategory`);
   const categoriesData = await categoriesRequest.json();
   const categories = categoriesData.docs;
-  const destinationsRequest = await fetch(`${BASEURL}/api/destinations`);
-  const destinationsData = await destinationsRequest.json();
-  const destinations = destinationsData.docs;
   // Si ambos son falsos, fallback
   if (!hasBlocksLayout && !hasBlocksHero) {
     return <div>No hay contenido para mostrar.</div>;
@@ -162,10 +158,7 @@ export default async function Page(props: Props) {
       <SharedStateProvider>
         <div className="flex flex-row mt-10 w-[90%] md:w-[85%] mx-auto">
           <div className="lg:w-1/3">
-            <LeftPanelSearch
-              categories={categories}
-              destinations={destinations}
-            />
+            <LeftPanelSearch categories={categories} />
           </div>
           <div className="w-full lg:w-3/4">
             <GridTours
@@ -175,6 +168,7 @@ export default async function Page(props: Props) {
               gridStyle={false}
               rangeSlider={true}
               searchParams={queryString}
+              filterTourName={filterTourName}
               page={currentPage}
               selectedCategories={selectedCategories}
               overrideDefaults={true}
