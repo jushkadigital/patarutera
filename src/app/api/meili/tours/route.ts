@@ -33,6 +33,7 @@ type SearchPayload = {
   limit?: number;
   minPrice?: number;
   maxPrice?: number;
+  searchType?: "tour" | "both";
 };
 
 function sanitizeCategories(categories?: string[]): string[] {
@@ -113,7 +114,11 @@ export async function POST(request: NextRequest) {
       : 6;
   const minPrice = toFiniteNumber(payload.minPrice);
   const maxPrice = toFiniteNumber(payload.maxPrice);
-  const filters: string[] = ['type = "tour"'];
+  const filters: string[] = [];
+
+  if (payload.searchType !== "both") {
+    filters.push('type = "tour"');
+  }
 
   if (payload.destinationName) {
     filters.push(

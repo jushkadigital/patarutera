@@ -37,6 +37,12 @@ function extractCookieValue(
   return match ? match[1] : null;
 }
 
+function hasCookie(setCookieHeaders: string[], cookieName: string) {
+  return setCookieHeaders.some((cookie) =>
+    cookie.trim().startsWith(`${cookieName}=`),
+  );
+}
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -339,6 +345,23 @@ export async function GET(req: NextRequest) {
             medusaJwt = extractCookieValue(cookie, "_medusa_jwt");
           }
         });
+
+        const receivedMedusaAuthCookie =
+          hasCookie(setCookieHeaders, "_medusa_jwt") ||
+          hasCookie(setCookieHeaders, "connect.sid");
+
+        if (!receivedMedusaAuthCookie) {
+          console.error(
+            "❌ Medusa sync respondió sin cookie de auth. Continuando como guest para evitar loop.",
+          );
+          return continueAsGuest(
+            req,
+            callbackUrl,
+            "missing_medusa_auth_cookie",
+            isDevelopment,
+          );
+        }
+
         // Cart transfer: If we have incoming cart ID and Medusa JWT, transfer the cart
         if (incomingCartId && medusaJwt) {
           if (isDevelopment) {
@@ -392,6 +415,16 @@ export async function GET(req: NextRequest) {
             );
           }
         }
+      } else {
+        console.error(
+          "❌ Medusa sync respondió OK pero sin Set-Cookie. Continuando como guest para evitar loop.",
+        );
+        return continueAsGuest(
+          req,
+          callbackUrl,
+          "missing_set_cookie",
+          isDevelopment,
+        );
       }
 
       if (isDevelopment) {

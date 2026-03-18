@@ -7,6 +7,7 @@ import { CardTourData } from "@/components/CardTour";
 import { Pagination } from "@/components/Pagination";
 import { Subtitle } from "@/components/Subtitle";
 import { BothComponent } from "@/components/BothComponent";
+import { MeiliBothFilterClient } from "@/components/meili-both-filter-client";
 import {
   getMeiliCompleteImageFallback,
   parseMeiliCompleteImage,
@@ -242,6 +243,8 @@ export async function GridBoth(props: Props) {
       ? destination.name
       : undefined;
   const destinationName = destinationNameFromParams ?? destinationNameFromBlock;
+  const categoriesToFilter = sanitizeCategories(selectedCategories);
+  const shouldUseClientPriceSearch = Boolean(props.rangeSlider);
 
   let tours: CardTourData[] = [];
   let totalDocs = 0;
@@ -249,7 +252,7 @@ export async function GridBoth(props: Props) {
   const meiliResult = await searchBothFromMeilisearch({
     query: filterTourName,
     destinationName,
-    categories: sanitizeCategories(selectedCategories),
+    categories: categoriesToFilter,
     page: currentPage,
     limit: toursPerPage,
   });
@@ -261,12 +264,23 @@ export async function GridBoth(props: Props) {
 
   return (
     <div className=" mx-auto py-4 bg bg-white w-[90%]">
-      <BothComponent
-        mode={Boolean(mode)}
-        tours={tours}
-        rangeSlider={props.rangeSlider}
-      />
-      {overrideDefaults && totalPages > 1 && (
+      {shouldUseClientPriceSearch ? (
+        <MeiliBothFilterClient
+          initialItems={tours}
+          mode={Boolean(mode)}
+          query={filterTourName}
+          destinationName={destinationName}
+          categories={categoriesToFilter}
+          searchParams={searchParams ?? ""}
+          currentPage={currentPage}
+          initialTotalDocs={totalDocs}
+          page={currentPage}
+          limit={toursPerPage}
+        />
+      ) : (
+        <BothComponent mode={Boolean(mode)} tours={tours} rangeSlider={false} />
+      )}
+      {overrideDefaults && totalPages > 1 && !shouldUseClientPriceSearch && (
         <Pagination
           page={currentPage}
           totalPages={totalPages}

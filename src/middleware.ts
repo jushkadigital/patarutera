@@ -5,10 +5,13 @@ const MEDUSA_FALLBACK_COOKIE = "medusa_sync_guest_fallback";
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
-  const medusaCookieName = "_medusa_jwt";
-  const medusaCookie = req.cookies.get(medusaCookieName);
+  const medusaJwtCookie = req.cookies.get("_medusa_jwt");
+  const medusaSessionCookie = req.cookies.get("connect.sid");
+  const hasMedusaAuthCookie = !!medusaJwtCookie || !!medusaSessionCookie;
   const hasGuestFallbackCookie =
     req.cookies.get(MEDUSA_FALLBACK_COOKIE)?.value === "1";
+  const syncQueryState = req.nextUrl.searchParams.get("medusa_sync");
+  const hasSyncGuestQuery = syncQueryState === "guest";
   const { pathname } = req.nextUrl;
   const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -17,11 +20,14 @@ export default auth((req) => {
     console.log(`[MIDDLEWARE] Ruta: ${pathname}`);
     console.log(`   > NextAuth Logged: ${isLoggedIn}`);
     console.log(
-      `   > Medusa Cookie (${medusaCookieName}): ${medusaCookie ? "✅ Existe" : "❌ Falta"}`,
+      `   > Medusa Auth Cookie (_medusa_jwt|connect.sid): ${hasMedusaAuthCookie ? "✅ Existe" : "❌ Falta"}`,
     );
     console.log(
       `   > Guest Fallback Cookie (${MEDUSA_FALLBACK_COOKIE}): ${hasGuestFallbackCookie ? "✅ Existe" : "❌ Falta"}`,
     );
+    if (hasSyncGuestQuery) {
+      console.log("   > medusa_sync=guest detectado en URL actual");
+    }
   }
 
   // Excluir todas las rutas de /api/auth para evitar bucles
@@ -30,7 +36,12 @@ export default auth((req) => {
   }
 
   // Sincronización: Solo si está logueado en NextAuth pero NO tiene cookie Medusa
-  if (isLoggedIn && !medusaCookie && !hasGuestFallbackCookie) {
+  if (
+    isLoggedIn &&
+    !hasMedusaAuthCookie &&
+    !hasGuestFallbackCookie &&
+    !hasSyncGuestQuery
+  ) {
     if (isDevelopment) {
       console.log(
         "[MIDDLEWARE] ⚠️ Usuario logueado pero SIN cookie Medusa. Redirigiendo a sync...",
@@ -41,7 +52,12 @@ export default auth((req) => {
     return NextResponse.redirect(syncUrl);
   }
 
-  if (isLoggedIn && !medusaCookie && hasGuestFallbackCookie && isDevelopment) {
+  if (
+    isLoggedIn &&
+    !hasMedusaAuthCookie &&
+    (hasGuestFallbackCookie || hasSyncGuestQuery) &&
+    isDevelopment
+  ) {
     console.log(
       "[MIDDLEWARE] Usuario en fallback guest temporal. Se omite sync en esta request.",
     );
