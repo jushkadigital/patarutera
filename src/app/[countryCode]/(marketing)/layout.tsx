@@ -14,6 +14,7 @@ import TikTokPixel from "@/components/PixelTiktok";
 import { retrieveCustomer } from "@lib/data/customer";
 import { retrieveCart } from "@lib/data/cart";
 import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner";
+import { ScrollToTopOnRouteChange } from "@/components/ScrollTopOnRoute";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default async function PageLayout({
         <CartMismatchBanner customer={customer} cart={cart} />
       )}
       <main className="flex-grow">
+        <ScrollToTopOnRouteChange />
         <NuqsAdapter>
           {children}
         </NuqsAdapter>
