@@ -818,11 +818,17 @@ export async function applyCoupon(code: string) {
     .catch(medusaError);
 }
 
-export async function removeCoupon() {
+export async function removeCoupon(code: string) {
   const cartId = await getCartId();
 
   if (!cartId) {
     throw new Error("No existing cart found");
+  }
+
+  const trimmedCode = code.trim();
+
+  if (!trimmedCode) {
+    throw new Error("Coupon code is required.");
   }
 
   const headers = {
@@ -832,6 +838,9 @@ export async function removeCoupon() {
   return sdk.client
     .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${cartId}/promotions`, {
       method: "DELETE",
+      body: {
+        promo_codes: [trimmedCode],
+      },
       headers,
     })
     .then(async ({ cart }: { cart: HttpTypes.StoreCart }) => {

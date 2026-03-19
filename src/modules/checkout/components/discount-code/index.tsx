@@ -45,7 +45,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
     const code = formData.get("code");
 
     if (typeof code !== "string" || !code.trim()) {
-      setErrorMessage("Coupon code is required.");
+      setErrorMessage("El codigo del cupon es requerido");
       return;
     }
 
@@ -57,7 +57,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       refreshCartState();
     } catch (error: unknown) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Failed to apply coupon.",
+        error instanceof Error ? error.message : "Fallo al aplicar cupon",
       );
     }
   };
@@ -67,15 +67,22 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       return;
     }
 
+    const manualPromotionCode = manualPromotion.code;
+
+    if (!manualPromotionCode) {
+      setErrorMessage("Se necesita codigo de Cupon");
+      return;
+    }
+
     setErrorMessage(null);
 
     startRemoveTransition(async () => {
       try {
-        await removeCoupon();
+        await removeCoupon(manualPromotionCode);
         refreshCartState();
       } catch (error: unknown) {
         setErrorMessage(
-          error instanceof Error ? error.message : "Failed to remove coupon.",
+          error instanceof Error ? error.message : "Error al remover Cupon",
         );
       }
     });
@@ -86,12 +93,12 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
           <Text className="font-[Poppins] text-[16px] font-semibold leading-normal text-black">
-            Coupon code
+            Cupón
           </Text>
           <Text className="font-[Poppins] text-[14px] leading-normal text-[#747474]">
             {isLocked
-              ? "Coupons can’t be changed after a payment session starts."
-              : "Apply one manual coupon to this reservation."}
+              ? "Coupons no pueden ser cambiados en el transcurso de una sesion"
+              : "Aplica un cupon para esta reserva"}
           </Text>
         </div>
 
@@ -104,7 +111,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
             data-testid="add-discount-button"
             className="h-10 rounded-[10px] border border-[#d9d9d9] bg-white px-4 font-[Poppins] text-[14px] font-medium text-[#2970b7] hover:bg-[#f8fbff]"
           >
-            {isFormOpen ? "Cancel" : "Add coupon"}
+            {isFormOpen ? "Cancel" : "Aplicar Cupón"}
           </Button>
         ) : null}
       </div>
@@ -115,7 +122,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
             htmlFor="promotion-input"
             className="font-[Poppins] text-[13px] font-medium text-[#747474]"
           >
-            Coupon code
+            Cupón
           </Label>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Input
@@ -132,7 +139,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
               className="h-11 rounded-[10px] border border-[#d9d9d9] bg-[#2970b7] px-5 font-[Poppins] text-[14px] font-medium text-white hover:bg-[#245f9a]"
               data-testid="discount-apply-button"
             >
-              Apply coupon
+              Aplicar Cupón
             </SubmitButton>
           </div>
         </form>
@@ -145,7 +152,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
         >
           <div className="flex min-w-0 flex-col gap-1">
             <Text className="font-[Poppins] text-[13px] font-medium uppercase tracking-[0.08em] text-[#747474]">
-              Manual coupon
+              Cupón Manual
             </Text>
             <div className="flex items-center gap-2">
               <Badge color="grey" size="small">
@@ -162,7 +169,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
             data-testid="remove-discount-button"
           >
             <Trash size={14} />
-            <span>{isRemoving ? "Removing..." : "Remove"}</span>
+            <span>{isRemoving ? "Removiendo..." : "Removiendo"}</span>
           </button>
         </div>
       ) : null}
@@ -177,7 +184,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
               >
                 <div className="flex min-w-0 flex-col gap-1">
                   <Text className="font-[Poppins] text-[13px] font-medium uppercase tracking-[0.08em] text-[#747474]">
-                    Automatic promotion
+                    Promocion Automatica
                   </Text>
                   <Badge color="green" size="small">
                     {promotion.code}
