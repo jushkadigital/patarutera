@@ -59,19 +59,10 @@ function isAuthPopupMessage(data: unknown): data is AuthPopupMessage {
 
 function buildLoginUrl(params: {
   provider?: "keycloak";
-  redirectTo?: string;
-  nonce: string;
+  redirectTo: string;
 }): string {
   const loginUrl = new URL("/api/auth/login", window.location.origin);
-
-  const callbackUrl = new URL(
-    params.redirectTo ?? "/api/auth/popup-callback",
-    window.location.origin,
-  );
-  callbackUrl.searchParams.set("nonce", params.nonce);
-  const redirectTo = `${callbackUrl.pathname}${callbackUrl.search}${callbackUrl.hash}`;
-
-  loginUrl.searchParams.set("redirectTo", redirectTo);
+  loginUrl.searchParams.set("redirectTo", params.redirectTo);
 
   if (params.provider) {
     loginUrl.searchParams.set("provider", params.provider);
@@ -116,21 +107,37 @@ export function usePopupAuth(): UsePopupAuthResult {
       const channelName = `patarutera-auth-popup-${nonce}`;
       const popupName = `${POPUP_NAME_PREFIX}-${nonce}`;
       const timeoutMs = params.timeoutMs ?? DEFAULT_TIMEOUT_MS;
-      const loginUrl = buildLoginUrl({
+
+      const popupCallbackUrl = new URL(
+        "/api/auth/popup-callback",
+        window.location.origin,
+      );
+      popupCallbackUrl.searchParams.set("nonce", nonce);
+      const popupRedirectTo = `${popupCallbackUrl.pathname}${popupCallbackUrl.search}${popupCallbackUrl.hash}`;
+
+      const fallbackRedirectTo =
+        params.redirectTo ??
+        `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+      const popupLoginUrl = buildLoginUrl({
         provider: params.provider,
-        redirectTo: params.redirectTo,
-        nonce,
+        redirectTo: popupRedirectTo,
+      });
+
+      const fullPageLoginUrl = buildLoginUrl({
+        provider: params.provider,
+        redirectTo: fallbackRedirectTo,
       });
 
       const popupWindow = window.open(
-        loginUrl,
+        popupLoginUrl,
         popupName,
         buildPopupFeatures(POPUP_WIDTH, POPUP_HEIGHT),
       );
 
       if (!popupWindow) {
         setIsLoading(false);
-        window.location.href = loginUrl;
+        window.location.href = fullPageLoginUrl;
         return;
       }
 

@@ -91,9 +91,10 @@ const Summary = ({
     }
 
     try {
-      await openPopup({ provider: "keycloak" });
-      closeCheckoutChoice();
-      window.location.assign(localizedCheckoutPath);
+      await openPopup({
+        provider: "keycloak",
+        redirectTo: `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`,
+      });
     } catch {
       setIsSyncing(false);
       return;

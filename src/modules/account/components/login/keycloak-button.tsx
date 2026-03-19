@@ -10,12 +10,7 @@ export const KeycloakButton = () => {
     setIsLoading(true);
 
     try {
-      const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-
-      await openPopup({
-        provider: "keycloak",
-        redirectTo: currentPath,
-      });
+      await openPopup({ provider: "keycloak" });
       window.location.reload();
     } catch (error) {
       console.error("Failed to start Keycloak login:", error);
