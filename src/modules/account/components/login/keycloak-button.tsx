@@ -10,8 +10,10 @@ export const KeycloakButton = () => {
     setIsLoading(true);
 
     try {
-      await openPopup({ provider: "keycloak" });
-      window.location.reload();
+      await openPopup({
+        provider: "keycloak",
+        redirectTo: `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+      });
     } catch (error) {
       console.error("Failed to start Keycloak login:", error);
       setIsLoading(false);

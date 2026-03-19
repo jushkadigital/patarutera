@@ -1,40 +1,21 @@
 import "server-only";
 import { cookies as nextCookies } from "next/headers";
-import { auth } from "@/lib2/auth";
 
 export const getAuthHeaders = async (): Promise<Record<string, string>> => {
   try {
     const cookieStore = await nextCookies();
-    const token = cookieStore.get("_medusa_jwt")?.value;
+    const token =
+      cookieStore.get("_medusa_jwt")?.value ??
+      cookieStore.get("__Secure-_medusa_jwt")?.value;
 
     if (token) {
       return { authorization: `Bearer ${token}` };
-    }
-
-    const medusaSessionCookie = cookieStore.get("connect.sid")?.value;
-
-    if (medusaSessionCookie) {
-      const session = await auth();
-
-      if (!session?.user) {
-        return {};
-      }
-
-      return { Cookie: `connect.sid=${medusaSessionCookie}` };
     }
 
     return {};
   } catch {
     return {};
   }
-};
-
-export const removeMedusaSessionCookie = async () => {
-  const cookies = await nextCookies();
-  cookies.set("connect.sid", "", {
-    maxAge: -1,
-    path: "/",
-  });
 };
 
 export const getCacheTag = async (tag: string): Promise<string> => {

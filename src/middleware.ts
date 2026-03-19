@@ -6,8 +6,8 @@ const MEDUSA_FALLBACK_COOKIE = "medusa_sync_guest_fallback";
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const medusaJwtCookie = req.cookies.get("_medusa_jwt");
-  const medusaSessionCookie = req.cookies.get("connect.sid");
-  const hasMedusaAuthCookie = !!medusaJwtCookie || !!medusaSessionCookie;
+  const secureMedusaJwtCookie = req.cookies.get("__Secure-_medusa_jwt");
+  const hasMedusaJwtCookie = !!medusaJwtCookie || !!secureMedusaJwtCookie;
   const hasGuestFallbackCookie =
     req.cookies.get(MEDUSA_FALLBACK_COOKIE)?.value === "1";
   const syncQueryState = req.nextUrl.searchParams.get("medusa_sync");
@@ -20,7 +20,7 @@ export default auth((req) => {
     console.log(`[MIDDLEWARE] Ruta: ${pathname}`);
     console.log(`   > NextAuth Logged: ${isLoggedIn}`);
     console.log(
-      `   > Medusa Auth Cookie (_medusa_jwt|connect.sid): ${hasMedusaAuthCookie ? "✅ Existe" : "❌ Falta"}`,
+      `   > Medusa JWT Cookie (_medusa_jwt|__Secure-_medusa_jwt): ${hasMedusaJwtCookie ? "✅ Existe" : "❌ Falta"}`,
     );
     console.log(
       `   > Guest Fallback Cookie (${MEDUSA_FALLBACK_COOKIE}): ${hasGuestFallbackCookie ? "✅ Existe" : "❌ Falta"}`,
@@ -38,7 +38,7 @@ export default auth((req) => {
   // Sincronización: Solo si está logueado en NextAuth pero NO tiene cookie Medusa
   if (
     isLoggedIn &&
-    !hasMedusaAuthCookie &&
+    !hasMedusaJwtCookie &&
     !hasGuestFallbackCookie &&
     !hasSyncGuestQuery
   ) {
@@ -54,7 +54,7 @@ export default auth((req) => {
 
   if (
     isLoggedIn &&
-    !hasMedusaAuthCookie &&
+    !hasMedusaJwtCookie &&
     (hasGuestFallbackCookie || hasSyncGuestQuery) &&
     isDevelopment
   ) {

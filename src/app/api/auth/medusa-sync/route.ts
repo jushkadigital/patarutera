@@ -353,18 +353,18 @@ export async function GET(req: NextRequest) {
           }
         });
 
-        const receivedMedusaAuthCookie =
+        const receivedMedusaJwtCookie =
           hasCookie(setCookieHeaders, "_medusa_jwt") ||
-          hasCookie(setCookieHeaders, "connect.sid");
+          hasCookie(setCookieHeaders, "__Secure-_medusa_jwt");
 
-        if (!receivedMedusaAuthCookie) {
+        if (!receivedMedusaJwtCookie) {
           console.error(
-            "❌ Medusa sync respondió sin cookie de auth. Continuando como guest para evitar loop.",
+            "❌ Medusa sync respondió sin _medusa_jwt. Continuando como guest para evitar loop.",
           );
           return continueAsGuest(
             req,
             callbackUrl,
-            "missing_medusa_auth_cookie",
+            "missing_medusa_jwt",
             isDevelopment,
           );
         }
