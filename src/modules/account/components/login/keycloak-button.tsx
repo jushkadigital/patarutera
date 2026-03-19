@@ -1,53 +1,27 @@
-'use client'
-import { useParams } from "next/navigation"
-import React, { useState } from "react"
+"use client";
+import React, { useState } from "react";
+import { usePopupAuth } from "@/hooks/usePopupAuth";
 
 export const KeycloakButton = () => {
-  // 1. Obtenemos la URL base
-  const [isLoading, setIsLoading] = useState(false)
-  const params = useParams()
+  const [isLoading, setIsLoading] = useState(false);
+  const { openPopup } = usePopupAuth();
 
-  // En Next.js, window.location.origin te da 'http://localhost:8000'
-  // Usamos un pequeño truco para asegurar que solo corra en cliente o ponemos la url fija
-
-  // 3. Construimos el link
-  // IMPORTANTE: Cambia "keycloak" por el ID que pusiste en tu medusa-config.js si es distinto
   const handleKeycloakLogin = async () => {
-    setIsLoading(true)
-
-    // URL de tu backend
-    const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
-
-    // Endpoint Nativo de Medusa
-    // Nota: Por estándar OAuth se usa GET para pedir la URL de login,
-    // pero si Medusa lo requiere puedes usar POST (aunque GET es lo nativo aquí).
-    const authEndpoint = `${backendUrl}/auth/customer/keycloak-store`
+    setIsLoading(true);
 
     try {
-      // 1. Pedimos la URL a Medusa (AJAX)
-      const response = await fetch(authEndpoint, {
-        method: "GET", // El router nativo de Medusa suele esperar GET para esto
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
-      const data = await response.json()
-
-      // 2. Medusa nos responde: { location: "http://keycloak..." }
-      if (data.location) {
-        // 3. Nosotros hacemos la redirección
-        window.location.href = data.location
-      } else {
-        console.error("No se recibió URL de Keycloak", data)
-        setIsLoading(false)
-      }
-
+      await openPopup({
+        provider: "keycloak",
+        redirectTo: currentPath,
+      });
+      window.location.reload();
     } catch (error) {
-      console.error("Error al iniciar login:", error)
-      setIsLoading(false)
+      console.error("Failed to start Keycloak login:", error);
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full flex flex-col gap-y-2 mt-4">
@@ -61,5 +35,5 @@ export const KeycloakButton = () => {
         {isLoading ? "Redirigiendo..." : "Iniciar sesión con Keycloak"}
       </button>
     </div>
-  )
-}
+  );
+};

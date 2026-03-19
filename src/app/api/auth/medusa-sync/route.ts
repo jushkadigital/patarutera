@@ -158,6 +158,13 @@ async function continueAsGuest(
     path: "/",
     maxAge: 0,
   });
+  response.cookies.set("connect.sid", "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: isProduction,
+    path: "/",
+    maxAge: 0,
+  });
 
   return response;
 }

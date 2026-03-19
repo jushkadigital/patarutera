@@ -1,89 +1,108 @@
-import "server-only"
-import { cookies as nextCookies } from "next/headers"
+import "server-only";
+import { cookies as nextCookies } from "next/headers";
+import { auth } from "@/lib2/auth";
 
-export const getAuthHeaders = async (): Promise<
-  { authorization: string } | {}
-> => {
+export const getAuthHeaders = async (): Promise<Record<string, string>> => {
   try {
-    const cookies = await nextCookies()
-    const token = cookies.get("_medusa_jwt")?.value
+    const cookieStore = await nextCookies();
+    const token = cookieStore.get("_medusa_jwt")?.value;
 
-    if (!token) {
-      return {}
+    if (token) {
+      return { authorization: `Bearer ${token}` };
     }
 
-    return { authorization: `Bearer ${token}` }
+    const medusaSessionCookie = cookieStore.get("connect.sid")?.value;
+
+    if (medusaSessionCookie) {
+      const session = await auth();
+
+      if (!session?.user) {
+        return {};
+      }
+
+      return { Cookie: `connect.sid=${medusaSessionCookie}` };
+    }
+
+    return {};
   } catch {
-    return {}
+    return {};
   }
-}
+};
+
+export const removeMedusaSessionCookie = async () => {
+  const cookies = await nextCookies();
+  cookies.set("connect.sid", "", {
+    maxAge: -1,
+    path: "/",
+  });
+};
 
 export const getCacheTag = async (tag: string): Promise<string> => {
   try {
-    const cookies = await nextCookies()
-    const cacheId = cookies.get("_medusa_cache_id")?.value
+    const cookies = await nextCookies();
+    const cacheId = cookies.get("_medusa_cache_id")?.value;
 
     if (!cacheId) {
-      return ""
+      return "";
     }
 
-    return `${tag}-${cacheId}`
-  } catch (error) {
-    return ""
+    return `${tag}-${cacheId}`;
+  } catch {
+    return "";
   }
-}
+};
 
 export const getCacheOptions = async (
-  tag: string
-): Promise<{ tags: string[] } | {}> => {
+  tag: string,
+): Promise<{ tags: string[] } | Record<string, never>> => {
   if (typeof window !== "undefined") {
-    return {}
+    return {};
   }
 
-  const cacheTag = await getCacheTag(tag)
+  const cacheTag = await getCacheTag(tag);
 
   if (!cacheTag) {
-    return {}
+    return {};
   }
 
-  return { tags: [`${cacheTag}`] }
-}
+  return { tags: [`${cacheTag}`] };
+};
 
 export const setAuthToken = async (token: string) => {
-  const cookies = await nextCookies()
+  const cookies = await nextCookies();
   cookies.set("_medusa_jwt", token, {
     maxAge: 60 * 60 * 24 * 7,
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
-  })
-}
+  });
+};
 
 export const removeAuthToken = async () => {
-  const cookies = await nextCookies()
+  const cookies = await nextCookies();
   cookies.set("_medusa_jwt", "", {
     maxAge: -1,
-  })
-}
+  });
+};
 
 export const getCartId = async () => {
-  const cookies = await nextCookies()
-  return cookies.get("_medusa_cart_id")?.value
-}
+  const cookies = await nextCookies();
+  return cookies.get("_medusa_cart_id")?.value;
+};
 
 export const setCartId = async (cartId: string) => {
-  const cookies = await nextCookies()
+  const cookies = await nextCookies();
   cookies.set("_medusa_cart_id", cartId, {
     maxAge: 60 * 60 * 24 * 7,
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
-  })
-}
+  });
+};
 
 export const removeCartId = async () => {
-  const cookies = await nextCookies()
+  const cookies = await nextCookies();
   cookies.set("_medusa_cart_id", "", {
     maxAge: -1,
-  })
-}
+  });
+};
