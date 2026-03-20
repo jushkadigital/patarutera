@@ -75,6 +75,8 @@ const Summary = ({
   };
 
   const loginAndContinueCheckout = async () => {
+    const syncUrl = `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`;
+
     if (hasMedusaSessionCookie) {
       closeCheckoutChoice();
       window.location.assign(localizedCheckoutPath);
@@ -85,7 +87,6 @@ const Summary = ({
 
     if (hasAuthSessionCookie && !hasMedusaSessionCookie) {
       closeCheckoutChoice();
-      const syncUrl = `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`;
       window.location.assign(syncUrl);
       return;
     }
@@ -93,14 +94,15 @@ const Summary = ({
     try {
       await openPopup({
         provider: "keycloak",
-        redirectTo: `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`,
+        redirectTo: syncUrl,
       });
     } catch {
       setIsSyncing(false);
       return;
     }
 
-    setIsSyncing(false);
+    closeCheckoutChoice();
+    window.location.assign(syncUrl);
   };
 
   return (
