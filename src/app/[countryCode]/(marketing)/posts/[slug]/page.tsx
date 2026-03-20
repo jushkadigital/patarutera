@@ -1,18 +1,25 @@
-import { RenderBlocks } from '@/blocks/renderBlocks';
-import { RenderHero } from '@/blocks/renderPostHero';
-import { LivePreviewListener } from '@/components/LivePreviewListener';
-import { BASEURL } from '@/lib2/config';
-import { draftMode } from 'next/headers';
-import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { RenderBlocks } from "@/blocks/renderBlocks";
+import { RenderHero } from "@/blocks/renderPostHero";
+import { BASEURL } from "@/lib2/config";
+import { notFound } from "next/navigation";
+import { cache } from "react";
+
+export const revalidate = 3600;
+export const dynamic = "force-static";
+
+type PostSlugDoc = {
+  slug?: string | null;
+};
 
 export async function generateStaticParams() {
-  const postRequest = await fetch(`${BASEURL}/api/posts?depth=0&limit=1000&draft=false&select[slug]=true`); // Fetch tour slugs
+  const postRequest = await fetch(
+    `${BASEURL}/api/posts?depth=0&limit=1000&draft=false&select[slug]=true`,
+  ); // Fetch tour slugs
   const posts = await postRequest.json();
 
   const params = posts.docs
-    ?.filter((doc: any) => doc.slug) // Ensure slug exists
-    .map(({ slug }: any) => ({ slug }));
+    ?.filter((doc: PostSlugDoc) => doc.slug) // Ensure slug exists
+    .map(({ slug }: { slug: string }) => ({ slug }));
 
   return params || [];
 }
@@ -24,13 +31,10 @@ type PostPageParams = {
 
 type Args = {
   params: Promise<PostPageParams>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function PostPage({ params: paramsPromise, searchParams: searchParamsPromise }: Args) {
-  const { isEnabled: draft } = await draftMode();
+export default async function PostPage({ params: paramsPromise }: Args) {
   const resolvedParams = await paramsPromise;
-  // const searchParams = await searchParamsPromise; // Uncomment if searchParams are needed for tours
   const { slug } = resolvedParams;
 
   if (!slug) {
@@ -43,26 +47,30 @@ export default async function PostPage({ params: paramsPromise, searchParams: se
     notFound();
   }
 
-  const { layout, heroPost ,title} = post; // Assuming tours have layout and heroPageBlocks
+  const { layout, heroPost, title } = post; // Assuming tours have layout and heroPageBlocks
 
   return (
     <div className="">
-      {draft && <LivePreviewListener />}
       <div className="flex flex-col-reverse lg:flex-col">
-      <RenderHero heroBlocks={heroPost}/>
-      <div className='px-36'>
-      <RenderBlocks blocks={layout} />
+        <RenderHero heroBlocks={heroPost} />
+        <div className="px-36">
+          <RenderBlocks blocks={layout} />
+        </div>
       </div>
-      </div>
-      
     </div>
   );
 }
 
 const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode();
-  // Fetch a single tour by slug. Adjust depth as needed for tour data.
-  const data = await fetch(`${BASEURL}/api/posts?limit=1&where[slug][equals]=${slug}&depth=2&draft=${draft}`);
+  const data = await fetch(
+    `${BASEURL}/api/posts?limit=1&where[slug][equals]=${slug}&depth=2&draft=false`,
+    {
+      next: {
+        tags: ["posts", `post-${slug}`],
+        revalidate: 3600,
+      },
+    },
+  );
   const result = await data.json();
   return result.docs?.[0] || null;
 });
