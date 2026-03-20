@@ -68,7 +68,7 @@ export const Navbar = ({
       />
       <div className=" mx-auto flex items-center justify-around px-4">
         {/* Sección 1: Logo */}
-        <Link href="/pe" className="flex items-center space-x-2">
+        <Link href="/pe" className="flex items-center space-x-2" prefetch={false}>
           <Image
             src={isHome ? LOGO_URL : LOGO_URLCOLOR}
             alt="Logo"
@@ -176,7 +176,7 @@ export const Navbar = ({
 
               <SheetClose asChild>
                 <Link
-                  href="/"
+                  href="/pe"
                   className="flex items-center justify-center space-x-2 mb-6"
                 >
                   <Image
