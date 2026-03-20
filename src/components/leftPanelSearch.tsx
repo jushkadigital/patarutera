@@ -40,7 +40,6 @@ import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 import { useRouter, useParams } from "next/navigation";
 import { debounce } from "lodash";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 
 interface LeftPanelSearch {
   categories: TourCategory[];
@@ -249,8 +248,20 @@ export function TourSearchBoxHorizontal() {
   };
 
   const handleSearch = () => {
-    if (!destinoTemp) return;
-    router.push(`/${countryCode}/tours-y-paquetes`);
+    const normalizedTerm = destinoTemp.trim();
+
+    if (!normalizedTerm) {
+      return;
+    }
+
+    const params = new URLSearchParams();
+    params.set("filterTourName", normalizedTerm.toLowerCase());
+
+    const queryString = params.toString();
+    const targetPath = `/${countryCode}/tours-y-paquetes`;
+
+    router.push(queryString ? `${targetPath}?${queryString}` : targetPath);
+    setIsOpen(false);
   };
 
   const hasResults =
@@ -275,6 +286,12 @@ export function TourSearchBoxHorizontal() {
                       onChange={(e) => {
                         setDestinoTemp(e.target.value);
                         setIsOpen(true);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          event.preventDefault();
+                          handleSearch();
+                        }
                       }}
                       onFocus={() => setIsOpen(true)}
                       className="w-full text-lg border-none shadow-none focus-visible:ring-0 px-0 placeholder:text-[#adadac] text-[#333]"
@@ -352,14 +369,14 @@ export function TourSearchBoxHorizontal() {
         </div>
 
         {/* Botón de búsqueda */}
-        <Link
-          href={"/pe/tours-y-paquetes"}
-
+        <Button
+          type="button"
+          onClick={handleSearch}
           className="bg-[#2970b7] hover:bg-[#2970b7]/90 text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium transition-colors shadow-md hover:shadow-lg w-full lg:w-auto justify-center cursor"
         >
           <span>Buscar</span>
           <Search className="w-5 h-5" />
-        </Link>
+        </Button>
       </div>
     </div>
   );
