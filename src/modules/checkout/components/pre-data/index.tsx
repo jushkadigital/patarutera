@@ -93,12 +93,14 @@ export default function PreData({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [continueError, setContinueError] = useState<string | null>(null);
 
+  const firstFormStructure = formStructures[0];
+
   const requiredGroupIds = useMemo(
     () =>
-      formStructures
+      (firstFormStructure ? [firstFormStructure] : [])
         .filter((groupForm) => isPayloadForm(groupForm.structure))
         .map((groupForm) => groupForm.group_id),
-    [formStructures],
+    [firstFormStructure],
   );
 
   const [groupSubmissionState, setGroupSubmissionState] =
@@ -236,40 +238,42 @@ export default function PreData({
       {isOpen ? (
         <div className="pb-8">
           <div className="mb-4 flex flex-col gap-6">
-            {formStructures?.map((groupForm, index) => {
-              const groupState = groupSubmissionState[groupForm.group_id];
+            {(firstFormStructure ? [firstFormStructure] : []).map(
+              (groupForm, index) => {
+                const groupState = groupSubmissionState[groupForm.group_id];
 
-              return (
-                <div
-                  key={`${groupForm.group_id}-${groupForm.formId}`}
-                  className="rounded-md border bg-gray-50 p-4 text-sm"
-                >
-                  {isPayloadForm(groupForm.structure) ? (
-                    <FormBlock
-                      id={`predata-group-${groupForm.group_id}-${index}`}
-                      enableIntro={false}
-                      form={withSubmitLabel(groupForm.structure)}
-                      submitToApi={false}
-                      showLoadingIndicator={false}
-                      onSuccessfulSubmit={(values) =>
-                        handleGroupSubmitted(groupForm, values)
-                      }
-                    />
-                  ) : (
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {getStructureMessage(groupForm.structure)}
-                    </Text>
-                  )}
+                return (
+                  <div
+                    key={`${groupForm.group_id}-${groupForm.formId}`}
+                    className="rounded-md border bg-gray-50 p-4 text-sm"
+                  >
+                    {isPayloadForm(groupForm.structure) ? (
+                      <FormBlock
+                        id={`predata-group-${groupForm.group_id}-${index}`}
+                        enableIntro={false}
+                        form={withSubmitLabel(groupForm.structure)}
+                        submitToApi={false}
+                        showLoadingIndicator={false}
+                        onSuccessfulSubmit={(values) =>
+                          handleGroupSubmitted(groupForm, values)
+                        }
+                      />
+                    ) : (
+                      <Text className="txt-medium text-ui-fg-subtle">
+                        {getStructureMessage(groupForm.structure)}
+                      </Text>
+                    )}
 
-                  {groupState?.status === "error" && (
-                    <Text className="txt-medium mt-2 text-red-600">
-                      {groupState.message ||
-                        "No se pudo guardar este formulario."}
-                    </Text>
-                  )}
-                </div>
-              );
-            })}
+                    {groupState?.status === "error" && (
+                      <Text className="txt-medium mt-2 text-red-600">
+                        {groupState.message ||
+                          "No se pudo guardar este formulario."}
+                      </Text>
+                    )}
+                  </div>
+                );
+              },
+            )}
           </div>
 
           {continueError && (

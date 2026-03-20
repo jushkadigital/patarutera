@@ -299,8 +299,8 @@ export function TourSearchBoxHorizontal() {
                   </div>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="p-0 w-[300px] lg:w-[400px] max-h-[400px] overflow-y-auto"
-                  align="start"
+                  className="m-0 p-0 w-[300px] lg:w-[400px] max-h-[400px] overflow-y-auto"
+                  align="center"
                   onOpenAutoFocus={(e) => e.preventDefault()}
                 >
                   {isSearching ? (

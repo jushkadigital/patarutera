@@ -152,11 +152,13 @@ export default async function CheckoutForm({
   }
 
   const groups = getGroupedForms(cart);
-  const hasPreData = groups.length > 0;
+  const firstGroup = groups[0];
+  const groupsToRender = firstGroup ? [firstGroup] : [];
+  const hasPreData = groupsToRender.length > 0;
   const isPreDataCompleted =
     isRecord(cart.metadata) && cart.metadata.preDataCompleted === true;
   const formStructures = hasPreData
-    ? await Promise.all(groups.map((group) => getFormStructure(group)))
+    ? await Promise.all(groupsToRender.map((group) => getFormStructure(group)))
     : [];
 
   return (

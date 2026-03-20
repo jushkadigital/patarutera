@@ -1047,9 +1047,11 @@ export async function placeOrder(cartId?: string) {
     [] as string[],
   );
 
-  const requiredGroupIds = Array.from(
-    new Set([...requiredGroupsFromMetadata, ...requiredGroupsFromItems]),
-  );
+  const firstRequiredGroupIdFromItems = requiredGroupsFromItems[0];
+  const firstRequiredGroupIdFromMetadata = requiredGroupsFromMetadata[0];
+  const firstRequiredGroupId =
+    firstRequiredGroupIdFromMetadata ?? firstRequiredGroupIdFromItems;
+  const requiredGroupIds = firstRequiredGroupId ? [firstRequiredGroupId] : [];
 
   const missingRequiredGroupIds = requiredGroupIds.filter((groupId) => {
     const groupData = toMetadataRecord(preDataGroups[groupId]);
