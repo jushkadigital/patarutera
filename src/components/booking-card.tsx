@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -13,9 +13,10 @@ import { ChevronDown, Minus, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { CustomCalendar } from "./CustomCalendar";
 import { addPackagesItemsToCart, addTourItemsToCart } from "@lib/data/cart";
+import { getMedusaErrorMessage } from "@lib/util/get-medusa-error-message";
 import { HttpTypes } from "@medusajs/types";
 import { convertToLocale } from "@lib/util/money";
-import { Divider } from "@medusajs/ui";
+import { Divider, toast } from "@medusajs/ui";
 
 interface Props {
   slug: string;
@@ -113,6 +114,10 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [isAddedToCart, setIsAddedToCart] = useState(false);
 
+  useEffect(() => {
+    setIsAddedToCart(false);
+  }, [quantities, date]);
+
   const productThumbnail = useMemo(() => {
     if (
       typeof product.thumbnail === "string" &&
@@ -195,7 +200,7 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
           const calculatedAmount = variant.calculated_price?.calculated_amount;
           const unitPrice =
             typeof calculatedAmount === "number" &&
-              Number.isFinite(calculatedAmount)
+            Number.isFinite(calculatedAmount)
               ? calculatedAmount
               : undefined;
 
@@ -326,6 +331,9 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
       setIsAddedToCart(true);
     } catch (e) {
       console.error("Error adding to cart", e);
+      toast.error(getMedusaErrorMessage(e), {
+        position: "top-center",
+      });
     } finally {
       setIsAdding(false);
     }

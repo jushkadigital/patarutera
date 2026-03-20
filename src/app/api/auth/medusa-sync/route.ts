@@ -15,6 +15,10 @@ type MedusaSyncErrorBody = {
   message?: string;
 };
 
+type MedusaSyncSuccessBody = {
+  token?: string;
+};
+
 function getSafeCallbackPath(raw: string | null): string {
   if (!raw) {
     return "/";
@@ -65,6 +69,17 @@ function getErrorCode(data: unknown): string | null {
 
   const possibleCode = (data as MedusaSyncErrorBody).code;
   return typeof possibleCode === "string" ? possibleCode : null;
+}
+
+function getMedusaJwtFromSyncBody(data: unknown): string | null {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  const possibleToken = (data as MedusaSyncSuccessBody).token;
+  return typeof possibleToken === "string" && possibleToken.length > 0
+    ? possibleToken
+    : null;
 }
 
 function isRetriableSyncError(status: number, data: unknown) {
@@ -249,6 +264,7 @@ export async function GET(req: NextRequest) {
       );
 
       const data = await medusaRes.json().catch(() => ({}));
+      const medusaJwtFromBody = getMedusaJwtFromSyncBody(data);
 
       if (isDevelopment) {
         console.log(
@@ -296,6 +312,17 @@ export async function GET(req: NextRequest) {
         })();
       const response = NextResponse.redirect(new URL(callbackUrl, req.url));
       const isProduction = process.env.NODE_ENV === "production";
+
+      if (medusaJwtFromBody) {
+        response.cookies.set("_medusa_jwt", medusaJwtFromBody, {
+          httpOnly: true,
+          sameSite: "lax",
+          secure: isProduction,
+          path: "/",
+          maxAge: 60 * 60 * 24 * 7,
+        });
+      }
+
       response.cookies.set(MEDUSA_SYNC_FALLBACK_COOKIE, "", {
         httpOnly: true,
         sameSite: "lax",
@@ -355,7 +382,8 @@ export async function GET(req: NextRequest) {
 
         const receivedMedusaJwtCookie =
           hasCookie(setCookieHeaders, "_medusa_jwt") ||
-          hasCookie(setCookieHeaders, "__Secure-_medusa_jwt");
+          hasCookie(setCookieHeaders, "__Secure-_medusa_jwt") ||
+          !!medusaJwtFromBody;
 
         if (!receivedMedusaJwtCookie) {
           console.error(

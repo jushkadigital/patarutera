@@ -54,15 +54,21 @@ export default function CartItemAddedToastBridge() {
         style={{ zIndex: 2147483647 }}
       />
       <style jsx global>{`
-        .cart-item-added-toaster [data-sonner-toast] {
+        .cart-item-added-toaster [data-sonner-toast][data-type="success"] {
           background-color: #2970b7 !important;
           border: 1px solid var(--border) !important;
           color: #ffffff !important;
         }
 
-        .cart-item-added-toaster [data-sonner-toast] [data-title],
-        .cart-item-added-toaster [data-sonner-toast] [data-description],
-        .cart-item-added-toaster [data-sonner-toast] [data-icon] {
+        .cart-item-added-toaster
+          [data-sonner-toast][data-type="success"]
+          [data-title],
+        .cart-item-added-toaster
+          [data-sonner-toast][data-type="success"]
+          [data-description],
+        .cart-item-added-toaster
+          [data-sonner-toast][data-type="success"]
+          [data-icon] {
           color: #ffffff !important;
         }
       `}</style>

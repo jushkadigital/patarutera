@@ -5,7 +5,7 @@ import { SvgFacebook, SvgInstagram, SvgTiktok } from "./IconsSvg";
 import { TopHeader } from "./Topheader";
 import { Header } from "./Header";
 import { retrieveCart } from "@lib/data/cart";
-import { auth } from "@/lib2/auth";
+import { cookies } from "next/headers";
 
 interface Props {
   destinations: Destination[];
@@ -23,8 +23,11 @@ export async function TopBannerComplete({ destinations }: Props) {
   };
 
   const cart = await retrieveCart().catch(() => null);
-  const session = await auth();
-  const isAuthenticated = Boolean(session);
+  const cookieStore = await cookies();
+  const isAuthenticated = Boolean(
+    cookieStore.get("_medusa_jwt")?.value ||
+      cookieStore.get("__Secure-_medusa_jwt")?.value,
+  );
   return (
     <>
       <Header

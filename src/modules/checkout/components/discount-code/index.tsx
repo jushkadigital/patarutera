@@ -3,14 +3,38 @@
 import { applyCoupon, removeCoupon } from "@lib/data/cart";
 import { HttpTypes } from "@medusajs/types";
 import { Badge, Button, Input, Label, Text } from "@medusajs/ui";
+import Spinner from "@modules/common/icons/spinner";
 import Trash from "@modules/common/icons/trash";
 import { useRouter } from "next/navigation";
-import React, { useMemo, useState, useTransition } from "react";
+import React, { useState, useTransition } from "react";
+import { useFormStatus } from "react-dom";
 import ErrorMessage from "../error-message";
-import { SubmitButton } from "../submit-button";
 
 type DiscountCodeProps = {
   cart: HttpTypes.StoreCart;
+};
+
+const ApplyCouponSubmitButton = ({ disabled }: { disabled: boolean }) => {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      variant="secondary"
+      disabled={disabled || pending}
+      className="h-11 rounded-[10px] border border-[#d9d9d9] bg-[#2970b7] px-5 font-[Poppins] text-[14px] font-medium text-white hover:bg-[#245f9a] disabled:opacity-70"
+      data-testid="discount-apply-button"
+    >
+      {pending ? (
+        <>
+          <Spinner size="18" className="text-white" />
+          <span className="sr-only">Validating coupon</span>
+        </>
+      ) : (
+        "Aplicar Cupón"
+      )}
+    </Button>
+  );
 };
 
 const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
@@ -20,13 +44,12 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   const [isRemoving, startRemoveTransition] = useTransition();
 
   const promotions = cart.promotions ?? [];
-  const manualPromotion = useMemo(() => {
-    return promotions.find((promotion) => !promotion.is_automatic);
-  }, [promotions]);
-
-  const automaticPromotions = useMemo(() => {
-    return promotions.filter((promotion) => promotion.is_automatic);
-  }, [promotions]);
+  const manualPromotion = promotions.find(
+    (promotion) => !promotion.is_automatic,
+  );
+  const automaticPromotions = promotions.filter(
+    (promotion) => promotion.is_automatic,
+  );
 
   const paymentSessions = cart.payment_collection?.payment_sessions ?? [];
   const isLocked = paymentSessions.length > 0;
@@ -134,13 +157,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
               disabled={isLocked}
               data-testid="discount-input"
             />
-            <SubmitButton
-              variant="secondary"
-              className="h-11 rounded-[10px] border border-[#d9d9d9] bg-[#2970b7] px-5 font-[Poppins] text-[14px] font-medium text-white hover:bg-[#245f9a]"
-              data-testid="discount-apply-button"
-            >
-              Aplicar Cupón
-            </SubmitButton>
+            <ApplyCouponSubmitButton disabled={isLocked || isRemoving} />
           </div>
         </form>
       ) : null}
@@ -168,8 +185,17 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
             disabled={isLocked || isRemoving}
             data-testid="remove-discount-button"
           >
-            <Trash size={14} />
-            <span>{isRemoving ? "Removiendo..." : "Removiendo"}</span>
+            {isRemoving ? (
+              <>
+                <Spinner size="16" />
+                <span className="sr-only">Removing coupon</span>
+              </>
+            ) : (
+              <>
+                <Trash size={14} />
+                <span>Remover</span>
+              </>
+            )}
           </button>
         </div>
       ) : null}
