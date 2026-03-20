@@ -116,7 +116,7 @@ const Summary = ({
               <>
                 <div className="flex items-center justify-between">
                   <span className="font-[Poppins] text-[16px] leading-normal text-[#747474]">
-                    Original total
+                    Total Original
                   </span>
                   <span className="font-[Poppins] text-[18px] leading-normal text-[#747474] line-through">
                     s/. {originalTotalAmount}
@@ -125,7 +125,7 @@ const Summary = ({
 
                 <div className="flex items-center justify-between">
                   <span className="font-[Poppins] text-[16px] font-medium leading-normal text-[#747474]">
-                    Coupon discount
+                    Descuento del Cupón
                   </span>
                   <span className="font-[Poppins] text-[18px] font-semibold leading-normal text-[#2e8b57]">
                     - s/. {discountAmount}
