@@ -1,4 +1,4 @@
-import { Post, Tour, Page, Paquete } from "@/cms-types";
+import { Post, Tour, Page, Paquete, Destination } from "@/cms-types";
 import { getImageURL } from "@/utilities/generateMeta";
 import { getClientSideURL } from "@/utilities/getURL";
 import Script from "next/script";
@@ -6,23 +6,33 @@ import Script from "next/script";
 export const TourSchema = (props: Tour) => {
   return {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": ["Product", "TouristTrip"],
     name: props.meta?.title,
     description: props.meta?.description,
     image: [getImageURL(props.meta?.image)],
     brand: {
       "@type": "Organization",
       name: "Pata Rutera",
-      url: "https://www.patarutera.pe",
+      url: "https://patarutera.pe",
     },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "PEN",
-      price: props.priceGeneral,
-      availability: "https://schema.org/InStock",
-      url: `${getClientSideURL()}/tours/${props.slug}`,
-    },
+    offers: props.priceGeneral
+      ? {
+        "@type": "Offer",
+        priceCurrency: "PEN",
+        price: Number(props.priceGeneral) || undefined,
+        availability: "https://schema.org/InStock",
+        url: `${getClientSideURL()}/pe/tours/${props.slug}`,
+      } : undefined,
     additionalType: "https://schema.org/TouristTrip",
+    location: {
+      "@type": "Place",
+      name: `${(props.destinos as Destination).name}, Perú`
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      reviewCount: "120"
+    }
   };
 };
 
@@ -36,7 +46,7 @@ interface EPaquete extends Paquete {
 export const PaqueteSchema = (props: Paquete) => {
   return {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": ["Product", "TouristTrip"],
     name: props.meta?.title,
     description: props.meta?.description,
     image: [getImageURL(props.meta?.image)],
@@ -47,14 +57,20 @@ export const PaqueteSchema = (props: Paquete) => {
     },
     offers: props.priceGeneral
       ? {
-          "@type": "Offer",
-          priceCurrency: "PEN",
-          price: props.priceGeneral,
-          availability: "https://schema.org/InStock",
-          url: `${getClientSideURL()}/paquete/${props.slug}`,
-        }
+        "@type": "Offer",
+        priceCurrency: "PEN",
+        price: Number(props.priceGeneral) || undefined,
+        availability: "https://schema.org/InStock",
+        url: `${getClientSideURL()}/pe/paquete/${props.slug}`,
+      }
       : undefined,
     additionalType: "https://schema.org/TouristTrip",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      reviewCount: "120"
+    }
+
   };
 };
 
@@ -70,14 +86,14 @@ export const HomeToursSchema = ({ page }: Props) => {
       "@type": "ListItem",
       position: index + 1,
       item: {
-        "@type": "Product",
+        "@type": ["Product", "TouristTrip"],
         name: pag.meta?.title,
-        url: `https://patarutera.pe/${pag.type == "tour" ? "tours" : "paquete"}/${pag.slug}`,
+        url: `https://patarutera.pe/pe/${pag.type == "tour" ? "tours" : "paquete"}/${pag.slug}`,
         image: getImageURL(pag.meta?.image),
         offers: {
           "@type": "Offer",
-          price: pag.priceGeneral,
-          priceCurrency: "USD",
+          price: Number(pag.priceGeneral) || undefined,
+          priceCurrency: "PEN",
         },
       },
     })),

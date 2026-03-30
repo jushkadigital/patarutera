@@ -10,34 +10,39 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
-    remotePatterns: [{
-      protocol: "http",
-      hostname: "localhost",
-      port: "3000",
-      pathname: "/**"
-    },
-    {
-      protocol: "https",
-      hostname: "cms.patarutera.pe",
-      port: "",
-      pathname: "/**"
-    },
-    {
-      protocol: "https",
-      hostname: "cms.patarutera.pe",
-      port: "",
-      pathname: "/**"
-    },
-    {
-      protocol: "https",
-      hostname: "cms.patarutera.com",
-      port: "",
-      pathname: "/**"
-    }
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cms.patarutera.pe",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cms.patarutera.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
-  allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev', '192.168.128.128', '192.168.128.128:4000']
+  allowedDevOrigins: [
+    "local-origin.dev",
+    "*.local-origin.dev",
+    "192.168.128.128",
+    "192.168.128.128:4000",
+  ],
 };
-
 
 export default nextConfig;
