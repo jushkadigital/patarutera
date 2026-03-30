@@ -90,11 +90,9 @@ export default async function Page({ params: paramsPromise, searchParams: search
 
     const { layout, heroPageBlocks } = page;
 
-    const idToursElected = [15, 13, 14, 17]
-    const idPaquetesElected = [49]
 
-    const toursGet = await Promise.all(idToursElected.map(ele => queryTourById({ id: ele })))
-    const paquetesGet = await Promise.all(idPaquetesElected.map(ele => queryPaqueteById({ id: ele })))
+    const toursGet = await queryToursById()
+    const paquetesGet = await queryPaquetesById()
 
     const eTours = (toursGet.map(ele => ({ ...ele, type: "tour" })))
     const ePaquetes = (paquetesGet.map(ele => ({ ...ele, type: "paquete" })))
@@ -121,25 +119,26 @@ export async function generateMetadata({ params: paramsPromise }: Args, parent: 
 
 }
 
-const queryTourById = cache(async ({ id }: { id: number }) => {
-  const { isEnabled: draft } = await draftMode();
+const queryToursById = cache(async () => {
   // Fetch a single tour by slug. Adjust depth as needed for tour data.
-  const data = await fetch(`${BASEURL}/api/tours?limit=1&where[id][equals]=${id}&depth=2&draft=${draft}`);
+  const data = await fetch(`${BASEURL}/api/tours?limit=1&where[id][in]=15,13,14,17&depth=2&draft=${false}`, {
+    next: { revalidate: 3600 } // <-- El caché se refresca cada hora automáticamente
+  });
   const result = await data.json();
   return result.docs?.[0] || null;
 });
 
-const queryPaqueteById = cache(async ({ id }: { id: number }) => {
-  const { isEnabled: draft } = await draftMode();
+const queryPaquetesById = cache(async () => {
   // Fetch a single tour by slug. Adjust depth as needed for tour data.
-  const data = await fetch(`${BASEURL}/api/paquetes?limit=1&where[id][equals]=${id}&depth=2&draft=${draft}`);
+  const data = await fetch(`${BASEURL}/api/paquetes?limit=1&where[id][equals]=49&depth=2&draft=${false}`, {
+    next: { revalidate: 3600 } // <-- El caché se refresca cada hora automáticamente
+  });
   const result = await data.json();
   return result.docs?.[0] || null;
 });
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
-  const data = await fetch(`${BASEURL}/api/pages?limit=1&where[slug][equals]=${slug}&depth=2&draft=${draft}`); // Added depth=2 for potentially richer layout data
+  const data = await fetch(`${BASEURL}/api/pages?limit=1&where[slug][equals]=${slug}&depth=2&draft=${false}`); // Added depth=2 for potentially richer layout data
   const result = await data.json();
   return result.docs?.[0] || null;
 });
