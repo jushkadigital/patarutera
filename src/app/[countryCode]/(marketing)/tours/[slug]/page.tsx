@@ -1,9 +1,9 @@
 import { RenderBlocks } from "@/blocks/renderBlocks";
 import { RenderHero } from "@/blocks/renderTourHero";
 import { TourSchema } from "@/components/Schema";
+import { getProductByExternalId } from "@/lib/data/products";
 import { BASEURL } from "@/lib2/config";
 import { generateMetaPage } from "@/utilities/generateMeta";
-import { HttpTypes } from "@medusajs/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Script from "next/script";
@@ -13,20 +13,6 @@ import { cache } from "react";
 // Pages will be statically generated at build time and regenerated in the background
 export const revalidate = 3600; // 1 hour
 export const dynamic = "force-static";
-
-const MEDUSA_BACKEND_URL =
-  process.env.MEDUSA_BACKEND_URL ?? "http://localhost:9000";
-const MEDUSA_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
-
-const medusaHeaders = MEDUSA_PUBLISHABLE_KEY
-  ? { "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY }
-  : undefined;
-
-type StoreRegion = {
-  id: string;
-  currency_code: string;
-  countries?: Array<{ iso_2?: string | null }>;
-};
 
 export async function generateStaticParams() {
   const toursRequest = await fetch(
@@ -66,8 +52,7 @@ export default async function TourPage({ params: paramsPromise }: Args) {
   if (!tour) {
     notFound();
   }
-  const product = await queryProductByExternalId({
-    externalId: tour.id + "tour",
+  const product = await getProductByExternalId(tour.id + "tour", {
     countryCode,
   });
 
@@ -127,81 +112,6 @@ const queryTourBySlug = cache(async ({ slug }: { slug: string }) => {
   const result = await data.json();
   return result.docs?.[0] || null;
 });
-
-const queryRegionByCountryCode = cache(
-  async (countryCode?: string): Promise<StoreRegion | null> => {
-    if (!countryCode) {
-      return null;
-    }
-
-    const response = await fetch(`${MEDUSA_BACKEND_URL}/store/regions`, {
-      headers: medusaHeaders,
-      next: {
-        revalidate: 3600,
-        tags: ["regions"],
-      },
-      cache: "force-cache",
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const { regions } = (await response.json()) as { regions?: StoreRegion[] };
-    const normalizedCountryCode = countryCode.toLowerCase();
-
-    return (
-      regions?.find((region) =>
-        region.countries?.some(
-          (country) => country?.iso_2 === normalizedCountryCode,
-        ),
-      ) ?? null
-    );
-  },
-);
-
-const queryProductByExternalId = cache(
-  async ({
-    externalId,
-    countryCode,
-  }: {
-    externalId: string;
-    countryCode?: string;
-  }): Promise<HttpTypes.StoreProduct | null> => {
-    const region = await queryRegionByCountryCode(countryCode);
-
-    if (!region) {
-      return null;
-    }
-
-    const query = new URLSearchParams({
-      region_id: region.id,
-      currency_code: region.currency_code,
-    });
-
-    const response = await fetch(
-      `${MEDUSA_BACKEND_URL}/store/products/external/${externalId}?${query.toString()}`,
-      {
-        headers: medusaHeaders,
-        next: {
-          revalidate: 3600,
-          tags: ["products", `product-${externalId}`],
-        },
-        cache: "force-cache",
-      },
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const { product } = (await response.json()) as {
-      product?: HttpTypes.StoreProduct;
-    };
-
-    return product ?? null;
-  },
-);
 
 export async function generateMetadata({
   params: paramsPromise,

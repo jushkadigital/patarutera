@@ -331,7 +331,14 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
       setIsAddedToCart(true);
     } catch (e) {
       console.error("Error adding to cart", e);
-      toast.error(getMedusaErrorMessage(e), {
+      const errorMessage = getMedusaErrorMessage(
+        e,
+        isTour
+          ? "No se pudo agregar el tour al carrito."
+          : "No se pudo agregar el paquete al carrito.",
+      );
+
+      toast.error(errorMessage, {
         position: "top-center",
       });
     } finally {

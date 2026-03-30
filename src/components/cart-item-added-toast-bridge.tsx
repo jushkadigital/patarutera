@@ -60,6 +60,12 @@ export default function CartItemAddedToastBridge() {
           color: #ffffff !important;
         }
 
+        .cart-item-added-toaster [data-sonner-toast][data-type="error"] {
+          background-color: #dc2626 !important;
+          border-color: #dc2626 !important;
+          color: #ffffff !important;
+        }
+
         .cart-item-added-toaster [data-sonner-toast] [data-title],
         .cart-item-added-toaster [data-sonner-toast] [data-description],
         .cart-item-added-toaster [data-sonner-toast] [data-icon] {
