@@ -92,8 +92,8 @@ export default async function Page({ params: paramsPromise, searchParams: search
 
 
     const toursGet = await queryToursById()
-    const paquetesGet = await queryPaquetesById()
 
+    const paquetesGet = await queryPaquetesById()
     const eTours = (toursGet.map(ele => ({ ...ele, type: "tour" })))
     const ePaquetes = (paquetesGet.map(ele => ({ ...ele, type: "paquete" })))
 
@@ -125,7 +125,7 @@ const queryToursById = cache(async () => {
     next: { revalidate: 3600 } // <-- El caché se refresca cada hora automáticamente
   });
   const result = await data.json();
-  return result.docs?.[0] || null;
+  return result.docs || null;
 });
 
 const queryPaquetesById = cache(async () => {
@@ -134,7 +134,7 @@ const queryPaquetesById = cache(async () => {
     next: { revalidate: 3600 } // <-- El caché se refresca cada hora automáticamente
   });
   const result = await data.json();
-  return result.docs?.[0] || null;
+  return result.docs || null;
 });
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
