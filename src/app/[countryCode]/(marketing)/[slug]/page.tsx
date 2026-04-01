@@ -61,7 +61,6 @@ type Args = {
 };
 
 export default async function Page({ params: paramsPromise, searchParams: searchParamsPromise }: Args) {
-  const { isEnabled: draft } = await draftMode();
   const resolvedParams = await paramsPromise;
   const searchParams = await searchParamsPromise;
   const { slug = 'home' } = resolvedParams;
@@ -101,7 +100,6 @@ export default async function Page({ params: paramsPromise, searchParams: search
       <>
         {slug == "home" && HomeToursSchema({ page: eTours.concat(ePaquetes) })}
         <div className="flex flex-col space-y-10">
-          {draft && <LivePreviewListener />}
           <RenderHero heroBlocks={heroPageBlocks} />
           <div className={"flex flex-col space-y-10 lg:space-y-14"} >
             <RenderBlocks blocks={layout} />
@@ -111,6 +109,7 @@ export default async function Page({ params: paramsPromise, searchParams: search
     );
   }
 }
+
 export async function generateMetadata({ params: paramsPromise }: Args, parent: ResolvingMetadata): Promise<Metadata> {
 
   const { slug = 'home' } = await paramsPromise;

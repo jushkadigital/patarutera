@@ -29,7 +29,7 @@ export const FooterColumns = ({ columns }) => {
         return (
           <Link
             scroll
-            href={`/${link.url}`}
+            href={`/pe/${link.url}`}
             className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200"
             target={link.newTab ? "_blank" : undefined}
             rel={link.newTab ? "noopener noreferrer" : undefined}
@@ -48,7 +48,7 @@ export const FooterColumns = ({ columns }) => {
         return (
           <Link
             scroll
-            href={slugType == "pages" ? `/${slug}` : `/${slugType}/${slug}`}
+            href={slugType == "pages" ? `/pe/${slug}` : `/pe/${slugType}/${slug}`}
             className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200"
             target={link.newTab ? "_blank" : undefined}
             rel={link.newTab ? "noopener noreferrer" : undefined}
