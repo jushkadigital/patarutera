@@ -1,4 +1,5 @@
 import { RenderBlocks } from "@/blocks/renderBlocks";
+import ViewContentTracker from "@/components/analytics/view-content-tracker";
 import { RenderHero } from "@/blocks/renderTourHero";
 import { TourSchema } from "@/components/Schema";
 import { getProductByExternalId } from "@/lib/data/products";
@@ -61,11 +62,41 @@ export default async function TourPage({ params: paramsPromise }: Args) {
   }
 
   const { layout, heroTour, title, form } = tour; // Assuming tours have layout and heroPageBlocks
+  const analyticsItems = (product.variants ?? []).map((variant) => ({
+    itemId: variant.id,
+    itemName: title,
+    itemCategory: "tour",
+    itemVariant: variant.title ?? undefined,
+    price: variant.calculated_price?.calculated_amount ?? undefined,
+  }));
+  const viewContentValue = analyticsItems.reduce((lowestPrice, item) => {
+    if (typeof item.price !== "number") {
+      return lowestPrice;
+    }
+
+    if (lowestPrice === 0) {
+      return item.price;
+    }
+
+    return Math.min(lowestPrice, item.price);
+  }, 0);
 
   const schema = TourSchema(tour);
 
   return (
     <>
+      <ViewContentTracker
+        eventKey={`tour:${product.id}`}
+        payload={{
+          contentName: title,
+          contentCategory: "tour",
+          contentType: "product",
+          currency:
+            product.variants?.[0]?.calculated_price?.currency_code ?? "PEN",
+          value: viewContentValue,
+          items: analyticsItems,
+        }}
+      />
       <Script
         id="tour-schema"
         type={"application/ld+json"}

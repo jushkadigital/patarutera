@@ -13,6 +13,7 @@ import { ChevronDown, Minus, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { CustomCalendar } from "./CustomCalendar";
 import { addPackagesItemsToCart, addTourItemsToCart } from "@lib/data/cart";
+import { trackAddToCart } from "@lib/analytics";
 import { getMedusaErrorMessage } from "@lib/util/get-medusa-error-message";
 import { HttpTypes } from "@medusajs/types";
 import { convertToLocale } from "@lib/util/money";
@@ -272,6 +273,25 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
       );
 
       const pricingBreakdown = Object.values(pricingSummary);
+      const cartItems = selectedVariants.map((entry) => ({
+        itemId: entry.variantId,
+        itemName: product.title ?? slug,
+        itemCategory: isTour ? "tour" : "package",
+        itemVariant: entry.variant.title ?? undefined,
+        quantity: entry.quantity,
+        price: entry.unitPrice,
+      }));
+      const cartValue = selectedVariants.reduce((total, entry) => {
+        if (entry.lineTotal !== undefined) {
+          return total + entry.lineTotal;
+        }
+
+        if (entry.unitPrice !== undefined) {
+          return total + entry.unitPrice * entry.quantity;
+        }
+
+        return total;
+      }, 0);
 
       const items = selectedVariants.map((entry) => ({
         variant_id: entry.variantId,
@@ -320,6 +340,16 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
           formId,
         });
       }
+
+      trackAddToCart({
+        contentName: product.title ?? slug,
+        contentCategory: isTour ? "tour" : "package",
+        contentType: "product",
+        currency:
+          product.variants?.[0]?.calculated_price?.currency_code ?? "PEN",
+        value: cartValue,
+        items: cartItems,
+      });
 
       window.dispatchEvent(
         new CustomEvent("cart:item-added", {

@@ -1,15 +1,15 @@
 "use client";
 
-import { addMultipleToCart, addToCart } from "@lib/data/cart";
+import { addMultipleToCart } from "@lib/data/cart";
+import { trackAddToCart } from "@lib/analytics";
 import { useIntersection } from "@lib/hooks/use-in-view";
 import { getMedusaErrorMessage } from "@lib/util/get-medusa-error-message";
 import { HttpTypes } from "@medusajs/types";
-import { Button, clx, toast } from "@medusajs/ui"; // Asumiendo que tienes clx o usas template strings
+import { Button, toast } from "@medusajs/ui";
 import Divider from "@modules/common/components/divider";
 import { useParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
-import { convertToLocale } from "@lib/util/money"; // Asegúrate de importar tu utilidad de formato de moneda
-import LocalizedClientLink from "@modules/common/components/localized-client-link";
+import { convertToLocale } from "@lib/util/money";
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct;
@@ -30,7 +30,7 @@ export default function ProductActions({
   const [quantities, setQuantities] = useState<Record<string, number>>({});
 
   const actionsRef = useRef<HTMLDivElement>(null);
-  const inView = useIntersection(actionsRef, "0px");
+  useIntersection(actionsRef, "0px");
 
   // Helper para actualizar el estado
   const handleQuantityChange = (variantId: string, change: number) => {
@@ -82,7 +82,7 @@ export default function ProductActions({
     hoyMasDosDias.setDate(hoyMasDosDias.getDate() + 2);
 
     // Filtramos solo las variantes que tienen cantidad > 0
-    const itemsToAdd = Object.entries(quantities).filter(([_, qty]) => qty > 0);
+    const itemsToAdd = Object.entries(quantities).filter(([, qty]) => qty > 0);
 
     const itemsToCart = itemsToAdd.map(([variantId, qty]) => {
       return {
@@ -98,6 +98,28 @@ export default function ProductActions({
       // Ejecutamos todas las promesas de agregar al carrito en paralelo
 
       await addMultipleToCart(itemsToCart);
+
+      trackAddToCart({
+        contentName: product.title ?? undefined,
+        contentCategory: "product",
+        contentType: "product",
+        currency: region.currency_code,
+        value: estimatedTotal,
+        items: itemsToAdd.map(([variantId, qty]) => {
+          const variant = product.variants?.find(
+            (entry) => entry.id === variantId,
+          );
+
+          return {
+            itemId: variantId,
+            itemName: product.title ?? variant?.title ?? "Product",
+            itemCategory: "product",
+            itemVariant: variant?.title ?? undefined,
+            quantity: qty,
+            price: variant?.calculated_price?.calculated_amount ?? undefined,
+          };
+        }),
+      });
 
       window.dispatchEvent(
         new CustomEvent("cart:item-added", {
@@ -117,19 +139,6 @@ export default function ProductActions({
     }
   };
 
-  const handleRouteCart = async () => {
-    if (totalItems === 0) return;
-
-    try {
-      // Ejecutamos todas las promesas de agregar al carrito en paralelo
-      // Opcional: Resetear cantidades tras añadir
-      // setQuantities({})
-    } catch (e) {
-      console.error("Error adding to cart", e);
-    } finally {
-      setIsAdding(false);
-    }
-  };
   // Helper simple para mostrar precio
   const getPriceDisplay = (variant: HttpTypes.StoreProductVariant) => {
     if (!variant.calculated_price) return null;

@@ -1,8 +1,9 @@
 import { getBaseURL } from "@lib/util/env";
-import { GoogleTagManager } from "@next/third-parties/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
+import PageViewTracker from "@/components/analytics/page-view-tracker";
 import CartItemAddedToastBridge from "@/components/cart-item-added-toast-bridge";
 import "../globals.css";
 
@@ -15,6 +16,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
 };
 
+const GOOGLE_TAG_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_ID ?? "G-6XPFF81QJW";
+const META_PIXEL_ID =
+  process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "971219730544055";
+const TIKTOK_PIXEL_ID =
+  process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID ?? "D305TJ3C77U1O98E1P9G";
+
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="es" data-mode="light">
@@ -22,9 +29,10 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <GoogleTagManager gtmId="G-6XPFF81QJW" />
       <body className={`${poppins.className} min-h-screen flex flex-col`}>
+        <GoogleAnalytics gaId={GOOGLE_TAG_ID} />
         <CartItemAddedToastBridge />
+        <PageViewTracker />
         <Script
           id="fb-pixel-script"
           strategy="afterInteractive"
@@ -38,11 +46,12 @@ export default function RootLayout(props: { children: React.ReactNode }) {
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '${META_PIXEL_ID}');
             `,
           }}
         />
         <Script
-          id="fb-pixel-script-tiktok"
+          id="tiktok-pixel-script"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
@@ -52,8 +61,7 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
 
 
-ttq.load('D305TJ3C77U1O98E1P9G');
-ttq.page();
+ttq.load('${TIKTOK_PIXEL_ID}');
 }(window, document, 'ttq');
 `,
           }}

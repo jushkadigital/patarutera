@@ -1,6 +1,7 @@
 "use client";
 
 import type { Media } from "@/cms-types";
+import { trackInitiateCheckout } from "@lib/analytics";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -93,15 +94,22 @@ export function BillingForm({
       throw new Error("Error al enviar el formulario");
     }
 
-    if (typeof window.fbq === "function") {
-      window.fbq("track", "InitiateCheckout");
-      window.fbq("track", "AddPaymentInfo");
-    }
-
-    if (window.ttq) {
-      window.ttq.track("AddPaymentInfo");
-      window.ttq.track("InitiateCheckout");
-    }
+    trackInitiateCheckout({
+      contentName: name,
+      contentCategory: type,
+      contentType: "product",
+      currency: paymentConf.currency,
+      value: numberPassengers * Number(amount),
+      items: [
+        {
+          itemId: `${type}-${id}`,
+          itemName: name,
+          itemCategory: type,
+          quantity: numberPassengers,
+          price: Number(amount),
+        },
+      ],
+    });
 
     const result = await response.json();
     const urlPayment = JSON.parse(result.message).answer.paymentURL;

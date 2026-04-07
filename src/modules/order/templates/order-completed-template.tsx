@@ -2,6 +2,7 @@ import { cookies as nextCookies } from "next/headers";
 import NextImage from "next/image";
 import { Mail, Phone } from "lucide-react";
 
+import PurchaseTracker from "@/components/analytics/purchase-tracker";
 import { convertToLocale } from "@lib/util/money";
 import Items from "@modules/order/components/items";
 import OnboardingCta from "@modules/order/components/onboarding-cta";
@@ -64,9 +65,38 @@ export default async function OrderCompletedTemplate({
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });
+  const purchaseItems = (order.items ?? []).map((item) => ({
+    itemId: item.variant_id ?? item.id,
+    itemName: item.product_title ?? item.title ?? "Reserva",
+    itemCategory:
+      item.metadata?.is_tour === true
+        ? "tour"
+        : item.metadata?.is_package === true
+          ? "package"
+          : "product",
+    itemVariant: item.variant?.title ?? undefined,
+    quantity: item.quantity ?? 1,
+    price:
+      typeof item.unit_price === "number"
+        ? item.unit_price
+        : typeof item.quantity === "number" && item.quantity > 0
+          ? (item.total ?? 0) / item.quantity
+          : undefined,
+  }));
 
   return (
     <div className="relative overflow-hidden bg-[#f3f3f3]">
+      <PurchaseTracker
+        eventKey={order.id}
+        payload={{
+          transactionId: order.id,
+          currency: order.currency_code,
+          value: payment?.amount ?? order.total,
+          contentCategory: "order",
+          contentType: "product",
+          items: purchaseItems,
+        }}
+      />
       <NextImage
         src="/gracias.png"
         alt=""

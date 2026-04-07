@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@medusajs/ui";
+import { trackInitiateCheckout } from "@lib/analytics";
 import Modal from "@modules/common/components/modal";
 import DiscountCode from "@modules/checkout/components/discount-code";
 import { usePopupAuth } from "@/hooks/usePopupAuth";
@@ -61,9 +62,33 @@ const Summary = ({
   const originalTotalAmount = formatSolesAmount(originalTotal);
   const discountAmount = formatSolesAmount(discountTotal);
   const hasDiscount = discountTotal > 0;
+  const checkoutItems = (cart.items ?? []).map((item) => ({
+    itemId: item.variant_id ?? item.id,
+    itemName: item.product_title ?? item.title ?? "Reserva",
+    itemCategory:
+      item.metadata?.is_tour === true
+        ? "tour"
+        : item.metadata?.is_package === true
+          ? "package"
+          : "product",
+    itemVariant: item.variant?.title ?? undefined,
+    quantity: item.quantity ?? 1,
+    price: toNumber(item.unit_price),
+  }));
+
+  const handleInitiateCheckout = () => {
+    trackInitiateCheckout({
+      currency: cart.currency_code,
+      value: toNumber(cart.total),
+      contentCategory: "checkout",
+      contentType: "product",
+      items: checkoutItems,
+    });
+  };
 
   const goToGuestCheckout = () => {
     closeCheckoutChoice();
+    handleInitiateCheckout();
 
     if (!hasAuthSessionCookie) {
       window.location.assign(localizedCheckoutPath);
@@ -76,6 +101,8 @@ const Summary = ({
 
   const loginAndContinueCheckout = async () => {
     const syncUrl = `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`;
+
+    handleInitiateCheckout();
 
     if (hasMedusaSessionCookie) {
       closeCheckoutChoice();

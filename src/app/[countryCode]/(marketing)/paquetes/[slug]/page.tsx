@@ -1,4 +1,5 @@
 import { RenderBlocks } from "@/blocks/renderBlocks";
+import ViewContentTracker from "@/components/analytics/view-content-tracker";
 import { RenderHero } from "@/blocks/renderPaqueteHero";
 import { PaqueteSchema } from "@/components/Schema";
 import { getProductByExternalId } from "@/lib/data/products";
@@ -61,11 +62,41 @@ export default async function PaquetePage({ params: paramsPromise }: Args) {
   }
 
   const { layout, heroPaquete, title, form } = paquete; // Assuming paquetes have layout and heroPaquete
+  const analyticsItems = (product.variants ?? []).map((variant) => ({
+    itemId: variant.id,
+    itemName: title,
+    itemCategory: "package",
+    itemVariant: variant.title ?? undefined,
+    price: variant.calculated_price?.calculated_amount ?? undefined,
+  }));
+  const viewContentValue = analyticsItems.reduce((lowestPrice, item) => {
+    if (typeof item.price !== "number") {
+      return lowestPrice;
+    }
+
+    if (lowestPrice === 0) {
+      return item.price;
+    }
+
+    return Math.min(lowestPrice, item.price);
+  }, 0);
 
   const schema = PaqueteSchema(paquete);
 
   return (
     <>
+      <ViewContentTracker
+        eventKey={`package:${product.id}`}
+        payload={{
+          contentName: title,
+          contentCategory: "package",
+          contentType: "product",
+          currency:
+            product.variants?.[0]?.calculated_price?.currency_code ?? "PEN",
+          value: viewContentValue,
+          items: analyticsItems,
+        }}
+      />
       <Script
         id="tour-schema"
         type={"application/ld+json"}
