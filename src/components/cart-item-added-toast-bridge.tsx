@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Toaster, toast } from "@medusajs/ui";
 
 const getAddedCount = (event: Event) => {
@@ -31,7 +31,11 @@ const getToastMessage = (addedCount?: number) => {
 };
 
 export default function CartItemAddedToastBridge() {
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
+    setIsMounted(true);
+
     const handleItemAdded = (event: Event) => {
       toast.success(getToastMessage(getAddedCount(event)), {
         position: "top-center",
@@ -44,6 +48,10 @@ export default function CartItemAddedToastBridge() {
       window.removeEventListener("cart:item-added", handleItemAdded);
     };
   }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <>

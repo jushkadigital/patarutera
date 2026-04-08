@@ -1,13 +1,18 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { motion, AnimatePresence } from "motion/react"
-import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
-import { Media, TitleGroup } from "@/cms-types"
-import { Subtitle } from "./Subtitle"
-import Link, { LinkProps } from "next/link"
-import Image from "@/components/PayloadImage"
-import { ArrowRight } from "lucide-react"
+import * as React from "react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
+import { Media, TitleGroup } from "@/cms-types";
+import { Subtitle } from "./Subtitle";
+import Link, { LinkProps } from "next/link";
+import PayloadImage from "@/components/PayloadImage";
+import { ArrowRight } from "lucide-react";
 import { forwardRef } from "react";
 
 type MotionLinkProps = LinkProps &
@@ -16,71 +21,75 @@ type MotionLinkProps = LinkProps &
   };
 
 type SlideData = {
-  title: string,
-  button: string,
-  src: Media,
-  bgImage: Media
-}
+  title: string;
+  button: string;
+  src: Media;
+  bgImage: Media;
+};
 
 interface CustomCarouselProps {
-  slides: SlideData[]
-  titleObj: TitleGroup
+  slides: SlideData[];
+  titleObj: TitleGroup;
 }
 
-export default function CustomCarousel({ slides, titleObj }: CustomCarouselProps) {
-  const [api, setApi] = React.useState<CarouselApi>()
-  const [current, setCurrent] = React.useState(0)
-  const [count, setCount] = React.useState(0)
-
+export default function CustomCarousel({
+  slides,
+  titleObj,
+}: CustomCarouselProps) {
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [current, setCurrent] = React.useState(0);
   React.useEffect(() => {
     if (!api) {
-      return
+      return;
     }
 
-    setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap())
+    setCurrent(api.selectedScrollSnap());
 
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap())
-    })
-  }, [api])
+      setCurrent(api.selectedScrollSnap());
+    });
+  }, [api]);
 
   const handlePrevious = () => {
-    api?.scrollPrev()
-  }
+    api?.scrollPrev();
+  };
 
   const handleNext = () => {
-    api?.scrollNext()
-  }
+    api?.scrollNext();
+  };
 
   const handleSlideClick = (index: number) => {
-    api?.scrollTo(index)
-  }
+    api?.scrollTo(index);
+  };
 
-  const FramerImage = motion(Image)
+  const FramerImage = motion(PayloadImage);
 
-
-  const LinkMotion = motion(
-    forwardRef<HTMLAnchorElement, MotionLinkProps>(
-      ({ href, children, className, ...rest }, ref) => (
+  const MotionLinkBase = forwardRef<HTMLAnchorElement, MotionLinkProps>(
+    function MotionLinkBase({ href, children, className, ...rest }, ref) {
+      return (
         <Link
           href={href}
-          ref={ref as any}
+          ref={ref}
           scroll={true}
           className={className}
           {...rest}
         >
           {children}
         </Link>
-      )
-    )
+      );
+    },
   );
+
+  const LinkMotion = motion(MotionLinkBase);
   return (
     <div className="w-full h-[100vh] lg:h-[100vh] mx-auto relative">
       {/* Carousel container with background */}
       <div className="w-full h-full overflow-hidden relative flex flex-col items-end justify-center">
         {/* Background image container */}
-        <Subtitle titleGroup={titleObj} className="mt-3 sm:mt-5 md:mt-8 lg:mt-10" />
+        <Subtitle
+          titleGroup={titleObj}
+          className="mt-3 sm:mt-5 md:mt-8 lg:mt-10"
+        />
         <div className="absolute inset-0 w-full h-full">
           <AnimatePresence initial={false}>
             <motion.div
@@ -91,7 +100,11 @@ export default function CustomCarousel({ slides, titleObj }: CustomCarouselProps
               exit={{ opacity: 0 }}
               transition={{ duration: 1.2 }}
             >
-              <Image media={(slides[current]).bgImage} fill className="w-full h-full object-cover" />
+              <PayloadImage
+                media={slides[current].bgImage}
+                fill
+                className="w-full h-full object-cover"
+              />
               <div className="absolute inset-0 bg-black/50" />
             </motion.div>
           </AnimatePresence>
@@ -114,7 +127,7 @@ export default function CustomCarousel({ slides, titleObj }: CustomCarouselProps
                   onClick={() => handleSlideClick(index)}
                   animate={{
                     scale: current === index ? 1 : 0.75,
-                    borderRadius: '2.5rem'
+                    borderRadius: "2.5rem",
                   }}
                   transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
                 >
@@ -140,29 +153,33 @@ export default function CustomCarousel({ slides, titleObj }: CustomCarouselProps
                     className="relative p-[4vmin]"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: current === index ? 1 : 0.5 }}
-                    transition={{ duration: 0.5, delay: current === index ? 0.2 : 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: current === index ? 0.2 : 0,
+                    }}
                   >
-                    <h2 className="text-2xl text-[23px] sm:text-[clamp(23.21px,2.26vw,43.52px)] font-bold relative uppercase ">{slide.title}</h2>
+                    <h2 className="text-2xl text-[23px] sm:text-[clamp(23.21px,2.26vw,43.52px)] font-bold relative uppercase ">
+                      {slide.title}
+                    </h2>
                     <div className="flex justify-center">
-                      <Link href={`/pe/tours?destination=${slide.title}&categories=`} className="h-full cursor-pointer" scroll>
-                        <motion.button
-                          className="mt-6 px-4 py-0 text-[13px] sm:text-[13px] lg:text-[14px] w-[150px] mx-auto space-x-5   text-white bg-black/30 font-bold  border border-2 border-white flex justify-between items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] cursor-pointer"
-                          whileHover={{
-                            scale: 1.05,
-                            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                          }}
-                          whileTap={{ scale: 0.98 }}
-                          animate={{
-                            opacity: current === index ? 1 : 0,
-                            height: current === index ? '35px' : 0
-                          }}
-                          transition={{ duration: 0.5 }}
-                        >
-
-                          {slide.button}
-                          <ArrowRight size={20} />
-                        </motion.button>
-                      </Link>
+                      <motion.span
+                        aria-hidden="true"
+                        className="mt-6 px-4 py-0 text-[13px] sm:text-[13px] lg:text-[14px] w-[150px] mx-auto space-x-5 text-white bg-black/30 font-bold border border-2 border-white flex justify-between items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
+                        whileHover={{
+                          scale: 1.05,
+                          boxShadow:
+                            "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                        }}
+                        whileTap={{ scale: 0.98 }}
+                        animate={{
+                          opacity: current === index ? 1 : 0,
+                          height: current === index ? "35px" : 0,
+                        }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        {slide.button}
+                        <ArrowRight size={20} />
+                      </motion.span>
                     </div>
                   </motion.div>
                 </LinkMotion>
@@ -209,5 +226,5 @@ export default function CustomCarousel({ slides, titleObj }: CustomCarouselProps
         </Carousel>
       </div>
     </div>
-  )
+  );
 }

@@ -1,28 +1,52 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useId } from "react"
-import { motion, AnimatePresence } from "motion/react"
-import { Subtitle } from "./Subtitle"
-import { TitleGroup } from "@/cms-types"
+import { useState, useId } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Subtitle } from "./Subtitle";
+import type { Media, TitleGroup } from "@/cms-types";
+
+import PayloadImage from "./PayloadImage";
+
+type SlideImage = Media | string | null | undefined;
 
 interface SlideData {
-  title: string
-  button: string
-  src: string
-  bgImage: string
+  title: string;
+  button: string;
+  src: SlideImage;
+  bgImage: SlideImage;
 }
 
 interface SlideProps {
-  slide: SlideData
-  index: number
-  current: number
-  handleSlideClick: (index: number) => void
+  slide: SlideData;
+  index: number;
+  current: number;
+  handleSlideClick: (index: number) => void;
 }
 
+const buildSlideMedia = (image: SlideImage, alt: string): Media => {
+  if (image && typeof image === "object") {
+    return {
+      ...image,
+      alt: image.alt ?? alt,
+    };
+  }
+
+  return {
+    id: 0,
+    alt,
+    createdAt: "",
+    updatedAt: "",
+    url: typeof image === "string" && image.trim() ? image : "/placeholder.svg",
+    width: 1200,
+    height: 1200,
+  };
+};
+
 const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
-  const { src, button, title } = slide
+  const { src, button, title } = slide;
+  const slideMedia = buildSlideMedia(src, title);
 
   const variants = {
     inactive: {
@@ -35,12 +59,12 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
       opacity: 1,
       transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
     },
-  }
+  };
 
   const contentVariants = {
     hidden: { opacity: 0, transition: { duration: 0.3 } },
     visible: { opacity: 1, transition: { duration: 0.5, delay: 0.2 } },
-  }
+  };
 
   return (
     <motion.div className="[perspective:1200px] [transform-style:preserve-3d] flex-shrink-0">
@@ -52,13 +76,13 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
         initial="inactive"
       >
         <motion.div className="absolute top-0 left-0 w-full h-full rounded-2xl overflow-hidden">
-          <motion.img
-            className="absolute inset-0 w-[120%] h-[120%] object-cover"
+          <motion.div
+            className="absolute top-0 left-0 h-[120%] w-[120%]"
             animate={{ opacity: current === index ? 1 : 0.3 }}
             transition={{ duration: 0.6 }}
-            alt={title}
-            src={src}
-          />
+          >
+            <PayloadImage media={slideMedia} fill className="object-cover" />
+          </motion.div>
           {current === index && (
             <motion.div
               className="absolute inset-0 bg-black/30"
@@ -75,13 +99,16 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
           initial="hidden"
           animate={current === index ? "visible" : "hidden"}
         >
-          <h2 className="text-lg md:text-2xl lg:text-4xl font-semibold relative">{title}</h2>
+          <h2 className="text-lg md:text-2xl lg:text-4xl font-semibold relative">
+            {title}
+          </h2>
           <div className="flex justify-center">
             <motion.button
               className="mt-6 px-4 py-2 w-fit mx-auto sm:text-sm text-black bg-white h-12 border border-transparent text-xs flex justify-center items-center rounded-2xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
               whileHover={{
                 scale: 1.05,
-                boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                boxShadow:
+                  "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
               }}
               whileTap={{ scale: 0.98 }}
             >
@@ -91,16 +118,20 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
         </motion.article>
       </motion.li>
     </motion.div>
-  )
-}
+  );
+};
 
 interface CarouselControlProps {
-  type: string
-  title: string
-  handleClick: () => void
+  type: string;
+  title: string;
+  handleClick: () => void;
 }
 
-const CarouselControl = ({ type, title, handleClick }: CarouselControlProps) => {
+const CarouselControl = ({
+  type,
+  title,
+  handleClick,
+}: CarouselControlProps) => {
   return (
     <motion.button
       className="w-12 h-12 flex items-center justify-center text-white text-3xl font-light border-none bg-transparent focus:outline-none"
@@ -111,66 +142,75 @@ const CarouselControl = ({ type, title, handleClick }: CarouselControlProps) => 
     >
       {type === "previous" ? "‹" : "›"}
     </motion.button>
-  )
-}
+  );
+};
 
 interface CarouselProps {
-  slides: SlideData[]
-  titleObj: TitleGroup
+  slides: SlideData[];
+  titleObj: TitleGroup;
 }
 
-export default function Carousel({ slides ,titleObj}: CarouselProps) {
-  const [current, setCurrent] = useState(0)
-  const id = useId()
+export default function Carousel({ slides, titleObj }: CarouselProps) {
+  const [current, setCurrent] = useState(0);
+  const id = useId();
+
+  if (!slides.length) {
+    return null;
+  }
+
+  const activeSlide = slides[current];
+  const activeBackgroundMedia = buildSlideMedia(
+    activeSlide?.bgImage,
+    activeSlide?.title ?? "Carousel background",
+  );
 
   const handlePreviousClick = () => {
-    const previous = current - 1
-    setCurrent(previous < 0 ? slides.length - 1 : previous)
-  }
+    const previous = current - 1;
+    setCurrent(previous < 0 ? slides.length - 1 : previous);
+  };
 
   const handleNextClick = () => {
-    const next = current + 1
-    setCurrent(next === slides.length ? 0 : next)
-  }
+    const next = current + 1;
+    setCurrent(next === slides.length ? 0 : next);
+  };
 
   const handleSlideClick = (index: number) => {
     if (current !== index) {
-      setCurrent(index)
+      setCurrent(index);
     }
-  }
+  };
 
   // For touch gestures
-  const [touchStart, setTouchStart] = useState<number | null>(null)
-  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
-  const minSwipeDistance = 50
+  const minSwipeDistance = 50;
 
   const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null)
-    setTouchStart(e.targetTouches[0].clientX)
-  }
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
 
   const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX)
-  }
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
 
   const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
+    if (!touchStart || !touchEnd) return;
 
-    const distance = touchStart - touchEnd
-    const isLeftSwipe = distance > minSwipeDistance
-    const isRightSwipe = distance < -minSwipeDistance
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
 
     if (isLeftSwipe) {
-      handleNextClick()
+      handleNextClick();
     } else if (isRightSwipe) {
-      handlePreviousClick()
+      handlePreviousClick();
     }
-  }
+  };
 
   return (
     <div className="w-full h-screen mx-auto relative">
-      
       {/* Carousel container with background */}
       <div
         className="w-full h-full rounded-3xl overflow-hidden relative"
@@ -181,7 +221,7 @@ export default function Carousel({ slides ,titleObj}: CarouselProps) {
       >
         {/* Background image container */}
         <div className="absolute inset-0 w-full h-full">
-        <Subtitle className="" titleGroup={titleObj}/>
+          <Subtitle className="" titleGroup={titleObj} />
           <AnimatePresence initial={false}>
             <motion.div
               key={current}
@@ -191,7 +231,12 @@ export default function Carousel({ slides ,titleObj}: CarouselProps) {
               exit={{ opacity: 0 }}
               transition={{ duration: 1.2 }}
             >
-              <img src={slides[current].bgImage || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
+              <PayloadImage
+                media={activeBackgroundMedia}
+                fill
+                className="object-cover"
+                priority
+              />
               <div className="absolute inset-0 bg-black/50" />
             </motion.div>
           </AnimatePresence>
@@ -214,15 +259,29 @@ export default function Carousel({ slides ,titleObj}: CarouselProps) {
             }}
           >
             {slides.map((slide, index) => (
-              <Slide key={index} slide={slide} index={index} current={current} handleSlideClick={handleSlideClick} />
+              <Slide
+                key={index}
+                slide={slide}
+                index={index}
+                current={current}
+                handleSlideClick={handleSlideClick}
+              />
             ))}
           </motion.ul>
         </div>
 
         {/* Navigation controls */}
         <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between w-full px-4 z-20">
-          <CarouselControl type="previous" title="Go to previous slide" handleClick={handlePreviousClick} />
-          <CarouselControl type="next" title="Go to next slide" handleClick={handleNextClick} />
+          <CarouselControl
+            type="previous"
+            title="Go to previous slide"
+            handleClick={handlePreviousClick}
+          />
+          <CarouselControl
+            type="next"
+            title="Go to next slide"
+            handleClick={handleNextClick}
+          />
         </div>
 
         {/* Slide indicators */}
@@ -243,5 +302,5 @@ export default function Carousel({ slides ,titleObj}: CarouselProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
