@@ -97,13 +97,9 @@ const getPassengerCopy = (
 };
 
 export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
-  const typing = type == "tour" ? 2 : 40;
-  const isTour = type == "tour";
-  const initialDate = useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + typing);
-    return d;
-  }, [typing]);
+  const isTour = type === "tour";
+  const today = useMemo(() => new Date(), []);
+  const initialDate = today;
 
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(initialDate);
@@ -184,10 +180,13 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
     setIsAdding(true);
 
     try {
-      const tourDate = date ? format(date, "yyyy-MM-dd") : undefined;
-      if (!tourDate) {
-        throw new Error("Missing tour date to add tour items");
+      const selectedDate = date ?? initialDate;
+
+      if (!selectedDate) {
+        throw new Error("Missing booking date to add items");
       }
+
+      const tourDate = format(selectedDate, "yyyy-MM-dd");
 
       const selectedVariants = Object.entries(quantities)
         .filter(([, qty]) => qty > 0)
@@ -497,10 +496,6 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
             />
           </PopoverContent>
         </Popover>
-
-        <div className="text-[11px] text-center">
-          Paquetes son reservados 40 dias antes
-        </div>
 
         {totalItems > 0 && (
           <div className="flex justify-between py-2 font-semibold">
