@@ -96,6 +96,17 @@ const getPassengerCopy = (
   };
 };
 
+const isGenericBookingServerError = (message: string) => {
+  const normalizedMessage = message.trim().toLowerCase();
+
+  return (
+    normalizedMessage.includes("500") ||
+    normalizedMessage.includes("internal server error") ||
+    normalizedMessage.includes("unexpected response") ||
+    normalizedMessage.includes("failed to fetch")
+  );
+};
+
 export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
   const isTour = type === "tour";
   const today = useMemo(() => new Date(), []);
@@ -360,12 +371,16 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
       setIsAddedToCart(true);
     } catch (e) {
       console.error("Error adding to cart", e);
-      const errorMessage = getMedusaErrorMessage(
+      const resolvedErrorMessage = getMedusaErrorMessage(
         e,
         isTour
           ? "No se pudo agregar el tour al carrito."
           : "No se pudo agregar el paquete al carrito.",
       );
+
+      const errorMessage = isGenericBookingServerError(resolvedErrorMessage)
+        ? "La fecha seleccionada no está disponible. Intenta con otra fecha."
+        : resolvedErrorMessage;
 
       toast.error(errorMessage, {
         position: "top-center",

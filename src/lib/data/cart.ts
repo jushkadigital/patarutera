@@ -508,7 +508,7 @@ export async function addPackagesItemsToCart({
   formId,
 }: AddPackageItemsToCartInput) {
   if (!packageDate) {
-    throw new Error("Missing tour date when adding tour items to cart");
+    throw new Error("Missing package date when adding package items to cart");
   }
 
   if (!items || items.length === 0) {
