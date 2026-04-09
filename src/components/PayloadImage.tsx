@@ -156,7 +156,9 @@ export default function PayloadImage({
   const src = normalizeUrl(selectedCandidate.url) ?? "/placeholder.svg";
   const width = selectedCandidate.width ?? media.width ?? 1200;
   const height = selectedCandidate.height ?? media.height ?? 800;
-  const pictureClassName = fill ? "relative block h-full w-full" : undefined;
+  const pictureClassName = fill
+    ? "absolute inset-0 block h-full w-full"
+    : undefined;
   const resolvedLoading = priority ? undefined : (loading ?? "lazy");
   const resolvedFetchPriority =
     fetchPriority ?? (priority ? "high" : undefined);

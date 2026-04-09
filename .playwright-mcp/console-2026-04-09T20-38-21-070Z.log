@@ -1,0 +1,66 @@
+[    2677ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    2677ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    2678ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    2678ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    2678ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    2678ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    2884ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:16383
+[    3359ms] [WARNING] motion() is deprecated. Use motion.create() instead. @ http://127.0.0.1:4000/_next/static/chunks/e65b2_motion_dist_es_5231da64._.js:17
+[    3528ms] [ERROR] Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the top-level render call using <div>.  @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:1225
+[    3562ms] [ERROR] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <PopperProvider scope={{Popper:[...]}} anchor={null} onAnchorChange={function bound dispatchSetState}>
+      <PopoverProvider scope={undefined} contentId="radix-«R9c..." triggerRef={{current:null}} open={false} ...>
+        <PopoverTrigger asChild={true}>
+          <PopoverTrigger data-slot="popover-tr..." asChild={true}>
+            <PopperAnchor asChild={true} __scopePopper={{Popper:[...]}}>
+              <Primitive.div asChild={true} ref={function}>
+                <Primitive.div.Slot ref={function}>
+                  <Primitive.div.SlotClone ref={function}>
+                    <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                      <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                        <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                          <div className="relative w..." type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <_c type="text" placeholder="Busca tu p..." value="" onChange={function onChange} ...>
+                              <input
+                                type="text"
+                                className="flex h-9 rounded-md border border-input bg-transparent py-1 transition-colo..."
+                                ref={null}
+                                placeholder="Busca tu proximo Destino"
+                                value=""
+                                onChange={function onChange}
+                                onKeyDown={function onKeyDown}
+                                onFocus={function onFocus}
+-                               style={{caret-color:"transparent"}}
+                              >
+        ...
+ @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:1225
+[    3807ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://127.0.0.1:4000/__nextjs_original-stack-frames:0
+[    3929ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://127.0.0.1:4000/__nextjs_original-stack-frames:0
+[    3947ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:4000/_next/webpack-hmr' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:14633
+[    3997ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://127.0.0.1:4000/__nextjs_original-stack-frames:0
+[   14634ms] [INFO] %c[TikTok] 
+
+We're hiring!
+Are you ready to make a change?
+Check out some of our available positions at https://careers.tiktok.com/ color: #fe2c55 @ https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/falcon/embed/embed_lib_v1.0.13.js:0
+[   17635ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/media/pxiByp8kv8JHgFVrLEj6Z1xlFd2JQEk-s.p.dd0b3887.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0
+[   17635ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/media/pxiByp8kv8JHgFVrLDz8Z1xlFd2JQEk-s.p.11d83409.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0
+[   17635ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/media/pxiByp8kv8JHgFVrLGT9Z1xlFd2JQEk-s.p.ab5dbd7e.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0
+[   17635ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/media/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk-s.p.d95035ce.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0
+[   17635ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/media/pxiEyp8kv8JHgFVrJJfecnFHGPc-s.p.c336a9d1.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0
+[   17635ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0
+[   17635ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/media/pxiByp8kv8JHgFVrLDD4Z1xlFd2JQEk-s.p.d66bbad7.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0
