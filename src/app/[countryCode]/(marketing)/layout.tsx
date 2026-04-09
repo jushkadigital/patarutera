@@ -7,6 +7,7 @@ import { retrieveCustomer } from "@lib/data/customer";
 import { retrieveCart } from "@lib/data/cart";
 import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner";
 import { ScrollToTopOnRouteChange } from "@/components/ScrollTopOnRoute";
+import { Suspense } from "react";
 
 export default async function PageLayout({
   children,
@@ -29,7 +30,9 @@ export default async function PageLayout({
       )}
       <main className="flex-grow">
         <ScrollToTopOnRouteChange />
-        <NuqsAdapter>{children}</NuqsAdapter>
+        <Suspense fallback={null}>
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </Suspense>
       </main>
       <Script src="https://www.tiktok.com/embed.js" strategy="lazyOnload" />
       <Footer destination={data.docs} />

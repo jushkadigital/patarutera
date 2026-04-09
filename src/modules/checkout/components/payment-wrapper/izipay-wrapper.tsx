@@ -7,8 +7,7 @@ import { createIzipayPayment } from "@lib/data/payment";
 import { defaultPaymentConfig, getDataOrderDynamic } from "../izipay/config";
 import { myConvertToLocale } from "@lib/util/money";
 
-const IZIPAY_SDK_URL =
-  "https://sandbox-checkout.izipay.pe/payments/v1/js/index.js";
+const IZIPAY_SDK_SCRIPT_SELECTOR = 'script[data-izipay-sdk="true"]';
 
 declare global {
   interface Window {
@@ -39,7 +38,7 @@ export const IzipayContext = createContext<{
   loading: boolean;
 } | null>(null);
 
-const useIzipaySDK = () => {
+const useIzipaySDK = (sdkUrl: string | null) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isLoadingRef = useRef(false);
@@ -49,17 +48,35 @@ const useIzipaySDK = () => {
       return;
     }
 
-    if (window.Izipay) {
+    if (!sdkUrl) {
+      setIsLoaded(false);
+      setError(null);
+      return;
+    }
+
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      IZIPAY_SDK_SCRIPT_SELECTOR,
+    );
+    const existingScriptSrc = existingScript?.src || null;
+
+    if (window.Izipay && existingScriptSrc === sdkUrl) {
       setIsLoaded(true);
       return;
+    }
+
+    if (existingScript && existingScriptSrc !== sdkUrl) {
+      existingScript.remove();
+      delete window.Izipay;
+      setIsLoaded(false);
     }
 
     isLoadingRef.current = true;
     setError(null);
 
     const script = document.createElement("script");
-    script.src = IZIPAY_SDK_URL;
+    script.src = sdkUrl;
     script.async = true;
+    script.dataset.izipaySdk = "true";
 
     script.onload = () => {
       setIsLoaded(true);
@@ -72,7 +89,7 @@ const useIzipaySDK = () => {
     };
 
     document.head.appendChild(script);
-  }, []);
+  }, [sdkUrl]);
 
   return { isLoaded, error };
 };
@@ -93,6 +110,8 @@ type IzipaySessionData = Record<string, unknown> & {
   commerceCode?: string;
   commerce_code?: string;
   clientId?: string;
+  checkoutUrl?: string;
+  checkout_url?: string;
 };
 
 const getNormalizedString = (value: unknown) => {
@@ -117,25 +136,51 @@ const resolveMerchantCode = (paymentSessionData?: Record<string, unknown>) => {
   );
 };
 
+const resolveCheckoutUrl = (paymentSessionData?: Record<string, unknown>) => {
+  if (!paymentSessionData) {
+    return null;
+  }
+
+  const sessionData = paymentSessionData as IzipaySessionData;
+
+  return (
+    getNormalizedString(sessionData.checkoutUrl) ||
+    getNormalizedString(sessionData.checkout_url)
+  );
+};
+
+const buildIzipaySdkUrl = (checkoutUrl: string) => {
+  const parsedUrl = new URL(checkoutUrl);
+
+  if (parsedUrl.pathname.endsWith("/payments/v1/js/index.js")) {
+    return parsedUrl.toString();
+  }
+
+  return `${parsedUrl.origin}/payments/v1/js/index.js`;
+};
+
 export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
   cart,
   paymentSession,
   paymentProviderId,
   children,
 }) => {
-  const { isLoaded, error: loadError } = useIzipaySDK();
+  const [paymentSessionData, setPaymentSessionData] = useState<
+    Record<string, unknown> | undefined
+  >(paymentSession?.data as Record<string, unknown> | undefined);
+  const [isSessionCreated, setIsSessionCreated] =
+    useState(!!paymentSessionData);
+
+  const checkoutUrl = resolveCheckoutUrl(paymentSessionData);
+  const sdkUrl = checkoutUrl ? buildIzipaySdkUrl(checkoutUrl) : null;
+
+  const { isLoaded, error: loadError } = useIzipaySDK(sdkUrl);
   const [isInitialized, setIsInitialized] = useState(false);
   const [sdkError, setSdkError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [izipayConfig, setIzipayConfig] = useState<any>(null);
-
-  const [paymentSessionData, setPaymentSessionData] = useState<
-    Record<string, unknown> | undefined
-  >(paymentSession?.data as Record<string, unknown> | undefined);
-  const [isSessionCreated, setIsSessionCreated] =
-    useState(!!paymentSessionData);
 
   const isInitializingRef = useRef(false);
   const hasInitializedRef = useRef(false);
@@ -240,6 +285,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
 
         const publicKey = rawPublicKey || rawPublicKeySnake;
         const merchantCode = resolveMerchantCode(paymentSessionData);
+        const resolvedCheckoutUrl = resolveCheckoutUrl(paymentSessionData);
 
         if (!publicKey || !amount) {
           throw new Error("Missing payment session data");
@@ -247,6 +293,10 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
 
         if (!merchantCode) {
           throw new Error("Missing merchant code in payment session data");
+        }
+
+        if (!resolvedCheckoutUrl || !sdkUrl) {
+          throw new Error("Missing checkout URL in payment session data");
         }
 
         const { transactionId, orderNumber, currentTimeUnix } =
@@ -269,6 +319,8 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
           paymentData,
           transactionId,
           merchantCodeSource: "payment-session",
+          checkoutUrl: resolvedCheckoutUrl,
+          sdkUrl,
         });
         const data = await createIzipayPayment(paymentData, transactionId);
         console.log("createIzipayPayment response:", data);
@@ -418,7 +470,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
     };
 
     initializePayment();
-  }, [isLoaded, paymentSessionData, cart, isSessionCreated]);
+  }, [isLoaded, paymentSessionData, cart, isSessionCreated, sdkUrl]);
 
   return (
     <IzipayContext.Provider

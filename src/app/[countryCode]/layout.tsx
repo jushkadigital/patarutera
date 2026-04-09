@@ -3,6 +3,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
+import { Suspense } from "react";
 import PageViewTracker from "@/components/analytics/page-view-tracker";
 import CartItemAddedToastBridge from "@/components/cart-item-added-toast-bridge";
 import "../globals.css";
@@ -32,7 +33,9 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       <body className={`${poppins.className} min-h-screen flex flex-col`}>
         <GoogleAnalytics gaId={GOOGLE_TAG_ID} />
         <CartItemAddedToastBridge />
-        <PageViewTracker />
+        <Suspense fallback={null}>
+          <PageViewTracker />
+        </Suspense>
         <Script
           id="fb-pixel-script"
           strategy="afterInteractive"
