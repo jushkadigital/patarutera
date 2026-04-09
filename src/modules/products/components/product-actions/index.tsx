@@ -1,5 +1,6 @@
 "use client";
 
+import { useCountryCode } from "@/lib/context/country-code-context";
 import { addMultipleToCart } from "@lib/data/cart";
 import { trackAddToCart } from "@lib/analytics";
 import { useIntersection } from "@lib/hooks/use-in-view";
@@ -7,7 +8,6 @@ import { getMedusaErrorMessage } from "@lib/util/get-medusa-error-message";
 import { HttpTypes } from "@medusajs/types";
 import { Button, toast } from "@medusajs/ui";
 import Divider from "@modules/common/components/divider";
-import { useParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import { convertToLocale } from "@lib/util/money";
 
@@ -22,7 +22,7 @@ export default function ProductActions({
   region, // Necesitamos region para formatear el precio
   disabled,
 }: ProductActionsProps) {
-  const countryCode = useParams().countryCode as string;
+  const countryCode = useCountryCode();
   const [isAdding, setIsAdding] = useState(false);
 
   // 1. ESTADO: Objeto para manejar cantidades por ID de variante

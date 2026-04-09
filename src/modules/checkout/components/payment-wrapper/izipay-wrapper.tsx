@@ -196,6 +196,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [izipayConfig, setIzipayConfig] = useState<any>(null);
 
+  const isPreparingPaymentRef = useRef(false);
   const isInitializingRef = useRef(false);
   const hasInitializedRef = useRef(false);
 
@@ -251,28 +252,25 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
     createSession();
   }, [cart, providerId, isSessionCreated]);
 
-  // Main initialization effect
   useEffect(() => {
-    console.log("IzipayWrapper Effect running:", {
+    console.log("IzipayWrapper prepare effect:", {
       isSessionCreated,
       isLoaded,
       paymentSessionData,
+      hasSessionToken: Boolean(sessionToken),
+      hasConfig: Boolean(izipayConfig),
+      isPreparingPaymentRef: isPreparingPaymentRef.current,
       isInitializingRef: isInitializingRef.current,
       hasInitializedRef: hasInitializedRef.current,
     });
+
     if (!isSessionCreated) {
       setIsInitialized(false);
       setSdkError(null);
+      setSessionToken(null);
+      setIzipayConfig(null);
       hasInitializedRef.current = false;
       setIzipayConfig(null);
-      return;
-    }
-
-    if (!isLoaded) {
-      return;
-    }
-
-    if (isInitializingRef.current || hasInitializedRef.current) {
       return;
     }
 
@@ -280,14 +278,22 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
       return;
     }
 
-    const initializePayment = async () => {
-      isInitializingRef.current = true;
+    if (sessionToken && izipayConfig) {
+      return;
+    }
+
+    if (isPreparingPaymentRef.current) {
+      return;
+    }
+
+    const preparePayment = async () => {
+      isPreparingPaymentRef.current = true;
       setLoading(true);
       setSdkError(null);
 
       try {
         console.log(
-          "Starting iZipay initialization. PaymentSessionData:",
+          "Preparing iZipay token and config. PaymentSessionData:",
           paymentSessionData,
         );
 
@@ -457,20 +463,10 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
           },
         };
 
-        const Izipay = window.Izipay;
-
-        if (!Izipay) {
-          throw new Error("Izipay SDK not loaded");
-        }
-
         console.log("Setting Izipay config...");
         setIzipayConfig(iziConfig.config);
-
-        setIsInitialized(true);
-        hasInitializedRef.current = true;
-        console.log("iZipay initialization completed successfully");
       } catch (error: unknown) {
-        console.error("Failed to initialize iZipay (catch block):", error);
+        console.error("Failed to prepare iZipay (catch block):", error);
         setSdkError(
           error instanceof Error
             ? error.message
@@ -479,12 +475,43 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
         setIsInitialized(false);
       } finally {
         setLoading(false);
-        isInitializingRef.current = false;
+        isPreparingPaymentRef.current = false;
       }
     };
 
-    initializePayment();
-  }, [isLoaded, paymentSessionData, cart, isSessionCreated, sdkUrl]);
+    preparePayment();
+  }, [
+    isLoaded,
+    paymentSessionData,
+    cart,
+    isSessionCreated,
+    sdkUrl,
+    sessionToken,
+    izipayConfig,
+  ]);
+
+  useEffect(() => {
+    console.log("IzipayWrapper ready effect:", {
+      isLoaded,
+      hasSessionToken: Boolean(sessionToken),
+      hasConfig: Boolean(izipayConfig),
+      hasInitializedRef: hasInitializedRef.current,
+    });
+
+    if (!isLoaded || !sessionToken || !izipayConfig) {
+      return;
+    }
+
+    if (isInitializingRef.current || hasInitializedRef.current) {
+      return;
+    }
+
+    isInitializingRef.current = true;
+    setIsInitialized(true);
+    hasInitializedRef.current = true;
+    isInitializingRef.current = false;
+    console.log("iZipay initialization completed successfully");
+  }, [isLoaded, sessionToken, izipayConfig]);
 
   return (
     <IzipayContext.Provider

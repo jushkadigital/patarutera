@@ -2,11 +2,11 @@
 
 import { clx } from "@medusajs/ui";
 import { ArrowRightOnRectangle } from "@medusajs/icons";
-import { useParams, usePathname } from "next/navigation";
+import { useCountryCode } from "@/lib/context/country-code-context";
+import { usePathname } from "next/navigation";
 
 import ChevronDown from "@modules/common/icons/chevron-down";
 import User from "@modules/common/icons/user";
-import MapPin from "@modules/common/icons/map-pin";
 import Package from "@modules/common/icons/package";
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
 import { HttpTypes } from "@medusajs/types";
@@ -18,7 +18,7 @@ const AccountNav = ({
   customer: HttpTypes.StoreCustomer | null;
 }) => {
   const route = usePathname();
-  const { countryCode } = useParams() as { countryCode: string };
+  const countryCode = useCountryCode();
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: `/${countryCode}/account` });
@@ -165,7 +165,7 @@ const AccountNavLink = ({
   children,
   "data-testid": dataTestId,
 }: AccountNavLinkProps) => {
-  const { countryCode }: { countryCode: string } = useParams();
+  const countryCode = useCountryCode();
 
   const active = route.split(countryCode)[1] === href;
   return (

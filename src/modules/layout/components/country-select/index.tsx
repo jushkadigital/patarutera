@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Listbox,
@@ -6,61 +6,68 @@ import {
   ListboxOption,
   ListboxOptions,
   Transition,
-} from "@headlessui/react"
-import { Fragment, useEffect, useMemo, useState } from "react"
-import ReactCountryFlag from "react-country-flag"
+} from "@headlessui/react";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import ReactCountryFlag from "react-country-flag";
+import { useCountryCode } from "@/lib/context/country-code-context";
 
-import { StateType } from "@lib/hooks/use-toggle-state"
-import { useParams, usePathname } from "next/navigation"
-import { updateRegion } from "@lib/data/cart"
-import { HttpTypes } from "@medusajs/types"
+import { StateType } from "@lib/hooks/use-toggle-state";
+import { usePathname } from "next/navigation";
+import { updateRegion } from "@lib/data/cart";
+import { HttpTypes } from "@medusajs/types";
 
 type CountryOption = {
-  country: string
-  region: string
-  label: string
-}
+  country: string;
+  region: string;
+  label: string;
+};
 
 type CountrySelectProps = {
-  toggleState: StateType
-  regions: HttpTypes.StoreRegion[]
-}
+  toggleState: StateType;
+  regions: HttpTypes.StoreRegion[];
+};
 
 const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
-  const [current, setCurrent] = useState<
-    | { country: string | undefined; region: string; label: string | undefined }
-    | undefined
-  >(undefined)
+  const [current, setCurrent] = useState<CountryOption | undefined>(undefined);
 
-  const { countryCode } = useParams()
-  const currentPath = usePathname().split(`/${countryCode}`)[1]
+  const countryCode = useCountryCode();
+  const currentPath = usePathname().split(`/${countryCode}`)[1];
 
-  const { state, close } = toggleState
+  const { state, close } = toggleState;
 
-  const options = useMemo(() => {
+  const options = useMemo<CountryOption[]>(() => {
     return regions
-      ?.map((r) => {
-        return r.countries?.map((c) => ({
-          country: c.iso_2,
-          region: r.id,
-          label: c.display_name,
-        }))
+      .flatMap((region) => {
+        return (region.countries ?? []).flatMap((country) => {
+          if (!country.iso_2 || !country.display_name) {
+            return [];
+          }
+
+          return [
+            {
+              country: country.iso_2,
+              region: region.id,
+              label: country.display_name,
+            },
+          ];
+        });
       })
-      .flat()
-      .sort((a, b) => (a?.label ?? "").localeCompare(b?.label ?? ""))
-  }, [regions])
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [regions]);
 
   useEffect(() => {
     if (countryCode) {
-      const option = options?.find((o) => o?.country === countryCode)
-      setCurrent(option)
+      const option = options.find(
+        (optionItem) => optionItem.country === countryCode,
+      );
+      setCurrent(option);
     }
-  }, [options, countryCode])
+  }, [options, countryCode]);
 
   const handleChange = (option: CountryOption) => {
-    updateRegion(option.country, currentPath)
-    close()
-  }
+    updateRegion(option.country, currentPath);
+    close();
+  };
 
   return (
     <div>
@@ -69,7 +76,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
         onChange={handleChange}
         defaultValue={
           countryCode
-            ? options?.find((o) => o?.country === countryCode)
+            ? options.find((optionItem) => optionItem.country === countryCode)
             : undefined
         }
       >
@@ -78,7 +85,6 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
             <span>Shipping to:</span>
             {current && (
               <span className="txt-compact-small flex items-center gap-x-2">
-                {/* @ts-ignore */}
                 <ReactCountryFlag
                   svg
                   style={{
@@ -111,7 +117,6 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
                     value={o}
                     className="py-2 hover:bg-gray-200 px-3 cursor-pointer flex items-center gap-x-2"
                   >
-                    {/* @ts-ignore */}
                     <ReactCountryFlag
                       svg
                       style={{
@@ -122,14 +127,14 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
                     />{" "}
                     {o?.label}
                   </ListboxOption>
-                )
+                );
               })}
             </ListboxOptions>
           </Transition>
         </div>
       </Listbox>
     </div>
-  )
-}
+  );
+};
 
-export default CountrySelect
+export default CountrySelect;
