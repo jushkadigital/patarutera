@@ -43,6 +43,15 @@ const nextConfig: NextConfig = {
     "192.168.128.128",
     "192.168.128.128:4000",
   ],
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/pe',
+        permanent: true, // Returns 308; set false for 307
+      },
+    ];
+  },
 };
 
 export default nextConfig;
