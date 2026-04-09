@@ -1,4 +1,5 @@
 import React from "react";
+import type { ImageProps } from "next/image";
 
 import type { Media } from "@/cms-types";
 
@@ -9,6 +10,9 @@ interface BannerProps {
   backgroundMedia?: Media | null;
   className?: string;
   alt: string;
+  priority?: boolean;
+  fetchPriority?: ImageProps["fetchPriority"];
+  loading?: ImageProps["loading"];
 }
 
 const fallbackMedia: Media = {
@@ -26,6 +30,9 @@ export const BannerCarousel: React.FC<BannerProps> = ({
   backgroundMedia,
   alt,
   className = "",
+  priority,
+  fetchPriority,
+  loading,
 }) => {
   const heroMedia = backgroundMedia
     ? {
@@ -45,7 +52,9 @@ export const BannerCarousel: React.FC<BannerProps> = ({
         media={heroMedia}
         fill
         className="object-cover object-center absolute inset-0 -z-20"
-        priority
+        priority={priority}
+        fetchPriority={fetchPriority}
+        loading={loading}
       />
       <div className="absolute inset-0 -z-10 bg-black/40" />
 

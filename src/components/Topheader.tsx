@@ -38,13 +38,13 @@ export const TopHeader = ({
     try {
       await openPopup({ provider: "keycloak" });
       window.location.reload();
-    } catch { }
+    } catch {}
   };
 
   return (
     <div className={cn(isHome ? "h-17 overflow-visible " : "bg-[#2970B7]")}>
       <div
-        className={`flex justify-between py-3 px-[clamp(21px,7.7vw,44px)]  md:px-[clamp(44px,5.7vw,110px)] items-center`}
+        className={`flex min-h-[76px] justify-between py-3 px-[clamp(21px,7.7vw,44px)] md:min-h-[72px] md:px-[clamp(44px,5.7vw,110px)] items-center`}
       >
         <div className="flex flex-row flex-wrap justify-center items-center gap-x-2 md:gap-x-4 lg:gap-x-5 text-[11px]  sm:text-xs lg:text-md text-white">
           <Mail size={"icon"} className="size-4" color="#fff" />

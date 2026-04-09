@@ -1,0 +1,587 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e7]
+          - text: ventas@patarutera.pe
+          - generic [ref=e11]:
+            - link [ref=e12] [cursor=pointer]:
+              - /url: https://www.facebook.com/PataRutera
+              - img [ref=e13]
+            - link [ref=e15] [cursor=pointer]:
+              - /url: https://www.instagram.com/patarutera/
+              - img [ref=e16]
+            - link [ref=e20] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@patarutera
+              - img [ref=e21]
+        - generic [ref=e23]:
+          - img
+          - button [ref=e113]:
+            - img
+          - button [ref=e26]:
+            - img
+          - link "( 0 )" [ref=e28] [cursor=pointer]:
+            - /url: /pe/cart
+            - img [ref=e29]
+            - text: (
+            - generic [ref=e33]: "0"
+            - text: )
+      - generic [ref=e34]:
+        - link "Logo" [ref=e35] [cursor=pointer]:
+          - /url: /pe
+          - img "Logo" [ref=e36]
+        - img [ref=e37]
+  - main [ref=e114]:
+    - generic [ref=e115]:
+      - generic [ref=e116]:
+        - region [ref=e117]:
+          - generic [ref=e119]:
+            - group [ref=e120]:
+              - generic [ref=e121]:
+                - img "Cusco Carou" [ref=e123]
+                - heading "RUTEA Cusco" [level=1] [ref=e126]:
+                  - text: RUTEA
+                  - text: Cusco
+            - group [ref=e127]:
+              - generic [ref=e128]:
+                - img "Ica frame" [ref=e130]
+                - heading "RUTEA Ica" [level=1] [ref=e133]:
+                  - text: RUTEA
+                  - text: Ica
+            - group [ref=e134]:
+              - generic [ref=e135]:
+                - img "Lima" [ref=e137]
+                - heading "RUTEA Lima" [level=1] [ref=e140]:
+                  - text: RUTEA
+                  - text: Lima
+            - group [ref=e141]:
+              - generic [ref=e142]:
+                - img "Puno frame" [ref=e144]
+                - heading "RUTEA Puno" [level=1] [ref=e147]:
+                  - text: RUTEA
+                  - text: Puno
+            - group [ref=e148]:
+              - generic [ref=e149]:
+                - img "Ancash frame" [ref=e151]
+                - heading "RUTEA Ancash" [level=1] [ref=e154]:
+                  - text: RUTEA
+                  - text: Ancash
+            - group [ref=e155]:
+              - generic [ref=e156]:
+                - img "Arequipa frame" [ref=e158]
+                - heading "RUTEA Arequipa" [level=1] [ref=e161]:
+                  - text: RUTEA
+                  - text: Arequipa
+          - button "‹" [ref=e162]
+          - button "›" [ref=e163]
+        - generic [ref=e166]:
+          - textbox "Busca tu proximo Destino" [ref=e171]
+          - button "Buscar" [ref=e172]:
+            - generic [ref=e173]: Buscar
+            - img
+      - generic [ref=e179]:
+        - generic [ref=e181]:
+          - heading "Ofertas del Mes" [level=1] [ref=e184]
+          - generic [ref=e189]:
+            - link "VALLE VIP OFERTA CULTURAL VALLE SAGRADO VIP S/ 115 por persona Ver oferta" [ref=e193] [cursor=pointer]:
+              - /url: /pe/tours/valle-sagrado-vip
+              - img "VALLE VIP OFERTA" [ref=e195]
+              - generic [ref=e196]:
+                - generic [ref=e197]:
+                  - generic [ref=e198]: CULTURAL
+                  - generic [ref=e199]: VALLE SAGRADO VIP
+                - generic [ref=e209]:
+                  - generic [ref=e210]: S/
+                  - generic [ref=e211]:
+                    - generic [ref=e212]: "115"
+                    - generic [ref=e213]: por persona
+                - generic [ref=e215]: Ver oferta
+            - link "Ruta Misterio oferta Fantástico Ruta Misterio 4 en 1 S/ 42 por persona Ver oferta" [ref=e219] [cursor=pointer]:
+              - /url: /pe/tours/ruta-misterio-4-en-1
+              - img "Ruta Misterio oferta" [ref=e221]
+              - generic [ref=e222]:
+                - generic [ref=e223]:
+                  - generic [ref=e224]: Fantástico
+                  - generic [ref=e225]: Ruta Misterio 4 en 1
+                - generic [ref=e235]:
+                  - generic [ref=e236]: S/
+                  - generic [ref=e237]:
+                    - generic [ref=e238]: "42"
+                    - generic [ref=e239]: por persona
+                - generic [ref=e241]: Ver oferta
+            - link "CITY PORTADA Cultural City Tour Cusco S/ 30 por persona Ver oferta" [ref=e245] [cursor=pointer]:
+              - /url: /pe/tours/4-ruinas-con-qoricancha-city-tour-cusco-
+              - img "CITY PORTADA" [ref=e247]
+              - generic [ref=e248]:
+                - generic [ref=e249]:
+                  - generic [ref=e250]: Cultural
+                  - generic [ref=e251]: City Tour Cusco
+                - generic [ref=e261]:
+                  - generic [ref=e262]: S/
+                  - generic [ref=e263]:
+                    - generic [ref=e264]: "30"
+                    - generic [ref=e265]: por persona
+                - generic [ref=e267]: Ver oferta
+        - generic [ref=e269]:
+          - heading "Tours" [level=1] [ref=e272]
+          - generic [ref=e274]:
+            - generic [ref=e275]:
+              - link "Puno" [ref=e276] [cursor=pointer]:
+                - /url: /pe/tours/tour-ruta-del-sol-
+                - generic [ref=e280]: Puno
+              - generic [ref=e284]:
+                - link "TOUR RUTA DEL SOL" [ref=e285] [cursor=pointer]:
+                  - /url: /pe/tours/tour-ruta-del-sol-
+                  - heading "TOUR RUTA DEL SOL" [level=2] [ref=e287]
+                - paragraph [ref=e290]: Un viaje que conecta Cusco y Puno, descubriendo templos incas, arte colonial y paisajes andinos únicos.
+                - generic [ref=e291]:
+                  - generic [ref=e292]:
+                    - paragraph [ref=e293]: Desde
+                    - generic [ref=e295]: S/. 280
+                    - paragraph [ref=e296]: Por persona
+                  - generic [ref=e297]:
+                    - generic [ref=e298]:
+                      - img "icon" [ref=e300]
+                      - generic [ref=e301]: Hasta 18
+                    - generic [ref=e302]:
+                      - img "icon" [ref=e304]
+                      - generic [ref=e305]: Facil
+                - link "Ver Detalles" [ref=e308] [cursor=pointer]:
+                  - /url: /pe/tours/tour-ruta-del-sol-
+                  - button "Ver Detalles" [ref=e309]
+            - generic [ref=e310]:
+              - link "Puno" [ref=e311] [cursor=pointer]:
+                - /url: /pe/tours/uros-amantani--full-day-
+                - generic [ref=e315]: Puno
+              - generic [ref=e319]:
+                - link "UROS AMANTANI FULL DAY" [ref=e320] [cursor=pointer]:
+                  - /url: /pe/tours/uros-amantani--full-day-
+                  - heading "UROS AMANTANI FULL DAY" [level=2] [ref=e322]
+                - paragraph [ref=e325]: Descubre el Lago Titicaca en las islas de Uros y Amantaní, donde tradición ancestral y paisajes únicos crean una experiencia inolvidable.
+                - generic [ref=e326]:
+                  - generic [ref=e327]:
+                    - paragraph [ref=e328]: Desde
+                    - generic [ref=e330]: S/. 117
+                    - paragraph [ref=e331]: Por persona
+                  - generic [ref=e332]:
+                    - generic [ref=e333]:
+                      - img "icon" [ref=e335]
+                      - generic [ref=e336]: Hasta 18
+                    - generic [ref=e337]:
+                      - img "icon" [ref=e339]
+                      - generic [ref=e340]: Facil
+                - link "Ver Detalles" [ref=e343] [cursor=pointer]:
+                  - /url: /pe/tours/uros-amantani--full-day-
+                  - button "Ver Detalles" [ref=e344]
+            - generic [ref=e345]:
+              - link "Puno" [ref=e346] [cursor=pointer]:
+                - /url: /pe/tours/uros-taquile-full-day
+                - generic [ref=e350]: Puno
+              - generic [ref=e354]:
+                - link "UROS TAQUILE FULL DAY" [ref=e355] [cursor=pointer]:
+                  - /url: /pe/tours/uros-taquile-full-day
+                  - heading "UROS TAQUILE FULL DAY" [level=2] [ref=e357]
+                - generic [ref=e359]:
+                  - paragraph [ref=e360]: Explora la magia del Lago Titicaca visitando Uros y Taquile, donde tradición ancestral y paisajes únicos crean una experiencia inolvidable.
+                  - paragraph [ref=e361]
+                - generic [ref=e362]:
+                  - generic [ref=e363]:
+                    - paragraph [ref=e364]: Desde
+                    - generic [ref=e366]: S/. 117
+                    - paragraph [ref=e367]: Por persona
+                  - generic [ref=e368]:
+                    - generic [ref=e369]:
+                      - img "icon" [ref=e371]
+                      - generic [ref=e372]: Hasta 18
+                    - generic [ref=e373]:
+                      - img "icon" [ref=e375]
+                      - generic [ref=e376]: Facil
+                - link "Ver Detalles" [ref=e379] [cursor=pointer]:
+                  - /url: /pe/tours/uros-taquile-full-day
+                  - button "Ver Detalles" [ref=e380]
+            - generic [ref=e381]:
+              - link "Puno" [ref=e382] [cursor=pointer]:
+                - /url: /pe/tours/ruta-aymara-
+                - generic [ref=e386]: Puno
+              - generic [ref=e390]:
+                - link "RUTA AYMARA" [ref=e391] [cursor=pointer]:
+                  - /url: /pe/tours/ruta-aymara-
+                  - heading "RUTA AYMARA" [level=2] [ref=e393]
+                - paragraph [ref=e396]: Vive la esencia ancestral del altiplano en la Ruta Aymara, tradición y paisajes que inspiran.
+                - generic [ref=e397]:
+                  - generic [ref=e398]:
+                    - paragraph [ref=e399]: Desde
+                    - generic [ref=e401]: S/. 190
+                    - paragraph [ref=e402]: Por persona
+                  - generic [ref=e403]:
+                    - generic [ref=e404]:
+                      - img "icon" [ref=e406]
+                      - generic [ref=e407]: Hasta 18
+                    - generic [ref=e408]:
+                      - img "icon" [ref=e410]
+                      - generic [ref=e411]: Facil
+                - link "Ver Detalles" [ref=e414] [cursor=pointer]:
+                  - /url: /pe/tours/ruta-aymara-
+                  - button "Ver Detalles" [ref=e415]
+            - generic [ref=e416]:
+              - link "Puno" [ref=e417] [cursor=pointer]:
+                - /url: /pe/tours/uros-taquile-2d1n-
+                - generic [ref=e421]: Puno
+              - generic [ref=e425]:
+                - link "UROS TAQUILE 2D/1N" [ref=e426] [cursor=pointer]:
+                  - /url: /pe/tours/uros-taquile-2d1n-
+                  - heading "UROS TAQUILE 2D/1N" [level=2] [ref=e428]
+                - paragraph [ref=e431]: Dos días de cultura y paisajes únicos en el Lago Titicaca.
+                - generic [ref=e432]:
+                  - generic [ref=e433]:
+                    - paragraph [ref=e434]: Desde
+                    - generic [ref=e436]: S/. 275
+                    - paragraph [ref=e437]: Por persona
+                  - generic [ref=e438]:
+                    - generic [ref=e439]:
+                      - img "icon" [ref=e441]
+                      - generic [ref=e442]: Hasta 18
+                    - generic [ref=e443]:
+                      - img "icon" [ref=e445]
+                      - generic [ref=e446]: Facil
+                - link "Ver Detalles" [ref=e449] [cursor=pointer]:
+                  - /url: /pe/tours/uros-taquile-2d1n-
+                  - button "Ver Detalles" [ref=e450]
+            - generic [ref=e451]:
+              - link "Puno" [ref=e452] [cursor=pointer]:
+                - /url: /pe/tours/uros-amantani-taquile-2d1n
+                - generic [ref=e456]: Puno
+              - generic [ref=e460]:
+                - link "UROS AMANTANI TAQUILE 2D/1N" [ref=e461] [cursor=pointer]:
+                  - /url: /pe/tours/uros-amantani-taquile-2d1n
+                  - heading "UROS AMANTANI TAQUILE 2D/1N" [level=2] [ref=e463]
+                - paragraph [ref=e466]: Explora tres islas únicas del Lago Titicaca, entre tradición, paisajes y hospitalidad inolvidable.
+                - generic [ref=e467]:
+                  - generic [ref=e468]:
+                    - paragraph [ref=e469]: Desde
+                    - generic [ref=e471]: S/. 199
+                    - paragraph [ref=e472]: Por persona
+                  - generic [ref=e473]:
+                    - generic [ref=e474]:
+                      - img "icon" [ref=e476]
+                      - generic [ref=e477]: Hasta 18
+                    - generic [ref=e478]:
+                      - img "icon" [ref=e480]
+                      - generic [ref=e481]: Facil
+                - link "Ver Detalles" [ref=e484] [cursor=pointer]:
+                  - /url: /pe/tours/uros-amantani-taquile-2d1n
+                  - button "Ver Detalles" [ref=e485]
+        - generic [ref=e489]:
+          - heading "Destinos" [level=1] [ref=e492]
+          - img "Cusco fondo" [ref=e497]
+          - region [ref=e499]:
+            - generic [ref=e501]:
+              - group [ref=e502]:
+                - link "Cuzco item Cusco" [ref=e503] [cursor=pointer]:
+                  - /url: /pe/tours?destination=Cusco&categories=
+                  - img "Cuzco item" [ref=e506]
+                  - generic [ref=e508]:
+                    - heading "Cusco" [level=2] [ref=e509]
+                    - generic [ref=e511]:
+                      - text: Ver Destino
+                      - img [ref=e512]
+              - group [ref=e514]:
+                - link "Ica item Ica" [ref=e515] [cursor=pointer]:
+                  - /url: /pe/tours?destination=Ica&categories=
+                  - img "Ica item" [ref=e518]
+                  - generic [ref=e519]:
+                    - heading "Ica" [level=2] [ref=e520]
+                    - generic [ref=e522]:
+                      - text: Ver Destino
+                      - img [ref=e523]
+              - group [ref=e525]:
+                - link "Lima Lima" [ref=e526] [cursor=pointer]:
+                  - /url: /pe/tours?destination=Lima&categories=
+                  - img "Lima" [ref=e529]
+                  - generic [ref=e530]:
+                    - heading "Lima" [level=2] [ref=e531]
+                    - generic [ref=e533]:
+                      - text: Ver Destino
+                      - img [ref=e534]
+              - group [ref=e536]:
+                - link "Ica item Puno" [ref=e537] [cursor=pointer]:
+                  - /url: /pe/tours?destination=Puno&categories=
+                  - img "Ica item" [ref=e540]
+                  - generic [ref=e541]:
+                    - heading "Puno" [level=2] [ref=e542]
+                    - generic [ref=e544]:
+                      - text: Ver Destino
+                      - img [ref=e545]
+              - group [ref=e547]:
+                - link "Anchash Ancash" [ref=e548] [cursor=pointer]:
+                  - /url: /pe/tours?destination=Ancash&categories=
+                  - img "Anchash" [ref=e551]
+                  - generic [ref=e552]:
+                    - heading "Ancash" [level=2] [ref=e553]
+                    - generic [ref=e555]:
+                      - text: Ver Destino
+                      - img [ref=e556]
+              - group [ref=e558]:
+                - link "arequipa Arequipa" [ref=e559] [cursor=pointer]:
+                  - /url: /pe/tours?destination=Arequipa&categories=
+                  - img "arequipa" [ref=e562]
+                  - generic [ref=e563]:
+                    - heading "Arequipa" [level=2] [ref=e564]
+                    - generic [ref=e566]:
+                      - text: Ver Destino
+                      - img [ref=e567]
+            - button "‹" [ref=e569]
+            - button "›" [ref=e570]
+            - generic [ref=e571]:
+              - button [ref=e572]
+              - button [ref=e573]
+              - button [ref=e574]
+              - button [ref=e575]
+              - button [ref=e576]
+              - button [ref=e577]
+        - generic [ref=e579]:
+          - heading "Tours Tradicionales" [level=1] [ref=e582]
+          - generic [ref=e584]:
+            - generic [ref=e585]:
+              - link "Cusco" [ref=e586] [cursor=pointer]:
+                - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                - generic [ref=e590]: Cusco
+              - generic [ref=e594]:
+                - link "Tour a la Montaña de Colores y Valle Rojo en Cuatrimotos" [ref=e595] [cursor=pointer]:
+                  - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                  - heading "Tour a la Montaña de Colores y Valle Rojo en Cuatrimotos" [level=2] [ref=e597]
+                - paragraph [ref=e600]: Aventura en cuatrimoto por Montaña de Colores y Valle Rojo, pura emoción inolvidable.
+                - generic [ref=e601]:
+                  - generic [ref=e602]:
+                    - paragraph [ref=e603]: Desde
+                    - generic [ref=e605]: S/. 299
+                    - paragraph [ref=e606]: Por persona
+                  - generic [ref=e607]:
+                    - generic [ref=e608]:
+                      - img "icon" [ref=e610]
+                      - generic [ref=e611]: Hasta 18
+                    - generic [ref=e612]:
+                      - img "icon" [ref=e614]
+                      - generic [ref=e615]: Facil
+                - link "Ver Detalles" [ref=e618] [cursor=pointer]:
+                  - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                  - button "Ver Detalles" [ref=e619]
+            - generic [ref=e620]:
+              - link "Cusco" [ref=e621] [cursor=pointer]:
+                - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                - generic [ref=e625]: Cusco
+              - generic [ref=e629]:
+                - link "Montaña Pallay Poncho Full Day" [ref=e630] [cursor=pointer]:
+                  - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                  - heading "Montaña Pallay Poncho Full Day" [level=2] [ref=e632]
+                - paragraph [ref=e635]: Aventura andina entre montañas coloridas y paisajes únicos en la naturaleza cusqueña.
+                - generic [ref=e636]:
+                  - generic [ref=e637]:
+                    - paragraph [ref=e638]: Desde
+                    - generic [ref=e640]: S/. 182
+                    - paragraph [ref=e641]: Por persona
+                  - generic [ref=e642]:
+                    - generic [ref=e643]:
+                      - img "icon" [ref=e645]
+                      - generic [ref=e646]: Hasta 18
+                    - generic [ref=e647]:
+                      - img "icon" [ref=e649]
+                      - generic [ref=e650]: Facil
+                - link "Ver Detalles" [ref=e653] [cursor=pointer]:
+                  - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                  - button "Ver Detalles" [ref=e654]
+            - generic [ref=e655]:
+              - link "Cusco pLaZa dE aRmAs cUsCo" [ref=e656] [cursor=pointer]:
+                - /url: /pe/tours/tour-valle-sur
+                - generic [ref=e657]:
+                  - generic [ref=e660]: Cusco
+                  - img "pLaZa dE aRmAs cUsCo" [ref=e662]
+              - generic [ref=e665]:
+                - link "Tour Valle Sur" [ref=e666] [cursor=pointer]:
+                  - /url: /pe/tours/tour-valle-sur
+                  - heading "Tour Valle Sur" [level=2] [ref=e668]
+                - paragraph [ref=e671]: Viajar es descubrir, conectar y hacer recuerdo cada momento que toca el corazón.
+                - generic [ref=e672]:
+                  - generic [ref=e673]:
+                    - paragraph [ref=e674]: Desde
+                    - generic [ref=e676]: S/. 45
+                    - paragraph [ref=e677]: Por persona
+                  - generic [ref=e678]:
+                    - generic [ref=e679]:
+                      - img "icon" [ref=e681]
+                      - generic [ref=e682]: Hasta 18
+                    - generic [ref=e683]:
+                      - img "icon" [ref=e685]
+                      - generic [ref=e686]: Facil
+                - link "Ver Detalles" [ref=e689] [cursor=pointer]:
+                  - /url: /pe/tours/tour-valle-sur
+                  - button "Ver Detalles" [ref=e690]
+        - generic [ref=e692]:
+          - heading "Tours No Tradicionales" [level=1] [ref=e695]
+          - generic [ref=e697]:
+            - generic [ref=e698]:
+              - link "Cusco" [ref=e699] [cursor=pointer]:
+                - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                - generic [ref=e703]: Cusco
+              - generic [ref=e707]:
+                - link "Tour a la Montaña de Colores y Valle Rojo en Cuatrimotos" [ref=e708] [cursor=pointer]:
+                  - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                  - heading "Tour a la Montaña de Colores y Valle Rojo en Cuatrimotos" [level=2] [ref=e710]
+                - paragraph [ref=e713]: Aventura en cuatrimoto por Montaña de Colores y Valle Rojo, pura emoción inolvidable.
+                - generic [ref=e714]:
+                  - generic [ref=e715]:
+                    - paragraph [ref=e716]: Desde
+                    - generic [ref=e718]: S/. 299
+                    - paragraph [ref=e719]: Por persona
+                  - generic [ref=e720]:
+                    - generic [ref=e721]:
+                      - img "icon" [ref=e723]
+                      - generic [ref=e724]: Hasta 18
+                    - generic [ref=e725]:
+                      - img "icon" [ref=e727]
+                      - generic [ref=e728]: Facil
+                - link "Ver Detalles" [ref=e731] [cursor=pointer]:
+                  - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                  - button "Ver Detalles" [ref=e732]
+            - generic [ref=e733]:
+              - link "Cusco" [ref=e734] [cursor=pointer]:
+                - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                - generic [ref=e738]: Cusco
+              - generic [ref=e742]:
+                - link "Montaña Pallay Poncho Full Day" [ref=e743] [cursor=pointer]:
+                  - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                  - heading "Montaña Pallay Poncho Full Day" [level=2] [ref=e745]
+                - paragraph [ref=e748]: Aventura andina entre montañas coloridas y paisajes únicos en la naturaleza cusqueña.
+                - generic [ref=e749]:
+                  - generic [ref=e750]:
+                    - paragraph [ref=e751]: Desde
+                    - generic [ref=e753]: S/. 182
+                    - paragraph [ref=e754]: Por persona
+                  - generic [ref=e755]:
+                    - generic [ref=e756]:
+                      - img "icon" [ref=e758]
+                      - generic [ref=e759]: Hasta 18
+                    - generic [ref=e760]:
+                      - img "icon" [ref=e762]
+                      - generic [ref=e763]: Facil
+                - link "Ver Detalles" [ref=e766] [cursor=pointer]:
+                  - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                  - button "Ver Detalles" [ref=e767]
+            - generic [ref=e768]:
+              - link "Cusco pLaZa dE aRmAs cUsCo" [ref=e769] [cursor=pointer]:
+                - /url: /pe/tours/tour-valle-sur
+                - generic [ref=e770]:
+                  - generic [ref=e773]: Cusco
+                  - img "pLaZa dE aRmAs cUsCo" [ref=e775]
+              - generic [ref=e778]:
+                - link "Tour Valle Sur" [ref=e779] [cursor=pointer]:
+                  - /url: /pe/tours/tour-valle-sur
+                  - heading "Tour Valle Sur" [level=2] [ref=e781]
+                - paragraph [ref=e784]: Viajar es descubrir, conectar y hacer recuerdo cada momento que toca el corazón.
+                - generic [ref=e785]:
+                  - generic [ref=e786]:
+                    - paragraph [ref=e787]: Desde
+                    - generic [ref=e789]: S/. 45
+                    - paragraph [ref=e790]: Por persona
+                  - generic [ref=e791]:
+                    - generic [ref=e792]:
+                      - img "icon" [ref=e794]
+                      - generic [ref=e795]: Hasta 18
+                    - generic [ref=e796]:
+                      - img "icon" [ref=e798]
+                      - generic [ref=e799]: Facil
+                - link "Ver Detalles" [ref=e802] [cursor=pointer]:
+                  - /url: /pe/tours/tour-valle-sur
+                  - button "Ver Detalles" [ref=e803]
+        - generic [ref=e805]:
+          - heading "¿Quiénes somos?" [level=1] [ref=e808]
+          - paragraph [ref=e812]: "En Pata Rutera, somos una agencia cusqueña apasionada por llevar a nuestros hermanos peruanos a descubrir los destinos más fascinantes de nuestro país. Trabajamos de la mano con aliados estratégicos para ofrecer experiencias auténticas e inolvidables. Adaptamos cada paquete y tour a tus necesidades, ya sea que viajes en familia, en pareja o con amigos. Nuestro compromiso va más allá del turismo: nos enorgullece ser una agencia responsable, dedicada a mejorar la vida de nuestro equipo y apoyar a las comunidades altoandinas."
+        - generic [ref=e814]:
+          - heading "Por que viajar con Pata Rutera" [level=1] [ref=e817]
+          - generic [ref=e819]:
+            - generic [ref=e822]:
+              - heading "Atención 24/7" [level=2] [ref=e825]
+              - img "soporte" [ref=e828]
+            - generic [ref=e831]:
+              - heading "Paquetes personalizados" [level=2] [ref=e834]
+              - img "guias" [ref=e837]
+            - generic [ref=e840]:
+              - heading "Opciones de servicio" [level=2] [ref=e843]
+              - img "mountains" [ref=e846]
+            - generic [ref=e849]:
+              - heading "Flexibilidad en reservas" [level=2] [ref=e852]
+              - img "starts" [ref=e855]
+            - generic [ref=e858]:
+              - heading "Tours únicos y no tradicionales" [level=2] [ref=e861]
+              - img "trans" [ref=e864]
+            - generic [ref=e867]:
+              - heading "Descuentos y promociones" [level=2] [ref=e870]
+              - img "aten" [ref=e873]
+        - generic [ref=e875]:
+          - heading "Nuestros reconocimientos" [level=1] [ref=e878]
+          - img "icon" [ref=e888]
+        - generic [ref=e898]:
+          - heading "Nuestros Socios" [level=1] [ref=e901]
+          - generic [ref=e904]:
+            - img "icon" [ref=e907]
+            - img "icon" [ref=e910]
+            - img "icon" [ref=e913]
+            - img "icon" [ref=e916]
+            - img "icon" [ref=e919]
+  - contentinfo [ref=e38]:
+    - img "Peruvian landscape" [ref=e40]
+    - generic [ref=e43]:
+      - img "Logo" [ref=e46]
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - heading "INFORMACIÓN DE CONTACTO" [level=3] [ref=e51]
+          - list [ref=e52]:
+            - listitem [ref=e53]:
+              - generic [ref=e54]:
+                - img [ref=e55]
+                - generic [ref=e57]: +51 930 770 103
+            - listitem [ref=e58]:
+              - generic [ref=e59]:
+                - img [ref=e60]
+                - generic [ref=e63]: ventas@patarutera.pe
+            - listitem [ref=e64]:
+              - generic [ref=e65]:
+                - img [ref=e66]
+                - generic [ref=e69]: Av. Tacna 168 Wánchaq - Cusco
+        - generic [ref=e70]:
+          - heading "INFORMACION LEGAL" [level=3] [ref=e71]
+          - list [ref=e72]:
+            - listitem [ref=e73]:
+              - generic [ref=e75]: "RUC: 20613583832"
+            - listitem [ref=e76]:
+              - generic [ref=e78]: "Razon Social: EXPERIENCIAS GLOBALES SAC"
+            - listitem [ref=e79]:
+              - link "Politica de Privacidad" [ref=e80] [cursor=pointer]:
+                - /url: /pe/politicas-de-privacidad
+                - generic [ref=e81]: Politica de Privacidad
+            - listitem [ref=e82]:
+              - link "Libro de Reclamaciones" [ref=e83] [cursor=pointer]:
+                - /url: /pe/libro-de-reclamaciones
+                - generic [ref=e84]: Libro de Reclamaciones
+            - listitem [ref=e85]:
+              - link "Terminos y Condiciones" [ref=e86] [cursor=pointer]:
+                - /url: /pe/terminos-y-condiciones
+                - generic [ref=e87]: Terminos y Condiciones
+      - generic [ref=e88]:
+        - img "Logo2" [ref=e90]
+        - img "Logo3" [ref=e92]
+    - generic [ref=e93]:
+      - generic [ref=e94]:
+        - link [ref=e95] [cursor=pointer]:
+          - /url: https://www.facebook.com/PataRutera
+          - img [ref=e96]
+        - link [ref=e98] [cursor=pointer]:
+          - /url: https://www.instagram.com/patarutera/
+          - img [ref=e99]
+        - link [ref=e103] [cursor=pointer]:
+          - /url: https://www.tiktok.com/@patarutera
+          - img [ref=e104]
+      - generic [ref=e106]: Desarrollado por Jushka Digital
+  - alert [ref=e920]

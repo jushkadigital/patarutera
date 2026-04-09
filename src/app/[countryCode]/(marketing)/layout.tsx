@@ -4,7 +4,6 @@ import Footer from "@/components/Footer";
 import Script from "next/script";
 import { TopBannerComplete } from "@/components/TopBanner";
 import { ScrollToTopOnRouteChange } from "@/components/ScrollTopOnRoute";
-import { Suspense } from "react";
 
 export default async function PageLayout({
   children,
@@ -21,10 +20,8 @@ export default async function PageLayout({
       <TopBannerComplete destinations={data.docs} />
       <main className="flex-grow">
         <NuqsAdapter>
-          <Suspense fallback={null}>
-            <ScrollToTopOnRouteChange />
-            {children}
-          </Suspense>
+          <ScrollToTopOnRouteChange />
+          {children}
         </NuqsAdapter>
       </main>
       <Script src="https://www.tiktok.com/embed.js" strategy="lazyOnload" />

@@ -13,16 +13,25 @@ export async function CarouselHero() {
   return (
     <div className="relative w-full">
       <Carousel>
-        {data.docs.map((item: Destination) => {
+        {data.docs.map((item: Destination, index: number) => {
           const carouselMedia =
             item.carouselItemDestination &&
             typeof item.carouselItemDestination === "object"
               ? item.carouselItemDestination
               : null;
 
+          const isFirstSlide = index === 0;
+
           if (!carouselMedia) {
             return (
-              <BannerCarousel key={item.id} title={item.name} alt={item.name} />
+              <BannerCarousel
+                key={item.id}
+                title={item.name}
+                alt={item.name}
+                priority={isFirstSlide}
+                fetchPriority={isFirstSlide ? "high" : "low"}
+                loading={isFirstSlide ? "eager" : "lazy"}
+              />
             );
           }
 
@@ -32,6 +41,9 @@ export async function CarouselHero() {
               title={item.name}
               backgroundMedia={carouselMedia}
               alt={item.name}
+              priority={isFirstSlide}
+              fetchPriority={isFirstSlide ? "high" : "low"}
+              loading={isFirstSlide ? "eager" : "lazy"}
             />
           );
         })}

@@ -1,0 +1,91 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e7]
+          - text: ventas@patarutera.pe
+          - generic [ref=e10]:
+            - link [ref=e11] [cursor=pointer]:
+              - /url: https://www.facebook.com/PataRutera
+              - img [ref=e12]
+            - link [ref=e14] [cursor=pointer]:
+              - /url: https://www.instagram.com/patarutera/
+              - img [ref=e15]
+            - link [ref=e19] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@patarutera
+              - img [ref=e20]
+        - generic [ref=e22]:
+          - img
+          - button [ref=e24]:
+            - img
+          - button [ref=e25]:
+            - img
+          - link "( 0 )" [ref=e27] [cursor=pointer]:
+            - /url: /pe/cart
+            - img [ref=e28]
+            - text: (
+            - generic [ref=e32]: "0"
+            - text: )
+      - generic [ref=e33]:
+        - link "Logo" [ref=e34] [cursor=pointer]:
+          - /url: /pe
+          - img "Logo" [ref=e35]
+        - img [ref=e36]
+  - main
+  - contentinfo [ref=e37]:
+    - img "Peruvian landscape" [ref=e39]
+    - generic [ref=e42]:
+      - img "Logo" [ref=e45]
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - heading "INFORMACIÓN DE CONTACTO" [level=3] [ref=e50]
+          - list [ref=e51]:
+            - listitem [ref=e52]:
+              - generic [ref=e53]:
+                - img [ref=e54]
+                - generic [ref=e56]: +51 930 770 103
+            - listitem [ref=e57]:
+              - generic [ref=e58]:
+                - img [ref=e59]
+                - generic [ref=e62]: ventas@patarutera.pe
+            - listitem [ref=e63]:
+              - generic [ref=e64]:
+                - img [ref=e65]
+                - generic [ref=e68]: Av. Tacna 168 Wánchaq - Cusco
+        - generic [ref=e69]:
+          - heading "INFORMACION LEGAL" [level=3] [ref=e70]
+          - list [ref=e71]:
+            - listitem [ref=e72]:
+              - generic [ref=e74]: "RUC: 20613583832"
+            - listitem [ref=e75]:
+              - generic [ref=e77]: "Razon Social: EXPERIENCIAS GLOBALES SAC"
+            - listitem [ref=e78]:
+              - link "Politica de Privacidad" [ref=e79] [cursor=pointer]:
+                - /url: /pe/politicas-de-privacidad
+                - generic [ref=e80]: Politica de Privacidad
+            - listitem [ref=e81]:
+              - link "Libro de Reclamaciones" [ref=e82] [cursor=pointer]:
+                - /url: /pe/libro-de-reclamaciones
+                - generic [ref=e83]: Libro de Reclamaciones
+            - listitem [ref=e84]:
+              - link "Terminos y Condiciones" [ref=e85] [cursor=pointer]:
+                - /url: /pe/terminos-y-condiciones
+                - generic [ref=e86]: Terminos y Condiciones
+      - generic [ref=e87]:
+        - img "Logo2" [ref=e89]
+        - img "Logo3" [ref=e91]
+    - generic [ref=e92]:
+      - generic [ref=e93]:
+        - link [ref=e94] [cursor=pointer]:
+          - /url: https://www.facebook.com/PataRutera
+          - img [ref=e95]
+        - link [ref=e97] [cursor=pointer]:
+          - /url: https://www.instagram.com/patarutera/
+          - img [ref=e98]
+        - link [ref=e102] [cursor=pointer]:
+          - /url: https://www.tiktok.com/@patarutera
+          - img [ref=e103]
+      - generic [ref=e105]: Desarrollado por Jushka Digital
+  - alert [ref=e111]

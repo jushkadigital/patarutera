@@ -135,6 +135,9 @@ export default function PayloadImage({
   ],
   fallbackSize = "large",
   fill,
+  priority,
+  fetchPriority,
+  loading,
   ...props
 }: OverrideImageProps) {
   if (!media) return null;
@@ -153,9 +156,13 @@ export default function PayloadImage({
   const src = normalizeUrl(selectedCandidate.url) ?? "/placeholder.svg";
   const width = selectedCandidate.width ?? media.width ?? 1200;
   const height = selectedCandidate.height ?? media.height ?? 800;
+  const pictureClassName = fill ? "relative block h-full w-full" : undefined;
+  const resolvedLoading = priority ? undefined : (loading ?? "lazy");
+  const resolvedFetchPriority =
+    fetchPriority ?? (priority ? "high" : undefined);
 
   return (
-    <picture>
+    <picture className={pictureClassName}>
       {sources.map((source) => {
         const size = media.sizes?.[source.sizeKey];
         const sourceUrl = normalizeUrl(size?.url);
@@ -178,6 +185,9 @@ export default function PayloadImage({
           alt={media.alt || ""}
           fill
           className={className}
+          priority={priority}
+          fetchPriority={resolvedFetchPriority}
+          loading={resolvedLoading}
           unoptimized
         />
       ) : (
@@ -188,6 +198,9 @@ export default function PayloadImage({
           width={width}
           height={height}
           className={className}
+          priority={priority}
+          fetchPriority={resolvedFetchPriority}
+          loading={resolvedLoading}
           unoptimized
         />
       )}

@@ -1,0 +1,28 @@
+[   22198ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[   22199ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[   22200ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[   22200ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[   22200ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[   22200ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[   23078ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:16383
+[   23726ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:4000/_next/webpack-hmr' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:14633
+[   28982ms] [WARNING] motion() is deprecated. Use motion.create() instead. @ http://127.0.0.1:4000/_next/static/chunks/e65b2_motion_dist_es_5231da64._.js:17
+[   29301ms] [ERROR] Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the top-level render call using <div>.  @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:1225
+[   29472ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://127.0.0.1:4000/__nextjs_original-stack-frames:0
+[   30341ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/Frame%20715%20(1)-1200x630.jpg" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative. @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   30341ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/Frame%20714-1200x630.jpg" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative. @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   30348ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/AdobeStock_107539601-1400x933.jpg" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative. @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   30348ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/Frame%20712-1200x630.jpg" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative. @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   30564ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/Frame%20713-1200x630.jpg" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative. @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   30570ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/Frame%20711-1200x630.jpg" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative. @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   30570ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/Group%201847-1200x630.webp" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative. @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   30712ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/Group%201848-1200x630.webp" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative. @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   30803ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/FONDO%20CITY-900x299.webp" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative. @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   32570ms] [INFO] %c[TikTok] 
+
+We're hiring!
+Are you ready to make a change?
+Check out some of our available positions at https://careers.tiktok.com/ color: #fe2c55 @ https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/falcon/embed/embed_lib_v1.0.13.js:0
+[   39413ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0

@@ -1,0 +1,23 @@
+[    4449ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    4449ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    4449ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    4449ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    4449ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    4449ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe:0
+[    4635ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:16383
+[    5096ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:3532
+[    5097ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:3532
+[    5113ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:3532
+[    5114ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:3532
+[    5246ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:4000/_next/webpack-hmr' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:14633
+[    7014ms] [WARNING] motion() is deprecated. Use motion.create() instead. @ http://127.0.0.1:4000/_next/static/chunks/e65b2_motion_dist_es_5231da64._.js:17
+[    7123ms] [ERROR] Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the top-level render call using <div>.  @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:1225
+[    7136ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://127.0.0.1:4000/__nextjs_original-stack-frames:0
+[   25837ms] [INFO] %c[TikTok] 
+
+We're hiring!
+Are you ready to make a change?
+Check out some of our available positions at https://careers.tiktok.com/ color: #fe2c55 @ https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/falcon/embed/embed_lib_v1.0.13.js:0
+[   28838ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0
