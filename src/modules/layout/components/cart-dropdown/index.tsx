@@ -138,6 +138,12 @@ const CartDropdown = ({
   }, [localCart, cartState]);
 
   useEffect(() => {
+    if (!cartState) {
+      void fetchCart();
+    }
+  }, [cartState]);
+
+  useEffect(() => {
     return () => {
       if (activeTimer) {
         clearTimeout(activeTimer);

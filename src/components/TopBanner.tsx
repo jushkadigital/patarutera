@@ -1,11 +1,6 @@
 import { Destination, Footer } from "@/cms-types";
-import { cn } from "@/lib2/utils";
 import { getCachedGlobal } from "@/utilities/getGlobals";
-import { SvgFacebook, SvgInstagram, SvgTiktok } from "./IconsSvg";
-import { TopHeader } from "./Topheader";
-import { Header } from "./Header";
-import { retrieveCart } from "@lib/data/cart";
-import { cookies } from "next/headers";
+import TopBannerClient from "./top-banner-client";
 
 interface Props {
   destinations: Destination[];
@@ -16,27 +11,11 @@ export async function TopBannerComplete({ destinations }: Props) {
   const email: string = (footerData.navItems as any[])[0].links[1].link
     ?.textInfo;
 
-  const networkName = {
-    facebook: SvgFacebook,
-    instagram: SvgInstagram,
-    tiktok: SvgTiktok,
-  };
-
-  const cart = await retrieveCart().catch(() => null);
-  const cookieStore = await cookies();
-  const isAuthenticated = Boolean(
-    cookieStore.get("_medusa_jwt")?.value ||
-      cookieStore.get("__Secure-_medusa_jwt")?.value,
-  );
   return (
-    <>
-      <Header
-        destinations={destinations}
-        socialNetworks={redes.network}
-        email={email}
-        cart={cart}
-        isAuthenticated={isAuthenticated}
-      />
-    </>
+    <TopBannerClient
+      destinations={destinations}
+      socialNetworks={redes.network}
+      email={email}
+    />
   );
 }

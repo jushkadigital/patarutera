@@ -1,15 +1,15 @@
-import { RenderBlocks } from '@/blocks/renderBlocks';
-import { RenderHero } from '@/blocks/renderHeros';
-import { LivePreviewListener } from '@/components/LivePreviewListener';
-import { HomeToursSchema } from '@/components/Schema';
-import { BASEURL } from '@/lib2/config';
-import { DestinosPage } from '@/specialPages/destinosPage';
-import { PaquetesPage } from '@/specialPages/paquetesPage';
-import { generateMetaPage } from '@/utilities/generateMeta';
-import { Metadata, ResolvingMetadata } from 'next';
-import { draftMode } from 'next/headers';
-import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { RenderBlocks } from "@/blocks/renderBlocks";
+import { RenderHero } from "@/blocks/renderHeros";
+import { LivePreviewListener } from "@/components/LivePreviewListener";
+import { HomeToursSchema } from "@/components/Schema";
+import { BASEURL } from "@/lib2/config";
+import { DestinosPage } from "@/specialPages/destinosPage";
+import { PaquetesPage } from "@/specialPages/paquetesPage";
+import { generateMetaPage } from "@/utilities/generateMeta";
+import { Metadata, ResolvingMetadata } from "next";
+import { draftMode } from "next/headers";
+import { notFound } from "next/navigation";
+import { cache } from "react";
 
 // --- 1. Import your Special Page Components ---
 // (Replace with your actual component paths and names)
@@ -24,8 +24,8 @@ const specialPageComponents: { [key: string]: React.ComponentType<any> } = {
   // 'paquetes-especiales': PaquetesEspecialesPageComponent,
   // 'otro-slug-especial': OtroComponenteEspecial,
   // Add more mappings as needed
-  'destinos': DestinosPage,
-  'paquetes': PaquetesPage
+  destinos: DestinosPage,
+  paquetes: PaquetesPage,
 };
 
 // Assume slugsEspeciales is defined here or imported
@@ -34,19 +34,21 @@ const specialPageComponents: { [key: string]: React.ComponentType<any> } = {
 const slugsEspeciales = Object.keys(specialPageComponents); // Get special slugs from the mapping
 
 export async function generateStaticParams() {
-  const pagesRequest = await fetch(`${BASEURL}/api/pages?depth=3&limit=1000&draft=false&select[slug]=true`)
-  const pages = await pagesRequest.json()
+  const pagesRequest = await fetch(
+    `${BASEURL}/api/pages?depth=3&limit=1000&draft=false&select[slug]=true`,
+  );
+  const pages = await pagesRequest.json();
   const params = pages.docs
     ?.filter((doc: any) => {
-      return doc.slug !== 'home'
-    }).filter((ele) => ele.slug !== null)
-    .map(({ slug }: any) => {
-      return { slug }
+      return doc.slug !== "home";
     })
+    .filter((ele) => ele.slug !== null)
+    .map(({ slug }: any) => {
+      return { slug };
+    });
 
   return params || [];
 }
-
 
 type PageParams = {
   slug?: string;
@@ -60,15 +62,18 @@ type Args = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function Page({ params: paramsPromise, searchParams: searchParamsPromise }: Args) {
+export default async function Page({
+  params: paramsPromise,
+  searchParams: searchParamsPromise,
+}: Args) {
   const resolvedParams = await paramsPromise;
-  const searchParams = await searchParamsPromise;
-  const { slug = 'home' } = resolvedParams;
+  const { slug = "home" } = resolvedParams;
 
   let page: any;
   // --- 3. Conditionally Render Special Component or Standard Layout ---
   if (slugsEspeciales.includes(slug)) {
     const SpecialComponent = specialPageComponents[slug];
+    const searchParams = await searchParamsPromise;
 
     // You might still want to fetch some common page data or specific data for the special component
     page = await queryPageBySlug({ slug });
@@ -76,7 +81,13 @@ export default async function Page({ params: paramsPromise, searchParams: search
       notFound();
     }
     // Pass necessary props to your special component, e.g., page data
-    return <SpecialComponent pageData={page} resolvedParams={resolvedParams} searchParams={searchParams} />;
+    return (
+      <SpecialComponent
+        pageData={page}
+        resolvedParams={resolvedParams}
+        searchParams={searchParams}
+      />
+    );
   } else {
     // Standard logic for non-special pages or special pages that don't map to a full component
     page = await queryPageBySlug({
@@ -89,19 +100,18 @@ export default async function Page({ params: paramsPromise, searchParams: search
 
     const { layout, heroPageBlocks } = page;
 
+    const toursGet = await queryToursById();
 
-    const toursGet = await queryToursById()
-
-    const paquetesGet = await queryPaquetesById()
-    const eTours = (toursGet.map(ele => ({ ...ele, type: "tour" })))
-    const ePaquetes = (paquetesGet.map(ele => ({ ...ele, type: "paquete" })))
+    const paquetesGet = await queryPaquetesById();
+    const eTours = toursGet.map((ele) => ({ ...ele, type: "tour" }));
+    const ePaquetes = paquetesGet.map((ele) => ({ ...ele, type: "paquete" }));
 
     return (
       <>
         {slug == "home" && HomeToursSchema({ page: eTours.concat(ePaquetes) })}
         <div className="flex flex-col space-y-10">
           <RenderHero heroBlocks={heroPageBlocks} />
-          <div className={"flex flex-col space-y-10 lg:space-y-14"} >
+          <div className={"flex flex-col space-y-10 lg:space-y-14"}>
             <RenderBlocks blocks={layout} />
           </div>
         </div>
@@ -110,36 +120,44 @@ export default async function Page({ params: paramsPromise, searchParams: search
   }
 }
 
-export async function generateMetadata({ params: paramsPromise }: Args, parent: ResolvingMetadata): Promise<Metadata> {
-
-  const { slug = 'home' } = await paramsPromise;
+export async function generateMetadata(
+  { params: paramsPromise }: Args,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const { slug = "home" } = await paramsPromise;
   const page = await queryPageBySlug({ slug });
-  return generateMetaPage({ doc: page })
-
+  return generateMetaPage({ doc: page });
 }
 
 const queryToursById = cache(async () => {
   // Fetch a single tour by slug. Adjust depth as needed for tour data.
-  const data = await fetch(`${BASEURL}/api/tours?limit=1&where[id][in]=15,13,14,17&depth=2&draft=${false}`, {
-    next: { revalidate: 3600 } // <-- El caché se refresca cada hora automáticamente
-  });
+  const data = await fetch(
+    `${BASEURL}/api/tours?limit=1&where[id][in]=15,13,14,17&depth=2&draft=${false}`,
+    {
+      next: { revalidate: 3600 }, // <-- El caché se refresca cada hora automáticamente
+    },
+  );
   const result = await data.json();
   return result.docs || null;
 });
 
 const queryPaquetesById = cache(async () => {
   // Fetch a single tour by slug. Adjust depth as needed for tour data.
-  const data = await fetch(`${BASEURL}/api/paquetes?limit=1&where[id][equals]=49&depth=2&draft=${false}`, {
-    next: { revalidate: 3600 } // <-- El caché se refresca cada hora automáticamente
-  });
+  const data = await fetch(
+    `${BASEURL}/api/paquetes?limit=1&where[id][equals]=49&depth=2&draft=${false}`,
+    {
+      next: { revalidate: 3600 }, // <-- El caché se refresca cada hora automáticamente
+    },
+  );
   const result = await data.json();
   return result.docs || null;
 });
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
-  const data = await fetch(`${BASEURL}/api/pages?limit=1&where[slug][equals]=${slug}&depth=2&draft=${false}`); // Added depth=2 for potentially richer layout data
+  const data = await fetch(
+    `${BASEURL}/api/pages?limit=1&where[slug][equals]=${slug}&depth=2&draft=${false}`,
+  ); // Added depth=2 for potentially richer layout data
   const result = await data.json();
   return result.docs?.[0] || null;
 });
 // Optional: Metadata for the page
-

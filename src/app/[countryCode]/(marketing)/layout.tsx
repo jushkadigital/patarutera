@@ -3,13 +3,8 @@ import { BASEURL } from "@/lib2/config";
 import Footer from "@/components/Footer";
 import Script from "next/script";
 import { TopBannerComplete } from "@/components/TopBanner";
-import { retrieveCustomer } from "@lib/data/customer";
-import { retrieveCart } from "@lib/data/cart";
-import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner";
 import { ScrollToTopOnRouteChange } from "@/components/ScrollTopOnRoute";
 import { Suspense } from "react";
-
-export const dynamic = "force-dynamic";
 
 export default async function PageLayout({
   children,
@@ -21,15 +16,9 @@ export default async function PageLayout({
   );
   const data = await response.json();
 
-  const customer = await retrieveCustomer();
-  const cart = await retrieveCart();
-
   return (
     <>
       <TopBannerComplete destinations={data.docs} />
-      {customer && cart && (
-        <CartMismatchBanner customer={customer} cart={cart} />
-      )}
       <main className="flex-grow">
         <NuqsAdapter>
           <Suspense fallback={null}>
