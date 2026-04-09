@@ -9,6 +9,8 @@ import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner"
 import { ScrollToTopOnRouteChange } from "@/components/ScrollTopOnRoute";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default async function PageLayout({
   children,
 }: Readonly<{
@@ -29,10 +31,12 @@ export default async function PageLayout({
         <CartMismatchBanner customer={customer} cart={cart} />
       )}
       <main className="flex-grow">
-        <ScrollToTopOnRouteChange />
-        <Suspense fallback={null}>
-          <NuqsAdapter>{children}</NuqsAdapter>
-        </Suspense>
+        <NuqsAdapter>
+          <Suspense fallback={null}>
+            <ScrollToTopOnRouteChange />
+            {children}
+          </Suspense>
+        </NuqsAdapter>
       </main>
       <Script src="https://www.tiktok.com/embed.js" strategy="lazyOnload" />
       <Footer destination={data.docs} />
