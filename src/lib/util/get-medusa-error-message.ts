@@ -12,13 +12,45 @@ const getValidString = (value: unknown): string | undefined => {
   return trimmedValue.length > 0 ? trimmedValue : undefined;
 };
 
+const getMessageFromArray = (payload: unknown[]): string | undefined => {
+  for (const item of payload) {
+    const message = getMessageFromPayload(item);
+
+    if (message) {
+      return message;
+    }
+  }
+
+  return undefined;
+};
+
 const getMessageFromPayload = (payload: unknown): string | undefined => {
+  if (Array.isArray(payload)) {
+    return getMessageFromArray(payload);
+  }
+
   if (!isRecord(payload)) {
     return getValidString(payload);
   }
 
+  const directMessage = getValidString(payload.message);
+
+  if (directMessage) {
+    return directMessage;
+  }
+
+  const nestedMessage =
+    getMessageFromPayload(payload.message) ??
+    getMessageFromPayload(payload.error) ??
+    getMessageFromPayload(payload.detail) ??
+    getMessageFromPayload(payload.details) ??
+    getMessageFromPayload(payload.errors);
+
+  if (nestedMessage) {
+    return nestedMessage;
+  }
+
   return (
-    getValidString(payload.message) ??
     getValidString(payload.error) ??
     getValidString(payload.detail) ??
     getValidString(payload.details)

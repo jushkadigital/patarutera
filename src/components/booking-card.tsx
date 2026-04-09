@@ -103,8 +103,79 @@ const isGenericBookingServerError = (message: string) => {
     normalizedMessage.includes("500") ||
     normalizedMessage.includes("internal server error") ||
     normalizedMessage.includes("unexpected response") ||
-    normalizedMessage.includes("failed to fetch")
+    normalizedMessage.includes("failed to fetch") ||
+    normalizedMessage.includes("no response received") ||
+    normalizedMessage.includes("error setting up the request")
   );
+};
+
+const normalizeBookingCartErrorMessage = (message: string, isTour: boolean) => {
+  const normalizedMessage = message.trim().toLowerCase();
+  const genericFallbackMessage = isTour
+    ? "No se pudo agregar el tour al carrito. Intenta nuevamente."
+    : "No se pudo agregar el paquete al carrito. Intenta nuevamente.";
+
+  if (!normalizedMessage) {
+    return genericFallbackMessage;
+  }
+
+  if (isGenericBookingServerError(message)) {
+    return "La fecha seleccionada no está disponible. Intenta con otra fecha.";
+  }
+
+  if (
+    normalizedMessage.includes("selected date") ||
+    normalizedMessage.includes("tour date") ||
+    normalizedMessage.includes("package date") ||
+    normalizedMessage.includes("date is not available") ||
+    normalizedMessage.includes("date not available") ||
+    normalizedMessage.includes("unavailable date") ||
+    normalizedMessage.includes("date unavailable") ||
+    normalizedMessage.includes("already booked") ||
+    normalizedMessage.includes("fecha seleccionada") ||
+    normalizedMessage.includes("no está disponible") ||
+    normalizedMessage.includes("no se encuentra disponible")
+  ) {
+    return "La fecha seleccionada no está disponible. Intenta con otra fecha.";
+  }
+
+  if (
+    normalizedMessage.includes("inventory") ||
+    normalizedMessage.includes("stock") ||
+    normalizedMessage.includes("sold out") ||
+    normalizedMessage.includes("not enough") ||
+    normalizedMessage.includes("sin stock") ||
+    normalizedMessage.includes("sin disponibilidad")
+  ) {
+    return "No hay disponibilidad suficiente para la fecha seleccionada.";
+  }
+
+  if (normalizedMessage.includes("missing tour date")) {
+    return "Falta seleccionar una fecha para el tour.";
+  }
+
+  if (normalizedMessage.includes("missing package date")) {
+    return "Falta seleccionar una fecha para el paquete.";
+  }
+
+  if (normalizedMessage.includes("no items to add to cart")) {
+    return "Selecciona al menos un pasajero antes de agregar al carrito.";
+  }
+
+  if (normalizedMessage.includes("error retrieving or creating cart")) {
+    return "No se pudo preparar el carrito. Intenta nuevamente.";
+  }
+
+  if (
+    normalizedMessage.includes("error en la solicitud") ||
+    normalizedMessage.includes("no se pudo") ||
+    normalizedMessage.includes("intenta") ||
+    normalizedMessage.includes("fecha")
+  ) {
+    return message;
+  }
+
+  return genericFallbackMessage;
 };
 
 export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
@@ -335,20 +406,29 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
         },
       }));
 
-      if (isTour) {
-        await addTourItemsToCart({
-          countryCode: locale,
-          tourDate,
-          items,
-          formId,
-        });
-      } else {
-        await addPackagesItemsToCart({
-          countryCode: locale,
-          packageDate: tourDate,
-          items,
-          formId,
-        });
+      const bookingResult = isTour
+        ? await addTourItemsToCart({
+            countryCode: locale,
+            tourDate,
+            items,
+            formId,
+          })
+        : await addPackagesItemsToCart({
+            countryCode: locale,
+            packageDate: tourDate,
+            items,
+            formId,
+          });
+
+      if (!bookingResult.success) {
+        toast.error(
+          normalizeBookingCartErrorMessage(bookingResult.errorMessage, isTour),
+          {
+            position: "top-center",
+          },
+        );
+
+        return;
       }
 
       trackAddToCart({
@@ -371,16 +451,15 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
       setIsAddedToCart(true);
     } catch (e) {
       console.error("Error adding to cart", e);
-      const resolvedErrorMessage = getMedusaErrorMessage(
-        e,
-        isTour
-          ? "No se pudo agregar el tour al carrito."
-          : "No se pudo agregar el paquete al carrito.",
+      const errorMessage = normalizeBookingCartErrorMessage(
+        getMedusaErrorMessage(
+          e,
+          isTour
+            ? "No se pudo agregar el tour al carrito."
+            : "No se pudo agregar el paquete al carrito.",
+        ),
+        isTour,
       );
-
-      const errorMessage = isGenericBookingServerError(resolvedErrorMessage)
-        ? "La fecha seleccionada no está disponible. Intenta con otra fecha."
-        : resolvedErrorMessage;
 
       toast.error(errorMessage, {
         position: "top-center",

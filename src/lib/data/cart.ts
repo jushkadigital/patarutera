@@ -2,6 +2,7 @@
 
 import { sdk } from "@lib/config";
 import medusaError from "@lib/util/medusa-error";
+import { getMedusaErrorMessage } from "@lib/util/get-medusa-error-message";
 import { HttpTypes } from "@medusajs/types";
 import { revalidateTag, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -439,66 +440,92 @@ type AddPackageItemsToCartInput = {
   formId?: number;
 };
 
+type AddBookingItemsToCartResult =
+  | { success: true }
+  | { success: false; errorMessage: string };
+
 export async function addTourItemsToCart({
   countryCode,
   tourDate,
   items,
   formId,
-}: AddTourItemsToCartInput) {
-  if (!tourDate) {
-    throw new Error("Missing tour date when adding tour items to cart");
+}: AddTourItemsToCartInput): Promise<AddBookingItemsToCartResult> {
+  try {
+    if (!tourDate) {
+      return {
+        success: false,
+        errorMessage: "Falta seleccionar una fecha para el tour.",
+      };
+    }
+
+    if (!items || items.length === 0) {
+      return {
+        success: false,
+        errorMessage:
+          "Selecciona al menos un pasajero antes de agregar al carrito.",
+      };
+    }
+
+    const cart = await getOrSetCart(countryCode);
+
+    if (!cart) {
+      return {
+        success: false,
+        errorMessage: "No se pudo preparar el carrito. Intenta nuevamente.",
+      };
+    }
+
+    const headers = {
+      ...(await getAuthHeaders()),
+    };
+
+    const payload = {
+      cart_id: cart.id,
+      tour_date: tourDate,
+      items: items.map((item) => ({
+        variant_id: item.variant_id,
+        quantity: item.quantity,
+        ...(item.unit_price !== undefined
+          ? { unit_price: item.unit_price }
+          : {}),
+        metadata: {
+          ...(item.metadata ?? {}),
+          tour_date: tourDate,
+          ...(formId ? { formId: formId } : {}),
+        },
+      })),
+    };
+
+    await sdk.client
+      .fetch<{ cart: HttpTypes.StoreCart }>("/store/cart/tour-items", {
+        method: "POST",
+        body: payload,
+        headers,
+      })
+      .then(async () => {
+        const cartCacheTag = await getCacheTag("carts");
+        revalidateTag(cartCacheTag);
+
+        const fulfillmentCacheTag = await getCacheTag("fulfillment");
+        revalidateTag(fulfillmentCacheTag);
+
+        try {
+          revalidatePath("/", "layout");
+        } catch {
+          // Fail silently
+        }
+      });
+
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      errorMessage: getMedusaErrorMessage(
+        error,
+        "No se pudo agregar el tour al carrito.",
+      ),
+    };
   }
-
-  if (!items || items.length === 0) {
-    throw new Error("No items to add to cart");
-  }
-
-  const cart = await getOrSetCart(countryCode);
-
-  if (!cart) {
-    throw new Error("Error retrieving or creating cart");
-  }
-
-  const headers = {
-    ...(await getAuthHeaders()),
-  };
-
-  const payload = {
-    cart_id: cart.id,
-    tour_date: tourDate,
-    items: items.map((item) => ({
-      variant_id: item.variant_id,
-      quantity: item.quantity,
-      ...(item.unit_price !== undefined ? { unit_price: item.unit_price } : {}),
-      metadata: {
-        ...(item.metadata ?? {}),
-        tour_date: tourDate,
-        ...(formId ? { formId: formId } : {}),
-      },
-    })),
-  };
-
-  await sdk.client
-    .fetch<{ cart: HttpTypes.StoreCart }>("/store/cart/tour-items", {
-      method: "POST",
-      body: payload,
-      headers,
-    })
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts");
-      revalidateTag(cartCacheTag);
-
-      const fulfillmentCacheTag = await getCacheTag("fulfillment");
-      revalidateTag(fulfillmentCacheTag);
-
-      // Revalidate cart and tour pages
-      try {
-        revalidatePath("/", "layout");
-      } catch (e) {
-        // Fail silently
-      }
-    })
-    .catch(medusaError);
 }
 
 export async function addPackagesItemsToCart({
@@ -506,61 +533,83 @@ export async function addPackagesItemsToCart({
   packageDate,
   items,
   formId,
-}: AddPackageItemsToCartInput) {
-  if (!packageDate) {
-    throw new Error("Missing package date when adding package items to cart");
+}: AddPackageItemsToCartInput): Promise<AddBookingItemsToCartResult> {
+  try {
+    if (!packageDate) {
+      return {
+        success: false,
+        errorMessage: "Falta seleccionar una fecha para el paquete.",
+      };
+    }
+
+    if (!items || items.length === 0) {
+      return {
+        success: false,
+        errorMessage:
+          "Selecciona al menos un pasajero antes de agregar al carrito.",
+      };
+    }
+
+    const cart = await getOrSetCart(countryCode);
+
+    if (!cart) {
+      return {
+        success: false,
+        errorMessage: "No se pudo preparar el carrito. Intenta nuevamente.",
+      };
+    }
+
+    const headers = {
+      ...(await getAuthHeaders()),
+    };
+
+    const payload = {
+      cart_id: cart.id,
+      package_date: packageDate,
+      items: items.map((item) => ({
+        variant_id: item.variant_id,
+        quantity: item.quantity,
+        ...(item.unit_price !== undefined
+          ? { unit_price: item.unit_price }
+          : {}),
+        metadata: {
+          ...(item.metadata ?? {}),
+          package_date: packageDate,
+          ...(formId ? { formId: formId } : {}),
+        },
+      })),
+    };
+
+    await sdk.client
+      .fetch<{ cart: HttpTypes.StoreCart }>("/store/cart/package-items", {
+        method: "POST",
+        body: payload,
+        headers,
+      })
+      .then(async () => {
+        const cartCacheTag = await getCacheTag("carts");
+        revalidateTag(cartCacheTag);
+
+        const fulfillmentCacheTag = await getCacheTag("fulfillment");
+        revalidateTag(fulfillmentCacheTag);
+
+        try {
+          revalidatePath("/", "layout");
+        } catch {
+          // Fail silently
+        }
+      });
+
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      errorMessage: getMedusaErrorMessage(
+        error,
+        "No se pudo agregar el paquete al carrito.",
+      ),
+    };
   }
-
-  if (!items || items.length === 0) {
-    throw new Error("No items to add to cart");
-  }
-
-  const cart = await getOrSetCart(countryCode);
-
-  if (!cart) {
-    throw new Error("Error retrieving or creating cart");
-  }
-
-  const headers = {
-    ...(await getAuthHeaders()),
-  };
-
-  const payload = {
-    cart_id: cart.id,
-    package_date: packageDate,
-    items: items.map((item) => ({
-      variant_id: item.variant_id,
-      quantity: item.quantity,
-      ...(item.unit_price !== undefined ? { unit_price: item.unit_price } : {}),
-      metadata: {
-        ...(item.metadata ?? {}),
-        package_date: packageDate,
-        ...(formId ? { formId: formId } : {}),
-      },
-    })),
-  };
-
-  await sdk.client
-    .fetch<{ cart: HttpTypes.StoreCart }>("/store/cart/package-items", {
-      method: "POST",
-      body: payload,
-      headers,
-    })
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts");
-      revalidateTag(cartCacheTag);
-
-      const fulfillmentCacheTag = await getCacheTag("fulfillment");
-      revalidateTag(fulfillmentCacheTag);
-
-      // Revalidate cart and tour pages
-      try {
-        revalidatePath("/", "layout");
-      } catch (e) {
-        // Fail silently
-      }
-    })
-    .catch(medusaError);
 }
 
 export async function addMultipleToCart(items: MultipleCartType) {
