@@ -7,9 +7,6 @@ import { createIzipayPayment } from "@lib/data/payment";
 import { defaultPaymentConfig, getDataOrderDynamic } from "../izipay/config";
 import { myConvertToLocale } from "@lib/util/money";
 
-const FALLBACK_IZIPAY_MERCHANT_CODE =
-  process.env.NEXT_PUBLIC_IZIPAY_MERCHANT_CODE || "4004353";
-
 const IZIPAY_SDK_URL =
   "https://sandbox-checkout.izipay.pe/payments/v1/js/index.js";
 
@@ -106,7 +103,7 @@ const getNormalizedString = (value: unknown) => {
 
 const resolveMerchantCode = (paymentSessionData?: Record<string, unknown>) => {
   if (!paymentSessionData) {
-    return FALLBACK_IZIPAY_MERCHANT_CODE;
+    return null;
   }
 
   const sessionData = paymentSessionData as IzipaySessionData;
@@ -116,8 +113,7 @@ const resolveMerchantCode = (paymentSessionData?: Record<string, unknown>) => {
     getNormalizedString(sessionData.merchant_code) ||
     getNormalizedString(sessionData.commerceCode) ||
     getNormalizedString(sessionData.commerce_code) ||
-    getNormalizedString(sessionData.clientId) ||
-    FALLBACK_IZIPAY_MERCHANT_CODE
+    getNormalizedString(sessionData.clientId)
   );
 };
 
@@ -249,6 +245,10 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
           throw new Error("Missing payment session data");
         }
 
+        if (!merchantCode) {
+          throw new Error("Missing merchant code in payment session data");
+        }
+
         const { transactionId, orderNumber, currentTimeUnix } =
           getDataOrderDynamic();
         const { requestSource } = defaultPaymentConfig;
@@ -268,10 +268,7 @@ export const IzipayWrapper: React.FC<IzipayWrapperProps> = ({
         console.log("Calling createIzipayPayment with:", {
           paymentData,
           transactionId,
-          merchantCodeSource:
-            merchantCode === FALLBACK_IZIPAY_MERCHANT_CODE
-              ? "fallback-or-env"
-              : "payment-session",
+          merchantCodeSource: "payment-session",
         });
         const data = await createIzipayPayment(paymentData, transactionId);
         console.log("createIzipayPayment response:", data);
