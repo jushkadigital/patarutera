@@ -184,7 +184,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
   if (mode === "grid") {
     return (
       <Card className="w-full max-w-[435px] mx-auto overflow-hidden rounded-3xl shadow-lg py-0 gap-3 h-[clamp(0px,166vw,1341.2px)] sm:h-[clamp(190.44px,74vw,883.2px)] lg:h-[clamp(190.44px,48vw,883.2px)] group hover:shadow-2xl transition-all duration-500 hover:shadow-blue-500/25">
-        <Link href={href} className="h-[63%]">
+        <Link href={href} className="h-[60%]">
           <div className="relative h-full  w-full overflow-hidden">
             <div className="absolute top-2 left-2 sm:top-4 md:top-3 lg:top-1 sm:left-4 z-10 w-fit">
               <Badge
@@ -206,7 +206,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
           </div>
         </Link>
 
-        <CardContent className="px-4 sm:px-6 h-[37%]">
+        <CardContent className="px-4 sm:px-6 h-[40%]">
           <Link href={href}>
             <div className="flex justify-center items-center h-[clamp(0px,10.89vw,111.6px)] sm:h-[clamp(0px,3.19vw,111.6px)] lg:h-[clamp(12px,3vw,57.6px)]">
               <h2 className="text-[#2970b7] text-[clamp(0px,4.83vw,49.46px)]  sm:text-[clamp(5.96px,1.9vw,24.96px)] lg:text-[clamp(5.52px,1.3vw,25.6px)] font-bold text-center leading-tight  multi-line-truncate multi-line-truncate-2">
@@ -279,8 +279,7 @@ export default function CardTour({ unitData, mode = "list" }: CardTourProps) {
               </TooltipProvider>
             </div>
           </div>
-          <div className="w-full flex flex-row mt-[clamp(0px,4.1vw,42.04px)] sm:mt-[clamp(0px,1.5vw,42.04px)] lg:mt-[clamp(4.6px,1.13vw,21.76px)]">
-            <div className="w-1/2"></div>
+          <div className="w-full flex flex-row mt-[clamp(0px,4.1vw,42.04px)] sm:mt-[clamp(0px,1.5vw,42.04px)] lg:mt-[clamp(4.6px,1.13vw,21.76px)] justify-center">
             <Link
               href={href}
               className="w-full flex justify-center cursor-pointer w-1/2"

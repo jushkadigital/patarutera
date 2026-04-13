@@ -1,0 +1,110 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e7]
+          - text: ventas@patarutera.pe
+          - generic [ref=e10]: "|"
+          - generic [ref=e11]:
+            - link [ref=e12] [cursor=pointer]:
+              - /url: https://www.facebook.com/PataRutera
+              - img [ref=e13]
+            - link [ref=e15] [cursor=pointer]:
+              - /url: https://www.instagram.com/patarutera/
+              - img [ref=e16]
+            - link [ref=e20] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@patarutera
+              - img [ref=e21]
+        - generic [ref=e23]:
+          - link "+51 930 770 103" [ref=e24] [cursor=pointer]:
+            - /url: https://wa.link/25w6dc
+            - img
+            - text: +51 930 770 103
+          - button "Iniciar Sesion" [ref=e25]
+          - button [ref=e26]:
+            - img
+          - link "( 0 )" [ref=e28] [cursor=pointer]:
+            - /url: /pe/cart
+            - img [ref=e29]
+            - text: (
+            - generic [ref=e33]: "0"
+            - text: )
+      - generic [ref=e34]:
+        - link "Logo" [ref=e35] [cursor=pointer]:
+          - /url: /pe
+          - img "Logo" [ref=e36]
+        - navigation "Main" [ref=e37]:
+          - list [ref=e39]:
+            - listitem [ref=e40]:
+              - link "Destinos" [ref=e41] [cursor=pointer]:
+                - /url: /pe/destino
+            - listitem [ref=e42]:
+              - link "Paquetes" [ref=e43] [cursor=pointer]:
+                - /url: /pe/paquetes?destinations=Ica,Cusco
+            - listitem [ref=e44]:
+              - link "Tours" [ref=e45] [cursor=pointer]:
+                - /url: /pe/tours?destination=Cusco&categories=
+            - listitem [ref=e46]:
+              - link "Blog" [ref=e47] [cursor=pointer]:
+                - /url: /pe/posts
+  - main [ref=e48]:
+    - generic [ref=e50]:
+      - generic [ref=e51]: Tu carrito ya no esta disponible, seras redirigido al checkout
+      - generic [ref=e53]:
+        - heading "Carrito Vacio" [level=1] [ref=e54]
+        - paragraph [ref=e55]: No tienes tours agregados al carrito
+  - contentinfo [ref=e56]:
+    - img "Peruvian landscape" [ref=e58]
+    - generic [ref=e61]:
+      - img "Logo" [ref=e64]
+      - generic [ref=e67]:
+        - generic [ref=e68]:
+          - heading "INFORMACIÓN DE CONTACTO" [level=3] [ref=e69]
+          - list [ref=e70]:
+            - listitem [ref=e71]:
+              - generic [ref=e72]:
+                - img [ref=e73]
+                - generic [ref=e75]: +51 930 770 103
+            - listitem [ref=e76]:
+              - generic [ref=e77]:
+                - img [ref=e78]
+                - generic [ref=e81]: ventas@patarutera.pe
+            - listitem [ref=e82]:
+              - generic [ref=e83]:
+                - img [ref=e84]
+                - generic [ref=e87]: Av. Tacna 168 Wánchaq - Cusco
+        - generic [ref=e88]:
+          - heading "INFORMACION LEGAL" [level=3] [ref=e89]
+          - list [ref=e90]:
+            - listitem [ref=e91]:
+              - generic [ref=e93]: "RUC: 20613583832"
+            - listitem [ref=e94]:
+              - generic [ref=e96]: "Razon Social: EXPERIENCIAS GLOBALES SAC"
+            - listitem [ref=e97]:
+              - link "Politica de Privacidad" [ref=e98] [cursor=pointer]:
+                - /url: /pe/politicas-de-privacidad
+                - generic [ref=e99]: Politica de Privacidad
+            - listitem [ref=e100]:
+              - link "Libro de Reclamaciones" [ref=e101] [cursor=pointer]:
+                - /url: /pe/libro-de-reclamaciones
+                - generic [ref=e102]: Libro de Reclamaciones
+            - listitem [ref=e103]:
+              - link "Terminos y Condiciones" [ref=e104] [cursor=pointer]:
+                - /url: /pe/terminos-y-condiciones
+                - generic [ref=e105]: Terminos y Condiciones
+      - generic [ref=e106]:
+        - img "Logo2" [ref=e108]
+        - img "Logo3" [ref=e110]
+    - generic [ref=e111]:
+      - generic [ref=e112]:
+        - link [ref=e113] [cursor=pointer]:
+          - /url: https://www.facebook.com/PataRutera
+          - img [ref=e114]
+        - link [ref=e116] [cursor=pointer]:
+          - /url: https://www.instagram.com/patarutera/
+          - img [ref=e117]
+        - link [ref=e121] [cursor=pointer]:
+          - /url: https://www.tiktok.com/@patarutera
+          - img [ref=e122]
+      - generic [ref=e124]: Desarrollado por Jushka Digital

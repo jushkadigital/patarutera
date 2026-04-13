@@ -85,7 +85,7 @@ export default async function OrderCompletedTemplate({
   }));
 
   return (
-    <div className="relative overflow-hidden bg-[#f3f3f3]">
+    <div className="relative min-h-screen overflow-hidden bg-[#f3f3f3]">
       <PurchaseTracker
         eventKey={order.id}
         payload={{
