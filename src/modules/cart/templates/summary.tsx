@@ -36,12 +36,14 @@ const formatSolesAmount = (amount: number): string => {
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart;
+  isAuthenticated: boolean;
   hasAuthSessionCookie: boolean;
   hasMedusaSessionCookie: boolean;
 };
 
 const Summary = ({
   cart,
+  isAuthenticated,
   hasAuthSessionCookie,
   hasMedusaSessionCookie,
 }: SummaryProps) => {
@@ -55,6 +57,8 @@ const Summary = ({
     open: openCheckoutChoice,
     close: closeCheckoutChoice,
   } = useToggleState(false);
+  const shouldBypassCheckoutChoice =
+    isAuthenticated || Boolean(cart.customer_id);
 
   const originalTotal = toNumber(cart.original_total);
   const discountTotal = toNumber(cart.discount_total);
@@ -132,6 +136,15 @@ const Summary = ({
     window.location.assign(syncUrl);
   };
 
+  const handleCheckoutClick = () => {
+    if (shouldBypassCheckoutChoice) {
+      void loginAndContinueCheckout();
+      return;
+    }
+
+    openCheckoutChoice();
+  };
+
   return (
     <div className="flex w-full justify-end">
       <div className=" max-w-[426px]">
@@ -181,7 +194,7 @@ const Summary = ({
 
           <Button
             className="h-[51px] w-full rounded-[8px] border border-[#e2e2e2] bg-[#efba06] px-6 font-[Poppins] text-[16px] font-medium text-white hover:bg-[#dba900] sm:w-[180px]"
-            onClick={openCheckoutChoice}
+            onClick={handleCheckoutClick}
             disabled={isLoading || isSyncing}
             aria-busy={isLoading || isSyncing}
             data-testid="checkout-button"

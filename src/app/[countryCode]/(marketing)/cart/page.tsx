@@ -28,11 +28,14 @@ export default async function Cart({
   const cookieStore = await cookies();
   const hasAuthSessionCookie = Boolean(
     cookieStore.get("authjs.session-token")?.value ||
-      cookieStore.get("__Secure-authjs.session-token")?.value ||
-      cookieStore.get("next-auth.session-token")?.value ||
-      cookieStore.get("__Secure-next-auth.session-token")?.value,
+    cookieStore.get("__Secure-authjs.session-token")?.value ||
+    cookieStore.get("next-auth.session-token")?.value ||
+    cookieStore.get("__Secure-next-auth.session-token")?.value,
   );
-  const hasMedusaSessionCookie = Boolean(cookieStore.get("_medusa_jwt")?.value);
+  const hasMedusaSessionCookie = Boolean(
+    cookieStore.get("_medusa_jwt")?.value ||
+    cookieStore.get("__Secure-_medusa_jwt")?.value,
+  );
 
   const cart = await retrieveCart().catch((error) => {
     console.error(error);
