@@ -1,4 +1,5 @@
 "use client";
+import { trackContact } from "@/lib/analytics";
 import { cn } from "@/lib2/utils";
 import { SvgFacebook, SvgInstagram, SvgTiktok, SvgWhatsapp } from "./IconsSvg";
 import { Button } from "./ui/button";
@@ -10,8 +11,16 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { StoreCart } from "@medusajs/types";
 import CartDropdown from "@modules/layout/components/cart-dropdown";
 
+type SocialNetworkName = "facebook" | "instagram" | "tiktok";
+
+type SocialNetwork = {
+  id: string | number;
+  iconName: SocialNetworkName;
+  link: string;
+};
+
 interface Props {
-  socialNetworks: any[];
+  socialNetworks: SocialNetwork[];
   email: string;
   isHome: boolean;
   cart: StoreCart | null;
@@ -25,6 +34,7 @@ export const TopHeader = ({
   cart,
   isAuthenticated,
 }: Props) => {
+  const whatsappUrl = "https://wa.link/25w6dc";
   const networkName = {
     facebook: SvgFacebook,
     instagram: SvgInstagram,
@@ -33,6 +43,16 @@ export const TopHeader = ({
 
   const isMobile = useMobile({ breakpoint: 610 });
   const { openPopup, isLoading, error } = usePopupAuth();
+
+  const handleWhatsappClick = () => {
+    trackContact({
+      contentName: "Top Header WhatsApp",
+      contentCategory: "site_header",
+      contentType: "contact",
+      description: "WhatsApp contact from the top header",
+      pageLocation: window.location.href,
+    });
+  };
 
   const handleLoginClick = async () => {
     try {
@@ -60,6 +80,11 @@ export const TopHeader = ({
           <div className="flex flex-row gap-x-1 md:gap-x-4 lg:gap-x-5">
             {socialNetworks.map((ele) => {
               const Compo = networkName[ele.iconName];
+
+              if (!Compo) {
+                return null;
+              }
+
               return (
                 <a
                   key={ele.id}
@@ -75,16 +100,26 @@ export const TopHeader = ({
         </div>
         <div className="flex flex-row justify-center items-center gap-x-2 sm:gap-x-4">
           {isMobile ? (
-            <SvgWhatsapp size={20} />
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Contactar por WhatsApp"
+              onClick={handleWhatsappClick}
+              className="inline-flex items-center justify-center"
+            >
+              <SvgWhatsapp size={20} />
+            </a>
           ) : (
             <Button
               className="bg-[#3EAE64] rounded-2xl sm:text-xs lg:text-md"
               asChild
             >
               <a
-                href="https://wa.link/25w6dc"
+                href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={handleWhatsappClick}
               >
                 <SvgWhatsapp />
                 +51 930 770 103

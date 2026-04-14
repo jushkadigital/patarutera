@@ -264,3 +264,25 @@ export const trackPurchase = (payload: AnalyticsPayload) => {
   sendTikTokEvent("Purchase", providerPayload);
   sendGoogleEvent("purchase", googlePayload);
 };
+
+export const trackContact = (payload: AnalyticsPayload) => {
+  const items = sanitizeItems(payload.items);
+  const providerPayload = buildMetaAndTikTokPayload({
+    ...payload,
+    contentType: payload.contentType ?? "product",
+  });
+  const googlePayload = {
+    method: "whatsapp",
+    ...(payload.contentName ? { content_name: payload.contentName } : {}),
+    ...(payload.contentCategory
+      ? { content_category: payload.contentCategory }
+      : {}),
+    ...(payload.pageLocation ? { page_location: payload.pageLocation } : {}),
+    ...(payload.description ? { description: payload.description } : {}),
+    ...(items.length > 0 ? { items: buildGaItems(items) } : {}),
+  };
+
+  sendMetaEvent("Contact", providerPayload);
+  sendTikTokEvent("Contact", providerPayload);
+  sendGoogleEvent("generate_lead", googlePayload, false);
+};

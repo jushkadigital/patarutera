@@ -3,8 +3,7 @@
 import { deleteLineItem, deleteMultipleLineItem } from "@lib/data/cart";
 import { Spinner, Trash } from "@medusajs/icons";
 import { clx } from "@medusajs/ui";
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const DeleteButton = ({
   id,
@@ -16,16 +15,11 @@ const DeleteButton = ({
   className?: string;
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
-  const [, startTransition] = useTransition();
 
   const handleDelete = async (id: string) => {
     setIsDeleting(true);
     try {
       await deleteLineItem(id);
-      startTransition(() => {
-        router.refresh();
-      });
       window.dispatchEvent(new CustomEvent("cart:item-removed"));
     } catch (error) {
       console.error("Failed to remove cart item", error);
@@ -63,16 +57,11 @@ export const CustomDeleteButton = ({
   className?: string;
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
-  const [, startTransition] = useTransition();
 
   const handleDelete = async (ids: string[]) => {
     setIsDeleting(true);
     try {
       await deleteMultipleLineItem(ids);
-      startTransition(() => {
-        router.refresh();
-      });
       window.dispatchEvent(new CustomEvent("cart:item-removed"));
     } catch (error) {
       console.error("Failed to remove grouped cart items", error);

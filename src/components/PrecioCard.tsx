@@ -1,29 +1,16 @@
 "use client";
 
+import { trackContact } from "@/lib/analytics";
 import { Fragment, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { User, Mail, MessageSquare, Send, Users } from "lucide-react";
 import { Media } from "@/cms-types";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { useMobile } from "@/hooks/useMobile";
-import Link from "next/link";
 import { SvgWhatsapp } from "./IconsSvg";
 import { BookingCard } from "./booking-card";
 import { HttpTypes } from "@medusajs/types";
 
-// 1. INTERFAZ DE DATOS DEL FORMULARIO ACTUALIZADA
-// Se cambian los campos 'fecha' y 'pasajeros' por los que necesitas: 'nombre', 'email', 'mensaje'.
-interface FormData {
-  nombre: string;
-  numberPasajeros: number;
-  mensaje: string;
-}
-
-// 2. PROPS DEL COMPONENTE SIMPLIFICADAS
-// Se ajustan las props para que sean más genéricas para un formulario de contacto.
-// 'origen' se mantiene para saber de dónde se envía el formulario.
 interface Props {
   paymentForm?: {
     iconDate?: (number | null) | Media;
@@ -35,7 +22,7 @@ interface Props {
   phoneNumber: string;
   title: string;
   medusaId: HttpTypes.StoreProduct;
-  formId?: number
+  formId?: number;
 }
 
 export default function FormularioContacto({
@@ -43,47 +30,35 @@ export default function FormularioContacto({
   phoneNumber,
   title,
   medusaId,
-  formId
+  formId,
 }: Props) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
   const pathname = usePathname();
 
-  // 3. CONFIGURACIÓN DE REACT-HOOK-FORM ACTUALIZADA
-  // Se inicializa el formulario con los nuevos campos y sus valores por defecto.
-
-  // 4. ÚNICA FUNCIÓN DE ENVÍO
-  // Se reemplazan 'onSubmitReserva' y 'onSubmitCarrito' por una sola función 'onSubmit'.
   const handleSubmit = async () => {
-    setIsSubmitting(true);
-    setSubmitMessage("");
-
     try {
-      // Simulamos una llamada a una API para enviar el correo o guardar en la BD.
-
-      if (typeof window.fbq === "function") {
-        window.fbq("track", "Lead");
-      }
-      if (window.ttq) {
-        window.ttq.track("SubmitForm");
-      }
-
       const cleanedNumber = phoneNumber.replace(/[^0-9]/g, "");
       const finalMessage = `Hola deseo informacion sobre ${origen}:${title}  `;
-      // En el objeto enviado, incluimos el 'origen' que viene de las props.
       const encodedMessage = encodeURIComponent(finalMessage);
       const waUrl = `https://wa.me/${cleanedNumber}?text=${encodedMessage}`;
+
+      trackContact({
+        contentName: title,
+        contentCategory: origen,
+        contentType: "contact",
+        description: `WhatsApp contact from ${origen}`,
+        pageLocation: window.location.href,
+        items: [
+          {
+            itemId: medusaId.id,
+            itemName: title,
+            itemCategory: origen,
+          },
+        ],
+      });
+
       window.open(waUrl, "_blank");
-      setSubmitMessage(
-        "¡Mensaje enviado exitosamente! Gracias por contactarnos.",
-      );
     } catch (error) {
       console.error("Error al enviar el formulario:", error);
-      setSubmitMessage(
-        "Error al enviar el mensaje. Por favor, intenta nuevamente.",
-      );
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -91,32 +66,7 @@ export default function FormularioContacto({
 
   const isMobile = useMobile();
 
-  function getSafeAmount(amount?: number): number {
-    if (typeof amount === "number" && Number.isFinite(amount)) {
-      return amount;
-    }
-
-    return 0;
-  }
-
-  function formatMoney(
-    amount?: number,
-    currency: string = "PEN",
-    locale: string = "en-US",
-  ): string {
-    const safeAmount = getSafeAmount(amount);
-
-    return safeAmount.toLocaleString(locale, {
-      currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  }
-
-
   return (
-    // 5. ESTRUCTURA Y ESTILOS DEL COMPONENTE ADAPTADOS
-    // Se mantiene un diseño limpio y profesional para el formulario.
     <Fragment>
       {isMobile ? (
         <>
@@ -128,9 +78,7 @@ export default function FormularioContacto({
                 <div className="w-2/3">
                   <div className="text-gray-600">
                     {" "}
-                    De:{" "}
-                    <span className="text-[#25D366] ">
-                    </span>
+                    De: <span className="text-[#25D366] "></span>
                   </div>
                   <div>{title}</div>
                 </div>
@@ -157,8 +105,7 @@ export default function FormularioContacto({
             <Button
               size="icon"
               className="bg-[#25D366] rounded-full size-10 cursor-pointer"
-              onClick={() => handleSubmit()}
-              asChild
+              onClick={() => void handleSubmit()}
             >
               <SvgWhatsapp size={20} className="size-5" />
             </Button>
@@ -169,8 +116,7 @@ export default function FormularioContacto({
           <Button
             size="icon"
             className="bg-[#25D366] rounded-full size-10 cursor-pointer"
-            onClick={() => handleSubmit()}
-            asChild
+            onClick={() => void handleSubmit()}
           >
             <SvgWhatsapp size={20} className="size-5" />
           </Button>

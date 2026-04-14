@@ -1,3 +1,7 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+
 import ItemsTemplate from "./items";
 import Summary from "./summary";
 import EmptyCartMessage from "../components/empty-cart-message";
@@ -16,9 +20,51 @@ const CartTemplate = ({
   hasAuthSessionCookie: boolean;
   hasMedusaSessionCookie: boolean;
 }) => {
+  const [localCart, setLocalCart] = useState<HttpTypes.StoreCart | null>(cart);
+
+  const refreshCart = useCallback(async () => {
+    try {
+      const response = await fetch("/api/cart", {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to refresh cart state");
+      }
+
+      const data = (await response.json()) as {
+        cart: HttpTypes.StoreCart | null;
+      };
+
+      setLocalCart(data.cart);
+    } catch (error) {
+      console.error("Failed to refresh cart after update", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    setLocalCart(cart);
+  }, [cart]);
+
+  useEffect(() => {
+    const handleCartChange = () => {
+      void refreshCart();
+    };
+
+    window.addEventListener("cart:item-added", handleCartChange);
+    window.addEventListener("cart:item-removed", handleCartChange);
+    window.addEventListener("cart:updated", handleCartChange);
+
+    return () => {
+      window.removeEventListener("cart:item-added", handleCartChange);
+      window.removeEventListener("cart:item-removed", handleCartChange);
+      window.removeEventListener("cart:updated", handleCartChange);
+    };
+  }, [refreshCart]);
+
   const isAuthenticated = Boolean(
     customer?.id ||
-    cart?.customer_id ||
+    localCart?.customer_id ||
     hasAuthSessionCookie ||
     hasMedusaSessionCookie,
   );
@@ -31,15 +77,15 @@ const CartTemplate = ({
             Tu carrito ya no esta disponible, seras redirigido al checkout{" "}
           </div>
         )}
-        {cart?.items?.length ? (
+        {localCart?.items?.length ? (
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col gap-y-6">
               {!customer && <></>}
-              <ItemsTemplate cart={cart} />
+              <ItemsTemplate cart={localCart} />
             </div>
-            {cart && cart.region && (
+            {localCart && localCart.region && (
               <Summary
-                cart={cart}
+                cart={localCart}
                 isAuthenticated={isAuthenticated}
                 hasAuthSessionCookie={hasAuthSessionCookie}
                 hasMedusaSessionCookie={hasMedusaSessionCookie}
