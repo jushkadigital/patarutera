@@ -58,7 +58,7 @@ export const TopHeader = ({
     try {
       await openPopup({ provider: "keycloak" });
       window.location.reload();
-    } catch {}
+    } catch { }
   };
 
   return (
@@ -141,7 +141,7 @@ export const TopHeader = ({
                 )}
               >
                 {isMobile ? (
-                  <CircleUserRound size={"icon"} className="size-5" />
+                  <CircleUserRound size={"icon"} className="size-5 text-white" color="#fff" />
                 ) : (
                   "Mi perfil"
                 )}
@@ -158,7 +158,7 @@ export const TopHeader = ({
               {isLoading ? (
                 <span className="text-xs text-white">...</span>
               ) : (
-                <CircleUserRound size={"icon"} className="size-5" />
+                <CircleUserRound size={"icon"} className="size-5 text-white" color="#fff" />
               )}
             </Button>
           ) : (
