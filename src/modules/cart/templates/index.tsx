@@ -62,13 +62,6 @@ const CartTemplate = ({
     };
   }, [refreshCart]);
 
-  const isAuthenticated = Boolean(
-    customer?.id ||
-    localCart?.customer_id ||
-    hasAuthSessionCookie ||
-    hasMedusaSessionCookie,
-  );
-
   return (
     <div className="py-12 font-[Poppins]">
       <div className="content-container" data-testid="cart-container">
@@ -86,7 +79,6 @@ const CartTemplate = ({
             {localCart && localCart.region && (
               <Summary
                 cart={localCart}
-                isAuthenticated={isAuthenticated}
                 hasAuthSessionCookie={hasAuthSessionCookie}
                 hasMedusaSessionCookie={hasMedusaSessionCookie}
               />
