@@ -7,29 +7,33 @@ import Spinner from "@modules/common/icons/spinner";
 import Trash from "@modules/common/icons/trash";
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition } from "react";
-import { useFormStatus } from "react-dom";
 import ErrorMessage from "../error-message";
 
 type DiscountCodeProps = {
   cart: HttpTypes.StoreCart;
 };
 
-const ApplyCouponSubmitButton = ({ disabled }: { disabled: boolean }) => {
-  const { pending } = useFormStatus();
-
+const ApplyCouponSubmitButton = ({
+  disabled,
+  isLoading,
+}: {
+  disabled: boolean;
+  isLoading: boolean;
+}) => {
   return (
     <Button
       type="submit"
       variant="secondary"
-      disabled={disabled || pending}
-      className="h-11 rounded-[10px] border border-[#d9d9d9] bg-[#2970b7] px-5 font-[Poppins] text-[14px] font-medium text-white hover:bg-[#245f9a] disabled:opacity-70"
+      disabled={disabled || isLoading}
+      className="h-11 min-w-[160px] rounded-[10px] border border-[#d9d9d9] bg-[#2970b7] px-5 font-[Poppins] text-[14px] font-medium text-white hover:bg-[#245f9a] disabled:opacity-70"
       data-testid="discount-apply-button"
     >
-      {pending ? (
-        <>
+      {isLoading ? (
+        <span className="flex items-center gap-2">
           <Spinner size="18" className="text-white" />
+          <span>Validando...</span>
           <span className="sr-only">Validating coupon</span>
-        </>
+        </span>
       ) : (
         "Aplicar Cupón"
       )}
@@ -40,7 +44,9 @@ const ApplyCouponSubmitButton = ({ disabled }: { disabled: boolean }) => {
 const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   const router = useRouter();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isApplying, setIsApplying] = useState(false);
   const [isRemoving, startRemoveTransition] = useTransition();
 
   const promotions = cart.promotions ?? [];
@@ -60,28 +66,44 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
     window.dispatchEvent(new CustomEvent("cart:item-removed"));
   };
 
-  const handleApplyCoupon = async (formData: FormData) => {
-    if (isLocked) {
+  const handleToggleForm = () => {
+    if (isApplying) {
       return;
     }
 
-    const code = formData.get("code");
+    setErrorMessage(null);
+    setCouponCode("");
+    setIsFormOpen((currentValue) => !currentValue);
+  };
 
-    if (typeof code !== "string" || !code.trim()) {
+  const handleApplyCoupon = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (isLocked || isApplying) {
+      return;
+    }
+
+    const code = couponCode.trim();
+
+    if (!code) {
       setErrorMessage("El codigo del cupon es requerido");
       return;
     }
 
     setErrorMessage(null);
+    setIsApplying(true);
 
     try {
       await applyCoupon(code);
+      setCouponCode("");
       setIsFormOpen(false);
       refreshCartState();
     } catch (error: unknown) {
       setErrorMessage(
         error instanceof Error ? error.message : "Fallo al aplicar cupon",
       );
+    } finally {
+      setIsApplying(false);
     }
   };
 
@@ -129,18 +151,22 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => setIsFormOpen((currentValue) => !currentValue)}
-            disabled={isLocked}
+            onClick={handleToggleForm}
+            disabled={isLocked || isApplying}
             data-testid="add-discount-button"
             className="h-10 rounded-[10px] border border-[#d9d9d9] bg-white px-4 font-[Poppins] text-[14px] font-medium text-[#2970b7] hover:bg-[#f8fbff]"
           >
-            {isFormOpen ? "Cancel" : "Aplicar Cupón"}
+            {isFormOpen ? "Cancelar" : "Aplicar Cupón"}
           </Button>
         ) : null}
       </div>
 
       {isFormOpen && !manualPromotion ? (
-        <form action={handleApplyCoupon} className="mt-4 flex flex-col gap-3">
+        <form
+          onSubmit={handleApplyCoupon}
+          className="mt-4 flex flex-col gap-3"
+          aria-busy={isApplying}
+        >
           <Label
             htmlFor="promotion-input"
             className="font-[Poppins] text-[13px] font-medium text-[#747474]"
@@ -154,11 +180,27 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
               name="code"
               type="text"
               autoComplete="off"
-              disabled={isLocked}
+              value={couponCode}
+              onChange={(event) => setCouponCode(event.target.value)}
+              disabled={isLocked || isApplying}
               data-testid="discount-input"
             />
-            <ApplyCouponSubmitButton disabled={isLocked || isRemoving} />
+            <ApplyCouponSubmitButton
+              disabled={
+                isLocked || isRemoving || couponCode.trim().length === 0
+              }
+              isLoading={isApplying}
+            />
           </div>
+
+          {isApplying ? (
+            <Text
+              className="font-[Poppins] text-[13px] leading-normal text-[#747474]"
+              aria-live="polite"
+            >
+              Validando cupón...
+            </Text>
+          ) : null}
         </form>
       ) : null}
 
