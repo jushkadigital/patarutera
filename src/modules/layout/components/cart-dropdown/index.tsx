@@ -1,6 +1,7 @@
 "use client";
 
 import { Transition } from "@headlessui/react";
+import { registerCartRefresh, waitForNextPaint } from "@lib/util/cart-sync";
 import { convertToLocale } from "@lib/util/money";
 import { HttpTypes } from "@medusajs/types";
 import { Button } from "@medusajs/ui";
@@ -124,6 +125,7 @@ const CartDropdown = ({
       });
       const data = await response.json();
       setLocalCart(data.cart);
+      await waitForNextPaint();
     } catch (error) {
       console.error("Failed to fetch cart:", error);
     }
@@ -167,8 +169,10 @@ const CartDropdown = ({
       }
     };
 
-    const handleItemRemoved = () => {
-      fetchCart();
+    const handleItemRemoved: EventListener = (event) => {
+      const refreshPromise = fetchCart();
+
+      registerCartRefresh(event, refreshPromise);
     };
 
     const handleCartUpdated = () => {

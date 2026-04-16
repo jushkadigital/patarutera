@@ -1,6 +1,7 @@
 "use client";
 
 import { deleteLineItem, deleteMultipleLineItem } from "@lib/data/cart";
+import { createCartRefreshSyncEvent } from "@lib/util/cart-sync";
 import { Spinner, Trash } from "@medusajs/icons";
 import { clx } from "@medusajs/ui";
 import { useState } from "react";
@@ -20,7 +21,11 @@ const DeleteButton = ({
     setIsDeleting(true);
     try {
       await deleteLineItem(id);
-      window.dispatchEvent(new CustomEvent("cart:item-removed"));
+      const { event, waitForPendingUpdates } =
+        createCartRefreshSyncEvent("cart:item-removed");
+
+      window.dispatchEvent(event);
+      await waitForPendingUpdates();
     } catch (error) {
       console.error("Failed to remove cart item", error);
     } finally {
@@ -62,7 +67,11 @@ export const CustomDeleteButton = ({
     setIsDeleting(true);
     try {
       await deleteMultipleLineItem(ids);
-      window.dispatchEvent(new CustomEvent("cart:item-removed"));
+      const { event, waitForPendingUpdates } =
+        createCartRefreshSyncEvent("cart:item-removed");
+
+      window.dispatchEvent(event);
+      await waitForPendingUpdates();
     } catch (error) {
       console.error("Failed to remove grouped cart items", error);
     } finally {

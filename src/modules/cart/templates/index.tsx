@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import ItemsTemplate from "./items";
 import Summary from "./summary";
 import EmptyCartMessage from "../components/empty-cart-message";
+import { registerCartRefresh, waitForNextPaint } from "@lib/util/cart-sync";
 import { HttpTypes } from "@medusajs/types";
 
 const CartTemplate = ({
@@ -37,6 +38,7 @@ const CartTemplate = ({
       };
 
       setLocalCart(data.cart);
+      await waitForNextPaint();
     } catch (error) {
       console.error("Failed to refresh cart after update", error);
     }
@@ -47,8 +49,10 @@ const CartTemplate = ({
   }, [cart]);
 
   useEffect(() => {
-    const handleCartChange = () => {
-      void refreshCart();
+    const handleCartChange: EventListener = (event) => {
+      const refreshPromise = refreshCart();
+
+      registerCartRefresh(event, refreshPromise);
     };
 
     window.addEventListener("cart:item-added", handleCartChange);

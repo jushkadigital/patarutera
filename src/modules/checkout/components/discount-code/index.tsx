@@ -13,30 +13,16 @@ type DiscountCodeProps = {
   cart: HttpTypes.StoreCart;
 };
 
-const ApplyCouponSubmitButton = ({
-  disabled,
-  isLoading,
-}: {
-  disabled: boolean;
-  isLoading: boolean;
-}) => {
+const ApplyCouponSubmitButton = ({ disabled }: { disabled: boolean }) => {
   return (
     <Button
       type="submit"
       variant="secondary"
-      disabled={disabled || isLoading}
+      disabled={disabled}
       className="h-11 min-w-[160px] rounded-[10px] border border-[#d9d9d9] bg-[#2970b7] px-5 font-[Poppins] text-[14px] font-medium text-white hover:bg-[#245f9a] disabled:opacity-70"
       data-testid="discount-apply-button"
     >
-      {isLoading ? (
-        <span className="flex items-center gap-2">
-          <Spinner size="18" className="text-white" />
-          <span>Validando...</span>
-          <span className="sr-only">Validating coupon</span>
-        </span>
-      ) : (
-        "Aplicar Cupón"
-      )}
+      Aplicar Cupón
     </Button>
   );
 };
@@ -48,6 +34,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isApplying, setIsApplying] = useState(false);
   const [isRemoving, startRemoveTransition] = useTransition();
+  const [isRefreshingCoupon, startRefreshTransition] = useTransition();
 
   const promotions = cart.promotions ?? [];
   const manualPromotion = promotions.find(
@@ -59,6 +46,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
 
   const paymentSessions = cart.payment_collection?.payment_sessions ?? [];
   const isLocked = paymentSessions.length > 0;
+  const isCouponLoading = isApplying || isRefreshingCoupon;
 
   const refreshCartState = () => {
     router.refresh();
@@ -67,7 +55,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   };
 
   const handleToggleForm = () => {
-    if (isApplying) {
+    if (isCouponLoading) {
       return;
     }
 
@@ -79,7 +67,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   const handleApplyCoupon = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (isLocked || isApplying) {
+    if (isLocked || isCouponLoading) {
       return;
     }
 
@@ -97,7 +85,9 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       await applyCoupon(code);
       setCouponCode("");
       setIsFormOpen(false);
-      refreshCartState();
+      startRefreshTransition(() => {
+        refreshCartState();
+      });
     } catch (error: unknown) {
       setErrorMessage(
         error instanceof Error ? error.message : "Fallo al aplicar cupon",
@@ -147,12 +137,12 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
           </Text>
         </div>
 
-        {!manualPromotion ? (
+        {!manualPromotion && !isCouponLoading ? (
           <Button
             type="button"
             variant="secondary"
             onClick={handleToggleForm}
-            disabled={isLocked || isApplying}
+            disabled={isLocked}
             data-testid="add-discount-button"
             className="h-10 rounded-[10px] border border-[#d9d9d9] bg-white px-4 font-[Poppins] text-[14px] font-medium text-[#2970b7] hover:bg-[#f8fbff]"
           >
@@ -161,12 +151,19 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
         ) : null}
       </div>
 
-      {isFormOpen && !manualPromotion ? (
-        <form
-          onSubmit={handleApplyCoupon}
-          className="mt-4 flex flex-col gap-3"
-          aria-busy={isApplying}
+      {!manualPromotion && isCouponLoading ? (
+        <div
+          className="mt-4 flex min-h-[72px] items-center justify-center rounded-[12px] border border-[#eef2f7] bg-[#f8fbff]"
+          aria-live="polite"
+          aria-busy="true"
         >
+          <Spinner size="22" className="text-[#2970b7]" />
+          <span className="sr-only">Validating coupon</span>
+        </div>
+      ) : null}
+
+      {isFormOpen && !manualPromotion && !isCouponLoading ? (
+        <form onSubmit={handleApplyCoupon} className="mt-4 flex flex-col gap-3">
           <Label
             htmlFor="promotion-input"
             className="font-[Poppins] text-[13px] font-medium text-[#747474]"
@@ -189,18 +186,8 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
               disabled={
                 isLocked || isRemoving || couponCode.trim().length === 0
               }
-              isLoading={isApplying}
             />
           </div>
-
-          {isApplying ? (
-            <Text
-              className="font-[Poppins] text-[13px] leading-normal text-[#747474]"
-              aria-live="polite"
-            >
-              Validando cupón...
-            </Text>
-          ) : null}
         </form>
       ) : null}
 

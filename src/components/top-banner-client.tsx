@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Destination } from "@/cms-types";
+import { registerCartRefresh, waitForNextPaint } from "@lib/util/cart-sync";
 import { HttpTypes } from "@medusajs/types";
 import { Header } from "./Header";
 import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner";
@@ -48,13 +49,16 @@ export default function TopBannerClient({
         };
 
         setCart(data.cart ?? null);
+        await waitForNextPaint();
       } catch {
         setCart(null);
       }
     };
 
-    const handleCartChange = () => {
-      void syncSessionState();
+    const handleCartChange: EventListener = (event) => {
+      const refreshPromise = syncSessionState();
+
+      registerCartRefresh(event, refreshPromise);
     };
 
     void syncSessionState();
