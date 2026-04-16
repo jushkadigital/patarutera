@@ -30,6 +30,8 @@ type FormBlockSubmitProps = {
   onSuccessfulSubmit?: (data: FieldValues) => Promise<void> | void;
   submitToApi?: boolean;
   showLoadingIndicator?: boolean;
+  loadingMessage?: string;
+  loadingIndicatorDelayMs?: number;
 };
 
 type FormField = NonNullable<FormType["fields"]>[number];
@@ -130,6 +132,8 @@ export const FormBlock: React.FC<
     onSuccessfulSubmit,
     submitToApi = true,
     showLoadingIndicator = true,
+    loadingMessage = "Submitting form...",
+    loadingIndicatorDelayMs = 1000,
   } = props;
 
   const formMethods = useForm<FieldValues>({
@@ -166,10 +170,9 @@ export const FormBlock: React.FC<
           value,
         }));
 
-        // delay loading indicator by 1s
         loadingTimerID = setTimeout(() => {
           setIsLoading(true);
-        }, 1000);
+        }, loadingIndicatorDelayMs);
 
         try {
           if (submitToApi) {
@@ -237,6 +240,7 @@ export const FormBlock: React.FC<
       confirmationType,
       onSuccessfulSubmit,
       submitToApi,
+      loadingIndicatorDelayMs,
     ],
   );
 
@@ -254,8 +258,13 @@ export const FormBlock: React.FC<
               <RichText data={confirmationMessage} />
             )}
             {showLoadingIndicator && isLoading && !hasSubmitted && (
-              <div className="flex items-center text-ui-fg-subtle">
+              <div
+                className="flex items-center gap-2 text-ui-fg-subtle"
+                role="status"
+                aria-live="polite"
+              >
                 <Spinner size={16} />
+                <span>{loadingMessage}</span>
               </div>
             )}
             {error && (

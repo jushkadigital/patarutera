@@ -253,7 +253,8 @@ export default function PreData({
                         enableIntro={false}
                         form={withSubmitLabel(groupForm.structure)}
                         submitToApi={false}
-                        showLoadingIndicator={false}
+                        loadingIndicatorDelayMs={0}
+                        loadingMessage="Formulario enviado. Redirigiendo a pago..."
                         onSuccessfulSubmit={(values) =>
                           handleGroupSubmitted(groupForm, values)
                         }
@@ -278,12 +279,6 @@ export default function PreData({
 
           {continueError && (
             <Text className="txt-medium text-red-600">{continueError}</Text>
-          )}
-
-          {isSubmitting && (
-            <Text className="txt-medium mt-4 text-ui-fg-subtle">
-              Validando formularios y redirigiendo a pago...
-            </Text>
           )}
         </div>
       ) : (
