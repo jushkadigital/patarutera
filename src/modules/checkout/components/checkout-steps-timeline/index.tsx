@@ -63,36 +63,39 @@ export default function CheckoutStepsTimeline({
   );
 
   return (
-    <div
-      className="overflow-x-auto px-1 py-2"
-      data-testid="checkout-steps-timeline"
-    >
+    <div className="px-1 py-2" data-testid="checkout-steps-timeline">
       <div
-        className="mx-auto min-w-[677px] max-w-[677px]"
+        className="mx-auto w-full max-w-[677px]"
         aria-label="Checkout timeline"
       >
-        <ol className="flex items-center">
+        <ol className="flex w-full items-start">
           {TIMELINE_STEPS.map((step, index) => {
             const isLast = index === TIMELINE_STEPS.length - 1;
             const isActive = index === activeIndex;
 
             return (
-              <li key={step.key} className="flex items-center">
-                <span
-                  className={clx(
-                    "flex h-[46px] w-[46px] items-center justify-center rounded-full border text-[24px] font-bold leading-none transition-colors",
-                    {
-                      "border-[#2970B7] bg-[#2970B7] text-white": isActive,
-                      "border-[#CFCFCF] bg-white text-[#ACACAC]": !isActive,
-                    },
-                  )}
-                  aria-current={isActive ? "step" : undefined}
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+              <li key={step.key} className="flex min-w-0 flex-1 items-start">
+                <div className="flex shrink-0 flex-col items-center text-center">
+                  <span
+                    className={clx(
+                      "flex h-10 w-10 items-center justify-center rounded-full border text-[18px] font-bold leading-none transition-colors sm:h-[46px] sm:w-[46px] sm:text-[24px]",
+                      {
+                        "border-[#2970B7] bg-[#2970B7] text-white": isActive,
+                        "border-[#CFCFCF] bg-white text-[#ACACAC]": !isActive,
+                      },
+                    )}
+                    aria-current={isActive ? "step" : undefined}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <span className="mt-3 w-16 text-center text-[12px] leading-tight text-[#585858] sm:w-20 sm:text-[16px] sm:leading-normal">
+                    {step.label}
+                  </span>
+                </div>
 
                 {!isLast && (
-                  <div className="h-px w-[267px] bg-[#D9D9D9]">
+                  <div className="mx-2 mt-5 h-px min-w-3 flex-1 bg-[#D9D9D9] sm:mx-4 sm:mt-[23px]">
                     <span
                       className={clx("block h-full transition-all", {
                         "w-full bg-[#2970B7]": index < activeIndex,
@@ -105,21 +108,6 @@ export default function CheckoutStepsTimeline({
             );
           })}
         </ol>
-
-        <div className="mt-4 flex items-start">
-          {TIMELINE_STEPS.map((step, index) => {
-            return (
-              <div key={step.key} className="flex items-start">
-                <span className="w-[46px] text-center text-[16px] text-[#585858]">
-                  {step.label}
-                </span>
-                {index < TIMELINE_STEPS.length - 1 && (
-                  <div className="w-[267px]" />
-                )}
-              </div>
-            );
-          })}
-        </div>
       </div>
     </div>
   );

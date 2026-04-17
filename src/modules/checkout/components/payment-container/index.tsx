@@ -35,14 +35,14 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
       value={paymentProviderId}
       disabled={disabled}
       className={clx(
-        "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+        "mb-2 flex cursor-pointer flex-col gap-3 rounded-rounded border px-4 py-4 text-small-regular transition-shadow hover:shadow-borders-interactive-with-active sm:flex-row sm:items-center sm:justify-between sm:px-8",
         {
           "border-ui-border-interactive":
             selectedPaymentOptionId === paymentProviderId,
         },
       )}
     >
-      <div className="flex items-center gap-x-4">
+      <div className="flex w-full items-center gap-x-4 sm:w-auto">
         <Radio checked={selectedPaymentOptionId === paymentProviderId} />
         <Text className="text-base-regular">
           {paymentInfoMap[paymentProviderId]?.title || paymentProviderId}
@@ -51,7 +51,7 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
           <PaymentTest className="hidden small:block" />
         )}
       </div>
-      <span className="justify-self-end text-ui-fg-base">
+      <span className="self-end text-ui-fg-base sm:self-auto">
         {paymentInfoMap[paymentProviderId]?.icon}
       </span>
       {isManual(paymentProviderId) && isDevelopment && (

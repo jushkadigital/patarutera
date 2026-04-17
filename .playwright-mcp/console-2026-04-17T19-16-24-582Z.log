@@ -1,0 +1,61 @@
+[    1174ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe:0
+[    6155ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[    6155ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[    6155ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[    6155ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[    6155ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[    6155ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[    6266ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:16383
+[    6440ms] [WARNING] Image with src "/pataruteraLogo.png" was detected as the Largest Contentful Paint (LCP). Please add the "priority" property if this image is above the fold.
+Read more: https://nextjs.org/docs/api-reference/next/image#priority @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[    6495ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:3532
+[    6496ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:3532
+[    6515ms] [ERROR] Error: <svg> attribute width: Expected length, "icon". @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:3532
+[    6515ms] [ERROR] Error: <svg> attribute height: Expected length, "icon". @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_compiled_d01b58fe._.js:3532
+[    6610ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:4000/_next/webpack-hmr' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:14633
+[   18405ms] [ERROR] Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `RevistaBlock`.  @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:1225
+[   18572ms] [WARNING] [TikTok Pixel] - Missing 'content_id' paramter
+Issue: The 'content_id' parameter isn't being received. This is required for Video Shopping Ads (VSA).
+Suggestion: Include the 'content_id' parameter in your source code. This is required for Video Shopping Ads (VSA). See https://ads.tiktok.com/help/article/standard-events-parameters?redirected=2 for more information. @ https://analytics.tiktok.com/i18n/pixel/static/main.MWE0ZWQ3ZWQwMQ.js:0
+[   18573ms] [WARNING] [TikTok Pixel] - Missing value for content ID
+Issue: Include a value for your 'content_id' parameter. This is required for Video Shopping Ads (VSA).
+Suggestion: If you are or plan to run Video Shopping Ads (VSA), go to your source code and include a value for the 'content_id' parameter. See https://ads.tiktok.com/help/article/standard-events-parameters?redirected=2 for more information. @ https://analytics.tiktok.com/i18n/pixel/static/main.MWE0ZWQ3ZWQwMQ.js:0
+[   18631ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://127.0.0.1:4000/__nextjs_original-stack-frames:0
+[   18931ms] [WARNING] Image with src "https://patarutera3.s3.us-east-1.amazonaws.com/REVISTA%20-%20WEB%20AMARILLO-1400x788.webp" was detected as the Largest Contentful Paint (LCP). Please add the "priority" property if this image is above the fold.
+Read more: https://nextjs.org/docs/api-reference/next/image#priority @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_b0708e28._.js:1073
+[   19297ms] [INFO] %c[TikTok] 
+
+We're hiring!
+Are you ready to make a change?
+Check out some of our available positions at https://careers.tiktok.com/ color: #fe2c55 @ https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/falcon/embed/embed_lib_v1.0.13.js:0
+[   26716ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[   36006ms] [WARNING] [TikTok Pixel] - Missing value for content ID
+Issue: Include a value for your 'content_id' parameter. This is required for Video Shopping Ads (VSA).
+Suggestion: If you are or plan to run Video Shopping Ads (VSA), go to your source code and include a value for the 'content_id' parameter. See https://ads.tiktok.com/help/article/standard-events-parameters?redirected=2 for more information. @ https://analytics.tiktok.com/i18n/pixel/static/main.MWE0ZWQ3ZWQwMQ.js:0
+[   36006ms] [WARNING] [TikTok Pixel] - Invalid content type
+Issue: The content type for one or more of your events is not valid. Content type must be either "product", "product_group", "destination", "hotel", "flight" or "vehicle".
+Suggestion: Go to your source code and update the content type. See https://ads.tiktok.com/help/article/standard-events-parameters?redirected=2 for more information. @ https://analytics.tiktok.com/i18n/pixel/static/main.MWE0ZWQ3ZWQwMQ.js:0
+[   36006ms] [WARNING] [TikTok Pixel] - Missing "value" parameter
+Issue: Events shared are missing a 'value' parameter'. This is used calculate ROAS for people and the bid for your highest value customers. 
+Suggestion: Go to your source code and include the "value" parameter. See https://ads.tiktok.com/help/article/standard-events-parameters?redirected=2 for more information. @ https://analytics.tiktok.com/i18n/pixel/static/main.MWE0ZWQ3ZWQwMQ.js:0
+[   44148ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[   55621ms] [ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:1225
+[   55622ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://127.0.0.1:4000/_next/static/chunks/node_modules__pnpm_90cccf90._.js:15187
+[   55628ms] [ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog @ http://127.0.0.1:4000/_next/static/chunks/6a3d8_next_dist_client_85900cb9._.js:1225
+[   55629ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://127.0.0.1:4000/_next/static/chunks/node_modules__pnpm_90cccf90._.js:15187
+[   55723ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://127.0.0.1:4000/__nextjs_original-stack-frames:0
+[   59851ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[   79825ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[   90061ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[   96689ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0
+[   99837ms] [WARNING] The resource http://127.0.0.1:4000/_next/static/chunks/%5Broot-of-the-server%5D__2b739dcc._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:4000/pe/tours/valle-sagrado-vip:0

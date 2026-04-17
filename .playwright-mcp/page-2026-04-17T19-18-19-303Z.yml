@@ -1,0 +1,96 @@
+- generic [active] [ref=e1]:
+  - region "Notifications alt+T"
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e7]
+          - text: ventas@patarutera.pe
+          - generic [ref=e10]:
+            - link [ref=e11] [cursor=pointer]:
+              - /url: https://www.facebook.com/PataRutera
+              - img [ref=e12]
+            - link [ref=e14] [cursor=pointer]:
+              - /url: https://www.instagram.com/patarutera/
+              - img [ref=e15]
+            - link [ref=e19] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@patarutera
+              - img [ref=e20]
+        - generic [ref=e22]:
+          - link "Contactar por WhatsApp":
+            - /url: https://wa.link/25w6dc
+            - img
+          - button [ref=e24]:
+            - img
+          - button [ref=e25]:
+            - img
+          - link "( 0 )" [ref=e27] [cursor=pointer]:
+            - /url: /pe/cart
+            - img [ref=e28]
+            - text: (
+            - generic [ref=e32]: "0"
+            - text: )
+      - generic [ref=e33]:
+        - link "Logo" [ref=e34] [cursor=pointer]:
+          - /url: /pe
+          - img "Logo" [ref=e35]
+        - img [ref=e36]
+  - main [ref=e37]:
+    - generic [ref=e41]:
+      - heading "Carrito Vacio" [level=1] [ref=e42]
+      - paragraph [ref=e43]: No tienes tours agregados al carrito
+  - contentinfo [ref=e44]:
+    - img "Peruvian landscape" [ref=e46]
+    - generic [ref=e49]:
+      - img "Logo" [ref=e52]
+      - generic [ref=e55]:
+        - generic [ref=e56]:
+          - heading "INFORMACIÓN DE CONTACTO" [level=3] [ref=e57]
+          - list [ref=e58]:
+            - listitem [ref=e59]:
+              - generic [ref=e60]:
+                - img [ref=e61]
+                - generic [ref=e63]: +51 930 770 103
+            - listitem [ref=e64]:
+              - generic [ref=e65]:
+                - img [ref=e66]
+                - generic [ref=e69]: ventas@patarutera.pe
+            - listitem [ref=e70]:
+              - generic [ref=e71]:
+                - img [ref=e72]
+                - generic [ref=e75]: Av. Tacna 168 Wánchaq - Cusco
+        - generic [ref=e76]:
+          - heading "INFORMACION LEGAL" [level=3] [ref=e77]
+          - list [ref=e78]:
+            - listitem [ref=e79]:
+              - generic [ref=e81]: "RUC: 20613583832"
+            - listitem [ref=e82]:
+              - generic [ref=e84]: "Razon Social: EXPERIENCIAS GLOBALES SAC"
+            - listitem [ref=e85]:
+              - link "Politica de Privacidad" [ref=e86] [cursor=pointer]:
+                - /url: /pe/politicas-de-privacidad
+                - generic [ref=e87]: Politica de Privacidad
+            - listitem [ref=e88]:
+              - link "Libro de Reclamaciones" [ref=e89] [cursor=pointer]:
+                - /url: /pe/libro-de-reclamaciones
+                - generic [ref=e90]: Libro de Reclamaciones
+            - listitem [ref=e91]:
+              - link "Terminos y Condiciones" [ref=e92] [cursor=pointer]:
+                - /url: /pe/terminos-y-condiciones
+                - generic [ref=e93]: Terminos y Condiciones
+      - generic [ref=e94]:
+        - img "Logo2" [ref=e96]
+        - img "Logo3" [ref=e98]
+    - generic [ref=e99]:
+      - generic [ref=e100]:
+        - link [ref=e101] [cursor=pointer]:
+          - /url: https://www.facebook.com/PataRutera
+          - img [ref=e102]
+        - link [ref=e104] [cursor=pointer]:
+          - /url: https://www.instagram.com/patarutera/
+          - img [ref=e105]
+        - link [ref=e109] [cursor=pointer]:
+          - /url: https://www.tiktok.com/@patarutera
+          - img [ref=e110]
+      - generic [ref=e112]: Desarrollado por Jushka Digital
+  - alert [ref=e118]

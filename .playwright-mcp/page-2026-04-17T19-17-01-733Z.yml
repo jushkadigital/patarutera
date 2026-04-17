@@ -1,0 +1,308 @@
+- generic [ref=e1]:
+  - region "Notifications alt+T"
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e7]
+          - text: ventas@patarutera.pe
+          - generic [ref=e10]:
+            - link [ref=e11] [cursor=pointer]:
+              - /url: https://www.facebook.com/PataRutera
+              - img [ref=e12]
+            - link [ref=e14] [cursor=pointer]:
+              - /url: https://www.instagram.com/patarutera/
+              - img [ref=e15]
+            - link [ref=e19] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@patarutera
+              - img [ref=e20]
+        - generic [ref=e22]:
+          - link "Contactar por WhatsApp":
+            - /url: https://wa.link/25w6dc
+            - img
+          - button [ref=e24]:
+            - img
+          - button [ref=e25]:
+            - img
+          - link "( 0 )" [ref=e27] [cursor=pointer]:
+            - /url: /pe/cart
+            - img [ref=e28]
+            - text: (
+            - generic [ref=e32]: "0"
+            - text: )
+      - generic [ref=e33]:
+        - link "Logo" [ref=e34] [cursor=pointer]:
+          - /url: /pe
+          - img "Logo" [ref=e35]
+        - img [ref=e36]
+  - main [ref=e37]:
+    - generic [ref=e39]:
+      - region [ref=e463]:
+        - generic [ref=e465]:
+          - group [ref=e466]:
+            - img "Pisaq centro arqueologico" [ref=e469]
+          - group [ref=e470]:
+            - img "Amigas en salineras de Maras" [ref=e473]
+          - group [ref=e474]:
+            - img "Ruinas de Ollantaytambo" [ref=e477]
+          - group [ref=e478]:
+            - img "Ollantaytambo por dentro" [ref=e481]
+        - button "‹" [ref=e482]
+        - button "›" [ref=e483]
+      - generic [ref=e66]:
+        - heading "Valle Sagrado Vip" [level=1] [ref=e68]
+        - generic [ref=e71]:
+          - generic [ref=e75]:
+            - heading "VALLE SAGRADO VIP– UN VIAJE POR LA HERENCIA INCA" [level=1] [ref=e76]
+            - paragraph [ref=e78]:
+              - text: "Antes de vivir esta aventura, le compartimos lo que debe saber:"
+              - strong [ref=e79]: Ubicación
+              - text: ": Valle del río Urubamba, corazón agrícola y espiritual del antiguo Tahuantinsuyo – CuscoFF."
+              - strong [ref=e80]: Tipo de Tour
+              - text: ": Excursión de un día completo."
+              - strong [ref=e81]: Hora de inicio / finalización
+              - text: ": Recojo entre las 6:30 a.m. y 6:45 a.m. desde su hotel. Retorno a Cusco aproximadamente a las 7:00 p.m."
+              - strong [ref=e82]: "Dificultad:"
+              - text: Fácil - Actividad sin esfuerzo físico importante, apta para todos.
+              - strong [ref=e83]: "Recomendado para:"
+              - text: Todos
+          - generic:
+            - generic [ref=e485]:
+              - generic [ref=e486]:
+                - generic [ref=e487]: "De:"
+                - generic [ref=e488]: Valle Sagrado Vip
+              - button "RESERVAR" [ref=e489]
+            - button [active] [ref=e491] [cursor=pointer]:
+              - img
+        - generic [ref=e129]:
+          - generic [ref=e130]:
+            - img "logo Duracion" [ref=e132]
+            - generic [ref=e133]:
+              - generic [ref=e134]: Duracion
+              - generic [ref=e135]: 1 dia
+          - generic [ref=e136]:
+            - img "logo Tamaño del grupo" [ref=e138]
+            - generic [ref=e139]:
+              - generic [ref=e140]: Tamaño del grupo
+              - generic [ref=e141]: 18 personas
+          - generic [ref=e142]:
+            - img "logo Dificultad" [ref=e144]
+            - generic [ref=e145]:
+              - generic [ref=e146]: Dificultad
+              - generic [ref=e147]: Facil
+          - generic [ref=e148]:
+            - img "logo Altitud" [ref=e150]
+            - generic [ref=e151]:
+              - generic [ref=e152]: Altitud
+              - generic [ref=e153]: 3230 msnm
+          - generic [ref=e154]:
+            - img "logo Idioma" [ref=e156]
+            - generic [ref=e157]:
+              - generic [ref=e158]: Idioma
+              - generic [ref=e159]: Español/Ingles
+        - button "Descargar Brouchere" [ref=e492]:
+          - link "Descargar Brouchere" [ref=e493] [cursor=pointer]:
+            - /url: https://drive.google.com/file/d/1lKe9zxQ_055y8CVlO3ZyEfwVG3tKbatZ/view?usp=sharing
+            - text: Descargar Brouchere
+            - img
+        - generic [ref=e172]:
+          - heading "Guia Rutera" [level=1] [ref=e175]
+          - generic [ref=e178]:
+            - generic [ref=e179]:
+              - button "icon Itinerario" [ref=e180]:
+                - img "icon" [ref=e183]
+                - generic [ref=e184]: Itinerario
+              - button "icon Incluye/No Incluye" [ref=e186]:
+                - img "icon" [ref=e189]
+                - generic [ref=e190]: Incluye/No Incluye
+              - button "icon Precios" [ref=e191]:
+                - img "icon" [ref=e194]
+                - generic [ref=e195]: Precios
+              - button "icon Información del viaje" [ref=e196]:
+                - img "icon" [ref=e199]
+                - generic [ref=e200]: Información del viaje
+              - button "faqsIcon Preguntas Frecuentes" [ref=e201]:
+                - img "faqsIcon" [ref=e204]
+                - generic [ref=e205]: Preguntas Frecuentes
+            - generic [ref=e209]:
+              - list [ref=e210]:
+                - listitem [ref=e211]:
+                  - strong [ref=e212]: Itinerario – Tour Valle Sagrado
+                - listitem [ref=e213]:
+                  - list [ref=e214]:
+                    - listitem [ref=e215]:
+                      - strong [ref=e216]: Recojo temprano
+                      - text: ": Nos recogen entre las 6:30 y 6:45 a.m. directamente desde nuestros hoteles. Desde ese instante, comienza nuestra inmersión en la historia inca, acompañados de un guía especializado y transporte turístico cómodo."
+                    - listitem [ref=e217]:
+                      - strong [ref=e218]: Chinchero – tradición viva
+                      - text: ": Llegamos al encantador pueblo de Chinchero, conocido como “el lugar del arcoíris”. Visitamos su centro arqueológico y apreciamos desde afuera su iglesia colonial construida sobre antiguos muros incas. Entramos a una casa artesanal donde las tejedoras locales nos muestran el arte ancestral de trabajar la lana de alpaca y oveja con pigmentos naturales."
+                    - listitem [ref=e219]:
+                      - strong [ref=e220]: Moray – ingeniería agrícola ancestral
+                      - text: ": Continuamos hacia Moray, el antiguo laboratorio agrícola inca. Aquí observamos sus terrazas circulares, donde los incas experimentaban con microclimas para cultivar diferentes productos adaptándolos a altitudes diversas."
+                    - listitem [ref=e221]:
+                      - strong [ref=e222]: Salineras de Maras – el oro blanco de los Andes
+                      - text: ": A pocos minutos encontramos las Salineras de Maras, un paisaje único con más de 3,000 pozas de sal activas desde tiempos preincaicos. Admiramos cómo las familias locales siguen extrayendo sal mediante técnicas heredadas de generación en generación."
+                    - listitem [ref=e223]:
+                      - strong [ref=e224]: Almuerzo en Urubamba
+                      - text: ": Nos dirigimos a Urubamba para disfrutar de un delicioso almuerzo buffet con platos típicos, ensaladas frescas y postres andinos que nos reconfortan y renuevan energías."
+                    - listitem [ref=e225]:
+                      - strong [ref=e226]: Ollantaytambo – la ciudad inca viviente
+                      - text: ": Luego del almuerzo, llegamos a Ollantaytambo, un sitio arqueológico impresionante. Recorremos sus calles empedradas, ascendemos sus andenes y templos incas mientras aprendemos sobre su historia como centro estratégico de defensa contra los conquistadores. Desde la cima, disfrutamos de una vista espectacular del pueblo y las montañas circundantes."
+                    - listitem [ref=e227]:
+                      - strong [ref=e228]: Pisaq – la joya en la montaña
+                      - text: ": Para cerrar el día, visitamos Pisaq y su imponente complejo arqueológico. Caminamos entre terrazas agrícolas y recintos ceremoniales, admirando las vistas panorámicas del valle. Finalizamos con una visita al pueblo y un taller de orfebrería tradicional."
+                    - listitem [ref=e229]:
+                      - strong [ref=e230]: Retorno a Cusco
+                      - text: ": Finalizamos el tour regresando a la ciudad. Llegamos a Cusco alrededor de las 7:00 p.m., con el cuerpo cansado pero el corazón lleno de recuerdos y aprendizajes."
+              - paragraph [ref=e231]
+        - generic [ref=e233]:
+          - heading "Tours Similares" [level=1] [ref=e236]
+          - generic [ref=e238]:
+            - generic [ref=e239]:
+              - link "Cusco" [ref=e240] [cursor=pointer]:
+                - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                - generic [ref=e244]: Cusco
+              - generic [ref=e248]:
+                - link "Tour a la Montaña de Colores y Valle Rojo en Cuatrimotos" [ref=e249] [cursor=pointer]:
+                  - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                  - heading "Tour a la Montaña de Colores y Valle Rojo en Cuatrimotos" [level=2] [ref=e251]
+                - paragraph [ref=e254]: Aventura en cuatrimoto por Montaña de Colores y Valle Rojo, pura emoción inolvidable.
+                - generic [ref=e255]:
+                  - generic [ref=e256]:
+                    - paragraph [ref=e257]: Desde
+                    - generic [ref=e259]: S/. 299
+                    - paragraph [ref=e260]: Por persona
+                  - generic [ref=e261]:
+                    - generic [ref=e262]:
+                      - img "icon" [ref=e264]
+                      - generic [ref=e265]: Hasta 18
+                    - generic [ref=e266]:
+                      - img "icon" [ref=e268]
+                      - generic [ref=e269]: Facil
+                - link "Ver Detalles" [ref=e271] [cursor=pointer]:
+                  - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                  - button "Ver Detalles" [ref=e272]
+            - generic [ref=e273]:
+              - link "Cusco" [ref=e274] [cursor=pointer]:
+                - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                - generic [ref=e278]: Cusco
+              - generic [ref=e282]:
+                - link "Montaña Pallay Poncho Full Day" [ref=e283] [cursor=pointer]:
+                  - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                  - heading "Montaña Pallay Poncho Full Day" [level=2] [ref=e285]
+                - paragraph [ref=e288]: Aventura andina entre montañas coloridas y paisajes únicos en la naturaleza cusqueña.
+                - generic [ref=e289]:
+                  - generic [ref=e290]:
+                    - paragraph [ref=e291]: Desde
+                    - generic [ref=e293]: S/. 182
+                    - paragraph [ref=e294]: Por persona
+                  - generic [ref=e295]:
+                    - generic [ref=e296]:
+                      - img "icon" [ref=e298]
+                      - generic [ref=e299]: Hasta 18
+                    - generic [ref=e300]:
+                      - img "icon" [ref=e302]
+                      - generic [ref=e303]: Facil
+                - link "Ver Detalles" [ref=e305] [cursor=pointer]:
+                  - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                  - button "Ver Detalles" [ref=e306]
+            - generic [ref=e307]:
+              - link "Cusco pLaZa dE aRmAs cUsCo" [ref=e308] [cursor=pointer]:
+                - /url: /pe/tours/tour-valle-sur
+                - generic [ref=e309]:
+                  - generic [ref=e312]: Cusco
+                  - img "pLaZa dE aRmAs cUsCo" [ref=e314]
+              - generic [ref=e317]:
+                - link "Tour Valle Sur" [ref=e318] [cursor=pointer]:
+                  - /url: /pe/tours/tour-valle-sur
+                  - heading "Tour Valle Sur" [level=2] [ref=e320]
+                - paragraph [ref=e323]: Viajar es descubrir, conectar y hacer recuerdo cada momento que toca el corazón.
+                - generic [ref=e324]:
+                  - generic [ref=e325]:
+                    - paragraph [ref=e326]: Desde
+                    - generic [ref=e328]: S/. 45
+                    - paragraph [ref=e329]: Por persona
+                  - generic [ref=e330]:
+                    - generic [ref=e331]:
+                      - img "icon" [ref=e333]
+                      - generic [ref=e334]: Hasta 18
+                    - generic [ref=e335]:
+                      - img "icon" [ref=e337]
+                      - generic [ref=e338]: Facil
+                - link "Ver Detalles" [ref=e340] [cursor=pointer]:
+                  - /url: /pe/tours/tour-valle-sur
+                  - button "Ver Detalles" [ref=e341]
+        - img "eu" [ref=e499] [cursor=pointer]
+        - generic [ref=e343]:
+          - heading "Nuestros reconocimientos" [level=1] [ref=e346]
+          - generic [ref=e502]:
+            - img "icon" [ref=e509]
+            - img "icon" [ref=e524]
+        - generic [ref=e366]:
+          - heading "Nuestros Socios" [level=1] [ref=e369]
+          - generic [ref=e535]:
+            - img "icon" [ref=e538]
+            - img "icon" [ref=e541]
+            - img "icon" [ref=e544]
+            - img "icon" [ref=e547]
+            - img "icon" [ref=e550]
+            - img "icon" [ref=e553]
+            - img "icon" [ref=e556]
+            - img "icon" [ref=e559]
+            - img "icon" [ref=e562]
+            - img "icon" [ref=e565]
+  - contentinfo [ref=e388]:
+    - img "Peruvian landscape" [ref=e390]
+    - generic [ref=e393]:
+      - img "Logo" [ref=e396]
+      - generic [ref=e399]:
+        - generic [ref=e400]:
+          - heading "INFORMACIÓN DE CONTACTO" [level=3] [ref=e401]
+          - list [ref=e402]:
+            - listitem [ref=e403]:
+              - generic [ref=e404]:
+                - img [ref=e405]
+                - generic [ref=e407]: +51 930 770 103
+            - listitem [ref=e408]:
+              - generic [ref=e409]:
+                - img [ref=e410]
+                - generic [ref=e413]: ventas@patarutera.pe
+            - listitem [ref=e414]:
+              - generic [ref=e415]:
+                - img [ref=e416]
+                - generic [ref=e419]: Av. Tacna 168 Wánchaq - Cusco
+        - generic [ref=e420]:
+          - heading "INFORMACION LEGAL" [level=3] [ref=e421]
+          - list [ref=e422]:
+            - listitem [ref=e423]:
+              - generic [ref=e425]: "RUC: 20613583832"
+            - listitem [ref=e426]:
+              - generic [ref=e428]: "Razon Social: EXPERIENCIAS GLOBALES SAC"
+            - listitem [ref=e429]:
+              - link "Politica de Privacidad" [ref=e430] [cursor=pointer]:
+                - /url: /pe/politicas-de-privacidad
+                - generic [ref=e431]: Politica de Privacidad
+            - listitem [ref=e432]:
+              - link "Libro de Reclamaciones" [ref=e433] [cursor=pointer]:
+                - /url: /pe/libro-de-reclamaciones
+                - generic [ref=e434]: Libro de Reclamaciones
+            - listitem [ref=e435]:
+              - link "Terminos y Condiciones" [ref=e436] [cursor=pointer]:
+                - /url: /pe/terminos-y-condiciones
+                - generic [ref=e437]: Terminos y Condiciones
+      - generic [ref=e438]:
+        - img "Logo2" [ref=e440]
+        - img "Logo3" [ref=e442]
+    - generic [ref=e443]:
+      - generic [ref=e444]:
+        - link [ref=e445] [cursor=pointer]:
+          - /url: https://www.facebook.com/PataRutera
+          - img [ref=e446]
+        - link [ref=e448] [cursor=pointer]:
+          - /url: https://www.instagram.com/patarutera/
+          - img [ref=e449]
+        - link [ref=e453] [cursor=pointer]:
+          - /url: https://www.tiktok.com/@patarutera
+          - img [ref=e454]
+      - generic [ref=e456]: Desarrollado por Jushka Digital
+  - alert [ref=e462]

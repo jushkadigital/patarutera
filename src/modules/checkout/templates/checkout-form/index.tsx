@@ -162,14 +162,14 @@ export default async function CheckoutForm({
     : [];
 
   return (
-    <div className=" w-full px-[clamp(25px,6.6vw,155px)] lg:px-[clamp(136px,14.00vw,256px)] grid  grid-cols-1 gap-y-8 font-[Poppins]">
+    <div className="grid w-full grid-cols-1 gap-y-6 px-[clamp(20px,6.6vw,155px)] font-[Poppins] lg:gap-y-8 lg:px-[clamp(136px,14vw,256px)]">
       <CheckoutStepGuard hasPreData={hasPreData} />
       <CheckoutStepsTimeline
         hasPreData={hasPreData}
         isPreDataCompleted={isPreDataCompleted}
       />
-      <div className="flex flex-row">
-        <div className="w-1/2">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+        <div className="w-full lg:w-1/2">
           <CheckoutStepContent
             cart={cart}
             paymentMethods={paymentMethods}

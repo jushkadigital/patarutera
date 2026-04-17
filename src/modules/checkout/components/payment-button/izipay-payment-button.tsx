@@ -43,6 +43,8 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
     sessionToken,
     error: contextError,
   } = context;
+  const isPendingRender = loading || !isInitialized;
+  const embedHeightClass = "min-h-[78dvh] sm:min-h-[620px]";
 
   useEffect(() => {
     if (
@@ -120,20 +122,25 @@ const IzipayPaymentButton: React.FC<IzipayPaymentButtonProps> = ({
         data-testid="izipay-payment-error-message"
       />
 
-      {(loading || !isInitialized) && (
-        <div className="flex items-center justify-center py-4 min-h-[300px]">
-          <Spinner />
-        </div>
-      )}
+      <div className={`relative w-full ${embedHeightClass}`}>
+        {isPendingRender && (
+          <div
+            className={`absolute inset-0 z-10 flex items-center justify-center bg-white/80 ${embedHeightClass}`}
+          >
+            <Spinner />
+          </div>
+        )}
 
-      <div
-        id="izipay-checkout-container"
-        className="min-h-[300px] w-full"
-        data-testid={dataTestId}
-        style={{
-          display: loading || !isInitialized ? "none" : "block",
-        }}
-      />
+        <div
+          id="izipay-checkout-container"
+          className={`w-full ${embedHeightClass}`}
+          data-testid={dataTestId}
+          style={{
+            visibility: isPendingRender ? "hidden" : "visible",
+            pointerEvents: isPendingRender ? "none" : "auto",
+          }}
+        />
+      </div>
     </div>
   );
 };

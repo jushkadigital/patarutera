@@ -214,16 +214,16 @@ export default function PreData({
 
   return (
     <div className="bg-white">
-      <div className="mb-6 flex flex-row items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Heading
           level="h2"
-          className="flex flex-row items-baseline gap-x-2 text-3xl-regular"
+          className="flex flex-row items-baseline gap-x-2 text-[28px] leading-tight sm:text-3xl-regular"
         >
           Datos de Reserva
           {!isOpen && <CheckCircleSolid className="text-ui-fg-interactive" />}
         </Heading>
         {!isOpen && (
-          <Text>
+          <Text className="sm:text-right">
             <button
               onClick={handleEdit}
               className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"

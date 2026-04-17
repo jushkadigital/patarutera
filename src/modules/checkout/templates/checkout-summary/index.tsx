@@ -148,49 +148,49 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
   const hasDiscount = discountTotal > 0;
 
   return (
-    <div className="flex w-full justify-end font-[Poppins] lg:w-1/2">
-      <div className="w-[90%]  ">
-        <div className="px-5 pb-8 pt-6">
+    <div className="flex w-full font-[Poppins] lg:w-1/2 lg:justify-end">
+      <div className="w-full rounded-[20px] border border-[#e7edf4] bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] lg:w-[90%] lg:rounded-[24px]">
+        <div className="px-4 pb-6 pt-5 sm:px-5 sm:pb-8 sm:pt-6">
           <h2 className="font-[Poppins] text-[24px] font-medium leading-normal text-black">
             Resumen de la reserva
           </h2>
-          <div className="mt-4 h-px w-[237px] bg-[#d9d9d9]" />
+          <div className="mt-4 h-px w-full max-w-[237px] bg-[#d9d9d9]" />
 
-          <div className="mt-8 space-y-6">
+          <div className="mt-6 space-y-5 sm:mt-8 sm:space-y-6">
             {reservationGroups.map((group) => (
               <div
                 key={group.id}
-                className="grid grid-cols-[142px_1fr] gap-x-5"
+                className="grid grid-cols-[96px_1fr] gap-x-3 sm:grid-cols-[142px_1fr] sm:gap-x-5"
               >
-                <div className="relative h-[142px] w-[142px] overflow-hidden rounded-[16px] bg-[#d9d9d9]">
+                <div className="relative h-24 w-24 overflow-hidden rounded-[14px] bg-[#d9d9d9] sm:h-[142px] sm:w-[142px] sm:rounded-[16px]">
                   {group.thumbnail ? (
                     <Image
                       src={group.thumbnail}
                       alt={group.title}
                       fill
                       className="object-cover"
-                      sizes="142px"
+                      sizes="(max-width: 640px) 96px, 142px"
                     />
                   ) : null}
                 </div>
 
-                <div className="flex min-h-[142px] flex-col justify-between py-2">
+                <div className="flex min-h-24 flex-col justify-between py-1 sm:min-h-[142px] sm:py-2">
                   <div>
-                    <p className="text-[15px] font-semibold leading-normal text-black">
+                    <p className="text-[14px] font-semibold leading-snug text-black sm:text-[15px] sm:leading-normal">
                       {group.title}
                     </p>
-                    <p className="mt-1 font-[Poppins] text-[15px] leading-normal text-[#747474]">
+                    <p className="mt-1 font-[Poppins] text-[13px] leading-normal text-[#747474] sm:text-[15px]">
                       {group.date}
                     </p>
-                    <p className="mt-1 font-[Poppins] text-[15px] leading-normal text-[#747474]">
+                    <p className="mt-1 font-[Poppins] text-[13px] leading-normal text-[#747474] sm:text-[15px]">
                       {group.passengers}{" "}
                       {group.passengers === 1 ? "pasajero" : "pasajeros"}
                     </p>
                   </div>
 
                   <div className="flex items-end justify-end gap-1 font-[Poppins] font-bold leading-none text-[#2970b7]">
-                    <span className="text-[15px]">s/.</span>
-                    <span className="text-[24px]">
+                    <span className="text-[13px] sm:text-[15px]">s/.</span>
+                    <span className="text-[20px] sm:text-[24px]">
                       {formatSolesAmount(group.total)}
                     </span>
                   </div>
@@ -200,12 +200,12 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
           </div>
         </div>
 
-        <div className="border-t border-[#d9d9d9] px-9 py-7">
+        <div className="border-t border-[#d9d9d9] px-4 py-5 sm:px-6 sm:py-6 lg:px-9 lg:py-7">
           <div className="space-y-5">
             {manualPromotion || automaticPromotions.length > 0 ? (
               <div className="space-y-3 border-b border-[#d9d9d9] pb-5">
                 {manualPromotion ? (
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                     <div className="space-y-1">
                       <p className="font-[Poppins] text-[16px] font-medium leading-normal text-[#747474]">
                         Applied coupon
@@ -245,33 +245,35 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
 
             {hasDiscount ? (
               <div className="space-y-3 border-b border-[#d9d9d9] pb-5">
-                <div className="flex items-center justify-between">
-                  <span className="font-[Poppins] text-[16px] leading-normal text-[#747474]">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-[Poppins] text-[14px] leading-normal text-[#747474] sm:text-[16px]">
                     Original total
                   </span>
-                  <span className="font-[Poppins] text-[18px] leading-normal text-[#747474] line-through">
+                  <span className="font-[Poppins] text-[16px] leading-normal text-[#747474] line-through sm:text-[18px]">
                     s/. {formatSolesAmount(originalTotal)}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="font-[Poppins] text-[16px] font-medium leading-normal text-[#747474]">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-[Poppins] text-[14px] font-medium leading-normal text-[#747474] sm:text-[16px]">
                     Coupon discount
                   </span>
-                  <span className="font-[Poppins] text-[18px] font-semibold leading-normal text-[#2e8b57]">
+                  <span className="font-[Poppins] text-[16px] font-semibold leading-normal text-[#2e8b57] sm:text-[18px]">
                     - s/. {formatSolesAmount(discountTotal)}
                   </span>
                 </div>
               </div>
             ) : null}
 
-            <div className="flex items-end justify-between">
-              <span className="font-[Poppins] text-[20px] font-semibold leading-normal text-[#747474]">
+            <div className="flex items-end justify-between gap-4">
+              <span className="font-[Poppins] text-[18px] font-semibold leading-normal text-[#747474] sm:text-[20px]">
                 Total
               </span>
-              <div className="flex items-end gap-2 font-[Poppins] font-bold leading-none text-[#2970b7]">
-                <span className="text-[30px]">s/.</span>
-                <span className="text-[40px]">{formatSolesAmount(total)}</span>
+              <div className="flex items-end gap-1.5 font-[Poppins] font-bold leading-none text-[#2970b7] sm:gap-2">
+                <span className="text-[24px] sm:text-[30px]">s/.</span>
+                <span className="text-[32px] sm:text-[40px]">
+                  {formatSolesAmount(total)}
+                </span>
               </div>
             </div>
           </div>

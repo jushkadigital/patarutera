@@ -178,19 +178,17 @@ const Payment = ({
 
   return (
     <div className="bg-white">
-      <div className="mb-6 flex flex-row items-center justify-between">
-        <div className="flex flex-col  gap-y-3 w-2/3">
-          <Heading
-
-            className="flex flex-row text-3xl "
-          >
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex w-full flex-col gap-y-2 sm:w-2/3 sm:gap-y-3">
+          <Heading className="flex flex-row text-[28px] leading-tight sm:text-3xl">
             3.Pago de Tours
           </Heading>
 
-          <span>Seleccion una forma de pago para continuar</span>
-
+          <span className="text-sm leading-relaxed text-[#585858] sm:text-base">
+            Seleccion una forma de pago para continuar
+          </span>
         </div>
-        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#2970b7]">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#edf5fd] px-3 py-2 text-sm font-semibold text-[#2970b7] sm:self-start lg:self-auto">
           <Lock aria-hidden="true" className="h-4 w-4 text-[#2970b7]" />
           pago 100% seguro
         </span>

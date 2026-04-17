@@ -1,0 +1,481 @@
+- generic [active]:
+  - region "Notifications alt+T"
+  - banner:
+    - navigation:
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - text: ventas@patarutera.pe
+            - generic:
+              - link:
+                - /url: https://www.facebook.com/PataRutera
+                - img
+              - link:
+                - /url: https://www.instagram.com/patarutera/
+                - img
+              - link:
+                - /url: https://www.tiktok.com/@patarutera
+                - img
+          - generic:
+            - button:
+              - img
+            - button:
+              - img
+            - generic:
+              - link "( 0 )":
+                - /url: /pe/cart
+                - img
+                - text: (
+                - generic: "0"
+                - text: )
+      - generic:
+        - link:
+          - /url: /pe
+          - img
+        - img
+  - main:
+    - generic:
+      - generic:
+        - generic:
+          - region:
+            - generic:
+              - generic:
+                - group:
+                  - generic:
+                    - generic:
+                      - img
+                - group:
+                  - generic:
+                    - generic:
+                      - img
+                - group:
+                  - generic:
+                    - generic:
+                      - img
+                - group:
+                  - generic:
+                    - generic:
+                      - img
+            - button: ‹
+            - button: ›
+        - generic:
+          - generic:
+            - heading [level=1]: Valle Sagrado Vip
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - heading [level=1]: VALLE SAGRADO VIP– UN VIAJE POR LA HERENCIA INCA
+                        - generic:
+                          - paragraph:
+                            - text: "Antes de vivir esta aventura, le compartimos lo que debe saber:"
+                            - strong: Ubicación
+                            - text: ": Valle del río Urubamba, corazón agrícola y espiritual del antiguo Tahuantinsuyo – CuscoFF."
+                            - strong: Tipo de Tour
+                            - text: ": Excursión de un día completo."
+                            - strong: Hora de inicio / finalización
+                            - text: ": Recojo entre las 6:30 a.m. y 6:45 a.m. desde su hotel. Retorno a Cusco aproximadamente a las 7:00 p.m."
+                            - strong: "Dificultad:"
+                            - text: Fácil - Actividad sin esfuerzo físico importante, apta para todos.
+                            - strong: "Recomendado para:"
+                            - text: Todos
+                - generic:
+                  - button:
+                    - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - generic: Duracion
+                    - generic: 1 dia
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - generic: Tamaño del grupo
+                    - generic: 18 personas
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - generic: Dificultad
+                    - generic: Facil
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - generic: Altitud
+                    - generic: 3230 msnm
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - generic: Idioma
+                    - generic: Español/Ingles
+          - generic:
+            - generic:
+              - generic:
+                - button:
+                  - link:
+                    - /url: https://drive.google.com/file/d/1lKe9zxQ_055y8CVlO3ZyEfwVG3tKbatZ/view?usp=sharing
+                    - text: Descargar Brouchere
+                    - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - heading [level=1]: Guia Rutera
+              - generic:
+                - generic:
+                  - generic:
+                    - button:
+                      - generic:
+                        - generic:
+                          - img
+                      - generic: Itinerario
+                    - button:
+                      - generic:
+                        - generic:
+                          - img
+                      - generic: Incluye/No Incluye
+                    - button:
+                      - generic:
+                        - generic:
+                          - img
+                      - generic: Precios
+                    - button:
+                      - generic:
+                        - generic:
+                          - img
+                      - generic: Información del viaje
+                    - button:
+                      - generic:
+                        - generic:
+                          - img
+                      - generic: Preguntas Frecuentes
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - list:
+                            - listitem:
+                              - strong: Itinerario – Tour Valle Sagrado
+                            - listitem:
+                              - list:
+                                - listitem:
+                                  - strong: Recojo temprano
+                                  - text: ": Nos recogen entre las 6:30 y 6:45 a.m. directamente desde nuestros hoteles. Desde ese instante, comienza nuestra inmersión en la historia inca, acompañados de un guía especializado y transporte turístico cómodo."
+                                - listitem:
+                                  - strong: Chinchero – tradición viva
+                                  - text: ": Llegamos al encantador pueblo de Chinchero, conocido como “el lugar del arcoíris”. Visitamos su centro arqueológico y apreciamos desde afuera su iglesia colonial construida sobre antiguos muros incas. Entramos a una casa artesanal donde las tejedoras locales nos muestran el arte ancestral de trabajar la lana de alpaca y oveja con pigmentos naturales."
+                                - listitem:
+                                  - strong: Moray – ingeniería agrícola ancestral
+                                  - text: ": Continuamos hacia Moray, el antiguo laboratorio agrícola inca. Aquí observamos sus terrazas circulares, donde los incas experimentaban con microclimas para cultivar diferentes productos adaptándolos a altitudes diversas."
+                                - listitem:
+                                  - strong: Salineras de Maras – el oro blanco de los Andes
+                                  - text: ": A pocos minutos encontramos las Salineras de Maras, un paisaje único con más de 3,000 pozas de sal activas desde tiempos preincaicos. Admiramos cómo las familias locales siguen extrayendo sal mediante técnicas heredadas de generación en generación."
+                                - listitem:
+                                  - strong: Almuerzo en Urubamba
+                                  - text: ": Nos dirigimos a Urubamba para disfrutar de un delicioso almuerzo buffet con platos típicos, ensaladas frescas y postres andinos que nos reconfortan y renuevan energías."
+                                - listitem:
+                                  - strong: Ollantaytambo – la ciudad inca viviente
+                                  - text: ": Luego del almuerzo, llegamos a Ollantaytambo, un sitio arqueológico impresionante. Recorremos sus calles empedradas, ascendemos sus andenes y templos incas mientras aprendemos sobre su historia como centro estratégico de defensa contra los conquistadores. Desde la cima, disfrutamos de una vista espectacular del pueblo y las montañas circundantes."
+                                - listitem:
+                                  - strong: Pisaq – la joya en la montaña
+                                  - text: ": Para cerrar el día, visitamos Pisaq y su imponente complejo arqueológico. Caminamos entre terrazas agrícolas y recintos ceremoniales, admirando las vistas panorámicas del valle. Finalizamos con una visita al pueblo y un taller de orfebrería tradicional."
+                                - listitem:
+                                  - strong: Retorno a Cusco
+                                  - text: ": Finalizamos el tour regresando a la ciudad. Llegamos a Cusco alrededor de las 7:00 p.m., con el cuerpo cansado pero el corazón lleno de recuerdos y aprendizajes."
+                          - paragraph
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - heading [level=1]: Tours Similares
+              - generic:
+                - generic:
+                  - link:
+                    - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: Cusco
+                  - generic:
+                    - link:
+                      - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                      - generic:
+                        - heading [level=2]: Tour a la Montaña de Colores y Valle Rojo en Cuatrimotos
+                    - generic:
+                      - generic:
+                        - paragraph: Aventura en cuatrimoto por Montaña de Colores y Valle Rojo, pura emoción inolvidable.
+                    - generic:
+                      - generic:
+                        - paragraph: Desde
+                        - generic:
+                          - generic: S/. 299
+                        - paragraph: Por persona
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Hasta 18
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Facil
+                    - generic:
+                      - link:
+                        - /url: /pe/tours/tour-a-la-montaa-de-colores-y-valle-rojo-en-cuatrimotos--
+                        - button: Ver Detalles
+                - generic:
+                  - link:
+                    - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: Cusco
+                  - generic:
+                    - link:
+                      - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                      - generic:
+                        - heading [level=2]: Montaña Pallay Poncho Full Day
+                    - generic:
+                      - generic:
+                        - paragraph: Aventura andina entre montañas coloridas y paisajes únicos en la naturaleza cusqueña.
+                    - generic:
+                      - generic:
+                        - paragraph: Desde
+                        - generic:
+                          - generic: S/. 182
+                        - paragraph: Por persona
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Hasta 18
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Facil
+                    - generic:
+                      - link:
+                        - /url: /pe/tours/montaa-pallay-poncho-full-day-
+                        - button: Ver Detalles
+                - generic:
+                  - link:
+                    - /url: /pe/tours/tour-valle-sur
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: Cusco
+                      - generic:
+                        - img
+                  - generic:
+                    - link:
+                      - /url: /pe/tours/tour-valle-sur
+                      - generic:
+                        - heading [level=2]: Tour Valle Sur
+                    - generic:
+                      - generic:
+                        - paragraph: Viajar es descubrir, conectar y hacer recuerdo cada momento que toca el corazón.
+                    - generic:
+                      - generic:
+                        - paragraph: Desde
+                        - generic:
+                          - generic: S/. 45
+                        - paragraph: Por persona
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Hasta 18
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Facil
+                    - generic:
+                      - link:
+                        - /url: /pe/tours/tour-valle-sur
+                        - button: Ver Detalles
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - heading [level=1]: Nuestros reconocimientos
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - heading [level=1]: Nuestros Socios
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - img
+  - contentinfo:
+    - generic:
+      - img
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - img
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=3]: INFORMACIÓN DE CONTACTO
+                - list:
+                  - listitem:
+                    - generic:
+                      - img
+                      - generic: +51 930 770 103
+                  - listitem:
+                    - generic:
+                      - img
+                      - generic: ventas@patarutera.pe
+                  - listitem:
+                    - generic:
+                      - img
+                      - generic: Av. Tacna 168 Wánchaq - Cusco
+              - generic:
+                - heading [level=3]: INFORMACION LEGAL
+                - list:
+                  - listitem:
+                    - generic:
+                      - generic: "RUC: 20613583832"
+                  - listitem:
+                    - generic:
+                      - generic: "Razon Social: EXPERIENCIAS GLOBALES SAC"
+                  - listitem:
+                    - link:
+                      - /url: /pe/politicas-de-privacidad
+                      - generic: Politica de Privacidad
+                  - listitem:
+                    - link:
+                      - /url: /pe/libro-de-reclamaciones
+                      - generic: Libro de Reclamaciones
+                  - listitem:
+                    - link:
+                      - /url: /pe/terminos-y-condiciones
+                      - generic: Terminos y Condiciones
+        - generic:
+          - generic:
+            - img
+          - generic:
+            - img
+    - generic:
+      - generic:
+        - link:
+          - /url: https://www.facebook.com/PataRutera
+          - img
+        - link:
+          - /url: https://www.instagram.com/patarutera/
+          - img
+        - link:
+          - /url: https://www.tiktok.com/@patarutera
+          - img
+      - generic: Desarrollado por Jushka Digital
+  - alert
+  - dialog [ref=e567]:
+    - generic [ref=e568]:
+      - generic [ref=e571]: "De:"
+      - generic [ref=e572]:
+        - generic [ref=e573]:
+          - generic [ref=e575]:
+            - generic [ref=e576]:
+              - generic [ref=e577]: Adultos
+              - paragraph [ref=e578]: Edad 18 o más
+              - text: PEN 120.00
+            - generic [ref=e579]:
+              - button "Disminuir adultos" [disabled] [ref=e580]:
+                - img [ref=e581]
+              - generic [ref=e582]: "1"
+              - button "Aumentar adultos" [disabled] [ref=e583]:
+                - img [ref=e584]
+          - generic [ref=e586]:
+            - generic [ref=e587]:
+              - generic [ref=e588]: Niños
+              - paragraph [ref=e589]: Edad de 3 a 17 años
+              - text: PEN 0.00
+            - generic [ref=e590]:
+              - button "Disminuir niños" [disabled] [ref=e591]:
+                - img [ref=e592]
+              - generic [ref=e593]: "0"
+              - button "Aumentar niños" [disabled] [ref=e594]:
+                - img [ref=e595]
+          - generic [ref=e597]:
+            - generic [ref=e598]:
+              - generic [ref=e599]: Infantes
+              - paragraph [ref=e600]: Menor de 3 años
+              - text: PEN 0.00
+            - generic [ref=e601]:
+              - button "Disminuir infantes" [disabled] [ref=e602]:
+                - img [ref=e603]
+              - generic [ref=e604]: "0"
+              - button "Aumentar infantes" [disabled] [ref=e605]:
+                - img [ref=e606]
+        - separator [ref=e607]
+        - button "Fecha 17/4/2026" [ref=e608] [cursor=pointer]:
+          - generic [ref=e609]:
+            - generic [ref=e611]: Fecha
+            - generic [ref=e612]: 17/4/2026
+            - img [ref=e613]
+        - generic [ref=e621]:
+          - generic [ref=e622]: "Total Items: 1"
+          - generic [ref=e623]: PEN 120.00
+      - generic [ref=e615]:
+        - button "Agregar al carrito" [disabled]
+    - button "Close" [ref=e616]:
+      - img [ref=e617]
+      - generic [ref=e620]: Close
