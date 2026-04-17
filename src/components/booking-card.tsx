@@ -485,7 +485,7 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
   };
 
   return (
-    <Card className="w-full mx-auto p-6 shadow-lg h-[80vh] md:h-auto">
+    <Card className="mx-auto flex h-[80dvh] w-full flex-col overflow-hidden p-4 shadow-lg sm:p-6 md:h-auto md:max-h-none">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-baseline gap-2">
           <span className="text-muted-foreground text-sm">De:</span>
@@ -493,7 +493,7 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
         </div>
       </div>
 
-      <div className="space-y-4 w-full">
+      <div className="w-full flex-1 space-y-4 overflow-y-auto pr-1">
         <div className="flex flex-col gap-y-4">
           {product.variants
             ?.slice()
@@ -606,19 +606,21 @@ export function BookingCard({ slug, type, medusaId, tourId, formId }: Props) {
         )}
       </div>
 
-      <Button
-        className="w-full mt-6 h-14 text-lg font-semibold bg-[#2970b7] hover:bg-[black] text-white rounded-full shadow-md cursor-pointer"
-        size="lg"
-        onClick={isAddedToCart ? handleGoToCart : handleAddToCart}
-        disabled={
-          isAddedToCart
-            ? isAdding
-            : !product.variants || isAdding || totalItems === 0
-        }
-        data-testid="add-product-button"
-      >
-        {isAddedToCart ? "Ir al carrito" : "Agregar al carrito"}
-      </Button>
+      <div className="mt-4 shrink-0 border-t bg-background pt-4 [padding-bottom:calc(env(safe-area-inset-bottom)+0.25rem)]">
+        <Button
+          className="h-14 w-full cursor-pointer rounded-full bg-[#2970b7] text-lg font-semibold text-white shadow-md hover:bg-[black]"
+          size="lg"
+          onClick={isAddedToCart ? handleGoToCart : handleAddToCart}
+          disabled={
+            isAddedToCart
+              ? isAdding
+              : !product.variants || isAdding || totalItems === 0
+          }
+          data-testid="add-product-button"
+        >
+          {isAddedToCart ? "Ir al carrito" : "Agregar al carrito"}
+        </Button>
+      </div>
     </Card>
   );
 }

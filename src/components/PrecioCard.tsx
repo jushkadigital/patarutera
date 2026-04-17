@@ -4,12 +4,12 @@ import { trackContact } from "@/lib/analytics";
 import { Fragment, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Media } from "@/cms-types";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { useMobile } from "@/hooks/useMobile";
 import { SvgWhatsapp } from "./IconsSvg";
 import { BookingCard } from "./booking-card";
 import { HttpTypes } from "@medusajs/types";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 interface Props {
   paymentForm?: {
@@ -71,7 +71,7 @@ export default function FormularioContacto({
       {isMobile ? (
         <>
           <div className="fixed bottom-0 right-0 z-80 w-full">
-            <Dialog open={open} onOpenChange={setOpen}>
+            <Sheet open={open} onOpenChange={setOpen}>
               <div
                 className={`w-full px-10 bg-[#FFF] ${open ? "hidden" : ""}  border-gray-300 border-t-[0.5px] h-24 flex flex-row justify-center items-center`}
               >
@@ -82,24 +82,24 @@ export default function FormularioContacto({
                   </div>
                   <div>{title}</div>
                 </div>
-                <DialogTrigger asChild className="w-1/3">
-                  <Button
-                    className="bg-[#25D366]  rounded-full text-white xs:py-3! sm:py-7! font-bold text-xs sm:text-lg"
-                    onClick={() => setOpen(false)}
-                  >
+                <SheetTrigger asChild className="w-1/3">
+                  <Button className="bg-[#25D366]  rounded-full text-white xs:py-3! sm:py-7! font-bold text-xs sm:text-lg">
                     RESERVAR
                   </Button>
-                </DialogTrigger>
+                </SheetTrigger>
               </div>
 
-              <DialogContent className="pb-0! px-0! mx-0!">
+              <SheetContent
+                side="bottom"
+                className="max-h-[92dvh] gap-0 overflow-hidden rounded-t-3xl border-0 p-0 [&>button]:top-5 [&>button]:right-5"
+              >
                 <BookingCard
                   type={origen}
                   slug={pathname}
                   medusaId={medusaId}
                 />
-              </DialogContent>
-            </Dialog>
+              </SheetContent>
+            </Sheet>
           </div>
           <div className="fixed bottom-30 right-6 z-50">
             <Button
