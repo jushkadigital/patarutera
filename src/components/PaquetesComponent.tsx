@@ -32,13 +32,14 @@ export function PaquetesComponent({ paquetes, rangeSlider, mode }: Props) {
   }
 
   const { priceOne } = useSharedState();
+  const isMobile = useMobile({ breakpoint: 1024 });
+  const shouldUseGridMode = mode || isMobile;
   const containerClasses = cn(
-    mode
-      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 space-y-10 md:gap-6"
-      : "flex flex-col space-y-4 md:space-y-6 mx-auto w-[90%]",
+    shouldUseGridMode
+      ? "grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6"
+      : "mx-auto flex w-[90%] flex-col space-y-4 md:space-y-6",
   );
 
-  const responsive = useMobile({ breakpoint: 480 });
   return (
     <div className={containerClasses}>
       {paquetes.length > 0 ? (
@@ -58,7 +59,7 @@ export function PaquetesComponent({ paquetes, rangeSlider, mode }: Props) {
               <CardPaquete
                 key={tour.id}
                 unitData={tour}
-                mode={mode ? "grid" : responsive ? "grid" : "list"}
+                mode={shouldUseGridMode ? "grid" : "list"}
               />
             ))
         ) : (
@@ -68,7 +69,7 @@ export function PaquetesComponent({ paquetes, rangeSlider, mode }: Props) {
             <CardPaquete
               key={tour.id}
               unitData={tour}
-              mode={mode ? "grid" : "list"}
+              mode={shouldUseGridMode ? "grid" : "list"}
             />
           ))
         )

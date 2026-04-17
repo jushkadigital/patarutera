@@ -1,19 +1,12 @@
 import { cache, Fragment } from "react";
 
-import type {
-  GridPaquetesBlock,
-  GridToursBlock,
-  Media,
-  Page,
-} from "@/cms-types";
+import type { GridPaquetesBlock, Page } from "@/cms-types";
 import { MediaBlock } from "@blocks/MediaBlock";
 import { GridTours } from "@blocks/GridTours";
 import { RowBlock } from "@blocks/RowBlock";
 import { BannerBlock } from "@/blocks/Banner";
 import { BASEURL } from "@/lib2/config";
-import { RenderHero } from "@/blocks/renderHeros";
 
-import { LeftPanelSearch } from "@/components/leftPanelSearch";
 import { SharedStateProvider } from "@/hooks/sharedContextDestinos";
 import { CarouselDestinos } from "@/blocks/CarouselDestinos";
 import { TikTokLinksBlock } from "@/blocks/TikToksLinksBlock";
@@ -23,7 +16,6 @@ import { SociosBlock } from "@/blocks/Socios";
 import { TextContentBlock } from "@/blocks/TextContent";
 import { BeneficiosBlock } from "@/blocks/BeneficiosBlock";
 import { EstadisticasBlock } from "@/blocks/Estadisticas";
-import { DescrPriceBlock } from "@/blocks/DescPrice";
 import { YouTubeLinksBlock } from "@/blocks/YoutubeLinksBlock";
 import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
@@ -115,8 +107,7 @@ export default async function Page(props: Props) {
 
   const queryString = buildQueryString(searchParams);
   const { isEnabled: draft } = await draftMode();
-  let page: any;
-  page = await queryPageBySlug();
+  const page = await queryPageBySlug();
   if (!page) {
     notFound();
   }
@@ -144,7 +135,7 @@ export default async function Page(props: Props) {
     <div>
       {draft && <LivePreviewListener />}
       <Fragment>
-        {heroPageBlocks!.map(async (block, index) => {
+        {heroPageBlocks!.map(async (block) => {
           const { blockType } = block;
           switch (blockType) {
             case "banner": {
@@ -157,8 +148,8 @@ export default async function Page(props: Props) {
       </Fragment>
 
       <SharedStateProvider>
-        <div className="flex flex-row mt-10 w-[85%] mx-auto">
-          <div className="lg:w-1/3">
+        <div className="mx-auto mt-10 flex w-[90%] flex-col gap-6 md:w-[85%] lg:flex-row lg:items-start">
+          <div className="w-full lg:w-1/3">
             <LeftPanelSearchPaquete />
           </div>
           <div className="w-full lg:w-3/4">
@@ -207,13 +198,13 @@ export default async function Page(props: Props) {
   );
 }
 
-const queryPageBySlug = cache(async () => {
+const queryPageBySlug = cache(async (): Promise<Page | null> => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
   const data = await fetch(
     `${BASEURL}/api/globals/pacP?depth=2&draft=${draft}`,
   ); // Added depth=2 for potentially richer layout data
   const result = await data.json();
-  return result || null;
+  return (result as Page) || null;
 });
 export async function generateStaticParams() {
   const req = await fetch(`${BASEURL}/api/paquetes/count`);
