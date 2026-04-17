@@ -36,7 +36,7 @@ export function ToursComponent({ tours, rangeSlider, mode }: Props) {
   const shouldUseGridMode = mode || isMobile;
   const containerClasses = cn(
     shouldUseGridMode
-      ? "grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6"
+      ? "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6"
       : "mx-auto flex w-[90%] flex-col space-y-4 md:space-y-6",
   );
 

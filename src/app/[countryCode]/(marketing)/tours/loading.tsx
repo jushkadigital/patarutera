@@ -16,7 +16,7 @@ export default function Loading() {
             <span>Actualizando </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 animate-pulse">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
             <div className="h-60 rounded-2xl bg-muted" />
             <div className="h-60 rounded-2xl bg-muted" />
             <div className="h-60 rounded-2xl bg-muted" />
