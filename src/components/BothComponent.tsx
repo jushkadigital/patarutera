@@ -1,9 +1,9 @@
 "use client";
 import { useSharedState } from "@/hooks/sharedContextDestinos";
-import CardTour, { CardTourData } from "./CardTour";
+import type { CardTourData } from "./CardTour";
 import { cn } from "@/lib2/utils";
 import { useMobile } from "@/hooks/useMobile";
-import { CardPaqueteData } from "./cardPaquete";
+import type { CardPaqueteData } from "./cardPaquete";
 import CardBoth from "./CardBoth";
 
 interface Props {
@@ -20,7 +20,9 @@ export function BothComponent({ tours, rangeSlider, mode }: Props) {
     return numberToCheck >= minValue && numberToCheck <= maxValue;
   }
 
-  function getComparablePrice(tour: CardTourData | CardPaqueteData): number | null {
+  function getComparablePrice(
+    tour: CardTourData | CardPaqueteData,
+  ): number | null {
     const medusaPrice = tour.priceMedusa?.amount;
     if (typeof medusaPrice === "number") {
       return medusaPrice;
@@ -34,13 +36,13 @@ export function BothComponent({ tours, rangeSlider, mode }: Props) {
   }
 
   const { priceOne } = useSharedState();
+  const isMobile = useMobile({ breakpoint: 1024 });
+  const shouldUseGridMode = mode || isMobile;
   const containerClasses = cn(
-    mode
-      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 space-y-10 md:gap-6"
-      : "flex flex-col space-y-4 md:space-y-6 mx-auto w-[90%]",
+    shouldUseGridMode
+      ? "grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6"
+      : "mx-auto flex w-[90%] flex-col space-y-4 md:space-y-6",
   );
-
-  const responsive = useMobile({ breakpoint: 480 });
 
   return (
     <div className={containerClasses}>
@@ -61,7 +63,7 @@ export function BothComponent({ tours, rangeSlider, mode }: Props) {
               <CardBoth
                 key={tour.id}
                 unitData={tour}
-                mode={mode ? "grid" : responsive ? "grid" : "list"}
+                mode={shouldUseGridMode ? "grid" : "list"}
               />
             ))
         ) : (
@@ -71,7 +73,7 @@ export function BothComponent({ tours, rangeSlider, mode }: Props) {
             <CardBoth
               key={tour.id}
               unitData={tour}
-              mode={mode ? "grid" : "list"}
+              mode={shouldUseGridMode ? "grid" : "list"}
             />
           ))
         )

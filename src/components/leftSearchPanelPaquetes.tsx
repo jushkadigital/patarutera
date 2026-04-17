@@ -1,9 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Check, ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { parseAsArrayOf, useQueryState, parseAsString } from "nuqs";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { useSharedState } from "@/hooks/sharedContextDestinos";
@@ -19,27 +24,42 @@ import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 import { Input } from "@/components/ui/input";
 
 // Componente principal: Se elimina TourCategoryList
-export function LeftPanelSearchPaquete() {
+export interface PaqueteDestinationOption {
+  id: number;
+  name: string;
+}
+
+interface LeftPanelSearchPaqueteProps {
+  destinations: PaqueteDestinationOption[];
+}
+
+export function LeftPanelSearchPaquete({
+  destinations,
+}: LeftPanelSearchPaqueteProps) {
   const isMobile = useMobile({ breakpoint: 1024 });
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   return (
     <div>
       {isMobile ? (
-        <div className=" absolute mt-[-25px]">
+        <div className="absolute mt-[-25px]">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Filter className="h-2 w-2" />
+              <Button
+                variant="outline"
+                className="h-11 rounded-xl px-4 text-sm font-medium shadow-sm"
+              >
+                <Filter className="h-4 w-4" />
                 Filtros
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="">
+            <SheetContent side="left" className="w-[88vw] max-w-md px-5">
               <SheetHeader>
-                <SheetTitle>Filtrar Tours</SheetTitle>
+                <SheetTitle className="text-lg">Filtrar Paquetes</SheetTitle>
               </SheetHeader>
               <div className="mt-6 overflow-y-auto">
                 <div className="flex flex-col w-full space-y-10 p-4">
                   <MultiDestinationSearch />
+                  <PaqueteDestinationList destinations={destinations} />
                   <PriceFilter />
                 </div>
               </div>
@@ -50,11 +70,101 @@ export function LeftPanelSearchPaquete() {
         <div>
           <div className="flex flex-col w-full space-y-10 p-4">
             <MultiDestinationSearch />
+            <PaqueteDestinationList destinations={destinations} />
             <PriceFilter />
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+interface PaqueteDestinationListProps {
+  destinations: PaqueteDestinationOption[];
+  title?: string;
+}
+
+function PaqueteDestinationList({
+  destinations,
+  title = "Destinos",
+}: PaqueteDestinationListProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isPending, startTransition] = React.useTransition();
+  const [selectedDestination, setSelectedDestination] = useQueryState(
+    "destination",
+    parseAsString.withOptions({
+      shallow: false,
+      startTransition,
+    }),
+  );
+
+  const sortedDestinations = React.useMemo(
+    () =>
+      [...destinations].sort((left, right) =>
+        left.name.localeCompare(right.name),
+      ),
+    [destinations],
+  );
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+      {isPending && <FilterLoadingOverlay label="Actualizando paquetes..." />}
+
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="px-6 py-6 border-b border-[#d9d9d9]">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
+            <CollapsibleTrigger asChild>
+              <button className="flex items-center gap-2 text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-semibold tracking-wide hover:text-[#2970b7]/80 transition-colors">
+                {title.toUpperCase()}
+                <ChevronDown
+                  className={`w-5 h-5 text-[#adadac] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+            </CollapsibleTrigger>
+          </div>
+        </div>
+
+        <CollapsibleContent>
+          <div className="p-6 space-y-3">
+            <button
+              type="button"
+              onClick={() => setSelectedDestination(null)}
+              className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-left transition-colors duration-150 ${
+                !selectedDestination
+                  ? "bg-[#2970b7]/10 text-[#2970b7]"
+                  : "hover:bg-[#f5f5f5] text-[#333]"
+              }`}
+            >
+              <span className="font-medium">Todos los destinos</span>
+              {!selectedDestination && <Check className="h-4 w-4" />}
+            </button>
+
+            {sortedDestinations.map((destination) => {
+              const isSelected = selectedDestination === destination.name;
+
+              return (
+                <button
+                  key={destination.id}
+                  type="button"
+                  onClick={() =>
+                    setSelectedDestination(isSelected ? null : destination.name)
+                  }
+                  className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-left transition-colors duration-150 ${
+                    isSelected
+                      ? "bg-[#2970b7]/10 text-[#2970b7]"
+                      : "hover:bg-[#f5f5f5] text-[#333]"
+                  }`}
+                >
+                  <span className="font-medium">{destination.name}</span>
+                  {isSelected && <Check className="h-4 w-4" />}
+                </button>
+              );
+            })}
+          </div>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
   );
 }
 

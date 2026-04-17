@@ -9,6 +9,7 @@ import {
   Filter,
   Loader2,
   Package,
+  Check,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -43,10 +44,16 @@ import { Input } from "@/components/ui/input";
 
 interface LeftPanelSearch {
   categories: TourCategory[];
+  destinations: TourDestinationOption[];
   title?: string;
 }
 
-export function LeftPanelSearch({ categories }: LeftPanelSearch) {
+export interface TourDestinationOption {
+  id: number;
+  name: string;
+}
+
+export function LeftPanelSearch({ categories, destinations }: LeftPanelSearch) {
   const isMobile = useMobile({ breakpoint: 1024 });
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   return (
@@ -67,6 +74,7 @@ export function LeftPanelSearch({ categories }: LeftPanelSearch) {
               <div className="mt-6 overflow-y-auto">
                 <div className="flex flex-col w-full space-y-10 p-4">
                   <TourSearchComponent />
+                  <TourDestinationList destinations={destinations} />
                   <TourCategoryList categories={categories} />
                   <PriceFilter />
                 </div>
@@ -77,11 +85,101 @@ export function LeftPanelSearch({ categories }: LeftPanelSearch) {
       ) : (
         <div className="flex flex-col w-full space-y-10 p-4">
           <TourSearchComponent />
+          <TourDestinationList destinations={destinations} />
           <TourCategoryList categories={categories} />
           <PriceFilter />
         </div>
       )}
     </div>
+  );
+}
+
+interface TourDestinationListProps {
+  destinations: TourDestinationOption[];
+  title?: string;
+}
+
+function TourDestinationList({
+  destinations,
+  title = "Destinos",
+}: TourDestinationListProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isPending, startTransition] = React.useTransition();
+  const [selectedDestination, setSelectedDestination] = useQueryState(
+    "destination",
+    parseAsString.withOptions({
+      shallow: false,
+      startTransition,
+    }),
+  );
+
+  const sortedDestinations = React.useMemo(
+    () =>
+      [...destinations].sort((left, right) =>
+        left.name.localeCompare(right.name),
+      ),
+    [destinations],
+  );
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+      {isPending && <FilterLoadingOverlay label="Actualizando tours..." />}
+
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="px-6 py-6 border-b border-[#d9d9d9]">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
+            <CollapsibleTrigger asChild>
+              <button className="flex items-center gap-2 text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-semibold tracking-wide hover:text-[#2970b7]/80 transition-colors">
+                {title.toUpperCase()}
+                <ChevronDown
+                  className={`w-5 h-5 text-[#adadac] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+            </CollapsibleTrigger>
+          </div>
+        </div>
+
+        <CollapsibleContent>
+          <div className="p-6 space-y-3">
+            <button
+              type="button"
+              onClick={() => setSelectedDestination(null)}
+              className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-left transition-colors duration-150 ${
+                !selectedDestination
+                  ? "bg-[#2970b7]/10 text-[#2970b7]"
+                  : "hover:bg-[#f5f5f5] text-[#333]"
+              }`}
+            >
+              <span className="font-medium">Todos los destinos</span>
+              {!selectedDestination && <Check className="h-4 w-4" />}
+            </button>
+
+            {sortedDestinations.map((destination) => {
+              const isSelected = selectedDestination === destination.name;
+
+              return (
+                <button
+                  key={destination.id}
+                  type="button"
+                  onClick={() =>
+                    setSelectedDestination(isSelected ? null : destination.name)
+                  }
+                  className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-left transition-colors duration-150 ${
+                    isSelected
+                      ? "bg-[#2970b7]/10 text-[#2970b7]"
+                      : "hover:bg-[#f5f5f5] text-[#333]"
+                  }`}
+                >
+                  <span className="font-medium">{destination.name}</span>
+                  {isSelected && <Check className="h-4 w-4" />}
+                </button>
+              );
+            })}
+          </div>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
   );
 }
 
@@ -439,10 +537,19 @@ function TourCategoryList({
                       const isSelected =
                         checked === true || checked === "indeterminate";
                       setSelectedCategories((prev) => {
+                        const previousCategories = prev ?? [];
+
                         if (isSelected) {
-                          return [...prev!, category.name];
+                          if (previousCategories.includes(category.name)) {
+                            return previousCategories;
+                          }
+
+                          return [...previousCategories, category.name];
                         } else {
-                          return prev!.filter((c) => c !== category.name);
+                          return previousCategories.filter(
+                            (currentCategory) =>
+                              currentCategory !== category.name,
+                          );
                         }
                       });
                     }}

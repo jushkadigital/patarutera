@@ -22,6 +22,11 @@ import { notFound } from "next/navigation";
 import { LivePreviewListener } from "@/components/LivePreviewListener";
 import { GridPaquetes } from "@/blocks/GridPaquetes";
 
+type DestinationOption = {
+  id: number;
+  name: string;
+};
+
 const blockComponents = {
   gridPaquetes: GridPaquetes,
   mediaBlock: MediaBlock,
@@ -120,6 +125,23 @@ export default async function Page(props: Props) {
   const currentPage = Number(pageParam) || 1;
   const queryString = buildQueryString(params);
   const { isEnabled: draft } = await draftMode();
+  const destinationsRequest = await fetch(
+    `${BASEURL}/api/destinations?limit=100&sort=name`,
+  );
+  const destinationsData = await destinationsRequest.json();
+  const destinations: DestinationOption[] = Array.isArray(destinationsData.docs)
+    ? destinationsData.docs
+        .filter(
+          (item): item is DestinationOption =>
+            typeof item === "object" &&
+            item !== null &&
+            "id" in item &&
+            "name" in item &&
+            typeof item.id === "number" &&
+            typeof item.name === "string",
+        )
+        .map((item) => ({ id: item.id, name: item.name }))
+    : [];
 
   const page = await queryPageBySlug();
   if (!page) {
@@ -162,7 +184,7 @@ export default async function Page(props: Props) {
       <SharedStateProvider>
         <div className="mx-auto mt-10 flex w-[90%] flex-col gap-6 md:w-[85%] lg:flex-row lg:items-start">
           <div className="w-full lg:w-1/3">
-            <LeftPanelSearchPaquete />
+            <LeftPanelSearchPaquete destinations={destinations} />
           </div>
           <div className="w-full lg:w-3/4">
             <GridPaquetes

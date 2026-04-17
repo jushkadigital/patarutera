@@ -90,8 +90,8 @@ export default async function Page(props: Props) {
       </Fragment>
 
       <SharedStateProvider>
-        <div className="flex flex-row mt-10 w-[90%] md:w-[85%] mx-auto">
-          <div className="lg:w-1/3">
+        <div className="mx-auto mt-10 flex w-[90%] flex-col gap-6 md:w-[85%] lg:flex-row lg:items-start">
+          <div className="w-full lg:w-1/3">
             <LeftPanelSearchBoth categories={categories} />
           </div>
           <div className="w-full lg:w-3/4">

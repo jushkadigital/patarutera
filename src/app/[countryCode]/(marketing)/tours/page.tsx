@@ -23,6 +23,11 @@ import { notFound } from "next/navigation";
 import { LivePreviewListener } from "@/components/LivePreviewListener";
 import { GridBlogs } from "@/blocks/GridBlog";
 
+type DestinationOption = {
+  id: number;
+  name: string;
+};
+
 const blockComponents = {
   gridTours: GridTours,
   mediaBlock: MediaBlock,
@@ -76,6 +81,27 @@ function parseSingleParam(
   return undefined;
 }
 
+function buildQueryString(
+  params: Record<string, string | string[] | undefined>,
+): string {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (typeof value === "string") {
+      searchParams.set(key, value);
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        searchParams.append(key, item);
+      });
+    }
+  });
+
+  return searchParams.toString();
+}
+
 export default async function Page(props: Props) {
   const params = await props.searchParams;
   const { page: pageParam } = params;
@@ -83,25 +109,30 @@ export default async function Page(props: Props) {
   const filterTourName = parseSingleParam(params.filterTourName);
   const selectedCategories = parseSelectedCategories(params.categories);
   const currentPage = Number(pageParam) || 1;
-  const queryString = new URLSearchParams(
-    Object.entries(params).reduce(
-      (acc, [key, value]) => {
-        if (typeof value === "string") {
-          acc[key] = value;
-        } else if (Array.isArray(value)) {
-          acc[key] = value[0]; // o unirlos como acc[key] = value.join(',')
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    ),
-  ).toString();
+  const queryString = buildQueryString(params);
   const { isEnabled: draft } = await draftMode();
   const destinationRequest = await fetch(
     `${BASEURL}/api/destinations?where[name][equals]=${encodeURIComponent(destination ?? "")}`,
   );
   const destinationDataPre = await destinationRequest.json();
   const destinationData = destinationDataPre.docs?.[0] ?? null;
+  const destinationsRequest = await fetch(
+    `${BASEURL}/api/destinations?limit=100&sort=name`,
+  );
+  const destinationsData = await destinationsRequest.json();
+  const destinations: DestinationOption[] = Array.isArray(destinationsData.docs)
+    ? destinationsData.docs
+        .filter(
+          (item): item is DestinationOption =>
+            typeof item === "object" &&
+            item !== null &&
+            "id" in item &&
+            "name" in item &&
+            typeof item.id === "number" &&
+            typeof item.name === "string",
+        )
+        .map((item) => ({ id: item.id, name: item.name }))
+    : [];
   const page = await queryPageBySlug();
   if (!page) {
     notFound();
@@ -155,7 +186,10 @@ export default async function Page(props: Props) {
       <SharedStateProvider>
         <div className="mx-auto mt-10 flex w-[90%] flex-col gap-6 md:w-[85%] lg:flex-row lg:items-start">
           <div className="w-full lg:w-1/3">
-            <LeftPanelSearch categories={categories} />
+            <LeftPanelSearch
+              categories={categories}
+              destinations={destinations}
+            />
           </div>
           <div className="w-full lg:w-3/4">
             <GridTours
