@@ -237,13 +237,6 @@ export const trackInitiateCheckout = (payload: AnalyticsPayload) => {
     value: getPayloadValue(payload, items),
     items: buildGaItems(items),
   };
-  const providerPayload = buildMetaAndTikTokPayload({
-    ...payload,
-    contentType: payload.contentType ?? "product",
-  });
-
-  sendMetaEvent("InitiateCheckout", providerPayload);
-  sendTikTokEvent("InitiateCheckout", providerPayload);
   sendGoogleEvent("begin_checkout", googlePayload);
 };
 
@@ -255,13 +248,6 @@ export const trackPurchase = (payload: AnalyticsPayload) => {
     value: getPayloadValue(payload, items),
     items: buildGaItems(items),
   };
-  const providerPayload = buildMetaAndTikTokPayload({
-    ...payload,
-    contentType: payload.contentType ?? "product",
-  });
-
-  sendMetaEvent("Purchase", providerPayload);
-  sendTikTokEvent("Purchase", providerPayload);
   sendGoogleEvent("purchase", googlePayload);
 };
 
