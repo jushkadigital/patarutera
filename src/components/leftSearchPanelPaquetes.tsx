@@ -22,6 +22,7 @@ import {
 import { useMobile } from "@/hooks/useMobile";
 import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 import { Input } from "@/components/ui/input";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 // Componente principal: Se elimina TourCategoryList
 export interface PaqueteDestinationOption {
@@ -38,44 +39,47 @@ export function LeftPanelSearchPaquete({
 }: LeftPanelSearchPaqueteProps) {
   const isMobile = useMobile({ breakpoint: 1024 });
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+
   return (
-    <div>
-      {isMobile ? (
-        <div className="absolute mt-[-25px]">
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                className="h-11 rounded-xl px-4 text-sm font-medium shadow-sm"
-              >
-                <Filter className="h-4 w-4" />
-                Filtros
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[88vw] max-w-md px-5">
-              <SheetHeader>
-                <SheetTitle className="text-lg">Filtrar Paquetes</SheetTitle>
-              </SheetHeader>
-              <div className="mt-6 overflow-y-auto">
-                <div className="flex flex-col w-full space-y-10 p-4">
-                  <MultiDestinationSearch />
-                  <PaqueteDestinationList destinations={destinations} />
-                  <PriceFilter />
+    <NuqsAdapter>
+      <div>
+        {isMobile ? (
+          <div className="absolute mt-[-25px]">
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="h-11 rounded-xl px-4 text-sm font-medium shadow-sm"
+                >
+                  <Filter className="h-4 w-4" />
+                  Filtros
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[88vw] max-w-md px-5">
+                <SheetHeader>
+                  <SheetTitle className="text-lg">Filtrar Paquetes</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 overflow-y-auto">
+                  <div className="flex flex-col w-full space-y-10 p-4">
+                    <MultiDestinationSearch />
+                    <PaqueteDestinationList destinations={destinations} />
+                    <PriceFilter />
+                  </div>
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      ) : (
-        <div>
-          <div className="flex flex-col w-full space-y-10 p-4">
-            <MultiDestinationSearch />
-            <PaqueteDestinationList destinations={destinations} />
-            <PriceFilter />
+              </SheetContent>
+            </Sheet>
           </div>
-        </div>
-      )}
-    </div>
+        ) : (
+          <div>
+            <div className="flex flex-col w-full space-y-10 p-4">
+              <MultiDestinationSearch />
+              <PaqueteDestinationList destinations={destinations} />
+              <PriceFilter />
+            </div>
+          </div>
+        )}
+      </div>
+    </NuqsAdapter>
   );
 }
 

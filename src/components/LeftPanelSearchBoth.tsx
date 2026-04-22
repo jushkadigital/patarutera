@@ -1,31 +1,17 @@
 "use client";
 
 import * as React from "react";
-import {
-  MapPin,
-  Search,
-  ChevronDown,
-  Tag,
-  Filter,
-  Loader2,
-  Package,
-} from "lucide-react";
+import { MapPin, Search, Tag, Filter, Loader2, Package } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { TourCategory, Tour, Paquete } from "@/cms-types";
-import { parseAsArrayOf, useQueryState, parseAsString } from "nuqs";
+import { Tour, Paquete } from "@/cms-types";
+import { useQueryState, parseAsString } from "nuqs";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { useSharedState } from "@/hooks/sharedContextDestinos";
 import {
@@ -38,48 +24,46 @@ import {
 import { useMobile } from "@/hooks/useMobile";
 import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 import { useRouter, useParams } from "next/navigation";
-import { debounce } from "lodash";
+import { debounce } from "@/lib/util/debounce";
 import { Input } from "@/components/ui/input";
 
-interface LeftPanelSearch {
-  categories: TourCategory[];
-  title?: string;
-}
-
-export function LeftPanelSearchBoth({ categories }: LeftPanelSearch) {
+export function LeftPanelSearchBoth() {
   const isMobile = useMobile({ breakpoint: 1024 });
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+
   return (
-    <div>
-      {isMobile ? (
-        <div className=" absolute mt-[-25px] ">
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Filter className="h-2 w-2 " />
-                Filtros
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="">
-              <SheetHeader>
-                <SheetTitle>Filtrar Tours</SheetTitle>
-              </SheetHeader>
-              <div className="mt-6 overflow-y-auto">
-                <div className="flex flex-col w-full space-y-10 p-4">
-                  <TourSearchComponent />
-                  <PriceFilter />
+    <NuqsAdapter>
+      <div>
+        {isMobile ? (
+          <div className=" absolute mt-[-25px] ">
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Filter className="h-2 w-2 " />
+                  Filtros
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="">
+                <SheetHeader>
+                  <SheetTitle>Filtrar Tours</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 overflow-y-auto">
+                  <div className="flex flex-col w-full space-y-10 p-4">
+                    <TourSearchComponent />
+                    <PriceFilter />
+                  </div>
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      ) : (
-        <div className="flex flex-col w-full space-y-10 p-4">
-          <TourSearchComponent />
-          <PriceFilter />
-        </div>
-      )}
-    </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        ) : (
+          <div className="flex flex-col w-full space-y-10 p-4">
+            <TourSearchComponent />
+            <PriceFilter />
+          </div>
+        )}
+      </div>
+    </NuqsAdapter>
   );
 }
 
@@ -358,88 +342,6 @@ export function TourSearchBoxHorizontal() {
         </button>
       </div>
     </div>
-  );
-}
-
-interface TourCategoryListProps {
-  categories: TourCategory[];
-  title?: string;
-}
-
-function TourCategoryList({
-  categories,
-  title = "Categorías",
-}: TourCategoryListProps) {
-  const [isOpen, setIsOpen] = React.useState(true);
-  const [isPending, startTransition] = React.useTransition();
-  const [selectedCategories, setSelectedCategories] = useQueryState(
-    "categories",
-    parseAsArrayOf(parseAsString).withOptions({
-      shallow: false,
-      startTransition,
-    }),
-  );
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-      {isPending && <FilterLoadingOverlay label="Actualizando tours..." />}
-
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        {/* Header */}
-        <div className="px-6 py-6 border-b border-[#d9d9d9]">
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-8 bg-[#adadac] rounded-full"></div>
-            <CollapsibleTrigger asChild>
-              <button className="flex items-center gap-2 text-[#2970b7] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-semibold tracking-wide hover:text-[#2970b7]/80 transition-colors">
-                {title.toUpperCase()}
-                <ChevronDown
-                  className={`w-5 h-5 text-[#adadac] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-            </CollapsibleTrigger>
-          </div>
-        </div>
-
-        {/* Content */}
-        <CollapsibleContent>
-          <div className="p-6">
-            <div className="flex items-start gap-4 mb-4"></div>
-
-            <div className="space-y-3">
-              {categories.map((category) => (
-                <div
-                  key={category.id}
-                  className="flex items-center space-x-3 py-2 hover:bg-[#f5f5f5] rounded-lg px-3 transition-colors duration-150"
-                >
-                  <Checkbox
-                    id={`category-${category.id}`}
-                    checked={selectedCategories?.includes(category.name)}
-                    onCheckedChange={(checked) => {
-                      const isSelected =
-                        checked === true || checked === "indeterminate";
-                      setSelectedCategories((prev) => {
-                        if (isSelected) {
-                          return [...prev!, category.name];
-                        } else {
-                          return prev!.filter((c) => c !== category.name);
-                        }
-                      });
-                    }}
-                    className="data-[state=checked]:bg-[#2970b7] data-[state=checked]:border-[#2970b7]"
-                  />
-                  <Label
-                    htmlFor={`category-${category.id}`}
-                    className="text-[#333] text-lg lg:text-[clamp(10.9px,1vw,20.48px)] font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
-                  >
-                    {category.name}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-        </CollapsibleContent>
-      </div>
-    </Collapsible>
   );
 }
 

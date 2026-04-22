@@ -81,20 +81,20 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
     setErrorMessage(null);
     setIsApplying(true);
 
-    try {
-      await applyCoupon(code);
-      setCouponCode("");
-      setIsFormOpen(false);
-      startRefreshTransition(() => {
-        refreshCartState();
-      });
-    } catch (error: unknown) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "Fallo al aplicar cupon",
-      );
-    } finally {
+    const result = await applyCoupon(code);
+
+    if (!result.success) {
+      setErrorMessage(result.errorMessage);
       setIsApplying(false);
+      return;
     }
+
+    setCouponCode("");
+    setIsFormOpen(false);
+    startRefreshTransition(() => {
+      refreshCartState();
+    });
+    setIsApplying(false);
   };
 
   const handleRemoveCoupon = () => {
@@ -112,14 +112,14 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
     setErrorMessage(null);
 
     startRemoveTransition(async () => {
-      try {
-        await removeCoupon(manualPromotionCode);
-        refreshCartState();
-      } catch (error: unknown) {
-        setErrorMessage(
-          error instanceof Error ? error.message : "Error al remover Cupon",
-        );
+      const result = await removeCoupon(manualPromotionCode);
+
+      if (!result.success) {
+        setErrorMessage(result.errorMessage);
+        return;
       }
+
+      refreshCartState();
     });
   };
 

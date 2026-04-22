@@ -1,4 +1,3 @@
-import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { BASEURL } from "@/lib2/config";
 import Footer from "@/components/Footer";
 import Script from "next/script";
@@ -17,12 +16,10 @@ export default async function PageLayout({
 
   return (
     <>
-      <TopBannerComplete destinations={data.docs} />
+      <TopBannerComplete />
       <main className="flex-grow">
-        <NuqsAdapter>
-          <ScrollToTopOnRouteChange />
-          {children}
-        </NuqsAdapter>
+        <ScrollToTopOnRouteChange />
+        {children}
       </main>
       <Script src="https://www.tiktok.com/embed.js" strategy="lazyOnload" />
       <Footer destination={data.docs} />

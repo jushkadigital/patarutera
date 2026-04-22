@@ -2,19 +2,61 @@
 
 import { transferCart } from "@lib/data/customer";
 import { ExclamationCircleSolid } from "@medusajs/icons";
-import { StoreCart } from "@medusajs/types";
+import { HttpTypes } from "@medusajs/types";
 import { Button } from "@medusajs/ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function CartMismatchBanner(props: {
-  isAuthenticated: boolean;
-  cart: StoreCart | null;
-}) {
-  const { isAuthenticated, cart } = props;
+function CartMismatchBanner() {
+  const [cart, setCart] = useState<HttpTypes.StoreCart | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [actionText, setActionText] = useState("Run transfer again");
 
-  if (!isAuthenticated || !cart || !!cart.customer_id) {
+  useEffect(() => {
+    let isMounted = true;
+
+    const syncCart = async () => {
+      try {
+        const response = await fetch("/api/cart", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          if (isMounted) {
+            setCart(null);
+          }
+
+          return;
+        }
+
+        const data = (await response.json()) as {
+          cart?: HttpTypes.StoreCart | null;
+        };
+
+        if (isMounted) {
+          setCart(data.cart ?? null);
+        }
+      } catch {
+        if (isMounted) {
+          setCart(null);
+        }
+      }
+    };
+
+    void syncCart();
+
+    window.addEventListener("cart:item-added", syncCart);
+    window.addEventListener("cart:item-removed", syncCart);
+    window.addEventListener("cart:updated", syncCart);
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener("cart:item-added", syncCart);
+      window.removeEventListener("cart:item-removed", syncCart);
+      window.removeEventListener("cart:updated", syncCart);
+    };
+  }, []);
+
+  if (!cart || !!cart.customer_id) {
     return null;
   }
 

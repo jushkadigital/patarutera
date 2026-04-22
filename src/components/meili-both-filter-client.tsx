@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { debounce } from "lodash";
 
 import type { CardTourData } from "@/components/CardTour";
 import type { CardPaqueteData } from "@/components/cardPaquete";
@@ -9,6 +8,7 @@ import { BothComponent } from "@/components/BothComponent";
 import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 import { Pagination } from "@/components/Pagination";
 import { useSharedState } from "@/hooks/sharedContextDestinos";
+import { debounce } from "@/lib/util/debounce";
 
 type BothCardData = CardTourData | CardPaqueteData;
 

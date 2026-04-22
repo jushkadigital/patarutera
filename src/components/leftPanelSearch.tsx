@@ -27,6 +27,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { TourCategory, Tour, Paquete } from "@/cms-types";
 import { parseAsArrayOf, useQueryState, parseAsString } from "nuqs";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { useSharedState } from "@/hooks/sharedContextDestinos";
 import {
@@ -39,7 +40,7 @@ import {
 import { useMobile } from "@/hooks/useMobile";
 import { FilterLoadingOverlay } from "@/components/filter-loading-overlay";
 import { useRouter, useParams } from "next/navigation";
-import { debounce } from "lodash";
+import { debounce } from "@/lib/util/debounce";
 import { Input } from "@/components/ui/input";
 
 interface LeftPanelSearch {
@@ -56,41 +57,44 @@ export interface TourDestinationOption {
 export function LeftPanelSearch({ categories, destinations }: LeftPanelSearch) {
   const isMobile = useMobile({ breakpoint: 1024 });
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+
   return (
-    <div>
-      {isMobile ? (
-        <div className=" absolute mt-[-25px] ">
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Filter className="h-2 w-2 " />
-                Filtros
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="">
-              <SheetHeader>
-                <SheetTitle>Filtrar Tours</SheetTitle>
-              </SheetHeader>
-              <div className="mt-6 overflow-y-auto">
-                <div className="flex flex-col w-full space-y-10 p-4">
-                  <TourSearchComponent />
-                  <TourDestinationList destinations={destinations} />
-                  <TourCategoryList categories={categories} />
-                  <PriceFilter />
+    <NuqsAdapter>
+      <div>
+        {isMobile ? (
+          <div className=" absolute mt-[-25px] ">
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Filter className="h-2 w-2 " />
+                  Filtros
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="">
+                <SheetHeader>
+                  <SheetTitle>Filtrar Tours</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 overflow-y-auto">
+                  <div className="flex flex-col w-full space-y-10 p-4">
+                    <TourSearchComponent />
+                    <TourDestinationList destinations={destinations} />
+                    <TourCategoryList categories={categories} />
+                    <PriceFilter />
+                  </div>
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      ) : (
-        <div className="flex flex-col w-full space-y-10 p-4">
-          <TourSearchComponent />
-          <TourDestinationList destinations={destinations} />
-          <TourCategoryList categories={categories} />
-          <PriceFilter />
-        </div>
-      )}
-    </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        ) : (
+          <div className="flex flex-col w-full space-y-10 p-4">
+            <TourSearchComponent />
+            <TourDestinationList destinations={destinations} />
+            <TourCategoryList categories={categories} />
+            <PriceFilter />
+          </div>
+        )}
+      </div>
+    </NuqsAdapter>
   );
 }
 

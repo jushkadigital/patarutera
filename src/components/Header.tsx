@@ -1,27 +1,22 @@
 "use client";
 
-import React from "react";
 import { Navbar } from "./Navbar";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib2/utils";
-import { Destination } from "@/cms-types";
-import { StoreCart } from "@medusajs/types";
+
+type HeaderSocialNetwork = {
+  id: string | number;
+  iconName: "facebook" | "instagram" | "tiktok";
+  link: string;
+};
 
 interface Props {
-  destinations: Destination[];
-  socialNetworks: any[];
+  socialNetworks: HeaderSocialNetwork[];
   email: string;
-  cart: StoreCart | null;
   isAuthenticated: boolean;
 }
 
-export const Header = ({
-  destinations,
-  socialNetworks,
-  email,
-  cart,
-  isAuthenticated,
-}: Props) => {
+export const Header = ({ socialNetworks, email, isAuthenticated }: Props) => {
   const allowedPaths = ["/", "/destino"];
   const pathname = usePathname();
   const isHome = pathname == "/";
@@ -30,12 +25,10 @@ export const Header = ({
   return (
     <header className={cn(isHome ? "h-0 overflow-visible " : "")}>
       <Navbar
-        destinations={destinations}
         isHome={isHome}
         isTransparent={isTransparent}
         socialNetworks={socialNetworks}
         email={email}
-        cart={cart}
         isAuthenticated={isAuthenticated}
       />
     </header>

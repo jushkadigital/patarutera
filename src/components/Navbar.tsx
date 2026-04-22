@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib2/utils";
@@ -10,41 +9,33 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-  NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
-import { Button } from "@/components/ui/button";
-import { Destination } from "@/cms-types";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Menu } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./ui/collapsible";
 import { TopHeader } from "./Topheader";
-import { StoreCart } from "@medusajs/types";
+
+type HeaderSocialNetwork = {
+  id: string | number;
+  iconName: "facebook" | "instagram" | "tiktok";
+  link: string;
+};
 
 // Asume que tienes un logo en esta ruta, o reemplázalo
 const LOGO_URL = "/pataruteraLogoWhite.png"; // Reemplaza con la ruta real de tu logo
 const LOGO_URLCOLOR = "/pataruteraLogo.png"; // Reemplaza con la ruta real de tu logo
 interface Props {
-  destinations: Destination[];
   isHome: boolean;
   isTransparent: boolean;
-  socialNetworks: any[];
+  socialNetworks: HeaderSocialNetwork[];
   email: string;
-  cart: StoreCart | null;
   isAuthenticated: boolean;
 }
 export const Navbar = ({
-  destinations,
   isHome,
   isTransparent,
   socialNetworks,
   email,
-  cart,
   isAuthenticated,
 }: Props) => {
   //const pathname = usePathname();
@@ -63,12 +54,15 @@ export const Navbar = ({
         socialNetworks={socialNetworks}
         email={email}
         isHome={isHome}
-        cart={cart}
         isAuthenticated={isAuthenticated}
       />
       <div className=" mx-auto flex items-center justify-around px-4">
         {/* Sección 1: Logo */}
-        <Link href="/pe" className="flex items-center space-x-2" prefetch={false}>
+        <Link
+          href="/pe"
+          className="flex items-center space-x-2"
+          prefetch={false}
+        >
           <Image
             src={isHome ? LOGO_URL : LOGO_URLCOLOR}
             alt="Logo"
@@ -110,9 +104,7 @@ export const Navbar = ({
                       : "text-[#2970b7]",
                 )}
               >
-                <Link href="/pe/paquetes?destinations=Ica,Cusco">
-                  Paquetes
-                </Link>
+                <Link href="/pe/paquetes?destinations=Ica,Cusco">Paquetes</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
@@ -229,31 +221,3 @@ export const Navbar = ({
     </nav>
   );
 };
-
-function ListItem({
-  title,
-  children,
-  href,
-  ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string; isHome: boolean }) {
-  return (
-    <li {...props}>
-      <NavigationMenuLink
-        asChild
-        className={cn(
-          navigationMenuTriggerStyle(),
-          props.isHome
-            ? "bg-transparent hover:bg-white/10 text-white"
-            : "text-[#2970b7]",
-        )}
-      >
-        <Link href={href}>
-          <div className="text-sm leading-none font-medium">{title}</div>
-          <p className="text-muted-foreground  text-lg leading-snug">
-            {children}
-          </p>
-        </Link>
-      </NavigationMenuLink>
-    </li>
-  );
-}

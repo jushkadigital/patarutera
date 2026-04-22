@@ -1,4 +1,6 @@
 "use client";
+import dynamic from "next/dynamic";
+import * as React from "react";
 import { trackContact } from "@/lib/analytics";
 import { cn } from "@/lib2/utils";
 import { SvgFacebook, SvgInstagram, SvgTiktok, SvgWhatsapp } from "./IconsSvg";
@@ -6,10 +8,15 @@ import { Button } from "./ui/button";
 import { Heart, ShoppingCart, CircleUserRound, Mail } from "lucide-react";
 import { useMobile } from "@/hooks/useMobile";
 import { usePopupAuth } from "@/hooks/usePopupAuth";
-import { Suspense } from "react";
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
-import { StoreCart } from "@medusajs/types";
-import CartDropdown from "@modules/layout/components/cart-dropdown";
+
+const LazyCartDropdown = dynamic(
+  () => import("@modules/layout/components/cart-dropdown"),
+  {
+    ssr: false,
+    loading: () => <CartLinkFallback />,
+  },
+);
 
 type SocialNetworkName = "facebook" | "instagram" | "tiktok";
 
@@ -23,15 +30,26 @@ interface Props {
   socialNetworks: SocialNetwork[];
   email: string;
   isHome: boolean;
-  cart: StoreCart | null;
   isAuthenticated: boolean;
+}
+
+function CartLinkFallback() {
+  return (
+    <LocalizedClientLink
+      className="hover:text-ui-fg-base flex gap-2 text-white"
+      href="/cart"
+      data-testid="nav-cart-link"
+      aria-label="Ver carrito"
+    >
+      <ShoppingCart size={"icon"} className="size-5" color="#fff" />
+    </LocalizedClientLink>
+  );
 }
 
 export const TopHeader = ({
   isHome,
   socialNetworks,
   email,
-  cart,
   isAuthenticated,
 }: Props) => {
   const whatsappUrl = "https://wa.link/25w6dc";
@@ -43,6 +61,28 @@ export const TopHeader = ({
 
   const isMobile = useMobile({ breakpoint: 610 });
   const { openPopup, isLoading, error } = usePopupAuth();
+  const [shouldLoadCartDropdown, setShouldLoadCartDropdown] =
+    React.useState(false);
+
+  const loadCartDropdown = React.useCallback(() => {
+    setShouldLoadCartDropdown(true);
+  }, []);
+
+  React.useEffect(() => {
+    const handleCartActivity = () => {
+      loadCartDropdown();
+    };
+
+    window.addEventListener("cart:item-added", handleCartActivity);
+    window.addEventListener("cart:item-removed", handleCartActivity);
+    window.addEventListener("cart:updated", handleCartActivity);
+
+    return () => {
+      window.removeEventListener("cart:item-added", handleCartActivity);
+      window.removeEventListener("cart:item-removed", handleCartActivity);
+      window.removeEventListener("cart:updated", handleCartActivity);
+    };
+  }, [loadCartDropdown]);
 
   const handleWhatsappClick = () => {
     trackContact({
@@ -58,7 +98,7 @@ export const TopHeader = ({
     try {
       await openPopup({ provider: "keycloak" });
       window.location.reload();
-    } catch { }
+    } catch {}
   };
 
   return (
@@ -141,7 +181,11 @@ export const TopHeader = ({
                 )}
               >
                 {isMobile ? (
-                  <CircleUserRound size={"icon"} className="size-5 text-white" color="#fff" />
+                  <CircleUserRound
+                    size={"icon"}
+                    className="size-5 text-white"
+                    color="#fff"
+                  />
                 ) : (
                   "Mi perfil"
                 )}
@@ -158,7 +202,11 @@ export const TopHeader = ({
               {isLoading ? (
                 <span className="text-xs text-white">...</span>
               ) : (
-                <CircleUserRound size={"icon"} className="size-5 text-white" color="#fff" />
+                <CircleUserRound
+                  size={"icon"}
+                  className="size-5 text-white"
+                  color="#fff"
+                />
               )}
             </Button>
           ) : (
@@ -182,20 +230,18 @@ export const TopHeader = ({
             <Heart size={"icon"} className="size-5" color="#fff" />
           </Button>
 
-          <Suspense
-            fallback={
-              <LocalizedClientLink
-                className="hover:text-ui-fg-base flex gap-2"
-                href="/cart"
-                data-testid="nav-cart-link"
-              >
-                {" "}
-                <ShoppingCart size={"icon"} className="size-5" color="#fff" />
-              </LocalizedClientLink>
-            }
+          <div
+            className="flex"
+            onMouseEnter={loadCartDropdown}
+            onFocus={loadCartDropdown}
+            onTouchStart={loadCartDropdown}
           >
-            <CartDropdown cart={cart} />
-          </Suspense>
+            {shouldLoadCartDropdown ? (
+              <LazyCartDropdown />
+            ) : (
+              <CartLinkFallback />
+            )}
+          </div>
         </div>
       </div>
     </div>

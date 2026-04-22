@@ -2,7 +2,6 @@ import { Fragment } from "react";
 
 import { SharedStateProvider } from "@/hooks/sharedContextDestinos";
 import { GridBoth } from "@/blocks/GridBoth";
-import { BASEURL } from "@/lib2/config";
 import { LeftPanelSearchBoth } from "@/components/LeftPanelSearchBoth";
 
 interface Props {
@@ -70,11 +69,6 @@ export default async function Page(props: Props) {
   const currentPage = Number(pageParam) || 1;
   const queryString = buildQueryString(params);
 
-  const categoriesResponse = await fetch(`${BASEURL}/api/tourCategory`);
-  const categoriesData = await categoriesResponse.json();
-
-  const categories = categoriesData.docs;
-
   return (
     <div>
       <Fragment>
@@ -92,7 +86,7 @@ export default async function Page(props: Props) {
       <SharedStateProvider>
         <div className="mx-auto mt-10 flex w-[90%] flex-col gap-6 md:w-[85%] lg:flex-row lg:items-start">
           <div className="w-full lg:w-1/3">
-            <LeftPanelSearchBoth categories={categories} />
+            <LeftPanelSearchBoth />
           </div>
           <div className="w-full lg:w-3/4">
             <GridBoth

@@ -823,92 +823,182 @@ export async function initiatePaymentSession(
     });
 }
 
-export async function applyCoupon(code: string) {
+type PromotionActionResult =
+  | {
+      success: true;
+      cart: HttpTypes.StoreCart;
+    }
+  | {
+      success: false;
+      errorMessage: string;
+    };
+
+const INVALID_COUPON_ERROR_MESSAGE =
+  "Cupón incorrecto, vuelva a ingresar otro.";
+
+const isInvalidCouponError = (message: string): boolean => {
+  const normalizedMessage = message.trim().toLowerCase();
+
+  const referencesCoupon = [
+    "coupon",
+    "promo",
+    "promotion",
+    "discount",
+    "code",
+  ].some((term) => normalizedMessage.includes(term));
+
+  const indicatesInvalidCode = [
+    "invalid",
+    "not found",
+    "not valid",
+    "does not exist",
+    "doesn't exist",
+    "not applicable",
+    "expired",
+  ].some((term) => normalizedMessage.includes(term));
+
+  return referencesCoupon && indicatesInvalidCode;
+};
+
+const getPromotionActionErrorMessage = (
+  error: unknown,
+  fallbackMessage: string,
+): string => {
+  const message = getMedusaErrorMessage(error, fallbackMessage);
+
+  if (isInvalidCouponError(message)) {
+    return INVALID_COUPON_ERROR_MESSAGE;
+  }
+
+  return message;
+};
+
+export async function applyCoupon(
+  code: string,
+): Promise<PromotionActionResult> {
   const cartId = await getCartId();
 
   if (!cartId) {
-    throw new Error("No existing cart found");
+    return {
+      success: false,
+      errorMessage: "No existe un carrito activo.",
+    };
   }
 
   const trimmedCode = code.trim();
 
   if (!trimmedCode) {
-    throw new Error("Coupon code is required.");
+    return {
+      success: false,
+      errorMessage: "El código del cupón es obligatorio.",
+    };
   }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  };
+  try {
+    const headers = {
+      ...(await getAuthHeaders()),
+    };
 
-  return sdk.client
-    .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${cartId}/promotions`, {
-      method: "POST",
-      body: {
-        promo_codes: [trimmedCode],
+    const { cart } = await sdk.client.fetch<HttpTypes.StoreCartResponse>(
+      `/store/carts/${cartId}/promotions`,
+      {
+        method: "POST",
+        body: {
+          promo_codes: [trimmedCode],
+        },
+        headers,
       },
-      headers,
-    })
-    .then(async ({ cart }: { cart: HttpTypes.StoreCart }) => {
-      const cartCacheTag = await getCacheTag("carts");
-      revalidateTag(cartCacheTag);
+    );
 
-      const fulfillmentCacheTag = await getCacheTag("fulfillment");
-      revalidateTag(fulfillmentCacheTag);
+    const cartCacheTag = await getCacheTag("carts");
+    revalidateTag(cartCacheTag);
 
-      // Revalidate all pages
-      try {
-        revalidatePath("/", "layout");
-      } catch (e) {
-        // Fail silently
-      }
+    const fulfillmentCacheTag = await getCacheTag("fulfillment");
+    revalidateTag(fulfillmentCacheTag);
 
-      return cart;
-    })
-    .catch(medusaError);
+    try {
+      revalidatePath("/", "layout");
+    } catch {
+      // Fail silently
+    }
+
+    return {
+      success: true,
+      cart,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      errorMessage: getPromotionActionErrorMessage(
+        error,
+        "No se pudo aplicar el cupón.",
+      ),
+    };
+  }
 }
 
-export async function removeCoupon(code: string) {
+export async function removeCoupon(
+  code: string,
+): Promise<PromotionActionResult> {
   const cartId = await getCartId();
 
   if (!cartId) {
-    throw new Error("No existing cart found");
+    return {
+      success: false,
+      errorMessage: "No existe un carrito activo.",
+    };
   }
 
   const trimmedCode = code.trim();
 
   if (!trimmedCode) {
-    throw new Error("Coupon code is required.");
+    return {
+      success: false,
+      errorMessage: "El código del cupón es obligatorio.",
+    };
   }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  };
+  try {
+    const headers = {
+      ...(await getAuthHeaders()),
+    };
 
-  return sdk.client
-    .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${cartId}/promotions`, {
-      method: "DELETE",
-      body: {
-        promo_codes: [trimmedCode],
+    const { cart } = await sdk.client.fetch<HttpTypes.StoreCartResponse>(
+      `/store/carts/${cartId}/promotions`,
+      {
+        method: "DELETE",
+        body: {
+          promo_codes: [trimmedCode],
+        },
+        headers,
       },
-      headers,
-    })
-    .then(async ({ cart }: { cart: HttpTypes.StoreCart }) => {
-      const cartCacheTag = await getCacheTag("carts");
-      revalidateTag(cartCacheTag);
+    );
 
-      const fulfillmentCacheTag = await getCacheTag("fulfillment");
-      revalidateTag(fulfillmentCacheTag);
+    const cartCacheTag = await getCacheTag("carts");
+    revalidateTag(cartCacheTag);
 
-      // Revalidate all pages
-      try {
-        revalidatePath("/", "layout");
-      } catch (e) {
-        // Fail silently
-      }
+    const fulfillmentCacheTag = await getCacheTag("fulfillment");
+    revalidateTag(fulfillmentCacheTag);
 
-      return cart;
-    })
-    .catch(medusaError);
+    try {
+      revalidatePath("/", "layout");
+    } catch {
+      // Fail silently
+    }
+
+    return {
+      success: true,
+      cart,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      errorMessage: getPromotionActionErrorMessage(
+        error,
+        "No se pudo remover el cupón.",
+      ),
+    };
+  }
 }
 
 export async function applyGiftCard(code: string) {
@@ -953,10 +1043,10 @@ export async function submitPromotionForm(
     return "Coupon code is required.";
   }
 
-  try {
-    await applyCoupon(code);
-  } catch (error: unknown) {
-    return error instanceof Error ? error.message : "Failed to apply coupon.";
+  const result = await applyCoupon(code);
+
+  if (!result.success) {
+    return result.errorMessage;
   }
 }
 

@@ -1,15 +1,24 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Destination } from "@/cms-types";
-import { registerCartRefresh, waitForNextPaint } from "@lib/util/cart-sync";
-import { HttpTypes } from "@medusajs/types";
 import { Header } from "./Header";
-import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner";
+
+type HeaderSocialNetwork = {
+  id: string | number;
+  iconName: "facebook" | "instagram" | "tiktok";
+  link: string;
+};
+
+const CartMismatchBanner = dynamic(
+  () => import("@modules/layout/components/cart-mismatch-banner"),
+  {
+    ssr: false,
+  },
+);
 
 interface TopBannerClientProps {
-  destinations: Destination[];
-  socialNetworks: any[];
+  socialNetworks: HeaderSocialNetwork[];
   email: string;
 }
 
@@ -24,66 +33,32 @@ const hasMedusaAuthCookie = () => {
 };
 
 export default function TopBannerClient({
-  destinations,
   socialNetworks,
   email,
 }: TopBannerClientProps) {
-  const [cart, setCart] = useState<HttpTypes.StoreCart | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const syncSessionState = async () => {
+    const syncSessionState = () => {
       setIsAuthenticated(hasMedusaAuthCookie());
-
-      try {
-        const response = await fetch("/api/cart", {
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          return;
-        }
-
-        const data = (await response.json()) as {
-          cart?: HttpTypes.StoreCart | null;
-        };
-
-        setCart(data.cart ?? null);
-        await waitForNextPaint();
-      } catch {
-        setCart(null);
-      }
     };
 
-    const handleCartChange: EventListener = (event) => {
-      const refreshPromise = syncSessionState();
-
-      registerCartRefresh(event, refreshPromise);
-    };
-
-    void syncSessionState();
-
-    window.addEventListener("cart:item-added", handleCartChange);
-    window.addEventListener("cart:item-removed", handleCartChange);
-    window.addEventListener("cart:updated", handleCartChange);
+    syncSessionState();
+    window.addEventListener("focus", syncSessionState);
 
     return () => {
-      window.removeEventListener("cart:item-added", handleCartChange);
-      window.removeEventListener("cart:item-removed", handleCartChange);
-      window.removeEventListener("cart:updated", handleCartChange);
+      window.removeEventListener("focus", syncSessionState);
     };
   }, []);
 
   return (
     <>
       <Header
-        destinations={destinations}
         socialNetworks={socialNetworks}
         email={email}
-        cart={cart}
         isAuthenticated={isAuthenticated}
       />
-      <CartMismatchBanner cart={cart} isAuthenticated={isAuthenticated} />
+      {isAuthenticated ? <CartMismatchBanner /> : null}
     </>
   );
 }

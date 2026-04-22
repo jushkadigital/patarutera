@@ -10,10 +10,10 @@ import LineItemOptions from "@modules/common/components/line-item-options";
 import { LineCustomItemPrice } from "@modules/common/components/line-item-price";
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
 import Thumbnail from "@modules/products/components/thumbnail";
-import { groupBy } from "lodash";
+import { groupBy } from "@/lib/util/group-by";
 import { ShoppingCart } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 const getMetadataRecord = (
   metadata: HttpTypes.StoreCartLineItem["metadata"],
@@ -77,9 +77,8 @@ const CartDropdown = ({
     cartState ?? null,
   );
 
-  const groupedItems = groupBy(
-    localCart?.items,
-    (item) => item.metadata?.group_id ?? item.id,
+  const groupedItems = groupBy(localCart?.items, (item) =>
+    String(item.metadata?.group_id ?? item.id),
   );
 
   const groupsArray = Object.entries(groupedItems).map(([groupId, items]) => ({
@@ -95,30 +94,30 @@ const CartDropdown = ({
   const hasDiscount = discountTotal > 0;
   const itemRef = useRef<number>(totalItems || 0);
 
-  const closeDropdown = () => {
+  const closeDropdown = useCallback(() => {
     setCartDropdownOpen(false);
-  };
+  }, []);
 
-  const openDropdown = () => {
+  const openDropdown = useCallback(() => {
     setCartDropdownOpen(true);
-  };
+  }, []);
 
-  const timedOpen = () => {
+  const timedOpen = useCallback(() => {
     openDropdown();
 
     const timer = setTimeout(closeDropdown, 5000);
     setActiveTimer(timer);
-  };
+  }, [closeDropdown, openDropdown]);
 
-  const openAndCancel = () => {
+  const openAndCancel = useCallback(() => {
     if (activeTimer) {
       clearTimeout(activeTimer);
     }
 
     openDropdown();
-  };
+  }, [activeTimer, openDropdown]);
 
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     try {
       const response = await fetch("/api/cart", {
         next: { revalidate: 0 },
@@ -129,7 +128,7 @@ const CartDropdown = ({
     } catch (error) {
       console.error("Failed to fetch cart:", error);
     }
-  };
+  }, []);
 
   const pathname = usePathname();
 
@@ -143,7 +142,7 @@ const CartDropdown = ({
     if (!cartState) {
       void fetchCart();
     }
-  }, [cartState]);
+  }, [cartState, fetchCart]);
 
   useEffect(() => {
     return () => {
@@ -159,7 +158,7 @@ const CartDropdown = ({
     }
 
     itemRef.current = totalItems;
-  }, [totalItems, pathname]);
+  }, [pathname, timedOpen, totalItems]);
 
   useEffect(() => {
     const handleItemAdded = () => {
@@ -188,7 +187,7 @@ const CartDropdown = ({
       window.removeEventListener("cart:item-removed", handleItemRemoved);
       window.removeEventListener("cart:updated", handleCartUpdated);
     };
-  }, [pathname]);
+  }, [fetchCart, pathname, timedOpen]);
 
   return (
     <div
