@@ -152,6 +152,8 @@ interface CarouselProps {
 
 export default function Carousel({ slides, titleObj }: CarouselProps) {
   const [current, setCurrent] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const id = useId();
 
   if (!slides.length) {
@@ -179,10 +181,6 @@ export default function Carousel({ slides, titleObj }: CarouselProps) {
       setCurrent(index);
     }
   };
-
-  // For touch gestures
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const minSwipeDistance = 50;
 

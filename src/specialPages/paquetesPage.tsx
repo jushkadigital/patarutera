@@ -5,12 +5,11 @@ import { MediaBlock } from "../blocks/MediaBlock";
 import { GridTours } from "../blocks/GridTours";
 import { RowBlock } from "../blocks/RowBlock";
 import { BannerBlock } from "@/blocks/Banner";
+import { CACHE_TAGS, getRevalidatedFetchOptions } from "@/lib2/cache";
 import { BASEURL } from "@/lib2/config";
-import { RenderHero } from "@/blocks/renderHeros";
 import { LeftPanelSearchPaquete } from "@/components/leftSearchPanelPaquetes";
 import { GridPaquetes } from "@/blocks/GridPaquetes";
 
-import { LeftPanelSearch } from "@/components/leftPanelSearch";
 import { SharedStateProvider } from "@/hooks/sharedContextDestinos";
 import { CarouselDestinos } from "@/blocks/CarouselDestinos";
 import { TikTokLinksBlock } from "@/blocks/TikToksLinksBlock";
@@ -20,7 +19,6 @@ import { SociosBlock } from "@/blocks/Socios";
 import { TextContentBlock } from "@/blocks/TextContent";
 import { BeneficiosBlock } from "@/blocks/BeneficiosBlock";
 import { EstadisticasBlock } from "@/blocks/Estadisticas";
-import { DescrPriceBlock } from "@/blocks/DescPrice";
 import { YouTubeLinksBlock } from "@/blocks/YoutubeLinksBlock";
 
 const blockComponents = {
@@ -44,9 +42,15 @@ export async function PaquetesPage(props: {
   pageData: Page;
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  type DestinationOption = {
+    id: number;
+    name: string;
+  };
+
   const { destinations } = props.searchParams;
   const destinationRequest = await fetch(
     `${BASEURL}/api/destinations?where[name][in]=${destinations}`,
+    getRevalidatedFetchOptions([CACHE_TAGS.destinations]),
   );
   const destinationDataPre = await destinationRequest.json();
   const destinationData = destinationDataPre.docs;
@@ -57,9 +61,25 @@ export async function PaquetesPage(props: {
     Array.isArray(heroPageBlocks) &&
     heroPageBlocks.length > 0;
 
-  const destinationsRequest = await fetch(`${BASEURL}/api/destinations`);
+  const destinationsRequest = await fetch(
+    `${BASEURL}/api/destinations`,
+    getRevalidatedFetchOptions([CACHE_TAGS.destinations]),
+  );
   const destinationsData = await destinationsRequest.json();
-  const destinationsDataFinal = destinationsData.docs;
+  const destinationsDocs = Array.isArray(destinationsData.docs)
+    ? destinationsData.docs
+    : [];
+  const destinationsDataFinal: DestinationOption[] = destinationsDocs
+    .filter(
+      (item): item is DestinationOption =>
+        typeof item === "object" &&
+        item !== null &&
+        "id" in item &&
+        "name" in item &&
+        typeof item.id === "number" &&
+        typeof item.name === "string",
+    )
+    .map((item) => ({ id: item.id, name: item.name }));
   // Si ambos son falsos, fallback
   if (!hasBlocksLayout && !hasBlocksHero) {
     return <div>No hay contenido para mostrar.</div>;
@@ -72,7 +92,7 @@ export async function PaquetesPage(props: {
   return (
     <div>
       <Fragment>
-        {heroPageBlocks!.map(async (block, index) => {
+        {heroPageBlocks!.map(async (block) => {
           const { blockType } = block;
           switch (blockType) {
             case "banner": {
@@ -80,9 +100,7 @@ export async function PaquetesPage(props: {
                 <BannerBlock
                   {...block}
                   title={"Paquete"}
-                  image={
-                    destinationsDataFinal[0].backgroundDestination as Media
-                  }
+                  image={destinationsDocs[0]?.backgroundDestination as Media}
                 />
               );
             }
@@ -94,7 +112,7 @@ export async function PaquetesPage(props: {
 
       <SharedStateProvider>
         <div className="flex flex-row mt-10 w-[85%] mx-auto">
-          <LeftPanelSearchPaquete />
+          <LeftPanelSearchPaquete destinations={destinationsDataFinal} />
           <div className="lg:w-3/4">
             <GridPaquetes
               {...(blocks[0] as GridPaquetesBlock)}

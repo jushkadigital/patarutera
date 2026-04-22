@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from "react";
 
 // Extend the Window interface to include TikTok's global object
 declare global {
@@ -18,7 +18,9 @@ interface VideoEmbedContentProps {
 
 // Helper function to extract video ID from YouTube URL
 const getYouTubeVideoId = (url: string): string | null => {
-  const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+  const match = url.match(
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+  );
   return match ? match[1] : null;
 };
 
@@ -28,16 +30,16 @@ const getVimeoVideoId = (url: string): string | null => {
   return match ? match[1] : null;
 };
 
-const _VideoEmbedContent: React.FC<VideoEmbedContentProps> = ({ videoUrl }) => {
-  const [embedHtml, setEmbedHtml] = useState<string>('');
-  const [isTikTok, setIsTikTok] = useState<boolean>(false);
+const VideoEmbedContent: React.FC<VideoEmbedContentProps> = ({ videoUrl }) => {
+  const [embedHtml, setEmbedHtml] = useState<string>("");
 
   const generateEmbedCode = useCallback(async (): Promise<void> => {
-    if (videoUrl.includes('tiktok.com')) {
-      setIsTikTok(true);
+    if (videoUrl.includes("tiktok.com")) {
       try {
         // Use TikTok's oEmbed endpoint to get the embed HTML
-        const response = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(videoUrl)}`);
+        const response = await fetch(
+          `https://www.tiktok.com/oembed?url=${encodeURIComponent(videoUrl)}`,
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -46,10 +48,10 @@ const _VideoEmbedContent: React.FC<VideoEmbedContentProps> = ({ videoUrl }) => {
 
         // Load TikTok embed script dynamically
         const loadTikTokScript = (): void => {
-          if (!document.getElementById('tiktok-embed-script')) {
-            const script = document.createElement('script');
-            script.id = 'tiktok-embed-script';
-            script.src = 'https://www.tiktok.com/embed.js';
+          if (!document.getElementById("tiktok-embed-script")) {
+            const script = document.createElement("script");
+            script.id = "tiktok-embed-script";
+            script.src = "https://www.tiktok.com/embed.js";
             script.async = true;
             script.onload = () => {
               // Ensure the script is ready before trying to init
@@ -65,13 +67,14 @@ const _VideoEmbedContent: React.FC<VideoEmbedContentProps> = ({ videoUrl }) => {
         };
         // Ensure the blockquote is in the DOM before attempting to load/init script
         setTimeout(loadTikTokScript, 0);
-
       } catch (error) {
-        console.error('Error fetching TikTok embed code:', error);
-        setEmbedHtml('<p>Error al cargar el video de TikTok.</p>');
+        console.error("Error fetching TikTok embed code:", error);
+        setEmbedHtml("<p>Error al cargar el video de TikTok.</p>");
       }
-    } else if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-      setIsTikTok(false);
+    } else if (
+      videoUrl.includes("youtube.com") ||
+      videoUrl.includes("youtu.be")
+    ) {
       const videoId = getYouTubeVideoId(videoUrl);
       if (videoId) {
         setEmbedHtml(`
@@ -84,10 +87,9 @@ const _VideoEmbedContent: React.FC<VideoEmbedContentProps> = ({ videoUrl }) => {
           ></iframe>
         `);
       } else {
-        setEmbedHtml('<p>URL de YouTube inválida o no compatible.</p>');
+        setEmbedHtml("<p>URL de YouTube inválida o no compatible.</p>");
       }
-    } else if (videoUrl.includes('vimeo.com')) {
-      setIsTikTok(false);
+    } else if (videoUrl.includes("vimeo.com")) {
       const videoId = getVimeoVideoId(videoUrl);
       if (videoId) {
         setEmbedHtml(`
@@ -100,11 +102,10 @@ const _VideoEmbedContent: React.FC<VideoEmbedContentProps> = ({ videoUrl }) => {
           ></iframe>
         `);
       } else {
-        setEmbedHtml('<p>URL de Vimeo inválida o no compatible.</p>');
+        setEmbedHtml("<p>URL de Vimeo inválida o no compatible.</p>");
       }
     } else {
-      setIsTikTok(false);
-      setEmbedHtml('<p>Formato de URL de video no compatible.</p>');
+      setEmbedHtml("<p>Formato de URL de video no compatible.</p>");
     }
   }, [videoUrl]);
 
@@ -116,19 +117,19 @@ const _VideoEmbedContent: React.FC<VideoEmbedContentProps> = ({ videoUrl }) => {
   return (
     <div
       style={{
-        position: 'absolute',
+        position: "absolute",
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "hidden",
       }}
       dangerouslySetInnerHTML={{ __html: embedHtml }}
     />
   );
 };
 
-export default _VideoEmbedContent;
+export default VideoEmbedContent;

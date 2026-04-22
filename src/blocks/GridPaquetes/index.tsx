@@ -8,6 +8,7 @@ import { Pagination } from "@/components/Pagination";
 import { Subtitle } from "@/components/Subtitle";
 import { PaquetesComponent } from "@/components/PaquetesComponent";
 import { BASEURL } from "@/lib2/config";
+import { CACHE_TAGS, getRevalidatedFetchOptions } from "@/lib2/cache";
 import {
   getMeiliCompleteImageFallback,
   parseMeiliCompleteImage,
@@ -333,7 +334,7 @@ async function searchPaquetesFromMeilisearch({
       limit,
       offset,
     }),
-    next: { tags: ["paquetes"] },
+    ...getRevalidatedFetchOptions([CACHE_TAGS.paquetes]),
   });
 
   if (!response.ok) {
@@ -392,7 +393,7 @@ async function searchPaquetesFromPayload({
   }
 
   const response = await fetch(`${BASEURL}/api/paquetes?${params.toString()}`, {
-    next: { tags: ["paquetes"] },
+    ...getRevalidatedFetchOptions([CACHE_TAGS.paquetes]),
   });
 
   if (!response.ok) {

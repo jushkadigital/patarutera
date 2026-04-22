@@ -1,15 +1,21 @@
 import { RenderBlocks } from "@/blocks/renderBlocks";
 import { RenderHero } from "@/blocks/renderHeros";
-import { LivePreviewListener } from "@/components/LivePreviewListener";
+import {
+  CACHE_TAGS,
+  getPageCacheTag,
+  getRevalidatedFetchOptions,
+} from "@/lib2/cache";
+import type { Page as CmsPage } from "@/cms-types";
 import { HomeToursSchema } from "@/components/Schema";
 import { BASEURL } from "@/lib2/config";
 import { DestinosPage } from "@/specialPages/destinosPage";
 import { PaquetesPage } from "@/specialPages/paquetesPage";
 import { generateMetaPage } from "@/utilities/generateMeta";
-import { Metadata, ResolvingMetadata } from "next";
-import { draftMode } from "next/headers";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+
+export const revalidate = 3600;
 
 // --- 1. Import your Special Page Components ---
 // (Replace with your actual component paths and names)
@@ -19,7 +25,16 @@ import { cache } from "react";
 
 // --- 2. Define the Slug-to-Component Mapping ---
 // (This maps slugs to the actual component functions)
-const specialPageComponents: { [key: string]: React.ComponentType<any> } = {
+type SpecialPageProps = {
+  pageData: CmsPage;
+  resolvedParams: PageParams;
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+const specialPageComponents: Record<
+  string,
+  React.ComponentType<SpecialPageProps>
+> = {
   // 'ofertas': OfertasPageComponent,
   // 'paquetes-especiales': PaquetesEspecialesPageComponent,
   // 'otro-slug-especial': OtroComponenteEspecial,
@@ -36,16 +51,15 @@ const slugsEspeciales = Object.keys(specialPageComponents); // Get special slugs
 export async function generateStaticParams() {
   const pagesRequest = await fetch(
     `${BASEURL}/api/pages?depth=3&limit=1000&draft=false&select[slug]=true`,
+    getRevalidatedFetchOptions([CACHE_TAGS.pages]),
   );
-  const pages = await pagesRequest.json();
+  const pages = (await pagesRequest.json()) as {
+    docs?: Array<{ slug?: string | null }>;
+  };
   const params = pages.docs
-    ?.filter((doc: any) => {
-      return doc.slug !== "home";
-    })
-    .filter((ele) => ele.slug !== null)
-    .map(({ slug }: any) => {
-      return { slug };
-    });
+    ?.filter((doc) => doc.slug !== "home")
+    .filter((doc): doc is { slug: string } => typeof doc.slug === "string")
+    .map(({ slug }) => ({ slug }));
 
   return params || [];
 }
@@ -69,7 +83,7 @@ export default async function Page({
   const resolvedParams = await paramsPromise;
   const { slug = "home" } = resolvedParams;
 
-  let page: any;
+  let page: CmsPage | null;
   // --- 3. Conditionally Render Special Component or Standard Layout ---
   if (slugsEspeciales.includes(slug)) {
     const SpecialComponent = specialPageComponents[slug];
@@ -120,10 +134,9 @@ export default async function Page({
   }
 }
 
-export async function generateMetadata(
-  { params: paramsPromise }: Args,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
+export async function generateMetadata({
+  params: paramsPromise,
+}: Args): Promise<Metadata> {
   const { slug = "home" } = await paramsPromise;
   const page = await queryPageBySlug({ slug });
   return generateMetaPage({ doc: page });
@@ -133,9 +146,7 @@ const queryToursById = cache(async () => {
   // Fetch a single tour by slug. Adjust depth as needed for tour data.
   const data = await fetch(
     `${BASEURL}/api/tours?limit=1&where[id][in]=15,13,14,17&depth=2&draft=${false}`,
-    {
-      next: { revalidate: 3600 }, // <-- El caché se refresca cada hora automáticamente
-    },
+    getRevalidatedFetchOptions([CACHE_TAGS.tours]),
   );
   const result = await data.json();
   return result.docs || null;
@@ -145,19 +156,20 @@ const queryPaquetesById = cache(async () => {
   // Fetch a single tour by slug. Adjust depth as needed for tour data.
   const data = await fetch(
     `${BASEURL}/api/paquetes?limit=1&where[id][equals]=49&depth=2&draft=${false}`,
-    {
-      next: { revalidate: 3600 }, // <-- El caché se refresca cada hora automáticamente
-    },
+    getRevalidatedFetchOptions([CACHE_TAGS.paquetes]),
   );
   const result = await data.json();
   return result.docs || null;
 });
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
-  const data = await fetch(
-    `${BASEURL}/api/pages?limit=1&where[slug][equals]=${slug}&depth=2&draft=${false}`,
-  ); // Added depth=2 for potentially richer layout data
-  const result = await data.json();
-  return result.docs?.[0] || null;
-});
+const queryPageBySlug = cache(
+  async ({ slug }: { slug: string }): Promise<CmsPage | null> => {
+    const data = await fetch(
+      `${BASEURL}/api/pages?limit=1&where[slug][equals]=${slug}&depth=2&draft=${false}`,
+      getRevalidatedFetchOptions([CACHE_TAGS.pages, getPageCacheTag(slug)]),
+    );
+    const result = await data.json();
+    return result.docs?.[0] || null;
+  },
+);
 // Optional: Metadata for the page

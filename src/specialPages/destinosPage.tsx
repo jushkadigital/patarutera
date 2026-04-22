@@ -5,8 +5,8 @@ import { MediaBlock } from "../blocks/MediaBlock";
 import { GridTours } from "../blocks/GridTours";
 import { RowBlock } from "../blocks/RowBlock";
 import { BannerBlock } from "@/blocks/Banner";
+import { CACHE_TAGS, getRevalidatedFetchOptions } from "@/lib2/cache";
 import { BASEURL } from "@/lib2/config";
-import { RenderHero } from "@/blocks/renderHeros";
 
 import { LeftPanelSearch } from "@/components/leftPanelSearch";
 import { SharedStateProvider } from "@/hooks/sharedContextDestinos";
@@ -18,7 +18,6 @@ import { SociosBlock } from "@/blocks/Socios";
 import { TextContentBlock } from "@/blocks/TextContent";
 import { BeneficiosBlock } from "@/blocks/BeneficiosBlock";
 import { EstadisticasBlock } from "@/blocks/Estadisticas";
-import { DescrPriceBlock } from "@/blocks/DescPrice";
 import { YouTubeLinksBlock } from "@/blocks/YoutubeLinksBlock";
 
 const blockComponents = {
@@ -42,9 +41,15 @@ export async function DestinosPage(props: {
   pageData: Page;
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  type DestinationOption = {
+    id: number;
+    name: string;
+  };
+
   const { destination } = props.searchParams;
   const destinationRequest = await fetch(
     `${BASEURL}/api/destinations?where[name][equals]=${destination}`,
+    getRevalidatedFetchOptions([CACHE_TAGS.destinations]),
   );
   const destinationDataPre = await destinationRequest.json();
   const destinationData = destinationDataPre.docs[0];
@@ -55,7 +60,29 @@ export async function DestinosPage(props: {
     Array.isArray(heroPageBlocks) &&
     heroPageBlocks.length > 0;
 
-  const categoriesRequest = await fetch(`${BASEURL}/api/tourCategory`);
+  const destinationsRequest = await fetch(
+    `${BASEURL}/api/destinations?limit=100&sort=name`,
+    getRevalidatedFetchOptions([CACHE_TAGS.destinations]),
+  );
+  const destinationsData = await destinationsRequest.json();
+  const destinations: DestinationOption[] = Array.isArray(destinationsData.docs)
+    ? destinationsData.docs
+        .filter(
+          (item): item is DestinationOption =>
+            typeof item === "object" &&
+            item !== null &&
+            "id" in item &&
+            "name" in item &&
+            typeof item.id === "number" &&
+            typeof item.name === "string",
+        )
+        .map((item) => ({ id: item.id, name: item.name }))
+    : [];
+
+  const categoriesRequest = await fetch(
+    `${BASEURL}/api/tourCategory`,
+    getRevalidatedFetchOptions([CACHE_TAGS.tourCategories]),
+  );
   const categoriesData = await categoriesRequest.json();
   const categories = categoriesData.docs;
   // Si ambos son falsos, fallback
@@ -71,7 +98,7 @@ export async function DestinosPage(props: {
   return (
     <div>
       <Fragment>
-        {heroPageBlocks!.map(async (block, index) => {
+        {heroPageBlocks!.map(async (block) => {
           const { blockType } = block;
           switch (blockType) {
             case "banner": {
@@ -91,7 +118,10 @@ export async function DestinosPage(props: {
 
       <SharedStateProvider>
         <div className="flex flex-row mt-10 w-[85%] mx-auto">
-          <LeftPanelSearch categories={categories} />
+          <LeftPanelSearch
+            categories={categories}
+            destinations={destinations}
+          />
           <div className="lg:w-3/4">
             <GridTours
               {...(blocks[0] as GridToursBlock)}

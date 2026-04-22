@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Media, RevistaBlock as RevistaBlockType } from "@/cms-types";
 import { ImageCuadroLink } from "@/components/ImageCuadroLink";
 import { Subtitle } from "@/components/Subtitle";
@@ -10,41 +10,50 @@ import Link from "next/link";
 
 interface Props extends RevistaBlockType {
   context?: {
-    nameCollection: string
-  } | null
+    nameCollection: string;
+  } | null;
 }
 
 export function RevistaBlock(props: Props) {
-  const { revistasLinks, blockTitle } = props
+  const { revistasLinks, blockTitle } = props;
 
-  const isMobile = useMobile()
+  const isMobile = useMobile();
   return (
     <div className="w-full ">
       <Subtitle titleGroup={blockTitle} />
-      {
-        !isMobile ?
-          <div className="flex flex-row">
-            {
-              revistasLinks && revistasLinks.map(ele => (
-                <ImageCuadroLink backgroundImage={(ele.image! as Media)} link={ele.url} text="Ver Revista" />
-              ))
-            }
-          </div>
-          :
-          <div className="flex flex-row">
-            {
-              revistasLinks && revistasLinks.map(ele =>
-                <Button className="bg-white mx-auto rounded-2xl border-1 border-gray-300 p-5">
-                  <Link target="_blank" rel="noopener noreferrer" href={ele.url} className=" flex items-center text-gray-500">
-                    Descargar Brouchere
-                    <ChevronRight />
-                  </Link>
-                </Button>
-              )
-            }
-          </div>
-
-      }
+      {!isMobile ? (
+        <div className="flex flex-row">
+          {revistasLinks &&
+            revistasLinks.map((ele, index) => (
+              <ImageCuadroLink
+                key={ele.url ?? `${index}`}
+                backgroundImage={ele.image! as Media}
+                link={ele.url}
+                text="Ver Revista"
+              />
+            ))}
+        </div>
+      ) : (
+        <div className="flex flex-row">
+          {revistasLinks &&
+            revistasLinks.map((ele, index) => (
+              <Button
+                key={ele.url ?? `${index}`}
+                className="bg-white mx-auto rounded-2xl border-1 border-gray-300 p-5"
+              >
+                <Link
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={ele.url}
+                  className=" flex items-center text-gray-500"
+                >
+                  Descargar Brouchere
+                  <ChevronRight />
+                </Link>
+              </Button>
+            ))}
+        </div>
+      )}
     </div>
-  )
+  );
 }

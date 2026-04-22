@@ -1,26 +1,23 @@
-import { Metadata } from "next"
+import { Metadata } from "next";
 
-import ProfilePhone from "@modules/account//components/profile-phone"
-import ProfileBillingAddress from "@modules/account/components/profile-billing-address"
-import ProfileEmail from "@modules/account/components/profile-email"
-import ProfileName from "@modules/account/components/profile-name"
-import ProfilePassword from "@modules/account/components/profile-password"
+import ProfileEmail from "@modules/account/components/profile-email";
+import ProfileName from "@modules/account/components/profile-name";
 
-import { notFound } from "next/navigation"
-import { listRegions } from "@lib/data/regions"
-import { retrieveCustomer } from "@lib/data/customer"
+import { notFound } from "next/navigation";
+import { listRegions } from "@lib/data/regions";
+import { retrieveCustomer } from "@lib/data/customer";
 
 export const metadata: Metadata = {
   title: "Profile",
   description: "View and edit your Medusa Store profile.",
-}
+};
 
 export default async function Profile() {
-  const customer = await retrieveCustomer()
-  const regions = await listRegions()
+  const customer = await retrieveCustomer();
+  const regions = await listRegions();
 
   if (!customer || !regions) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -40,10 +37,9 @@ export default async function Profile() {
         <Divider /> */}
       </div>
     </div>
-  )
+  );
 }
 
 const Divider = () => {
-  return <div className="w-full h-px bg-gray-200" />
-}
-  ; ``
+  return <div className="w-full h-px bg-gray-200" />;
+};

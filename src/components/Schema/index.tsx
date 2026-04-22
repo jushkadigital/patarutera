@@ -17,22 +17,23 @@ export const TourSchema = (props: Tour) => {
     },
     offers: props.priceGeneral
       ? {
-        "@type": "Offer",
-        priceCurrency: "PEN",
-        price: Number(props.priceGeneral) || undefined,
-        availability: "https://schema.org/InStock",
-        url: `${getClientSideURL()}/pe/tours/${props.slug}`,
-      } : undefined,
+          "@type": "Offer",
+          priceCurrency: "PEN",
+          price: Number(props.priceGeneral) || undefined,
+          availability: "https://schema.org/InStock",
+          url: `${getClientSideURL()}/pe/tours/${props.slug}`,
+        }
+      : undefined,
     additionalType: "https://schema.org/TouristTrip",
     location: {
       "@type": "Place",
-      name: `${(props.destinos as Destination).name}, Perú`
+      name: `${(props.destinos as Destination).name}, Perú`,
     },
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: "4.8",
-      reviewCount: "120"
-    }
+      reviewCount: "120",
+    },
   };
 };
 
@@ -57,20 +58,19 @@ export const PaqueteSchema = (props: Paquete) => {
     },
     offers: props.priceGeneral
       ? {
-        "@type": "Offer",
-        priceCurrency: "PEN",
-        price: Number(props.priceGeneral) || undefined,
-        availability: "https://schema.org/InStock",
-        url: `${getClientSideURL()}/pe/paquete/${props.slug}`,
-      }
+          "@type": "Offer",
+          priceCurrency: "PEN",
+          price: Number(props.priceGeneral) || undefined,
+          availability: "https://schema.org/InStock",
+          url: `${getClientSideURL()}/pe/paquete/${props.slug}`,
+        }
       : undefined,
     additionalType: "https://schema.org/TouristTrip",
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: "4.8",
-      reviewCount: "120"
-    }
-
+      reviewCount: "120",
+    },
   };
 };
 
@@ -100,7 +100,11 @@ export const HomeToursSchema = ({ page }: Props) => {
   };
 
   return (
-    <Script type={"application/ld+json"} strategy={"lazyOnload"}>
+    <Script
+      id="home-tours-schema"
+      type={"application/ld+json"}
+      strategy={"lazyOnload"}
+    >
       {JSON.stringify(jsonLd)}
     </Script>
   );

@@ -1,19 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "motion/react"
-import { MapPin, CheckCircle, Tag, Info, ListTodo } from "lucide-react"
-import RichText from "./RichText"
-import Image from "@/components/PayloadImage"
-import { Media } from "@/cms-types"
-import { Faq } from "./Faq"
+import { useState } from "react";
+import { motion } from "motion/react";
+import { MapPin, CheckCircle, Tag, Info, ListTodo } from "lucide-react";
+import RichText from "./RichText";
+import Image from "@/components/PayloadImage";
+import { Media } from "@/cms-types";
+import { Faq } from "./Faq";
 
 type TabAccordeon = {
-
-  arrayData:
-  {
-    id: string
-    title: string
+  arrayData: {
+    id: string;
+    title: string;
     content: {
       root: {
         type: string;
@@ -22,44 +20,52 @@ type TabAccordeon = {
           version: number;
           [k: string]: unknown;
         }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        direction: ("ltr" | "rtl") | null;
+        format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
         indent: number;
         version: number;
       };
       [k: string]: unknown;
-    }
-  }[]
-}
+    };
+  }[];
+};
 
 interface Tab {
-  id: number
-  label: string
-  icon: Media
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
+  id: number;
+  label: string;
+  icon: Media;
+  content:
+    | {
+        root: {
+          type: string;
+          children: {
+            type: string;
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ("ltr" | "rtl") | null;
+          format:
+            | "left"
+            | "start"
+            | "center"
+            | "right"
+            | "end"
+            | "justify"
+            | "";
+          indent: number;
+          version: number;
+        };
         [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-
-  } | TabAccordeon;
+      }
+    | TabAccordeon;
 }
-
 
 interface Props {
-  tabs: Tab[]
+  tabs: Tab[];
 }
 export default function TabsViaje({ tabs }: Props) {
-  const [activeTab, setActiveTab] = useState(0)
+  const [activeTab, setActiveTab] = useState(0);
+  const activeTabContent = tabs.find((tab) => tab.id === activeTab)?.content;
 
   return (
     <div className="w-full  mx-auto ">
@@ -68,13 +74,18 @@ export default function TabsViaje({ tabs }: Props) {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`relative flex flex-col items-center justify-center p-4 min-w-[180px] border rounded-md transition-all ${activeTab === tab.id ? "border-green-600 bg-white" : "border-gray-200 bg-white hover:bg-gray-50"
-              }`}
+            className={`relative flex flex-col items-center justify-center p-4 min-w-[180px] border rounded-md transition-all ${
+              activeTab === tab.id
+                ? "border-green-600 bg-white"
+                : "border-gray-200 bg-white hover:bg-gray-50"
+            }`}
           >
             <div className="flex justify-center mb-2">
               <Image media={tab.icon} className="object-cover" />
             </div>
-            <span className="text-sm text-[clamp(12.2px,1.2vw,23px)] font-medium">{tab.label}</span>
+            <span className="text-sm text-[clamp(12.2px,1.2vw,23px)] font-medium">
+              {tab.label}
+            </span>
             {activeTab === tab.id && (
               <motion.div
                 className="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-green-600"
@@ -94,15 +105,14 @@ export default function TabsViaje({ tabs }: Props) {
           transition={{ duration: 0.2 }}
         >
           <div className="space-y-4">
-            {
-              Array.isArray(tabs.find((tab) => tab.id === activeTab)?.content!) ?
-                <Faq tabs={tabs.find((tab) => tab.id === activeTab)?.content! as any} />
-                :
-                <RichText data={tabs.find((tab) => tab.id === activeTab)?.content!} className="" />
-            }
+            {Array.isArray(activeTabContent) ? (
+              <Faq tabs={activeTabContent as any} />
+            ) : activeTabContent ? (
+              <RichText data={activeTabContent} className="" />
+            ) : null}
           </div>
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

@@ -5,6 +5,7 @@ import { Subtitle } from "@/components/Subtitle";
 import { MeiliToursFilterClient } from "@/components/meili-tours-filter-client";
 import { ToursComponent } from "@/components/ToursComponent";
 import { BASEURL } from "@/lib2/config";
+import { CACHE_TAGS, getRevalidatedFetchOptions } from "@/lib2/cache";
 import {
   getMeiliCompleteImageFallback,
   parseMeiliCompleteImage,
@@ -315,7 +316,7 @@ async function searchToursFromMeilisearch({
       limit,
       offset,
     }),
-    next: { tags: ["tours"] },
+    ...getRevalidatedFetchOptions([CACHE_TAGS.tours]),
   });
 
   if (!response.ok) {
@@ -382,7 +383,7 @@ async function searchToursFromPayload({
   }
 
   const response = await fetch(`${BASEURL}/api/tours?${params.toString()}`, {
-    next: { tags: ["tours"] },
+    ...getRevalidatedFetchOptions([CACHE_TAGS.tours]),
   });
 
   if (!response.ok) {

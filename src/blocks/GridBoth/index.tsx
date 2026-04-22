@@ -1,13 +1,9 @@
-import type {
-  GridToursBlock as GridToursBlockType,
-  TitleGroup,
-  Tour,
-} from "@/cms-types";
+import type { GridToursBlock as GridToursBlockType } from "@/cms-types";
 import { CardTourData } from "@/components/CardTour";
 import { Pagination } from "@/components/Pagination";
-import { Subtitle } from "@/components/Subtitle";
 import { BothComponent } from "@/components/BothComponent";
 import { MeiliBothFilterClient } from "@/components/meili-both-filter-client";
+import { CACHE_TAGS, getRevalidatedFetchOptions } from "@/lib2/cache";
 import {
   getMeiliCompleteImageFallback,
   parseMeiliCompleteImage,
@@ -29,13 +25,6 @@ interface Props extends Omit<GridToursBlockType, "blockTitle" | "blockType"> {
 type MeiliSearchResponse = {
   hits?: MeiliTourItem[];
   estimatedTotalHits?: number;
-};
-
-type PayloadToursResponse = {
-  docs?: Tour[];
-  totalDocs?: number;
-  totalPages?: number;
-  page?: number;
 };
 
 type MeiliTourItem = {
@@ -178,52 +167,6 @@ function mapMeiliTourToCardTourData(tour: MeiliTourItem): CardTourData {
   };
 }
 
-function getCategoryNamesFromBlock(
-  category: GridToursBlockType["category"],
-): string[] {
-  if (!Array.isArray(category)) {
-    return [];
-  }
-
-  return category
-    .map((item) => {
-      if (typeof item === "object" && item !== null && "name" in item) {
-        return item.name;
-      }
-
-      return null;
-    })
-    .filter((value): value is string => typeof value === "string");
-}
-
-function getCategoryIdsFromBlock(
-  category: GridToursBlockType["category"],
-): number[] {
-  if (!Array.isArray(category)) {
-    return [];
-  }
-
-  return category.filter((item): item is number => typeof item === "number");
-}
-
-function getDestinationId(
-  destination: GridToursBlockType["destination"],
-): number | undefined {
-  if (typeof destination === "number") {
-    return destination;
-  }
-
-  if (
-    typeof destination === "object" &&
-    destination !== null &&
-    "id" in destination
-  ) {
-    return destination.id;
-  }
-
-  return undefined;
-}
-
 function sanitizeCategories(categories?: string[]): string[] {
   if (!categories) return [];
 
@@ -284,7 +227,7 @@ async function searchBothFromMeilisearch({
       limit,
       offset,
     }),
-    next: { tags: ["tours", "paquetes"] },
+    ...getRevalidatedFetchOptions([CACHE_TAGS.tours, CACHE_TAGS.paquetes]),
   });
 
   if (!response.ok) {

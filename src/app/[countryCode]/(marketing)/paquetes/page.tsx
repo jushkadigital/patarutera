@@ -4,6 +4,11 @@ import type { GridPaquetesBlock, Page } from "@/cms-types";
 import { MediaBlock } from "@blocks/MediaBlock";
 import { RowBlock } from "@blocks/RowBlock";
 import { BannerBlock } from "@/blocks/Banner";
+import {
+  CACHE_TAGS,
+  getGlobalCacheTag,
+  getRevalidatedFetchOptions,
+} from "@/lib2/cache";
 import { BASEURL } from "@/lib2/config";
 
 import { LeftPanelSearchPaquete } from "@/components/leftSearchPanelPaquetes";
@@ -21,6 +26,8 @@ import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { LivePreviewListener } from "@/components/LivePreviewListener";
 import { GridPaquetes } from "@/blocks/GridPaquetes";
+
+export const revalidate = 3600;
 
 type DestinationOption = {
   id: number;
@@ -127,6 +134,7 @@ export default async function Page(props: Props) {
   const { isEnabled: draft } = await draftMode();
   const destinationsRequest = await fetch(
     `${BASEURL}/api/destinations?limit=100&sort=name`,
+    getRevalidatedFetchOptions([CACHE_TAGS.destinations]),
   );
   const destinationsData = await destinationsRequest.json();
   const destinations: DestinationOption[] = Array.isArray(destinationsData.docs)
@@ -238,6 +246,7 @@ const queryPageBySlug = cache(async (): Promise<Page | null> => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
   const data = await fetch(
     `${BASEURL}/api/globals/pacP?depth=2&draft=${draft}`, // Added depth=2 for potentially richer layout data
+    getRevalidatedFetchOptions([getGlobalCacheTag("pacP")]),
   );
   const result = await data.json();
   return result || null;

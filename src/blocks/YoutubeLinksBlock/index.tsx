@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Media, YouTubeLinksBlockType } from "@/cms-types";
 import { ImageCuadroLink } from "@/components/ImageCuadroLink";
 import { Subtitle } from "@/components/Subtitle";
@@ -10,44 +10,47 @@ import Link from "next/link";
 
 interface Props extends YouTubeLinksBlockType {
   context?: {
-    nameCollection: string
-  } | null
+    nameCollection: string;
+  } | null;
 }
 
 export function YouTubeLinksBlock(props: Props) {
-  const { videoLinks, blockTitle } = props
+  const { videoLinks, blockTitle } = props;
 
-  const isMobile = useMobile()
+  const isMobile = useMobile();
   return (
     <div className="w-full ">
       <Subtitle titleGroup={blockTitle} />
 
-      {!isMobile ?
+      {!isMobile ? (
         <div className="flex flex-row">
-          {
-            videoLinks && videoLinks.map((ele) => (
-              <ImageCuadroLink backgroundImage={(ele.image! as Media)} link={ele.url} text="Ver Video" />
-            ))
-          }
+          {videoLinks &&
+            videoLinks.map((ele, index) => (
+              <ImageCuadroLink
+                key={ele.url ?? `${index}`}
+                backgroundImage={ele.image! as Media}
+                link={ele.url}
+                text="Ver Video"
+              />
+            ))}
         </div>
-
-        :
+      ) : (
         <div className="flex flex-row">
-          {
-            videoLinks && videoLinks.map(ele =>
-              <Button asChild className="w-44 bg-[#2970B7] mx-auto">
+          {videoLinks &&
+            videoLinks.map((ele, index) => (
+              <Button
+                key={ele.url ?? `${index}`}
+                asChild
+                className="w-44 bg-[#2970B7] mx-auto"
+              >
                 <Link href={ele.url} className="flex items-center">
                   Ver Video
-
                   <ChevronRight />
                 </Link>
               </Button>
-            )
-          }
+            ))}
         </div>
-
-      }
-
+      )}
     </div>
-  )
+  );
 }

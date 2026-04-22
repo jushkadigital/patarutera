@@ -3,6 +3,11 @@ import ViewContentTracker from "@/components/analytics/view-content-tracker";
 import { RenderHero } from "@/blocks/renderTourHero";
 import { TourSchema } from "@/components/Schema";
 import { getProductByExternalId } from "@/lib/data/products";
+import {
+  CACHE_TAGS,
+  getRevalidatedFetchOptions,
+  getTourCacheTag,
+} from "@/lib2/cache";
 import { BASEURL } from "@/lib2/config";
 import { generateMetaPage } from "@/utilities/generateMeta";
 import { Metadata } from "next";
@@ -12,13 +17,14 @@ import { cache } from "react";
 
 // ISR Configuration: Revalidate every hour (3600 seconds)
 // Pages will be statically generated at build time and regenerated in the background
-export const revalidate = 3600; // 1 hour
+export const revalidate = 3600;
 export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   const toursRequest = await fetch(
     `${BASEURL}/api/tours?depth=0&limit=1000&draft=false&select[slug]=true`,
-  ); // Fetch tour slugs
+    getRevalidatedFetchOptions([CACHE_TAGS.tours]),
+  );
   const tours = await toursRequest.json();
 
   const params = tours.docs
@@ -133,12 +139,7 @@ const queryTourBySlug = cache(async ({ slug }: { slug: string }) => {
   // Fetch a single tour by slug. Adjust depth as needed for tour data.
   const data = await fetch(
     `${BASEURL}/api/tours?limit=1&where[slug][equals]=${slug}&depth=2&draft=false`,
-    {
-      next: {
-        tags: ["tours", `tour-${slug}`],
-        revalidate: 3600, // 1 hour
-      },
-    },
+    getRevalidatedFetchOptions([CACHE_TAGS.tours, getTourCacheTag(slug)]),
   );
   const result = await data.json();
   return result.docs?.[0] || null;

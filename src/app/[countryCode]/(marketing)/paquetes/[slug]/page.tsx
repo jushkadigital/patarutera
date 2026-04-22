@@ -3,6 +3,11 @@ import ViewContentTracker from "@/components/analytics/view-content-tracker";
 import { RenderHero } from "@/blocks/renderPaqueteHero";
 import { PaqueteSchema } from "@/components/Schema";
 import { getProductByExternalId } from "@/lib/data/products";
+import {
+  CACHE_TAGS,
+  getPaqueteCacheTag,
+  getRevalidatedFetchOptions,
+} from "@/lib2/cache";
 import { BASEURL } from "@/lib2/config";
 import { generateMetaPage } from "@/utilities/generateMeta";
 import { Metadata } from "next";
@@ -12,13 +17,14 @@ import { cache } from "react";
 
 // ISR Configuration: Revalidate every hour (3600 seconds)
 // Pages will be statically generated at build time and regenerated in the background
-export const revalidate = 3600; // 1 hour
+export const revalidate = 3600;
 export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   const paquetesRequest = await fetch(
     `${BASEURL}/api/paquetes?depth=0&limit=1000&draft=false&select[slug]=true`,
-  ); // Fetch paquete slugs
+    getRevalidatedFetchOptions([CACHE_TAGS.paquetes]),
+  );
   const paquetes = await paquetesRequest.json();
 
   const params = paquetes.docs
@@ -133,12 +139,7 @@ const queryPaqueteBySlug = cache(async ({ slug }: { slug: string }) => {
   // Fetch a single paquete by slug. Adjust depth as needed for paquete data.
   const data = await fetch(
     `${BASEURL}/api/paquetes?limit=1&where[slug][equals]=${slug}&depth=2&draft=false`,
-    {
-      next: {
-        tags: ["paquetes", `paquete-${slug}`],
-        revalidate: 3600, // 1 hour
-      },
-    },
+    getRevalidatedFetchOptions([CACHE_TAGS.paquetes, getPaqueteCacheTag(slug)]),
   );
   const result = await data.json();
   return result.docs?.[0] || null;

@@ -5,6 +5,11 @@ import { MediaBlock } from "@blocks/MediaBlock";
 import { GridTours } from "@blocks/GridTours";
 import { RowBlock } from "@blocks/RowBlock";
 import { BannerBlock } from "@/blocks/Banner";
+import {
+  CACHE_TAGS,
+  getGlobalCacheTag,
+  getRevalidatedFetchOptions,
+} from "@/lib2/cache";
 import { BASEURL } from "@/lib2/config";
 
 import { LeftPanelSearch } from "@/components/leftPanelSearch";
@@ -22,6 +27,8 @@ import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { LivePreviewListener } from "@/components/LivePreviewListener";
 import { GridBlogs } from "@/blocks/GridBlog";
+
+export const revalidate = 3600;
 
 type DestinationOption = {
   id: number;
@@ -113,11 +120,13 @@ export default async function Page(props: Props) {
   const { isEnabled: draft } = await draftMode();
   const destinationRequest = await fetch(
     `${BASEURL}/api/destinations?where[name][equals]=${encodeURIComponent(destination ?? "")}`,
+    getRevalidatedFetchOptions([CACHE_TAGS.destinations]),
   );
   const destinationDataPre = await destinationRequest.json();
   const destinationData = destinationDataPre.docs?.[0] ?? null;
   const destinationsRequest = await fetch(
     `${BASEURL}/api/destinations?limit=100&sort=name`,
+    getRevalidatedFetchOptions([CACHE_TAGS.destinations]),
   );
   const destinationsData = await destinationsRequest.json();
   const destinations: DestinationOption[] = Array.isArray(destinationsData.docs)
@@ -145,7 +154,10 @@ export default async function Page(props: Props) {
     Array.isArray(heroPageBlocks) &&
     heroPageBlocks.length > 0;
 
-  const categoriesRequest = await fetch(`${BASEURL}/api/tourCategory`);
+  const categoriesRequest = await fetch(
+    `${BASEURL}/api/tourCategory`,
+    getRevalidatedFetchOptions([CACHE_TAGS.tourCategories]),
+  );
   const categoriesData = await categoriesRequest.json();
   const categories = categoriesData.docs;
   // Si ambos son falsos, fallback
@@ -243,7 +255,8 @@ const queryPageBySlug = cache(async (): Promise<Page | null> => {
   const { isEnabled: draft } = await draftMode(); // draft is not used here, consider removing if not needed
   const data = await fetch(
     `${BASEURL}/api/globals/touP?depth=3&draft=${draft}`,
-  ); // Added depth=2 for potentially richer layout data
+    getRevalidatedFetchOptions([getGlobalCacheTag("touP")]),
+  );
   const result = await data.json();
   return (result as Page) || null;
 });
