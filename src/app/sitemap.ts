@@ -1,26 +1,84 @@
-import { Paquete, Tour } from '@/cms-types'
-import { BASEURL } from '@/lib2/config'
-import { getServerSideURL } from '@/utilities/getURL'
-import type { MetadataRoute } from 'next'
+import { BASEURL } from "@/lib2/config";
+import { getBaseURL } from "@/lib/util/env";
+import type { MetadataRoute } from "next";
 
-export const fetchCache = 'force-cache'
+type SitemapDocument = {
+  slug?: string | null;
+  updatedAt?: string | null;
+};
 
+type PayloadCollectionResponse = {
+  docs?: SitemapDocument[];
+};
+
+export const revalidate = 3600;
+
+async function fetchCollectionForSitemap(
+  collection: "tours" | "paquetes",
+): Promise<SitemapDocument[]> {
+  if (!BASEURL) {
+    return [];
+  }
+
+  const params = new URLSearchParams({
+    depth: "0",
+    draft: "false",
+    pagination: "false",
+  });
+
+  params.append("select[slug]", "true");
+  params.append("select[updatedAt]", "true");
+
+  const response = await fetch(
+    `${BASEURL}/api/${collection}?${params.toString()}`,
+    {
+      next: {
+        tags: [collection],
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch ${collection} for sitemap: ${response.status}`,
+    );
+  }
+
+  const result: PayloadCollectionResponse = await response.json();
+
+  return Array.isArray(result.docs) ? result.docs : [];
+}
+
+function buildCollectionEntries(
+  baseUrl: string,
+  collection: "tours" | "paquetes",
+  docs: SitemapDocument[],
+): MetadataRoute.Sitemap {
+  return docs
+    .filter((doc): doc is SitemapDocument & { slug: string } =>
+      Boolean(doc.slug),
+    )
+    .map((doc) => ({
+      url: `${baseUrl}/pe/${collection}/${doc.slug}`,
+      lastModified: doc.updatedAt ?? undefined,
+    }));
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = getServerSideURL()
+  const baseUrl = getBaseURL();
   const [tours, paquetes] = await Promise.all([
-    fetch(`${BASEURL}/api/tours?limit=0&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true}`, { next: { tags: ['tours-sitemap'] } }).then(r => r.json()),
-    fetch(`${BASEURL}/api/paquetes?limit=0&depth=2&draft=false&select[featuredImage]=true&select[slug]=true&select[title]=true&select[price]=true&select[Desde]=true&select[difficulty]=true&select[iconDifficulty]=true&select[maxPassengers]=true&select[iconMaxPassengers]=true&select[Person desc]=true&select[miniDescription]=true&select[destinos]=true}`, { next: { tags: ['paquetes-sitemap'] } }).then(r => r.json()),
-  ])
+    fetchCollectionForSitemap("tours"),
+    fetchCollectionForSitemap("paquetes"),
+  ]);
 
   return [
-    ...tours.docs.map((tour: Tour) => ({
-      url: `${baseUrl}/pe/tours/${tour.slug}`,
-      lastModified: tour.updatedAt,
-    })),
-    ...paquetes.docs.map((paquete: Paquete) => ({
-      url: `${baseUrl}/pe/paquetes/${paquete.slug}`,
-      lastModified: paquete.updatedAt,
-    })),
-  ]
+    {
+      url: `${baseUrl}/pe/tours`,
+    },
+    {
+      url: `${baseUrl}/pe/paquetes`,
+    },
+    ...buildCollectionEntries(baseUrl, "tours", tours),
+    ...buildCollectionEntries(baseUrl, "paquetes", paquetes),
+  ];
 }
