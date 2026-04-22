@@ -293,3 +293,4 @@ export default function MyComponent() {
 - Integrate CMS content with Medusa product catalog
 - Handle authentication sync between NextAuth and Medusa backend
 - Use feature-based module organization in `src/modules/`
+- 
