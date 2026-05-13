@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import PageViewTracker from "@/components/analytics/page-view-tracker";
 import CartItemAddedToastBridge from "@/components/cart-item-added-toast-bridge";
 import { CountryCodeProvider } from "@/lib/context/country-code-context";
+import SessionProvider from "@/providers/session-provider";
 import "../globals.css";
 
 const poppins = Poppins({
@@ -37,6 +38,7 @@ export default async function RootLayout(props: {
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body className={`${poppins.className} min-h-screen flex flex-col`}>
+        <SessionProvider>
         <CountryCodeProvider countryCode={countryCode}>
           <GoogleAnalytics gaId={GOOGLE_TAG_ID} />
           <CartItemAddedToastBridge />
@@ -78,6 +80,7 @@ export default async function RootLayout(props: {
           />
           {props.children}
         </CountryCodeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

@@ -13,60 +13,25 @@ export default auth((req) => {
   const syncQueryState = req.nextUrl.searchParams.get("medusa_sync");
   const hasSyncGuestQuery = syncQueryState === "guest";
   const { pathname } = req.nextUrl;
-  const isDevelopment = process.env.NODE_ENV !== "production";
 
-  // Debug solo en desarrollo
-  if (isDevelopment && !pathname.startsWith("/_next")) {
-    console.log(`[MIDDLEWARE] Ruta: ${pathname}`);
-    console.log(`   > NextAuth Logged: ${isLoggedIn}`);
-    console.log(
-      `   > Medusa JWT Cookie (_medusa_jwt|__Secure-_medusa_jwt): ${hasMedusaJwtCookie ? "✅ Existe" : "❌ Falta"}`,
-    );
-    console.log(
-      `   > Guest Fallback Cookie (${MEDUSA_FALLBACK_COOKIE}): ${hasGuestFallbackCookie ? "✅ Existe" : "❌ Falta"}`,
-    );
-    if (hasSyncGuestQuery) {
-      console.log("   > medusa_sync=guest detectado en URL actual");
-    }
-  }
-
-  // Excluir todas las rutas de /api/auth para evitar bucles
   if (pathname.startsWith("/api/auth")) {
     return NextResponse.next();
   }
 
-  // Sincronización: Solo si está logueado en NextAuth pero NO tiene cookie Medusa
   if (
     isLoggedIn &&
     !hasMedusaJwtCookie &&
     !hasGuestFallbackCookie &&
     !hasSyncGuestQuery
   ) {
-    if (isDevelopment) {
-      console.log(
-        "[MIDDLEWARE] ⚠️ Usuario logueado pero SIN cookie Medusa. Redirigiendo a sync...",
-      );
-    }
     const syncUrl = new URL("/api/auth/medusa-sync", req.url);
     syncUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(syncUrl);
-  }
-
-  if (
-    isLoggedIn &&
-    !hasMedusaJwtCookie &&
-    (hasGuestFallbackCookie || hasSyncGuestQuery) &&
-    isDevelopment
-  ) {
-    console.log(
-      "[MIDDLEWARE] Usuario en fallback guest temporal. Se omite sync en esta request.",
-    );
   }
 
   return NextResponse.next();
 });
 
 export const config = {
-  // Coincide con todo excepto _next/static, _next/image y favicon
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

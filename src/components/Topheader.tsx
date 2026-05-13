@@ -7,7 +7,6 @@ import { SvgFacebook, SvgInstagram, SvgTiktok, SvgWhatsapp } from "./IconsSvg";
 import { Button } from "./ui/button";
 import { Heart, ShoppingCart, CircleUserRound, Mail } from "lucide-react";
 import { useMobile } from "@/hooks/useMobile";
-import { usePopupAuth } from "@/hooks/usePopupAuth";
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
 
 const LazyCartDropdown = dynamic(
@@ -60,7 +59,6 @@ export const TopHeader = ({
   };
 
   const isMobile = useMobile({ breakpoint: 610 });
-  const { openPopup, isLoading, error } = usePopupAuth();
   const [shouldLoadCartDropdown, setShouldLoadCartDropdown] =
     React.useState(false);
 
@@ -92,13 +90,6 @@ export const TopHeader = ({
       description: "WhatsApp contact from the top header",
       pageLocation: window.location.href,
     });
-  };
-
-  const handleLoginClick = async () => {
-    try {
-      await openPopup({ provider: "keycloak" });
-      window.location.reload();
-    } catch {}
   };
 
   return (
@@ -192,39 +183,22 @@ export const TopHeader = ({
               </Button>
             </LocalizedClientLink>
           ) : isMobile ? (
-            <Button
-              variant={"ghost"}
-              className="p-0!"
-              onClick={() => void handleLoginClick()}
-              disabled={isLoading}
-              aria-busy={isLoading}
-            >
-              {isLoading ? (
-                <span className="text-xs text-white">...</span>
-              ) : (
+            <LocalizedClientLink href="/account">
+              <Button variant={"ghost"} className="p-0!">
                 <CircleUserRound
                   size={"icon"}
                   className="size-5 text-white"
                   color="#fff"
                 />
-              )}
-            </Button>
+              </Button>
+            </LocalizedClientLink>
           ) : (
-            <Button
-              className="text-[#2970B7] rounded-2xl bg-white uppercase font-bold sm:text-xs lg:text-md"
-              onClick={() => void handleLoginClick()}
-              disabled={isLoading}
-              aria-busy={isLoading}
-            >
-              {isLoading ? "Conectando..." : "Iniciar Sesion"}
-            </Button>
+            <LocalizedClientLink href="/account">
+              <Button className="text-[#2970B7] rounded-2xl bg-white uppercase font-bold sm:text-xs lg:text-md">
+                Iniciar Sesion
+              </Button>
+            </LocalizedClientLink>
           )}
-
-          {!isAuthenticated && error ? (
-            <p className="text-xs text-white" role="alert">
-              {error}
-            </p>
-          ) : null}
 
           <Button variant="ghost" className={`${isMobile ? "p-0!" : ""}`}>
             <Heart size={"icon"} className="size-5" color="#fff" />

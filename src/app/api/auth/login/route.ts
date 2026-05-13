@@ -1,21 +1,9 @@
-import { signIn } from "@/lib2/auth";
+import { NextRequest, NextResponse } from "next/server";
 
-const DEFAULT_REDIRECT_TO = "/account";
-const DEFAULT_PROVIDER = "keycloak";
-
-const getSafeRedirectTo = (raw: string | null): string => {
-  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) {
-    return DEFAULT_REDIRECT_TO;
-  }
-
-  return raw;
-};
-
-export const GET = async (request: Request) => {
-  const searchParams = new URL(request.url).searchParams;
-  const redirectTo = getSafeRedirectTo(searchParams.get("redirectTo"));
-  const provider =
-    searchParams.get("provider") === "keycloak" ? "keycloak" : DEFAULT_PROVIDER;
-
-  await signIn(provider, { redirectTo });
+export const GET = async (req: NextRequest) => {
+  const searchParams = req.nextUrl.searchParams;
+  const redirectTo = searchParams.get("redirectTo") ?? "/account";
+  const loginUrl = new URL("/account", req.url);
+  loginUrl.searchParams.set("callbackUrl", redirectTo);
+  return NextResponse.redirect(loginUrl);
 };

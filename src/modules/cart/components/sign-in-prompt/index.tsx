@@ -1,19 +1,9 @@
-'use client'
-import usePopupAuth from "@/hooks/usePopupAuth";
+"use client"
 
 import { Button, Heading, Text } from "@medusajs/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const SignInPrompt = () => {
-
-  const { openPopup, isLoading, error } = usePopupAuth();
-  const handleLoginClick = async () => {
-    try {
-      await openPopup({ provider: "keycloak" });
-      window.location.reload();
-    } catch { }
-  };
-
   return (
     <div className="bg-white flex items-center justify-between">
       <div>
@@ -25,12 +15,11 @@ const SignInPrompt = () => {
         </Text>
       </div>
       <div>
-
-        <Button variant="secondary" className="h-10" data-testid="sign-in-button"
-          onClick={() => void handleLoginClick()}
-        >
-          Sign in
-        </Button>
+        <LocalizedClientLink href="/account" data-testid="sign-in-button">
+          <Button variant="secondary" className="h-10">
+            Sign in
+          </Button>
+        </LocalizedClientLink>
       </div>
     </div>
   )

@@ -4,7 +4,6 @@ import { Button } from "@medusajs/ui";
 import { trackInitiateCheckout } from "@lib/analytics";
 import Modal from "@modules/common/components/modal";
 import DiscountCode from "@modules/checkout/components/discount-code";
-import { usePopupAuth } from "@/hooks/usePopupAuth";
 import { HttpTypes } from "@medusajs/types";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
@@ -48,8 +47,6 @@ const Summary = ({
   const checkoutHref = "/checkout";
   const pathname = usePathname();
   const localizedCheckoutPath = pathname.replace(/\/cart$/, checkoutHref);
-  const { openPopup, isLoading, error } = usePopupAuth();
-  const [isSyncing, setIsSyncing] = useState(false);
   const {
     state: isCheckoutChoiceOpen,
     open: openCheckoutChoice,
@@ -99,9 +96,7 @@ const Summary = ({
     window.location.assign(guestCheckoutUrl);
   };
 
-  const loginAndContinueCheckout = async () => {
-    const syncUrl = `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`;
-
+  const loginAndContinueCheckout = () => {
     handleInitiateCheckout();
 
     if (hasMedusaSessionCookie) {
@@ -110,26 +105,15 @@ const Summary = ({
       return;
     }
 
-    setIsSyncing(true);
-
     if (hasAuthSessionCookie && !hasMedusaSessionCookie) {
       closeCheckoutChoice();
+      const syncUrl = `/api/auth/medusa-sync?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`;
       window.location.assign(syncUrl);
       return;
     }
 
-    try {
-      await openPopup({
-        provider: "keycloak",
-        redirectTo: syncUrl,
-      });
-    } catch {
-      setIsSyncing(false);
-      return;
-    }
-
     closeCheckoutChoice();
-    window.location.assign(syncUrl);
+    window.location.assign(`/account?callbackUrl=${encodeURIComponent(localizedCheckoutPath)}`);
   };
 
   const handleCheckoutClick = () => {
@@ -191,16 +175,10 @@ const Summary = ({
           <Button
             className="h-[51px] w-full rounded-[8px] border border-[#e2e2e2] bg-[#efba06] px-6 font-[Poppins] text-[16px] font-medium text-white hover:bg-[#dba900] sm:w-[180px]"
             onClick={handleCheckoutClick}
-            disabled={isLoading || isSyncing}
-            aria-busy={isLoading || isSyncing}
             data-testid="checkout-button"
             type="button"
           >
-            {isSyncing
-              ? "Sincronizando..."
-              : isLoading
-                ? "Conectando..."
-                : "Proceder Compra"}
+            Proceder Compra
           </Button>
         </div>
       </div>
@@ -225,27 +203,19 @@ const Summary = ({
             variant="secondary"
             className="h-10"
             onClick={goToGuestCheckout}
-            disabled={isLoading || isSyncing}
             data-testid="checkout-guest-button"
           >
             Continuar como invitado
           </Button>
           <Button
             className="h-10"
-            onClick={() => void loginAndContinueCheckout()}
-            disabled={isLoading || isSyncing}
+            onClick={() => loginAndContinueCheckout()}
             data-testid="checkout-login-button"
           >
-            {isSyncing || isLoading ? "Conectando..." : "Iniciar sesion"}
+            Iniciar sesion
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {error ? (
-        <p className="text-sm text-red-500" role="alert" aria-live="polite">
-          {error}
-        </p>
-      ) : null}
     </div>
   );
 };
