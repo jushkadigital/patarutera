@@ -28,7 +28,7 @@ const LoginTemplate = () => {
   const [formState, formAction] = useActionState(credentialLogin, null)
 
   return (
-    <div className="w-full flex justify-start px-8 py-8">
+    <div className="w-full flex justify-center px-8 py-8">
       {currentView === LOGIN_VIEW.SIGN_IN ? (
         <div className="max-w-sm w-full flex flex-col items-center">
           <h1 className="text-large-semi uppercase mb-6">Bienvenido de nuevo</h1>
